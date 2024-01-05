@@ -112,9 +112,16 @@ class Enemy:
         self.floating_resources = 0
         self.draw()
         self.reset_action_points()
+        
+    def reset_play(self):
+        self.floating_resources = 0
+        self.reset_action_points()
 
     def reset_action_points(self):
         self.action_points = 1
+
+    def get_action_points(self, amount=1):
+        self.action_points += amount
 
     def use_action_points(self, amount=1):
         if self.action_points >= amount:
@@ -142,9 +149,8 @@ class Enemy:
             self.hand.remove(c)
 
     def finish_phase(self):
-        self.floating_resources = 0
-        self.reset_action_points()
-
+        self.reset_play()
+        
         for card in self.played_cards:
             self.graveyard.append(card)
 
@@ -195,6 +201,7 @@ class Enemy:
             len(self.combat_chain) == 0
             or self.combat_chain_iterator > len(self.combat_chain)
             or len(self.hand) == 0
+            or self.action_points == 0
         ):
             self.further_attack_possible = False
 
@@ -301,21 +308,17 @@ class Enemy:
     def remove_card_from_hand(self, card):
         if card in self.hand:
             self.hand.remove(card)
-        else:
-            print("card not in hand but should be !?")
 
     def attack(self):
         print("enemy attacking")
 
         if len(self.combat_chain) > 0:
             if self.combat_chain_iterator in self.combat_chain:
+                print(self.action_points)
                 if (
-                    self.combat_chain_iterator == 0
-                    or self.combat_chain[self.combat_chain_iterator - 1][
-                        "attack"
-                    ].keywords[0]
-                    == Keyword.go_again
+                    self.action_points > 0
                 ):
+
                     c = self.combat_chain[self.combat_chain_iterator]["attack"]
                     # print(c.name)
                     # print("physical: {}".format(c.physical))
@@ -337,6 +340,10 @@ class Enemy:
                             self.arsenal.remove(p)
 
                     self.use_floating_resources(c.cost)
+                    self.use_action_points()
+                    
+                    if Keyword.go_again in c.keywords:
+                        self.get_action_points()
 
                     self.combat_chain_iterator += 1
 

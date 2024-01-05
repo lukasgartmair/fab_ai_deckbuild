@@ -160,6 +160,8 @@ class GameScene(SceneBase):
             self.renderer.render_pitch()
 
             self.renderer.render_graveyard()
+            
+            self.renderer.render_action_points()
 
             self.renderer.render_turn_text()
 

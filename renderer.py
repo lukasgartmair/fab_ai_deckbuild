@@ -236,7 +236,7 @@ class Renderer:
             text,
             (
                 right_edge,
-                grid.top_point(y_index + 3),
+                grid.top_point(y_index + 14),
             ),
         )
 
@@ -270,6 +270,21 @@ class Renderer:
             (
                 right_edge,
                 grid.top_point(y_index + 13),
+            ),
+        )
+
+
+    def render_action_points(self):
+        text = font.render(
+            str(self.engine.enemy.action_points) + " action pts.",
+            True,
+            pygame.Color(color_palette.text_color),
+        )
+        self.window.blit(
+            text,
+            (
+                right_edge,
+                grid.top_point(y_index + 3),
             ),
         )
 
