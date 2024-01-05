@@ -37,7 +37,6 @@ def main_local():
 
 
 async def main_web():
-    # unittest.main()
     game = Game()
     running = True
     tb = None

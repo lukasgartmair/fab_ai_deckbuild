@@ -311,7 +311,7 @@ class Enemy:
 
     def attack(self):
         print("enemy attacking")
-
+        print(self.combat_chain)
         if len(self.combat_chain) > 0:
             if self.combat_chain_iterator in self.combat_chain:
                 print(self.action_points)

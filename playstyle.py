@@ -190,6 +190,12 @@ class WarriorBasic(Playstyle):
             "defensive_reaction": 5,
         }
 
+        self.pitch_ratios = {
+            CardColor.red: 50,
+            CardColor.yellow: 0,
+            CardColor.blue: 50,
+        }
+
 
 class GuardianBasic(Playstyle):
     def __init__(self):
@@ -203,12 +209,23 @@ class GuardianBasic(Playstyle):
             "attack_reaction": 25,
             "defensive_reaction": 25,
         }
+        self.pitch_ratios = {
+            CardColor.red: 50,
+            CardColor.yellow: 0,
+            CardColor.blue: 50,
+        }
 
 
 class IllusionistBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.strategy_parameters = {"mu": 4, "sigma": 2}
+
+        self.pitch_ratios = {
+            CardColor.red: 25,
+            CardColor.yellow: 25,
+            CardColor.blue: 50,
+        }
 
 
 class Aggressive(Playstyle):
@@ -220,4 +237,10 @@ class Aggressive(Playstyle):
             "go_again": 65,
             "dominate": 15,
             "no_keyword": 20,
+        }
+
+        self.pitch_ratios = {
+            CardColor.red: 50,
+            CardColor.yellow: 50,
+            CardColor.blue: 0,
         }
