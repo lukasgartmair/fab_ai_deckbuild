@@ -273,7 +273,6 @@ class Renderer:
             ),
         )
 
-
     def render_action_points(self):
         text = font.render(
             str(self.engine.enemy.action_points) + " action pts.",

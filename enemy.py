@@ -112,7 +112,7 @@ class Enemy:
         self.floating_resources = 0
         self.draw()
         self.reset_action_points()
-        
+
     def reset_play(self):
         self.floating_resources = 0
         self.reset_action_points()
@@ -150,7 +150,7 @@ class Enemy:
 
     def finish_phase(self):
         self.reset_play()
-        
+
         for card in self.played_cards:
             self.graveyard.append(card)
 
@@ -315,10 +315,7 @@ class Enemy:
         if len(self.combat_chain) > 0:
             if self.combat_chain_iterator in self.combat_chain:
                 print(self.action_points)
-                if (
-                    self.action_points > 0
-                ):
-
+                if self.action_points > 0:
                     c = self.combat_chain[self.combat_chain_iterator]["attack"]
                     # print(c.name)
                     # print("physical: {}".format(c.physical))
@@ -341,7 +338,7 @@ class Enemy:
 
                     self.use_floating_resources(c.cost)
                     self.use_action_points()
-                    
+
                     if Keyword.go_again in c.keywords:
                         self.get_action_points()
 
@@ -423,6 +420,7 @@ class Enemy:
                     combos = itertools.combinations(array_copy, i)
                     for c in combos:
                         combinations.append(c)
+
         return combinations
 
     def determine_pitch_combination(self, cost_to_pay, pitch_combinations):
@@ -432,8 +430,6 @@ class Enemy:
         defense_wasted = VALUE_MAX_PLACEHOLDER
         best_pitch = []
         for k, v in pitch_combinations.items():
-            # print([ki.name for ki in k])
-            # print(v)
             number_of_cards_used_temp = len(k)
             diff_to_cost_temp = cost_to_pay - v
             physical_cost_ratio_wasted_temp = np.sum(
