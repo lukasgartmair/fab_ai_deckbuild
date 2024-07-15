@@ -13,7 +13,7 @@ import itertools
 id_iter = itertools.count()
 
 TARGET_VALUE = 8
-MAX_ATTACK = 4
+MAX_ATTACK = 6
 MIN_ATTACK = 2
 n_cards = 30
 
@@ -46,6 +46,11 @@ class CardColor(Enum):
     yellow = 1,
     blue = 2
     
+class Keywords(Enum):
+    go_again = 0
+    dominate = 1
+    intimidate = 2
+    
 pitch_values = {
     "red" : 1,
     "yellow" : 2,
@@ -63,14 +68,25 @@ class Deck:
         self.n_cards = 10
         self.cards = []
         self.stats = {}
+        
+        self.build_deck()
+        self.calc_stats()
     
     def build_deck(self):
         self.cards = [Card() for n in range(self.n_cards)]
     
     def calc_stats(self):
+        self.card_types = [c.card_type.name for c in self.cards]
+        
         self.n_reds = len([c for c in self.cards if c.color == CardColor.red])
         self.n_yellows = len([c for c in self.cards if c.color == CardColor.yellow])
         self.n_blues = len([c for c in self.cards if c.color == CardColor.blue])
+        
+        self.powers = [c.power for c in self.cards]
+        self.defenses = [c.defense for c in self.cards]
+        self.pitches = [c.pitch for c in self.cards]
+        self.costs = [c.cost for c in self.cards]
+        
         
 class Card:
     def __init__(self):
@@ -84,16 +100,47 @@ class Card:
         
         self.calc_card_values()
         
+    def __str__(self):
+        return "Card {} w. power {} / defense {} / pitch {} / cost {}".format(self.card_id, self.power, self.defense, self.pitch, self.cost)
+        
     def calc_card_values(self):
-        # (Power (6) + Defense (3) + Pitch (1)) - Cost (2) = 8
+        # (Power (6) + Defense (3) + Pi
+        #https://fab.cardsrealm.com/en-us/articles/guide-everything-about-value-and-turn-cycle-in-flesh-and-bloodtch (1)) - Cost (2) = 8
         
         self.color = np.random.choice(list(CardColor))
         self.pitch = pitch_values[self.color.name]
         self.power = get_rnd_power()
         self.defense = defensive_values[self.card_type.name]
-        self.cost = self.power + self.defense + self.pitch - TARGET_VALUE
+        self.cost = TARGET_VALUE - self.power - self.defense - self.pitch
+        if self.cost <= 0:
+            self.cost = 0
          
-    def check_card_stats(self):
-        assert(self.power + self.defense + self.pitch - self.cost == TARGET_VALUE)
          
-         
+class Enemy:
+    def __init__(self):
+        self.name = "ai_enemy"
+        self.intellect = 4
+        self.life = 20
+        self.hand = []
+        self.original_deck = Deck()
+        self.deck = self.original_deck.cards
+        self.graveyard = []
+        self.banished_zone = []
+        self.arsenal = []
+        self.weapon_zone_1 = []
+        self.weapon_zone_2 = []
+        
+    def show_hand(self):
+        for c in self.hand:
+            print(str(c))
+        
+    def draw(self):
+        
+        self.hand = self.deck[:4]
+        
+        
+        
+        
+        
+        
+        
