@@ -8,6 +8,7 @@ Created on Tue Jul 16 10:59:11 2024
 
 from enum import Enum
 import numpy as np
+import random
 import matplotlib.pyplot as plt
 from beautifultable import beautifultable
 import seaborn as sns
@@ -16,9 +17,10 @@ sns.set_style("white")
 from card import Card, CardColor
 import playstyle
 
+DECK_SIZE = 60
 
 
-def calc_power_distribution(playstyle_obj, n=500):
+def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
     mu, sigma = (
         playstyle_obj.strategy_parameters["mu"],
         playstyle_obj.strategy_parameters["sigma"],
@@ -40,11 +42,11 @@ def calc_power_distribution(playstyle_obj, n=500):
 
 class Deck:
     def __init__(self):
-        self.n_cards = 60
+        self.n_cards = DECK_SIZE
         self.cards = []
         self.stats = {}
 
-        self.playstyle = playstyle.Aggressive()
+        self.playstyle = playstyle.Ninjalike()
 
         self.build_deck()
         self.calc_stats()
@@ -60,6 +62,16 @@ class Deck:
             Card(np.random.choice(power_distribution)) for n in range(self.n_cards)
         ]
 
+        if len(self.playstyle.keywords) > 0:
+            
+            for kw in self.playstyle.keywords:
+                n_choices = np.round(self.playstyle.keyword_ratio[kw.name]*len(self.cards)).astype(int)
+                cards_without_keyword = [c for c in self.cards if c.keyword is None]
+                chosen_cards = random.choices(cards_without_keyword,k=n_choices)
+                for c in chosen_cards:
+                    c.keyword = kw
+                
+
     def calc_stats(self):
         self.card_types = [c.card_type.name for c in self.cards]
 
@@ -71,6 +83,10 @@ class Deck:
         self.defenses = [c.defense for c in self.cards]
         self.pitches = [c.pitch for c in self.cards]
         self.costs = [c.cost for c in self.cards]
+        
+        self.keywords =  [c.keyword for c in self.cards if c is not None]
+        print(self.keywords)
+        print(len(self.keywords))
 
         # fabrary deck stats
         self.in_deck = len(self.cards)
