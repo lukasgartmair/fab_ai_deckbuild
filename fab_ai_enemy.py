@@ -138,3 +138,8 @@ class Enemy:
         print("")
         print("best play")
         print(best_play)
+
+if __name__ == "__main__":
+    e = Enemy()
+    e.draw()
+    e.calc_possible_attacks()
