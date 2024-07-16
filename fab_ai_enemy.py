@@ -43,6 +43,7 @@ def get_rnd_power(n=1):
 
 def get_combinations(array, current_index):
     combinations = []
+    array.pop(current_index)
     for i in range(4):
         if i != current_index:
             combos = itertools.combinations(array,i)
@@ -186,19 +187,83 @@ class Enemy:
         self.hand = self.deck[:self.intellect-len(self.get_hand())]
         del self.deck[:self.intellect-len(self.get_hand())]
         
+        
+    def determine_pitch_combination(self, cost_to_pay, pitch_combinations):
+        
+        number_of_cards_used = 4
+        diff_to_cost = cost_to_pay
+        power_wasted = 1000
+        defense_wasted = 1000
+        best_pitch = []
+        for k,v in pitch_combinations.items():
+            print([ki.name for ki in k])
+            print(v)
+            number_of_cards_used_temp = len(k)
+            diff_to_cost_temp = cost_to_pay-v
+            power_wasted_temp = np.sum([ki.power for ki in k])
+            defense_wasted_temp =np.sum([ki.defense for ki in k])
+            
+            if diff_to_cost_temp <= 0:
+                if abs(diff_to_cost_temp) < diff_to_cost and number_of_cards_used_temp < number_of_cards_used and power_wasted_temp < power_wasted:
+                    
+                    power_wasted = power_wasted_temp
+                    diff_to_cost = diff_to_cost_temp
+                    number_of_cards_used = number_of_cards_used_temp
+                    best_pitch = k
+        
+        return best_pitch
+        
     def calc_possible_attacks(self):
-        max_damage_output = 0
+
         cards_to_play = []
         cards_to_pitch = []
-        for i,current_card in enumerate((self.hand)):
+        
+        max_damage_output = 0
+        
+        best_play = []
+        
+        virtual_hand = self.hand.copy()
+        for i,current_card in enumerate((virtual_hand)):
             damage_output = current_card.power
-            possible_cards_to_pitch = get_combinations(self.hand, i)
+            possible_cards_to_pitch = get_combinations(virtual_hand, i)
 
-            print(possible_cards_to_pitch)
-            if damage_output > max_damage_output:
-                max_damage_output = damage_output
+            pitch_combinations = {}
+            for j,pi in enumerate(possible_cards_to_pitch):
+                pitch_total = 0
+                for p in pi:
+                    # print(p.name)
+                    # print(p.pitch)
+                    pitch_total += p.pitch
                 
-            break
+                pitch_combinations[pi] = pitch_total
+                # print("total pitch {}".format(pitch_total))
+                # print("-----")
+                
+            if current_card.cost > 0:
+                cards_to_pitch = self.determine_pitch_combination(current_card.cost, pitch_combinations)
+                if len(cards_to_pitch) == 0:
+                    print("no pitch possible")
+                    continue
+                
+            print("")
+            print(current_card.name)
+            print(current_card.cost)
+            print("best pitch")
+            for c in cards_to_pitch:
+                print(c.name)
+                print(c.pitch)
+                
+            damage_output_temp = current_card.power
+            
+            if damage_output_temp > max_damage_output:
+                best_play = current_card
+                max_damage_output = damage_output_temp
+                
+    
+        print("")
+        print("best play")
+        print(best_play.name)
+                
         
         
         
