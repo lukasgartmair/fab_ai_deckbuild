@@ -22,13 +22,13 @@ class DeckStrategy(Enum):
 
 
 strategy_parameters = {
-    "aggressive": {"mu": 4, "sigma": 1},
+    "aggressive": {"mu": 4, "sigma": 2},
     "neutral": {"mu": 3, "sigma": 1},
-    "defensive": {"mu": 2, "sigma": 1},
+    "defensive": {"mu": 1.5, "sigma": 2},
 }
 
 
-def calc_power_distribution(n=2000, deck_strategy=DeckStrategy.neutral):
+def calc_power_distribution(n=500, deck_strategy=DeckStrategy.neutral):
     mu, sigma = (
         strategy_parameters[deck_strategy.name]["mu"],
         strategy_parameters[deck_strategy.name]["sigma"],
@@ -38,9 +38,13 @@ def calc_power_distribution(n=2000, deck_strategy=DeckStrategy.neutral):
     
     plot = True
     if plot:
-        plt.figure(figsize=(10,7), dpi= 80)
-        sns.distplot(s, color="dodgerblue", label="Compact")
-    
+        #plt.figure(figsize=(10,7), dpi= 80)
+        #sns.distplot(s, color="dodgerblue", label="Compact")
+        plt.hist(s,alpha=0.5,label="defensive")
+        plt.legend()
+        plt.xlabel("power")
+        plt.ylabel("#cards")
+        
     return s
 
 
@@ -50,7 +54,7 @@ class Deck:
         self.cards = []
         self.stats = {}
 
-        self.strategy = DeckStrategy.aggressive
+        self.strategy = DeckStrategy.defensive
 
         self.build_deck()
         self.calc_stats()
@@ -61,7 +65,7 @@ class Deck:
         np.random.shuffle(self.cards)
 
     def build_deck(self):
-        power_distribution = calc_power_distribution()
+        power_distribution = calc_power_distribution(deck_strategy=self.strategy)
         self.cards = [
             Card(np.random.choice(power_distribution)) for n in range(self.n_cards)
         ]
