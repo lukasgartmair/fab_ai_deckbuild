@@ -8,9 +8,12 @@ Created on Tue Jul 16 10:59:11 2024
 
 from enum import Enum
 import numpy as np
+import matplotlib.pyplot as plt
 from beautifultable import beautifultable
-from card import Card, CardColor
+import seaborn as sns
+sns.set_style("white")
 
+from card import Card, CardColor
 
 class DeckStrategy(Enum):
     defensive = 0
@@ -32,6 +35,12 @@ def calc_power_distribution(n=2000, deck_strategy=DeckStrategy.neutral):
     )
     s = np.random.normal(mu, sigma, n)
     s = [np.round(si).astype(int) for si in s if si > 0]
+    
+    plot = True
+    if plot:
+        plt.figure(figsize=(10,7), dpi= 80)
+        sns.distplot(s, color="dodgerblue", label="Compact")
+    
     return s
 
 
