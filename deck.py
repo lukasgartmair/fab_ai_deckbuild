@@ -14,24 +14,14 @@ import seaborn as sns
 sns.set_style("white")
 
 from card import Card, CardColor
-
-class DeckStrategy(Enum):
-    defensive = 0
-    neutral = 1
-    aggressive = 2
+import playstyle
 
 
-strategy_parameters = {
-    "aggressive": {"mu": 4, "sigma": 2},
-    "neutral": {"mu": 3, "sigma": 1},
-    "defensive": {"mu": 1.5, "sigma": 2},
-}
 
-
-def calc_power_distribution(n=500, deck_strategy=DeckStrategy.neutral):
+def calc_power_distribution(playstyle_obj, n=500):
     mu, sigma = (
-        strategy_parameters[deck_strategy.name]["mu"],
-        strategy_parameters[deck_strategy.name]["sigma"],
+        playstyle_obj.strategy_parameters["mu"],
+        playstyle_obj.strategy_parameters["sigma"],
     )
     s = np.random.normal(mu, sigma, n)
     s = [np.round(si).astype(int) for si in s if si > 0]
@@ -40,7 +30,7 @@ def calc_power_distribution(n=500, deck_strategy=DeckStrategy.neutral):
     if plot:
         #plt.figure(figsize=(10,7), dpi= 80)
         #sns.distplot(s, color="dodgerblue", label="Compact")
-        plt.hist(s,alpha=0.5,label="defensive")
+        plt.hist(s,alpha=0.5,label=str(playstyle_obj))
         plt.legend()
         plt.xlabel("power")
         plt.ylabel("#cards")
@@ -54,7 +44,7 @@ class Deck:
         self.cards = []
         self.stats = {}
 
-        self.strategy = DeckStrategy.defensive
+        self.playstyle = playstyle.Aggressive()
 
         self.build_deck()
         self.calc_stats()
@@ -65,7 +55,7 @@ class Deck:
         np.random.shuffle(self.cards)
 
     def build_deck(self):
-        power_distribution = calc_power_distribution(deck_strategy=self.strategy)
+        power_distribution = calc_power_distribution(self.playstyle)
         self.cards = [
             Card(np.random.choice(power_distribution)) for n in range(self.n_cards)
         ]

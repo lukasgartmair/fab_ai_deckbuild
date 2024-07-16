@@ -32,18 +32,10 @@ class CardType(Enum):
     # attack_reaction = 2
     # defensive_reaction = 3
 
-
 class CardColor(Enum):
     red = (0,)
     yellow = (1,)
     blue = 2
-
-
-class Keywords(Enum):
-    go_again = 0
-    dominate = 1
-    intimidate = 2
-
 
 pitch_values = {"red": 1, "yellow": 2, "blue": 3}
 
