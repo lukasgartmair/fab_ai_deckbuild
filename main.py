@@ -13,7 +13,7 @@ width = 1024
 height = 700
 bounds = (width, height)
 window = pygame.display.set_mode(bounds)
-pygame.display.set_caption('Flesh and Blood')
+pygame.display.set_caption('Flesh and Blood AI enemy')
 
 background = pygame.image.load('images/background.png')
 
@@ -57,52 +57,45 @@ def render_end_background():
     background_bw = pygame.image.load('images/background_bw.png')
     window.blit(background_bw, (0, 0))
 
-    # if gameEngine.currentPlayer == gameEngine.player1:
-    #     end_background = pygame.image.load('images/player_1_win.png')
-    # elif gameEngine.currentPlayer == gameEngine.player2:
-    #     end_background = pygame.image.load('images/player_2_win.png')
-
-    # window.blit(end_background, (0, 0))
-
 
 def render_player_hands():
 
-    # player 1
-    window.blit(cardBack, (right_edge, height_reference_1))
+    # # player 1
+    # window.blit(cardBack, (right_edge, height_reference_1))
 
-    text = font.render(str(len(gameEngine.player1.hand)) +
-                       ' cards', True, text_color)
-    window.blit(text, (right_edge, height_reference_2))
+    # text = font.render(str(len(gameEngine.player1.hand)) +
+    #                    ' cards', True, text_color)
+    # window.blit(text, (right_edge, height_reference_2))
 
-    # player2
+    # enemy
     window.blit(cardBack, (left_edge, height_reference_1))
 
-    text = font.render(str(len(gameEngine.player2.hand)) +
+    text = font.render(str(len(gameEngine.enemy.hand)) +
                        ' cards', True, text_color)
     window.blit(text, (left_edge, height_reference_2))
 
 
 def render_player_piles():
 
-    edge = middle_edge
+    # edge = middle_edge
 
-    current_card_player_1 = gameEngine.player1.pile.get_current_card()
+    # current_card_player_1 = gameEngine.player1.pile.get_current_card()
 
-    if (current_card_player_1 != None):
+    # if (current_card_player_1 != None):
 
-        current_card_player_1.image = pygame.transform.scale(
-            current_card_player_1.image, (int(card_with*card_scale), int(card_height*card_scale)))
-        window.blit(current_card_player_1.image, (edge, height_reference_1))
+    #     current_card_player_1.image = pygame.transform.scale(
+    #         current_card_player_1.image, (int(card_with*card_scale), int(card_height*card_scale)))
+    #     window.blit(current_card_player_1.image, (edge, height_reference_1))
 
     edge = middle_edge_2
     
-    current_card_player_2 = gameEngine.player2.pile.get_current_card()
+    current_card_player_2 = gameEngine.enemy.pile.get_current_card()
     
     if (current_card_player_2 != None):
 
         current_card_player_2.image = pygame.transform.scale(
             current_card_player_2.image, (int(card_with*card_scale), int(card_height*card_scale)))
-        window.blit(current_card_player_2.image, (edge, height_reference_1))
+        window.blit(current_card_player_2.image, (middle_edge, height_reference_1))
 
 def render_turn_text():
 
@@ -110,7 +103,7 @@ def render_turn_text():
         color = None
         if gameEngine.currentPlayer == gameEngine.player1:
             color = player_1_color
-        elif gameEngine.currentPlayer == gameEngine.player2:
+        elif gameEngine.currentPlayer == gameEngine.enemy:
             color = player_2_color
 
         text = font.render(gameEngine.currentPlayer.name +
@@ -147,7 +140,7 @@ def render_initial_game_state():
     render_background()
     render_player_hands()
 
-    message = 'Play?!'
+    message = ''
     text = font.render(message, True, player_2_color)
     window.blit(text, (20, 50))
 
@@ -167,7 +160,7 @@ def renderGame(window, font):
         render_win()
 
 def intro():
-    intro = True
+    intro = False
 
     while intro == True:
 
@@ -204,9 +197,7 @@ def main():
 
             if event.type == pygame.KEYDOWN:
 
-                key = event.key
-
-                gameEngine.players_turn(key)
+                gameEngine.players_turn(event.key)
                 renderGame(window, font)
                 pygame.display.update()
                 
@@ -214,7 +205,4 @@ def main():
                     gameEngine.switchPlayer()
                 
 
-
-
-intro()
 main()

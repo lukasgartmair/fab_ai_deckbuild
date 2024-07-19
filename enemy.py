@@ -9,17 +9,22 @@ Created on Mon Jul 15 13:55:49 2024
 import numpy as np
 import itertools
 from deck import Deck
-
+from pile import Pile
 
 VALUE_MAX_PLACEHOLDER = 100
 
 
 class Enemy:
-    def __init__(self):
+
+    playKey = None    
+    
+    def __init__(self,play_key=None):
         self.name = "ai_enemy"
         self.intellect = 4
         self.life = 20
         self.hand = []
+        self.pile = Pile()
+        self.play_key = None
         self.original_deck = Deck()
         self.deck = self.original_deck.cards
         self.graveyard = []
@@ -27,6 +32,11 @@ class Enemy:
         self.arsenal = []
         self.weapon_zone_1 = []
         self.weapon_zone_2 = []
+        
+    def play(self):
+        popped_card = self.hand.pop(0)
+        self.pile.add(popped_card)
+        return popped_card
 
     def get_hand(self):
         for c in self.hand:

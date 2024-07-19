@@ -15,7 +15,7 @@ class GameState(Enum):
 class GameEngine:
 
     player1 = None
-    player2 = None
+    enemy = None
     state = None
 
     def __init__(self):

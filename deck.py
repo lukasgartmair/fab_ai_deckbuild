@@ -28,7 +28,7 @@ def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
     s = np.random.normal(mu, sigma, n)
     s = [np.round(si).astype(int) for si in s if si > 0]
     
-    plot = True
+    plot = False
     if plot:
         #plt.figure(figsize=(10,7), dpi= 80)
         #sns.distplot(s, color="dodgerblue", label="Compact")
@@ -50,11 +50,15 @@ class Deck:
 
         self.build_deck()
         self.calc_stats()
-
-        self.shuffle()
-
+        
     def shuffle(self):
         np.random.shuffle(self.cards)
+        
+    def deal(self):
+        return self.cards.pop()
+
+    def length(self):
+        return len(self.cards)
 
     def build_deck(self):
         power_distribution = calc_power_distribution(self.playstyle)

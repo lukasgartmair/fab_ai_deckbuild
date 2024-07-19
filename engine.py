@@ -8,8 +8,9 @@ Created on Mon Nov 13 10:19:33 2023
 
 from enum import Enum
 import pygame
-from models import Deck, Player
-
+from deck import Deck
+from player import Player
+from enemy import Enemy
 
 class GameState(Enum):
     PLAYING = 0
@@ -18,26 +19,22 @@ class GameState(Enum):
 class GameEngine:
 
     player1 = None
-    player2 = None
+    enemy = None
     state = None
     currentPlayer = None
 
     def __init__(self):
         self.deck = Deck()
-        self.player1 = Player("Aspirant", pygame.K_SPACE)
-        self.player2 = Player("Enemy", pygame.K_SPACE)
+        self.player1 = Player(play_key=pygame.K_SPACE)
+        self.enemy = Enemy(play_key=pygame.K_SPACE)
         self.currentPlayer = self.player1
         self.state = GameState.PLAYING
-        self.initialize_player_hands()
-
-    def initialize_player_hands(self):
-
-        self.player1.init_hand()
-        self.player2.init_hand()
+        
+        self.enemy.draw()
 
     def switchPlayer(self):
         if self.currentPlayer == self.player1:
-            self.currentPlayer = self.player2
+            self.currentPlayer = self.enemy
         else:
             self.currentPlayer = self.player1
 
@@ -45,7 +42,8 @@ class GameEngine:
         if key == None:
             return
 
-        if key == self.currentPlayer.playKey:
+        if key == self.currentPlayer.play_key:
+            print(len(self.currentPlayer.hand))
             if len(self.currentPlayer.hand) > 0:
                 self.currentPlayer.play()
             else:
