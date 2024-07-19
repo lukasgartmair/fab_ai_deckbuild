@@ -9,43 +9,49 @@ Created on Mon Nov 13 10:19:33 2023
 from enum import Enum
 import pygame
 from deck import Deck
-from player import Player
-from enemy import Enemy
+from enemy import Enemy, Stance
+
+from statemachine import StateMachine
+from statemachine.states import States
 
 class GameState(Enum):
-    PLAYING = 0
-    ENDED = 1
+    playing = 0
+    ended = 1
 
+class GameStateMachine(StateMachine):
+
+    states = States.from_enum(
+        GameState, initial=GameState.playing
+    )
+
+    end = states.playing.to(states.ended)
+    
 class GameEngine:
 
-    player1 = None
     enemy = None
     state = None
-    currentPlayer = None
 
     def __init__(self):
         self.deck = Deck()
-        self.player1 = Player(play_key=pygame.K_SPACE)
         self.enemy = Enemy(play_key=pygame.K_SPACE)
-        self.currentPlayer = self.player1
-        self.state = GameState.PLAYING
+        self.state = GameState.playing
         
         self.enemy.draw()
 
-    def switchPlayer(self):
-        if self.currentPlayer == self.player1:
-            self.currentPlayer = self.enemy
+    def switch_stance(self):
+        if self.enemy.stance == Stance.defend:
+            self.enemy.stance = Stance.attack
         else:
-            self.currentPlayer = self.player1
+            self.enemy.stance = Stance.defend
 
     def players_turn(self, key):
         if key == None:
             return
 
-        if key == self.currentPlayer.play_key:
-            print(len(self.currentPlayer.hand))
-            if len(self.currentPlayer.hand) > 0:
-                self.currentPlayer.play()
-            else:
-                self.state = GameState.ENDED
+        if key == self.enemy.play_key:
+            print(len(self.enemy.hand))
+            if len(self.enemy.hand) > 0:
+                self.enemy.play()
+            # else:
+            #     self.state = GameState.ended
                 

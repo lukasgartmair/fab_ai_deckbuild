@@ -10,9 +10,13 @@ import numpy as np
 import itertools
 from deck import Deck
 from pile import Pile
+from enum import Enum
 
 VALUE_MAX_PLACEHOLDER = 100
 
+class Stance(Enum):
+    defend= 0
+    attack = 1
 
 class Enemy:
 
@@ -20,6 +24,7 @@ class Enemy:
     
     def __init__(self,play_key=None):
         self.name = "ai_enemy"
+        self.stance = Stance.defend
         self.intellect = 4
         self.life = 20
         self.hand = []
@@ -34,6 +39,7 @@ class Enemy:
         self.weapon_zone_2 = []
         
     def play(self):
+        print(True)
         popped_card = self.hand.pop(0)
         self.pile.add(popped_card)
         return popped_card

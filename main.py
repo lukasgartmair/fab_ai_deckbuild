@@ -6,7 +6,8 @@ Created on Mon Nov 13 10:29:21 2023
 @author: lukasgartmair
 '''
 import pygame
-from engine import GameEngine, GameState
+from enemy import Stance
+from engine import GameState, GameEngine
 import sys
 
 width = 1024
@@ -44,9 +45,8 @@ cardBack = pygame.transform.scale(
     cardBack, (int(card_with*card_scale), int(card_height*card_scale)))
 
 
-def initialize_game_engine():
-    return GameEngine()
 
+game_engine = GameEngine()
 
 def render_background():
     window.blit(background, (0, 0))
@@ -70,7 +70,7 @@ def render_player_hands():
     # enemy
     window.blit(cardBack, (left_edge, height_reference_1))
 
-    text = font.render(str(len(gameEngine.enemy.hand)) +
+    text = font.render(str(len(game_engine.enemy.hand)) +
                        ' cards', True, text_color)
     window.blit(text, (left_edge, height_reference_2))
 
@@ -89,7 +89,7 @@ def render_player_piles():
 
     edge = middle_edge_2
     
-    current_card_player_2 = gameEngine.enemy.pile.get_current_card()
+    current_card_player_2 = game_engine.enemy.pile.get_current_card()
     
     if (current_card_player_2 != None):
 
@@ -99,15 +99,18 @@ def render_player_piles():
 
 def render_turn_text():
 
-    if gameEngine.state == GameState.PLAYING:
+    if game_engine.state == GameState.playing:
         color = None
-        if gameEngine.currentPlayer == gameEngine.player1:
-            color = player_1_color
-        elif gameEngine.currentPlayer == gameEngine.enemy:
+        
+        if game_engine.enemy.stance == Stance.defend:
             color = player_2_color
+        
+        else:
 
-        text = font.render(gameEngine.currentPlayer.name +
-                           "'s turn", True, color)
+            color = player_1_color
+
+        text = font.render("enemy " + game_engine.enemy.stance.name +
+                           "ing", True, color)
 
         window.blit(text, (20, 50))
 
@@ -117,7 +120,7 @@ def render_win():
     render_end_background()
 
     message = 'The ' + \
-        gameEngine.currentPlayer.name + ' trancended!'
+        game_engine.currentPlayer.name + ' trancended!'
     text = font.render(message, True, player_2_color)
     window.blit(text, (20, 50))
 
@@ -132,8 +135,6 @@ def render_start_screen():
     window.blit(text, (20, 50))
     pygame.display.update()
 
-
-gameEngine = initialize_game_engine()
 
  
 def render_initial_game_state():
@@ -155,7 +156,7 @@ def renderGame(window, font):
 
     render_turn_text()
 
-    if gameEngine.state == GameState.ENDED:
+    if game_engine.state == GameState.ended:
 
         render_win()
 
@@ -197,12 +198,12 @@ def main():
 
             if event.type == pygame.KEYDOWN:
 
-                gameEngine.players_turn(event.key)
+                game_engine.players_turn(event.key)
                 renderGame(window, font)
                 pygame.display.update()
                 
-                if gameEngine.state == GameState.PLAYING:
-                    gameEngine.switchPlayer()
+                if game_engine.state == GameState.playing:
+                    game_engine.switch_stance()
                 
 
 main()
