@@ -283,6 +283,7 @@ class Game:
 
                     if event.key != pygame.K_SPACE:
                         self.input_box.update(event=event)
+                        render_background()
                         
                     if event.key == pygame.K_RETURN:
                         player_attack = self.input_box.send_input()
