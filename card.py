@@ -8,6 +8,7 @@ Created on Tue Jul 16 12:00:56 2024
 
 from enum import Enum
 import itertools
+import pygame
 import numpy as np
 from wonderwords import RandomSentence
 
@@ -32,10 +33,12 @@ class CardType(Enum):
     # attack_reaction = 2
     # defensive_reaction = 3
 
+
 class CardColor(Enum):
     red = (0,)
     yellow = (1,)
     blue = 2
+
 
 pitch_values = {"red": 1, "yellow": 2, "blue": 3}
 
@@ -58,6 +61,7 @@ class Card:
         self.pitch = 0
         self.color = 0
         self.keyword = None
+        self.image = pygame.image.load("images/player_1.png")
 
         self.calc_card_values()
 

@@ -12,6 +12,7 @@ import random
 import matplotlib.pyplot as plt
 from beautifultable import beautifultable
 import seaborn as sns
+
 sns.set_style("white")
 
 from card import Card, CardColor
@@ -27,16 +28,16 @@ def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
     )
     s = np.random.normal(mu, sigma, n)
     s = [np.round(si).astype(int) for si in s if si > 0]
-    
+
     plot = False
     if plot:
-        #plt.figure(figsize=(10,7), dpi= 80)
-        #sns.distplot(s, color="dodgerblue", label="Compact")
-        plt.hist(s,alpha=0.5,label=str(playstyle_obj))
+        # plt.figure(figsize=(10,7), dpi= 80)
+        # sns.distplot(s, color="dodgerblue", label="Compact")
+        plt.hist(s, alpha=0.5, label=str(playstyle_obj))
         plt.legend()
         plt.xlabel("power")
         plt.ylabel("#cards")
-        
+
     return s
 
 
@@ -50,10 +51,10 @@ class Deck:
 
         self.build_deck()
         self.calc_stats()
-        
+
     def shuffle(self):
         np.random.shuffle(self.cards)
-        
+
     def deal(self):
         return self.cards.pop()
 
@@ -67,14 +68,14 @@ class Deck:
         ]
 
         if len(self.playstyle.keywords) > 0:
-            
             for kw in self.playstyle.keywords:
-                n_choices = np.round(self.playstyle.keyword_ratio[kw.name]*len(self.cards)).astype(int)
+                n_choices = np.round(
+                    self.playstyle.keyword_ratio[kw.name] * len(self.cards)
+                ).astype(int)
                 cards_without_keyword = [c for c in self.cards if c.keyword is None]
-                chosen_cards = random.choices(cards_without_keyword,k=n_choices)
+                chosen_cards = random.choices(cards_without_keyword, k=n_choices)
                 for c in chosen_cards:
                     c.keyword = kw
-                
 
     def calc_stats(self):
         self.card_types = [c.card_type.name for c in self.cards]
@@ -87,8 +88,8 @@ class Deck:
         self.defenses = [c.defense for c in self.cards]
         self.pitches = [c.pitch for c in self.cards]
         self.costs = [c.cost for c in self.cards]
-        
-        self.keywords =  [c.keyword for c in self.cards if c is not None]
+
+        self.keywords = [c.keyword for c in self.cards if c is not None]
         print(self.keywords)
         print(len(self.keywords))
 

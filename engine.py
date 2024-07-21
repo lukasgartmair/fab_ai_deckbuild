@@ -14,20 +14,19 @@ from enemy import Enemy, Stance
 from statemachine import StateMachine
 from statemachine.states import States
 
+
 class GameState(Enum):
     playing = 0
     ended = 1
 
-class GameStateMachine(StateMachine):
 
-    states = States.from_enum(
-        GameState, initial=GameState.playing
-    )
+class GameStateMachine(StateMachine):
+    states = States.from_enum(GameState, initial=GameState.playing)
 
     end = states.playing.to(states.ended)
-    
-class GameEngine:
 
+
+class GameEngine:
     enemy = None
     state = None
 
@@ -35,7 +34,7 @@ class GameEngine:
         self.deck = Deck()
         self.enemy = Enemy(play_key=pygame.K_SPACE)
         self.state = GameState.playing
-        
+
         self.enemy.draw()
 
     def switch_stance(self):
@@ -54,4 +53,3 @@ class GameEngine:
                 self.enemy.play()
             # else:
             #     self.state = GameState.ended
-                

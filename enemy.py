@@ -14,15 +14,16 @@ from enum import Enum
 
 VALUE_MAX_PLACEHOLDER = 100
 
+
 class Stance(Enum):
-    defend= 0
+    defend = 0
     attack = 1
 
-class Enemy:
 
-    playKey = None    
-    
-    def __init__(self,play_key=None):
+class Enemy:
+    playKey = None
+
+    def __init__(self, play_key=None):
         self.name = "ai_enemy"
         self.stance = Stance.defend
         self.intellect = 4
@@ -37,7 +38,7 @@ class Enemy:
         self.arsenal = []
         self.weapon_zone_1 = []
         self.weapon_zone_2 = []
-        
+
     def play(self):
         print(True)
         popped_card = self.hand.pop(0)
@@ -154,6 +155,7 @@ class Enemy:
         print("")
         print("best play")
         print(best_play)
+
 
 if __name__ == "__main__":
     e = Enemy()

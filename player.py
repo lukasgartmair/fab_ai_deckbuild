@@ -11,11 +11,11 @@ import random
 from deck import Deck
 from pile import Pile
 
-class Player:
 
+class Player:
     name = None
     playKey = None
-    
+
     def __init__(self, play_key=None):
         self.deck = None
         self.pile = Pile()
@@ -32,4 +32,3 @@ class Player:
         popped_card = self.hand.pop(0)
         self.pile.add(popped_card)
         return popped_card
-    

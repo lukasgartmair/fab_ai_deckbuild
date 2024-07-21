@@ -9,16 +9,17 @@ Created on Fri Jul 19 21:05:34 2024
 import pygame as pg
 import traceback
 
+
 def main():
     screen = pg.display.set_mode((640, 480))
     font = pg.font.Font(None, 32)
     clock = pg.time.Clock()
     input_box = pg.Rect(100, 100, 140, 32)
-    color_inactive = pg.Color('lightskyblue3')
-    color_active = pg.Color('dodgerblue2')
+    color_inactive = pg.Color("lightskyblue3")
+    color_active = pg.Color("dodgerblue2")
     color = color_inactive
     active = False
-    text = ''
+    text = ""
     done = False
 
     while not done:
@@ -38,7 +39,7 @@ def main():
                 if active:
                     if event.key == pg.K_RETURN:
                         print(text)
-                        text = ''
+                        text = ""
                     elif event.key == pg.K_BACKSPACE:
                         text = text[:-1]
                     else:
@@ -48,10 +49,10 @@ def main():
         # Render the current text.
         txt_surface = font.render(text, True, color)
         # Resize the box if the text is too long.
-        width = max(200, txt_surface.get_width()+10)
+        width = max(200, txt_surface.get_width() + 10)
         input_box.w = width
         # Blit the text.
-        screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
+        screen.blit(txt_surface, (input_box.x + 5, input_box.y + 5))
         # Blit the input_box rect.
         pg.draw.rect(screen, color, input_box, 2)
 
@@ -59,7 +60,7 @@ def main():
         clock.tick(30)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pg.init()
     main()
     pg.quit()

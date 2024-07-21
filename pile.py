@@ -6,6 +6,7 @@ Created on Fri Jul 19 19:07:43 2024
 @author: lukasgartmair
 """
 
+
 class Pile:
     cards = None
 
@@ -16,7 +17,7 @@ class Pile:
         self.cards.append(card)
 
     def get_current_card(self):
-        if (len(self.cards) > 0):
+        if len(self.cards) > 0:
             return self.cards[-1]
         else:
             return None
