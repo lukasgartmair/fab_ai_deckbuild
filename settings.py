@@ -21,13 +21,26 @@ middle_edge = int(width * 0.3)
 middle_edge_2 = int(width * 0.55)
 left_edge = int(width * 0.75)
 
-height_reference_1 = int(height / 3) * 1.2
-height_reference_2 = int(height / 4)
+height_reference_0 = int(height / 3) * 1.2
+height_reference_1 = int(height / 4)
+height_references = {
+0:height_reference_0,
+1:height_reference_1
+    }
 
 divider = 7
-width_reference_1 = int(width / divider)
-width_reference_2 = int(width / divider) * 2
-width_reference_3 = int(width / divider) * 3
-width_reference_4 = int(width / divider) * 4
+width_reference_0 = int(width / divider)
+width_reference_1 = int(width / divider) * 2
+width_reference_2 = int(width / divider) * 3
+width_reference_3 = int(width / divider) * 4
 
-width_reference_5 = int(width / 5) * 4
+width_reference_4 = int(width / 5) * 4
+
+width_references = {
+0:width_reference_0,
+1:width_reference_1,
+2:width_reference_2,
+3:width_reference_3,
+4:width_reference_4
+
+}

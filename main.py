@@ -9,6 +9,7 @@ Created on Mon Nov 13 10:29:21 2023
 import sys
 import traceback
 import pygame
+from card import card_colors
 from enemy import Stance
 from engine import GameState, GameEngine
 from input_box import InputBox
@@ -17,14 +18,9 @@ from settings import (
     player_1_color,
     player_2_color,
     bounds,
-    width_reference_1,
-    width_reference_2,
-    width_reference_3,
-    width_reference_4,
-    width_reference_5,
+    width_references,
     FPS,
-    height_reference_1,
-    height_reference_2,
+    height_references
 )
 
 pygame.font.init()
@@ -44,12 +40,9 @@ cardBack = pygame.transform.scale(
     cardBack, (int(card_with * card_scale), int(card_height * card_scale))
 )
 
-
-game_engine = GameEngine()
-
-
 class Game:
     def __init__(self):
+        self.engine = GameEngine()
         self.window = pygame.display.set_mode(bounds)
         pygame.display.set_caption("Flesh and Blood AI enemy")
 
@@ -72,65 +65,70 @@ class Game:
         self.window.blit(self.background, (0, 0))
 
     def render_end_background(self):
-        background_bw = pygame.image.load("images/background_bw.png")
+        self.background_bw = pygame.image.load("images/background_bw.png")
         self.window.blit(self.background_bw, (0, 0))
 
     def render_player_piles(self):
-        self.window.blit(cardBack, (width_reference_5, height_reference_1))
-
+        
+        if len(self.engine.enemy.deck) > 0:
+            self.window.blit(cardBack, (width_references[4], height_references[0]))
+    
         text = font.render(
-            str(len(game_engine.enemy.hand)) + " cards", True, text_color
+            str(len(self.engine.enemy.hand)) + " cards", True, text_color
         )
-        self.window.blit(text, (width_reference_5, height_reference_2))
+        self.window.blit(text,  (width_references[4], height_references[0]))
 
     def render_player_hands(self):
-        current_card = game_engine.enemy.hand[0]
+        offset_factor = 1.35
+        for i,current_card in enumerate(self.engine.enemy.hand):
 
-        if current_card != None:
-            current_card.image = pygame.transform.scale(
-                current_card.image,
-                (int(card_with * card_scale), int(card_height * card_scale)),
-            )
-            self.window.blit(
-                current_card.image, (width_reference_1, height_reference_1)
-            )
+            width_reference = width_references[i]            
 
-            current_card.image = pygame.transform.scale(
-                current_card.image,
-                (int(card_with * card_scale), int(card_height * card_scale)),
-            )
-            self.window.blit(
-                current_card.image, (width_reference_2, height_reference_1)
-            )
-
-            current_card.image = pygame.transform.scale(
-                current_card.image,
-                (int(card_with * card_scale), int(card_height * card_scale)),
-            )
-            self.window.blit(
-                current_card.image, (width_reference_3, height_reference_1)
-            )
-
-            current_card.image = pygame.transform.scale(
-                current_card.image,
-                (int(card_with * card_scale), int(card_height * card_scale)),
-            )
-            self.window.blit(
-                current_card.image, (width_reference_4, height_reference_1)
-            )
+            if current_card != None:
+                current_card.image = pygame.transform.scale(
+                    current_card.image,
+                    (int(card_with * card_scale), int(card_height * card_scale)),
+                )
+                self.window.blit(
+                    current_card.image, (width_reference, height_references[0])
+                )
+                
+                text = font.render(
+                    str(current_card.power), True, "yellow"
+                )
+                print(current_card.power)
+                self.window.blit(text,  (width_references[i], height_references[0]+(card_height//offset_factor)))
+                
+                text = font.render(
+                    str(current_card.defense), True, "black"
+                )
+                print(current_card.power)
+                self.window.blit(text,  (width_references[i]+card_with//2, height_references[0]+(card_height//offset_factor)))
+                
+                text = font.render(
+                    str(current_card.defense), True, card_colors[current_card.color.name])
+                
+                print(current_card.pitch)
+                self.window.blit(text,  (width_references[i], height_references[0]-(card_height - card_height//offset_factor)))
+                
+                text = font.render(
+                    str(current_card.defense), True, "red"
+                )
+                print(current_card.cost)
+                self.window.blit(text,  (width_references[i]+card_with//2, height_references[0]-(card_height - card_height//offset_factor)))
 
     def render_turn_text(self):
-        if game_engine.state == GameState.playing:
+        if self.engine.state == GameState.playing:
             color = None
 
-            if game_engine.enemy.stance == Stance.defend:
+            if self.engine.enemy.stance == Stance.defend:
                 color = player_2_color
 
             else:
                 color = player_1_color
 
             text = font.render(
-                "enemy " + game_engine.enemy.stance.name + "ing", True, color
+                "enemy " + self.engine.enemy.stance.name + "ing", True, color
             )
 
             self.window.blit(text, (20, 50))
@@ -138,7 +136,7 @@ class Game:
     def render_win(self):
         self.render_end_background()
 
-        message = "The " + game_engine.currentPlayer.name + " trancended!"
+        message = "The " + self.engine.currentPlayer.name + " trancended!"
         text = font.render(message, True, player_2_color)
         self.window.blit(text, (20, 50))
 
@@ -159,6 +157,10 @@ class Game:
         text = font.render(message, True, player_2_color)
         self.window.blit(text, (20, 50))
 
+        self.input_box.render()
+        
+        self.render()
+
         pygame.display.update()
 
     def render(self):
@@ -170,7 +172,7 @@ class Game:
 
         self.render_turn_text()
 
-        if game_engine.state == GameState.ended:
+        if self.engine.state == GameState.ended:
             self.render_win()
 
     def intro(self):
@@ -199,7 +201,6 @@ class Game:
         clock = pygame.time.Clock()
 
         self.render_initial_game_state()
-        self.input_box.render()
 
         while run:
             events = pygame.event.get()
@@ -214,11 +215,11 @@ class Game:
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        game_engine.players_turn(event.key)
+                        self.engine.players_turn(event.key)
                         self.render()
 
-                        if game_engine.state == GameState.playing:
-                            game_engine.switch_stance()
+                        if self.engine.state == GameState.playing:
+                            self.engine.switch_stance()
 
                     if event.key != pygame.K_SPACE:
                         self.input_box.update(event=event)

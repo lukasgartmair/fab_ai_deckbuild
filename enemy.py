@@ -46,8 +46,8 @@ class Enemy:
         return popped_card
 
     def get_hand(self):
-        for c in self.hand:
-            print(str(c))
+        for c in self.hand: 
+            pass
 
         return self.hand
 

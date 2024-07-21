@@ -39,6 +39,12 @@ class CardColor(Enum):
     yellow = (1,)
     blue = 2
 
+card_colors = {
+    "red" : (255,0,0),
+    "yellow": (255,255,0),
+    "blue" : (0,0,255)
+    
+    }
 
 pitch_values = {"red": 1, "yellow": 2, "blue": 3}
 
@@ -62,7 +68,6 @@ class Card:
         self.color = 0
         self.keyword = None
         self.image = pygame.image.load("images/player_1.png")
-
         self.calc_card_values()
 
     def __str__(self):
