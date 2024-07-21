@@ -179,6 +179,13 @@ class InputBox:
         self.box = pygame.Rect(100, 150, 140, 32)
         self.text = ''
         
+    def send_input(self):
+        text_temp = self.text
+        self.text = ''
+        self.render()
+        if text_temp.isnumeric():
+            return text_temp
+        
     def check_activation(self, event):
         if event:
             if event.type == pygame.MOUSEBUTTONDOWN:        
@@ -199,12 +206,11 @@ class InputBox:
                 
         if event.type == pygame.KEYDOWN:                
             if self.active:
-                if event.key == pygame.K_RETURN:
-                    self.text = ''
-                elif event.key == pygame.K_BACKSPACE:
+                if event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:
-                    self.text += event.unicode
+                    if event.key in [pygame.K_0,pygame.K_1,pygame.K_2,pygame.K_3,pygame.K_4,pygame.K_5,pygame.K_6,pygame.K_7,pygame.K_8,pygame.K_9]:
+                        self.text += event.unicode
         
         
 def intro():
@@ -278,6 +284,10 @@ class Game:
                     if event.key != pygame.K_SPACE:
                         self.input_box.update(event=event)
                         
+                    if event.key == pygame.K_RETURN:
+                        player_attack = self.input_box.send_input()
+                        render_background()
+                        print(player_attack)
 
             self.input_box.render()                                
             
