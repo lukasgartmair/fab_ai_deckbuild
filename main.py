@@ -9,6 +9,7 @@ import pygame
 from enemy import Stance
 from engine import GameState, GameEngine
 import sys
+import traceback
 
 width = 1024
 height = 700
@@ -114,6 +115,9 @@ def render_turn_text():
 
         window.blit(text, (20, 50))
 
+def render_input_box():
+    pass
+
 
 def render_win():
 
@@ -137,7 +141,7 @@ def render_start_screen():
 
 
  
-def render_initial_game_state():
+def render_initial_game_state(window):
     render_background()
     render_player_hands()
 
@@ -147,7 +151,7 @@ def render_initial_game_state():
 
     pygame.display.update()
 
-def renderGame(window, font):
+def render_game(window, font):
     render_background()
 
     render_player_hands()
@@ -159,13 +163,60 @@ def renderGame(window, font):
     if game_engine.state == GameState.ended:
 
         render_win()
+        
+class InputBox:
+
+    def __init__(self, window):
+        self.window = window
+        self.active = False
+        self.color_inactive = pygame.Color('lightskyblue3')
+        self.color_active = pygame.Color('dodgerblue2')
+        self.color = self.color_inactive
+        self.font = pygame.font.Font(None, 32)
+        
+        self.box = pygame.Rect(100, 150, 140, 32)
+        self.text = ''
+        
+    def render(self, event=None):
+    
+        if event:
+            if event.type == pygame.MOUSEBUTTONDOWN:        
+                if self.box.collidepoint(event.pos):
+                    print("here")
+                    self.active = not self.active
+                else:
+                   self.active = False
+                # Change the current color of the input box.
+                self.color = self.color_active if self.active else self.color_inactive
+                
+                if event.type == pygame.KEYDOWN:                
+        
+                    if self.active:
+                        if event.key == pygame.K_RETURN:
+                            print(self.text)
+                            self.text = ''
+                        elif event.key == pygame.K_BACKSPACE:
+                            self.text = self.text[:-1]
+                        else:
+                            self.text += event.unicode
+        
+        txt_surface = self.font.render(self.text, True, (0,0,0))
+        # Resize the box if the text is too long.
+        width = max(200, txt_surface.get_width()+10)
+        self.box.w = width
+        # Blit the text.
+        self.window.blit(txt_surface, (self.box.x+5, self.box.y+5))
+        # Blit the input_box rect.
+        
+        pygame.draw.rect(self.window, self.color, self.box, 2)
+
 
 def intro():
     intro = False
 
     while intro == True:
 
-        render_start_screen()
+        render_start_screen(window)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.display.quit()
@@ -182,28 +233,63 @@ def intro():
                 return
 
 
-def main():
-    run = True
+class Game:
+    
+    def __init__(self, window):
+        self.window = window
+        self.input_box = InputBox(self.window)
 
-    render_initial_game_state()
+    @staticmethod
+    def quit_everything(active_scene=None):
+        if active_scene:
+            active_scene.terminate()
+        pygame.display.quit()
+        pygame.quit()
+        sys.exit()
 
-    while run:
-        key = None
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                pygame.display.quit()
-                pygame.quit()
-                sys.exit()
+    
+    def run(self):
+        run = True
+    
+        render_initial_game_state(window)
+        self.input_box.render()
+    
+        while run:
+            key = None
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    pygame.display.quit()
+                    pygame.quit()
+                    sys.exit()
+                    
+                if event.type == pygame.KEYDOWN:       
+    
+                    game_engine.players_turn(event.key)
+                    render_game(window, font)
+                    
+                    
+                    
+                    if game_engine.state == GameState.playing:
+                        game_engine.switch_stance()
+                    
+            self.input_box.render(event=event)
 
-            if event.type == pygame.KEYDOWN:
+            pygame.display.update()
 
-                game_engine.players_turn(event.key)
-                renderGame(window, font)
-                pygame.display.update()
-                
-                if game_engine.state == GameState.playing:
-                    game_engine.switch_stance()
-                
 
-main()
+
+if __name__ == "__main__":
+    # unittest.main()
+    game = Game(window)
+
+    tb = None
+
+    try:
+        game.run(
+
+        )
+    except:
+        tb = traceback.format_exc()
+        print(tb)
+        Game.quit_everything()
