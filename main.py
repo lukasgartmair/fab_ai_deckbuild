@@ -11,6 +11,8 @@ from engine import GameState, GameEngine
 import sys
 import traceback
 
+FPS = 10
+
 width = 1024
 height = 700
 bounds = (width, height)
@@ -177,40 +179,34 @@ class InputBox:
         self.box = pygame.Rect(100, 150, 140, 32)
         self.text = ''
         
-    def render(self, event=None):
-    
+    def check_activation(self, event):
         if event:
             if event.type == pygame.MOUSEBUTTONDOWN:        
                 if self.box.collidepoint(event.pos):
-                    print("here")
                     self.active = not self.active
                 else:
                    self.active = False
                 # Change the current color of the input box.
                 self.color = self.color_active if self.active else self.color_inactive
-                
-                if event.type == pygame.KEYDOWN:                
         
-                    if self.active:
-                        if event.key == pygame.K_RETURN:
-                            print(self.text)
-                            self.text = ''
-                        elif event.key == pygame.K_BACKSPACE:
-                            self.text = self.text[:-1]
-                        else:
-                            self.text += event.unicode
+    def render(self):
         
-        txt_surface = self.font.render(self.text, True, (0,0,0))
-        # Resize the box if the text is too long.
-        width = max(200, txt_surface.get_width()+10)
-        self.box.w = width
-        # Blit the text.
+        txt_surface = self.font.render(self.text, True, self.color)
         self.window.blit(txt_surface, (self.box.x+5, self.box.y+5))
-        # Blit the input_box rect.
-        
         pygame.draw.rect(self.window, self.color, self.box, 2)
-
-
+        
+    def update(self, event):
+                
+        if event.type == pygame.KEYDOWN:                
+            if self.active:
+                if event.key == pygame.K_RETURN:
+                    self.text = ''
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    self.text += event.unicode
+        
+        
 def intro():
     intro = False
 
@@ -251,33 +247,44 @@ class Game:
     def run(self):
         run = True
     
+        clock = pygame.time.Clock()
+    
         render_initial_game_state(window)
         self.input_box.render()
     
         while run:
             key = None
-            for event in pygame.event.get():
+            events = pygame.event.get()
+            for event in events:
                 if event.type == pygame.QUIT:
                     run = False
                     pygame.display.quit()
                     pygame.quit()
                     sys.exit()
                     
-                if event.type == pygame.KEYDOWN:       
-    
-                    game_engine.players_turn(event.key)
-                    render_game(window, font)
                     
+                self.input_box.check_activation(event)
                     
-                    
-                    if game_engine.state == GameState.playing:
-                        game_engine.switch_stance()
-                    
-            self.input_box.render(event=event)
-
-            pygame.display.update()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        
+                        game_engine.players_turn(event.key)
+                        render_game(window, font)
+                        
+                        if game_engine.state == GameState.playing:
+                            game_engine.switch_stance()
 
 
+                    if event.key != pygame.K_SPACE:
+                        self.input_box.update(event=event)
+                        
+
+            self.input_box.render()                                
+            
+            pygame.display.flip()
+            clock.tick(FPS)
+
+                    
 
 if __name__ == "__main__":
     # unittest.main()
