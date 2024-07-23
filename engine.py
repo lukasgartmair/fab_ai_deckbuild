@@ -44,6 +44,7 @@ class GameEngine:
             self.enemy.stance = Stance.defend
 
         self.enemy.finish_phase()
+        self.enemy.draw()
 
     def play(self):
         print("enemy playing")
@@ -53,4 +54,4 @@ class GameEngine:
             self.enemy.attack()
 
             if self.enemy.check_if_further_attack_possible() == False:
-                print("no maore attacks from the enemy this turn")
+                print("no more attacks from the enemy this turn")

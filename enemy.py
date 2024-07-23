@@ -77,12 +77,7 @@ class Enemy:
     def attack(self):
         print("enemy attacking")
         self.calc_possible_attacks()
-        print("best play")
-        print(self.best_play)
         self.pitched_cards.append(self.pitch)
-        print(self.best_play)
-        print(self.hand)
-        print(self.pitch)
         if len(self.best_play) > 0:
             self.hand = [
                 item
@@ -95,6 +90,17 @@ class Enemy:
                 for item in self.hand
                 if item.card_id not in [c[0].card_id for c in self.pitch]
             ]
+
+        print("enemy attacks with")
+        if len(self.best_play) > 0:
+            c = self.best_play[0]
+            print(c.name)
+            print("power: {}".format(c.power))
+            print("cost: {}".format(c.cost))
+            print("pitch")
+            if len(self.pitch) > 0:
+                for p in self.pitch:
+                    print(str(p[0]))
 
         self.played_cards += self.best_play
 

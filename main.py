@@ -141,7 +141,6 @@ class Game:
 
         # COST
         text = font.render(str(current_card.cost), True, "red")
-        print(current_card.cost)
         self.window.blit(
             text,
             (
