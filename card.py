@@ -26,12 +26,14 @@ def generate_rnd_name():
     sb_split = sb.split()
     return "{} {}".format(sb_split[-1], sb_split[-2]).replace("s.", "")
 
+
 def generate_rnd_image():
     size = 15
-    img_size = (size,size)
+    img_size = (size, size)
     img = get_random_image(img_size)
-    img = 255*img/img.max()
+    img = 255 * img / img.max()
     return pygame.surfarray.make_surface(img)
+
 
 class CardType(Enum):
     # non_attack_action = 0
@@ -45,12 +47,8 @@ class CardColor(Enum):
     yellow = (1,)
     blue = 2
 
-card_colors = {
-    "red" : (255,0,0),
-    "yellow": (255,255,0),
-    "blue" : (0,0,255)
-    
-    }
+
+card_colors = {"red": (255, 0, 0), "yellow": (255, 255, 0), "blue": (0, 0, 255)}
 
 pitch_values = {"red": 1, "yellow": 2, "blue": 3}
 

@@ -39,14 +39,33 @@ class Enemy:
         self.weapon_zone_1 = []
         self.weapon_zone_2 = []
 
-    def play(self):
-        print(True)
-        popped_card = self.hand.pop(0)
-        self.pile.add(popped_card)
-        return popped_card
+        self.pitched_cards = []
+        self.played_cards = []
+
+        self.best_play = []
+        self.pitch = []
+
+    def finish_phase(self):
+        for card in self.played_cards:
+            self.graveyard.append(card)
+
+        self.deck += self.pitched_cards
+
+        self.played_cards = []
+        self.pitched_cards = []
+
+        if self.stance == Stance.attack:
+            self.best_play = []
+            self.pitch = []
+
+    def check_if_further_attack_possible(self):
+        if len(self.best_play) == 0:
+            return False
+        else:
+            return True
 
     def get_hand(self):
-        for c in self.hand: 
+        for c in self.hand:
             pass
 
         return self.hand
@@ -54,6 +73,36 @@ class Enemy:
     def draw(self):
         self.hand = self.deck[: self.intellect - len(self.get_hand())]
         del self.deck[: self.intellect - len(self.get_hand())]
+
+    def attack(self):
+        print("enemy attacking")
+        self.calc_possible_attacks()
+        print("best play")
+        print(self.best_play)
+        self.pitched_cards.append(self.pitch)
+        print(self.best_play)
+        print(self.hand)
+        print(self.pitch)
+        if len(self.best_play) > 0:
+            self.hand = [
+                item
+                for item in self.hand
+                if item.card_id not in [c.card_id for c in self.best_play]
+            ]
+        if len(self.pitch) > 0:
+            self.hand = [
+                item
+                for item in self.hand
+                if item.card_id not in [c[0].card_id for c in self.pitch]
+            ]
+
+        self.played_cards += self.best_play
+
+    def defend(self):
+        print("enemy defending")
+        if len(self.hand) > 0:
+            self.played_cards.append(self.hand[0])
+            self.hand.pop(0)
 
     def get_combinations(self, array, current_index):
         combinations = []
@@ -146,15 +195,18 @@ class Enemy:
                 and (current_card.power - current_card.cost) >= power_minus_cost
                 and len(cards_to_pitch) <= number_of_cards_to_pitch
             ):
-                best_play = current_card
+                best_play = [current_card]
                 max_damage_output = current_card.power
                 power_minus_cost = current_card.power - current_card.cost
                 number_of_cards_to_pitch = len(cards_to_pitch)
-                pitch.append(cards_to_pitch)
+                if len(cards_to_pitch) > 0:
+                    pitch.append(cards_to_pitch)
 
         print("")
         print("best play")
         print(best_play)
+        self.best_play = best_play
+        self.pitch = pitch
 
 
 if __name__ == "__main__":

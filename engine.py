@@ -43,13 +43,14 @@ class GameEngine:
         else:
             self.enemy.stance = Stance.defend
 
-    def players_turn(self, key):
-        if key == None:
-            return
+        self.enemy.finish_phase()
 
-        if key == self.enemy.play_key:
-            print(len(self.enemy.hand))
-            if len(self.enemy.hand) > 0:
-                self.enemy.play()
-            # else:
-            #     self.state = GameState.ended
+    def play(self):
+        print("enemy playing")
+        if self.enemy.stance == Stance.defend:
+            self.enemy.defend()
+        else:
+            self.enemy.attack()
+
+            if self.enemy.check_if_further_attack_possible() == False:
+                print("no maore attacks from the enemy this turn")
