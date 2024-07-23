@@ -11,7 +11,7 @@ import itertools
 import pygame
 import numpy as np
 from wonderwords import RandomSentence
-
+from randimage import get_random_image, show_array
 
 id_iter = itertools.count()
 
@@ -26,6 +26,12 @@ def generate_rnd_name():
     sb_split = sb.split()
     return "{} {}".format(sb_split[-1], sb_split[-2]).replace("s.", "")
 
+def generate_rnd_image():
+    size = 15
+    img_size = (size,size)
+    img = get_random_image(img_size)
+    img = 255*img/img.max()
+    return pygame.surfarray.make_surface(img)
 
 class CardType(Enum):
     # non_attack_action = 0
@@ -67,7 +73,7 @@ class Card:
         self.pitch = 0
         self.color = 0
         self.keyword = None
-        self.image = pygame.image.load("images/player_1.png")
+        self.image = generate_rnd_image()
         self.calc_card_values()
 
     def __str__(self):

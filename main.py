@@ -31,13 +31,17 @@ font = pygame.font.Font(font_style, font_size)
 font.set_bold(False)
 text_color = (28, 0, 46)
 
+font_size = 25
+font_style = pygame.font.match_font("z003")
+font_card_title = pygame.font.Font(font_style, font_size)
+
 card_height = 332
-card_with = 238
+card_width = 238
 
 card_scale = 0.75
 cardBack = pygame.image.load("images/card_back.png")
 cardBack = pygame.transform.scale(
-    cardBack, (int(card_with * card_scale), int(card_height * card_scale))
+    cardBack, (int(card_width * card_scale), int(card_height * card_scale))
 )
 
 class Game:
@@ -77,45 +81,62 @@ class Game:
             str(len(self.engine.enemy.hand)) + " cards", True, text_color
         )
         self.window.blit(text,  (width_references[4], height_references[0]))
+        
+    def render_card(self, i, current_card, width_references, height_references):
+        
+            offset_factor = 1.35
+            
+            current_card.image = pygame.transform.scale(
+                current_card.image,
+                (int(card_width * card_scale), int(card_height * card_scale)),
+            )
+            self.window.blit(
+                current_card.image, (width_references[i], height_references[0])
+            )
+            
+            # NAME
+            self.rect = pygame.draw.rect(self.window, (1,1,1), (width_references[i], height_references[0], card_width*0.75, 25))
+        
+            text = font_card_title.render(
+                str(current_card.name), True, "white"
+            )
+
+            self.window.blit(text,  (width_references[i], height_references[0]))
+            
+            # POWER
+            text = font.render(
+                str(current_card.power), True, "yellow"
+            )
+
+            self.window.blit(text,  (width_references[i], height_references[0]+(card_height//offset_factor)))
+            
+            # DEFENSE
+            text = font.render(
+                str(current_card.defense), True, "black"
+            )
+            
+            self.window.blit(text,  (width_references[i]+card_width//2, height_references[0]+(card_height//offset_factor)))
+            
+            # PITCH
+            text = font.render(
+                str(current_card.pitch), True, card_colors[current_card.color.name])
+
+            self.window.blit(text,  (width_references[i], height_references[0]-(card_height - card_height//offset_factor)))
+            
+            #COST
+            text = font.render(
+                str(current_card.cost), True, "red"
+            )
+            print(current_card.cost)
+            self.window.blit(text,  (width_references[i]+card_width//2, height_references[0]-(card_height - card_height//offset_factor)))
+
 
     def render_player_hands(self):
-        offset_factor = 1.35
+
         for i,current_card in enumerate(self.engine.enemy.hand):
+    
+            self.render_card(i, current_card, width_references, height_references)
 
-            width_reference = width_references[i]            
-
-            if current_card != None:
-                current_card.image = pygame.transform.scale(
-                    current_card.image,
-                    (int(card_with * card_scale), int(card_height * card_scale)),
-                )
-                self.window.blit(
-                    current_card.image, (width_reference, height_references[0])
-                )
-                
-                text = font.render(
-                    str(current_card.power), True, "yellow"
-                )
-                print(current_card.power)
-                self.window.blit(text,  (width_references[i], height_references[0]+(card_height//offset_factor)))
-                
-                text = font.render(
-                    str(current_card.defense), True, "black"
-                )
-                print(current_card.power)
-                self.window.blit(text,  (width_references[i]+card_with//2, height_references[0]+(card_height//offset_factor)))
-                
-                text = font.render(
-                    str(current_card.defense), True, card_colors[current_card.color.name])
-                
-                print(current_card.pitch)
-                self.window.blit(text,  (width_references[i], height_references[0]-(card_height - card_height//offset_factor)))
-                
-                text = font.render(
-                    str(current_card.defense), True, "red"
-                )
-                print(current_card.cost)
-                self.window.blit(text,  (width_references[i]+card_with//2, height_references[0]-(card_height - card_height//offset_factor)))
 
     def render_turn_text(self):
         if self.engine.state == GameState.playing:
