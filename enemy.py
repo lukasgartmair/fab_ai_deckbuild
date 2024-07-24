@@ -85,24 +85,33 @@ class Enemy:
             if n_cards_to_draw > 0:
                 if len(self.deck) < n_cards_to_draw:
                     n_cards_to_draw = len(self.deck)
-                        
-                self.hand += self.deck[:n_cards_to_draw].copy()
-                self.deck = self.deck[: n_cards_to_draw]
+                    
+                drawn_cards = self.deck[:n_cards_to_draw].copy()
+                if len(drawn_cards) > 0:
+                    for dc in drawn_cards:
+                        self.hand.append(dc)
+                    self.deck = self.deck[n_cards_to_draw:]
                 print(self.hand)
         else:
             print("can't draw anymore, deck fatigued")
+            
+        print("len deck after draw")
+        print(len(self.deck))
         
 
     def attack(self):
         print("enemy attacking")
-        self.calc_possible_attacks()
-        self.pitched_cards.append(self.pitch)
+
         if len(self.best_play) > 0:
+            
+            print("here")
+            print(self.hand)
             self.hand = [
                 item
                 for item in self.hand
                 if item.card_id not in [c.card_id for c in self.best_play]
             ]
+            print(self.hand)
         if len(self.pitch) > 0:
             self.hand = [
                 item
@@ -122,6 +131,7 @@ class Enemy:
                     print(str(p[0]))
 
         self.played_cards += self.best_play
+        self.pitched_cards.append(self.pitch)
         
     def get_block(self):
         print(self.hand)
