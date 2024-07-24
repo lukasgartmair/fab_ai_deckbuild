@@ -82,11 +82,11 @@ class Game:
         # NAME
         self.rect = pygame.draw.rect(
             self.window,
-            (1, 1, 1),
+            card_colors[current_card.color.name],
             (width_references[i], height_references[0], card_width * 0.75, 25),
         )
 
-        text = font_card_title.render(str(current_card.name), True, "white")
+        text = font_card_title.render(str(current_card.name), True, "black")
 
         self.window.blit(text, (width_references[i], height_references[0]))
 
