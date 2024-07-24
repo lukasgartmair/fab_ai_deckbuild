@@ -237,7 +237,7 @@ class Game:
                     return
 
     def run(self):
-        run = True
+        run = True  
 
         clock = pygame.time.Clock()
 

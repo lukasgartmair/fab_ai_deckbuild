@@ -58,7 +58,8 @@ class Enemy:
             self.best_play = []
             self.pitch = []
             
-        self.draw()
+        if self.stance == Stance.attack:
+            self.draw()
             
     def check_if_further_defense_possible(self):
         if len(self.hand) == 0:
@@ -67,6 +68,7 @@ class Enemy:
             return True
 
     def check_if_further_attack_possible(self):
+        print(self.best_play)
         if len(self.best_play) == 0:
             return False
         else:
@@ -74,10 +76,21 @@ class Enemy:
 
     def draw(self):
         print("enemy is drawing")
-        n_cards_to_draw = self.intellect - len(self.hand)
-        self.hand += self.deck[:n_cards_to_draw].copy()
-        del self.deck[: n_cards_to_draw]
-        print(self.hand)
+        if len(self.deck) > 0:
+            n_cards_to_draw = self.intellect - len(self.hand)
+            print("n_cards_to_draw")
+            print(n_cards_to_draw)
+            print("len deck")
+            print(len(self.deck))
+            if n_cards_to_draw > 0:
+                if len(self.deck) < n_cards_to_draw:
+                    n_cards_to_draw = len(self.deck)
+                        
+                self.hand += self.deck[:n_cards_to_draw].copy()
+                self.deck = self.deck[: n_cards_to_draw]
+                print(self.hand)
+        else:
+            print("can't draw anymore, deck fatigued")
         
 
     def attack(self):
@@ -111,8 +124,11 @@ class Enemy:
         self.played_cards += self.best_play
         
     def get_block(self):
+        print(self.hand)
         if len(self.hand) > 0:
             return self.hand[0]
+        else:
+            return None
 
     def defend(self):
         print("enemy defending")
@@ -120,6 +136,7 @@ class Enemy:
             
             c = self.get_block()
 
+            print(c)
             self.played_cards.append(c)
             print("enemy defends with")
             print(c.name)
