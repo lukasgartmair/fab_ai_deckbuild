@@ -59,9 +59,12 @@ class Enemy:
         if self.stance == Stance.attack:
             self.best_play = []
             self.pitch = []
-
-        if self.stance == Stance.attack:
             self.draw()
+
+        if self.stance == Stance.defend:
+            self.stance = Stance.attack
+        else:
+            self.stance = Stance.defend
 
     def check_if_further_defense_possible(self):
         if len(self.hand) == 0:

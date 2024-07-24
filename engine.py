@@ -37,14 +37,6 @@ class GameEngine:
 
         self.enemy.draw()
 
-    def switch_stance(self):
-        if self.enemy.stance == Stance.defend:
-            self.enemy.stance = Stance.attack
-        else:
-            self.enemy.stance = Stance.defend
-
-        self.enemy.finish_phase()
-
     def play(self):
         if self.enemy.stance == Stance.defend:
             if self.enemy.check_if_further_defense_possible() == False:

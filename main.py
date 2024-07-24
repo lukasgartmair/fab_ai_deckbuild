@@ -64,9 +64,9 @@ class Game:
             self.window.blit(cardBack, (width_references[4], height_references[0]))
 
         text = font.render(
-            str(len(self.engine.enemy.hand)) + " cards", True, text_color
+            str(len(self.engine.enemy.deck)) + " cards", True, text_color
         )
-        self.window.blit(text, (width_references[4], height_references[0]))
+        self.window.blit(text, (width_references[4], height_references[0] - 50))
 
     def render_card(self, i, current_card, width_references, height_references):
         offset_factor = 1.35
@@ -238,7 +238,7 @@ class Game:
                             player_attack = self.input_box.send_input()
                             print(player_attack)
                         else:
-                            self.engine.switch_stance()
+                            self.engine.enemy.finish_phase()
                         self.render_background()
                         self.render()
 
