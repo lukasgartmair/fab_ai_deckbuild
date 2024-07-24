@@ -57,6 +57,12 @@ class Enemy:
         if self.stance == Stance.attack:
             self.best_play = []
             self.pitch = []
+            
+    def check_if_further_defense_possible(self):
+        if len(self.hand) == 0:
+            return False
+        else:
+            return True
 
     def check_if_further_attack_possible(self):
         if len(self.best_play) == 0:
@@ -103,12 +109,25 @@ class Enemy:
                     print(str(p[0]))
 
         self.played_cards += self.best_play
+        
+    def get_block(self):
+        if len(self.hand) > 0:
+            return self.hand[0]
 
     def defend(self):
         print("enemy defending")
         if len(self.hand) > 0:
-            self.played_cards.append(self.hand[0])
-            self.hand.pop(0)
+            
+            c = self.get_block()
+
+            self.played_cards.append(c)
+            print("enemy defends with")
+            print(c.name)
+            print("defense: {}".format(c.defense))
+            self.hand.remove(c)
+            
+            
+
 
     def get_combinations(self, array, current_index):
         combinations = []

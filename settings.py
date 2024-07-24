@@ -9,7 +9,7 @@ Created on Sun Jul 21 20:22:55 2024
 FPS = 10
 
 width = 1500
-height = 550
+height = 600
 bounds = (width, height)
 
 
