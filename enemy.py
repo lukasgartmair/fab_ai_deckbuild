@@ -48,8 +48,10 @@ class Enemy:
     def finish_phase(self):
         for card in self.played_cards:
             self.graveyard.append(card)
-
-        self.deck += self.pitched_cards
+        
+        for p in self.pitched_cards:
+            for pc in p:
+                self.deck.append(p)
 
         self.played_cards = []
         self.pitched_cards = []
@@ -75,6 +77,8 @@ class Enemy:
             return True
 
     def draw(self):
+        print("deck")
+        print(self.deck)
         print("enemy is drawing")
         if len(self.deck) > 0:
             n_cards_to_draw = self.intellect - len(self.hand)
@@ -88,7 +92,9 @@ class Enemy:
                     
                 drawn_cards = self.deck[:n_cards_to_draw].copy()
                 if len(drawn_cards) > 0:
+
                     for dc in drawn_cards:
+                        print(dc)
                         self.hand.append(dc)
                     self.deck = self.deck[n_cards_to_draw:]
                 print(self.hand)

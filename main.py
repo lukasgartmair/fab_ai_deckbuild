@@ -126,7 +126,7 @@ class Game:
                 height_references[0] + (card_height // offset_factor),
             ),
         )
-
+ 
         # PITCH
         text = font.render(
             str(current_card.pitch), True, card_colors[current_card.color.name]
@@ -289,7 +289,7 @@ if __name__ == "__main__":
     tb = None
 
     try:
-        game.run()
+         game.run()
     except:
         tb = traceback.format_exc()
         print(tb)
