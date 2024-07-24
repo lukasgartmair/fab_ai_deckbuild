@@ -48,7 +48,7 @@ class Enemy:
     def finish_phase(self):
         for card in self.played_cards:
             self.graveyard.append(card)
-        
+
         for p in self.pitched_cards:
             for pc in p:
                 self.deck.append(p)
@@ -59,10 +59,10 @@ class Enemy:
         if self.stance == Stance.attack:
             self.best_play = []
             self.pitch = []
-            
+
         if self.stance == Stance.attack:
             self.draw()
-            
+
     def check_if_further_defense_possible(self):
         if len(self.hand) == 0:
             return False
@@ -77,47 +77,31 @@ class Enemy:
             return True
 
     def draw(self):
-        print("deck")
-        print(self.deck)
         print("enemy is drawing")
         if len(self.deck) > 0:
             n_cards_to_draw = self.intellect - len(self.hand)
-            print("n_cards_to_draw")
-            print(n_cards_to_draw)
-            print("len deck")
-            print(len(self.deck))
             if n_cards_to_draw > 0:
                 if len(self.deck) < n_cards_to_draw:
                     n_cards_to_draw = len(self.deck)
-                    
+
                 drawn_cards = self.deck[:n_cards_to_draw].copy()
                 if len(drawn_cards) > 0:
-
                     for dc in drawn_cards:
-                        print(dc)
                         self.hand.append(dc)
                     self.deck = self.deck[n_cards_to_draw:]
-                print(self.hand)
+
         else:
             print("can't draw anymore, deck fatigued")
-            
-        print("len deck after draw")
-        print(len(self.deck))
-        
 
     def attack(self):
         print("enemy attacking")
 
         if len(self.best_play) > 0:
-            
-            print("here")
-            print(self.hand)
             self.hand = [
                 item
                 for item in self.hand
                 if item.card_id not in [c.card_id for c in self.best_play]
             ]
-            print(self.hand)
         if len(self.pitch) > 0:
             self.hand = [
                 item
@@ -138,9 +122,8 @@ class Enemy:
 
         self.played_cards += self.best_play
         self.pitched_cards.append(self.pitch)
-        
+
     def get_block(self):
-        print(self.hand)
         if len(self.hand) > 0:
             return self.hand[0]
         else:
@@ -149,7 +132,6 @@ class Enemy:
     def defend(self):
         print("enemy defending")
         if len(self.hand) > 0:
-            
             c = self.get_block()
 
             print(c)
@@ -158,9 +140,6 @@ class Enemy:
             print(c.name)
             print("defense: {}".format(c.defense))
             self.hand.remove(c)
-            
-            
-
 
     def get_combinations(self, array, current_index):
         combinations = []

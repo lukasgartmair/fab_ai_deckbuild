@@ -6,11 +6,34 @@ Created on Sun Jul 21 20:22:55 2024
 @author: lukasgartmair
 """
 
+import pygame
+
 FPS = 10
 
 width = 1500
 height = 600
 bounds = (width, height)
+
+pygame.font.init()
+
+font_size = 65
+font_style = pygame.font.match_font("z003")
+font = pygame.font.Font(font_style, font_size)
+font.set_bold(False)
+text_color = (28, 0, 46)
+
+font_size = 25
+font_style = pygame.font.match_font("z003")
+font_card_title = pygame.font.Font(font_style, font_size)
+
+card_height = 332
+card_width = 238
+
+card_scale = 0.75
+cardBack = pygame.image.load("images/card_back.png")
+cardBack = pygame.transform.scale(
+    cardBack, (int(card_width * card_scale), int(card_height * card_scale))
+)
 
 
 player_1_color = (249, 243, 153)

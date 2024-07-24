@@ -76,10 +76,10 @@ class Deck:
                 chosen_cards = random.choices(cards_without_keyword, k=n_choices)
                 for c in chosen_cards:
                     c.keyword = kw
-                    
+
         print("deck contents:")
-        for i,c in enumerate(self.cards):
-            print("Card {}: {}".format(i,c.name))
+        for i, c in enumerate(self.cards):
+            print("Card {}: {}".format(i, c.name))
 
     def calc_stats(self):
         self.card_types = [c.card_type.name for c in self.cards]

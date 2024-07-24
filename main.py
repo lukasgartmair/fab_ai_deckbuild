@@ -13,7 +13,6 @@ from card import card_colors
 from enemy import Stance
 from engine import GameState, GameEngine
 from input_box import InputBox
-from render import *
 
 from settings import (
     player_1_color,
@@ -22,27 +21,13 @@ from settings import (
     width_references,
     FPS,
     height_references,
-)
-
-pygame.font.init()
-
-font_size = 65
-font_style = pygame.font.match_font("z003")
-font = pygame.font.Font(font_style, font_size)
-font.set_bold(False)
-text_color = (28, 0, 46)
-
-font_size = 25
-font_style = pygame.font.match_font("z003")
-font_card_title = pygame.font.Font(font_style, font_size)
-
-card_height = 332
-card_width = 238
-
-card_scale = 0.75
-cardBack = pygame.image.load("images/card_back.png")
-cardBack = pygame.transform.scale(
-    cardBack, (int(card_width * card_scale), int(card_height * card_scale))
+    card_height,
+    card_width,
+    card_scale,
+    cardBack,
+    font_card_title,
+    font,
+    text_color,
 )
 
 
@@ -126,7 +111,7 @@ class Game:
                 height_references[0] + (card_height // offset_factor),
             ),
         )
- 
+
         # PITCH
         text = font.render(
             str(current_card.pitch), True, card_colors[current_card.color.name]
@@ -136,7 +121,8 @@ class Game:
             text,
             (
                 width_references[i],
-                height_references[0] - (card_height - card_height // offset_factor - 30),
+                height_references[0]
+                - (card_height - card_height // offset_factor - 30),
             ),
         )
 
@@ -146,7 +132,8 @@ class Game:
             text,
             (
                 width_references[i] + card_width // 2,
-                height_references[0] - (card_height - card_height // offset_factor -30),
+                height_references[0]
+                - (card_height - card_height // offset_factor - 30),
             ),
         )
 
@@ -216,28 +203,8 @@ class Game:
         if self.engine.state == GameState.ended:
             self.render_win()
 
-    def intro(self):
-        intro = False
-
-        while intro == True:
-            self.render_start_screen()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.display.quit()
-                    pygame.quit()
-                    sys.exit()
-                elif event.type == pygame.KEYDOWN:
-                    intro = False
-                if event.type == pygame.QUIT:
-                    pygame.display.quit()
-                    pygame.quit()
-                    sys.exit()
-                elif event.type == pygame.KEYDOWN:
-                    intro = False
-                    return
-
     def run(self):
-        run = True  
+        run = True
 
         clock = pygame.time.Clock()
 
@@ -289,7 +256,7 @@ if __name__ == "__main__":
     tb = None
 
     try:
-         game.run()
+        game.run()
     except:
         tb = traceback.format_exc()
         print(tb)
