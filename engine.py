@@ -44,16 +44,20 @@ class GameEngine:
             self.enemy.stance = Stance.defend
 
         self.enemy.finish_phase()
-        self.enemy.draw()
+
 
     def play(self):
+        
         if self.enemy.stance == Stance.defend:
             if self.enemy.check_if_further_defense_possible() == False:
                 print("no more defensive actions from the enemy this turn")
+                print("press enter to change the enemy stance to ATTACK")
             else:
                 self.enemy.defend()
         else:
             if self.enemy.check_if_further_attack_possible() == False:
                 print("no more attacks from the enemy this turn")
+                print("press enter to change the enemy stance to DEFEND")
+
             else:
                 self.enemy.attack()

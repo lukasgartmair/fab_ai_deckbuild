@@ -18,7 +18,7 @@ sns.set_style("white")
 from card import Card, CardColor
 import playstyle
 
-DECK_SIZE = 60
+DECK_SIZE = 10
 
 
 def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
@@ -76,6 +76,10 @@ class Deck:
                 chosen_cards = random.choices(cards_without_keyword, k=n_choices)
                 for c in chosen_cards:
                     c.keyword = kw
+                    
+        print("deck contents:")
+        for i,c in enumerate(self.cards):
+            print("Card {}: {}".format(i,c.name))
 
     def calc_stats(self):
         self.card_types = [c.card_type.name for c in self.cards]

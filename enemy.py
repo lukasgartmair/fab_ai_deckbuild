@@ -58,6 +58,8 @@ class Enemy:
             self.best_play = []
             self.pitch = []
             
+        self.draw()
+            
     def check_if_further_defense_possible(self):
         if len(self.hand) == 0:
             return False
@@ -70,15 +72,13 @@ class Enemy:
         else:
             return True
 
-    def get_hand(self):
-        for c in self.hand:
-            pass
-
-        return self.hand
-
     def draw(self):
-        self.hand = self.deck[: self.intellect - len(self.get_hand())]
-        del self.deck[: self.intellect - len(self.get_hand())]
+        print("enemy is drawing")
+        n_cards_to_draw = self.intellect - len(self.hand)
+        self.hand += self.deck[:n_cards_to_draw].copy()
+        del self.deck[: n_cards_to_draw]
+        print(self.hand)
+        
 
     def attack(self):
         print("enemy attacking")
