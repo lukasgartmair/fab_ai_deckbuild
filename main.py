@@ -63,7 +63,7 @@ class Game:
 
     def render_floating_resources(self):
         text = font.render(
-            str(self.engine.enemy.floating_resources) + " resource/s floating",
+            str(self.engine.enemy.floating_resources) + " float. resources",
             True,
             text_color,
         )
@@ -72,13 +72,19 @@ class Game:
             (width_references["pitch"], height_references[0] + text_offset_piles * 2),
         )
 
-    def render_enemy_pile(self):
+    def render_deck_pile(self):
         if len(self.engine.enemy.deck) > 0:
             self.window.blit(cardBack, (width_references["pile"], height_references[0]))
 
         text = font.render(str(len(self.engine.enemy.deck)) + " deck", True, "white")
         self.window.blit(
             text, (width_references["pile"], height_references[0] + text_offset_piles)
+        )
+
+    def render_hand(self):
+        text = font.render(str(len(self.engine.enemy.hand)) + " hand", True, "white")
+        self.window.blit(
+            text, (width_references["hand"], height_references[0] + text_offset_piles)
         )
 
     def render_pitch_pile(self):
@@ -115,6 +121,22 @@ class Game:
         )
 
         text = font_card_title.render(str(current_card.name), True, "black")
+
+        self.window.blit(text, (width_references[str(i)], height_references[0]))
+
+        # TYPE
+        self.rect = pygame.draw.rect(
+            self.window,
+            "white",
+            (
+                width_references[str(i)],
+                height_references[0] - card_height,
+                card_width * 0.75,
+                25,
+            ),
+        )
+
+        text = font_card_title.render(str(current_card.type), True, "black")
 
         self.window.blit(text, (width_references[str(i)], height_references[0]))
 
@@ -169,10 +191,6 @@ class Game:
         for i, current_card in enumerate(self.engine.enemy.played_cards):
             self.render_card(i, current_card, width_references, height_references)
 
-    def render_enemy_hand(self):
-        for i, current_card in enumerate(self.engine.enemy.hand):
-            self.render_card(i, current_card, width_references, height_references)
-
     def render_turn_text(self):
         if self.engine.state == GameState.playing:
             color = None
@@ -207,7 +225,7 @@ class Game:
 
     def render_initial_game_state(self):
         self.render_background()
-        self.render_enemy_hand()
+        self.render_hand()
 
         message = ""
         text = font.render(message, True, player_2_color)
@@ -226,7 +244,9 @@ class Game:
 
         self.render_floating_resources()
 
-        self.render_enemy_pile()
+        self.render_deck_pile()
+
+        self.render_hand()
 
         self.render_pitch_pile()
 

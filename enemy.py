@@ -191,6 +191,15 @@ class Enemy:
                 self.floating_resources += p.pitch
 
             self.played_cards.append(c)
+
+            for p in self.played_cards:
+                if p in self.hand:
+                    self.hand.remove(p)
+
+            for p in self.pitched_cards:
+                if p in self.hand:
+                    self.hand.remove(p)
+
             self.floating_resources -= c.cost
 
             self.combat_chain_iterator += 1

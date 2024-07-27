@@ -8,7 +8,7 @@ Created on Sun Jul 21 20:22:55 2024
 
 import pygame
 
-FPS = 2
+FPS = 5
 
 width = 1600
 height = 600
@@ -57,6 +57,7 @@ width_reference_3 = int(width / divider) * 4
 width_reference_pitch = int(width / divider) * 5
 
 width_reference_pile = int(width / divider) * 6
+width_reference_hand = int(width / divider) * 4
 
 width_references = {
     "0": width_reference_0,
@@ -65,6 +66,7 @@ width_references = {
     "3": width_reference_3,
     "pile": width_reference_pile,
     "pitch": width_reference_pitch,
+    "hand": width_reference_hand,
 }
 
 text_offset_piles = -100

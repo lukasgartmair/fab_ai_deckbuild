@@ -64,7 +64,7 @@ class Card:
     def __init__(self, power):
         self.card_id = next(id_iter)
         self.name = generate_rnd_name()
-        self.card_type = np.random.choice(list(CardType))
+        self.type = np.random.choice(list(CardType))
         self.cost = 0
         self.power = power
         self.defense = 0
@@ -85,7 +85,7 @@ class Card:
 
         self.color = np.random.choice(list(CardColor))
         self.pitch = pitch_values[self.color.name]
-        self.defense = defensive_values[self.card_type.name]
+        self.defense = defensive_values[self.type.name]
         self.cost = self.power + self.defense + self.pitch - TARGET_VALUE
         if self.cost < 0:
             self.cost = 0
