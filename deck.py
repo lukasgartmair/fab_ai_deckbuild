@@ -63,6 +63,7 @@ class Deck:
 
     def build_deck(self):
         power_distribution = calc_power_distribution(self.playstyle)
+        power_distribution = [1 if x == 0 else x for x in power_distribution]
         self.cards = [
             Card(np.random.choice(power_distribution)) for n in range(self.n_cards)
         ]

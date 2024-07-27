@@ -14,6 +14,7 @@ from enemy import Stance
 from engine import GameState, GameEngine
 from input_box import InputBox
 
+
 from settings import (
     player_1_color,
     player_2_color,
@@ -28,6 +29,7 @@ from settings import (
     font_card_title,
     font,
     text_color,
+    text_offset_piles,
 )
 
 
@@ -59,36 +61,62 @@ class Game:
         self.background_bw = pygame.image.load("images/background_bw.png")
         self.window.blit(self.background_bw, (0, 0))
 
-    def render_player_piles(self):
+    def render_floating_resources(self):
+        text = font.render(
+            str(self.engine.enemy.floating_resources) + " resource/s floating",
+            True,
+            text_color,
+        )
+        self.window.blit(
+            text,
+            (width_references["pitch"], height_references[0] + text_offset_piles * 2),
+        )
+
+    def render_enemy_pile(self):
         if len(self.engine.enemy.deck) > 0:
-            self.window.blit(cardBack, (width_references[4], height_references[0]))
+            self.window.blit(cardBack, (width_references["pile"], height_references[0]))
+
+        text = font.render(str(len(self.engine.enemy.deck)) + " deck", True, "white")
+        self.window.blit(
+            text, (width_references["pile"], height_references[0] + text_offset_piles)
+        )
+
+    def render_pitch_pile(self):
+        if len(self.engine.enemy.pitched_cards) > 0:
+            for pc in self.engine.enemy.pitched_cards:
+                self.render_card("pitch", pc, width_references, height_references)
 
         text = font.render(
-            str(len(self.engine.enemy.deck)) + " cards", True, text_color
+            str(len(self.engine.enemy.pitched_cards)) + " pitch",
+            True,
+            "white",
         )
-        self.window.blit(text, (width_references[4], height_references[0] - 50))
+        self.window.blit(
+            text, (width_references["pitch"], height_references[0] + text_offset_piles)
+        )
 
     def render_card(self, i, current_card, width_references, height_references):
         offset_factor = 1.35
 
+        print(current_card)
         current_card.image = pygame.transform.scale(
             current_card.image,
             (int(card_width * card_scale), int(card_height * card_scale)),
         )
         self.window.blit(
-            current_card.image, (width_references[i], height_references[0])
+            current_card.image, (width_references[str(i)], height_references[0])
         )
 
         # NAME
         self.rect = pygame.draw.rect(
             self.window,
             card_colors[current_card.color.name],
-            (width_references[i], height_references[0], card_width * 0.75, 25),
+            (width_references[str(i)], height_references[0], card_width * 0.75, 25),
         )
 
         text = font_card_title.render(str(current_card.name), True, "black")
 
-        self.window.blit(text, (width_references[i], height_references[0]))
+        self.window.blit(text, (width_references[str(i)], height_references[0]))
 
         # POWER
         text = font.render(str(current_card.power), True, "yellow")
@@ -96,7 +124,7 @@ class Game:
         self.window.blit(
             text,
             (
-                width_references[i],
+                width_references[str(i)],
                 height_references[0] + (card_height // offset_factor),
             ),
         )
@@ -107,7 +135,7 @@ class Game:
         self.window.blit(
             text,
             (
-                width_references[i] + card_width // 2,
+                width_references[str(i)] + card_width // 2,
                 height_references[0] + (card_height // offset_factor),
             ),
         )
@@ -120,7 +148,7 @@ class Game:
         self.window.blit(
             text,
             (
-                width_references[i],
+                width_references[str(i)],
                 height_references[0]
                 - (card_height - card_height // offset_factor - 30),
             ),
@@ -131,7 +159,7 @@ class Game:
         self.window.blit(
             text,
             (
-                width_references[i] + card_width // 2,
+                width_references[str(i)] + card_width // 2,
                 height_references[0]
                 - (card_height - card_height // offset_factor - 30),
             ),
@@ -196,7 +224,11 @@ class Game:
 
         self.render_enemy_play()
 
-        self.render_player_piles()
+        self.render_floating_resources()
+
+        self.render_enemy_pile()
+
+        self.render_pitch_pile()
 
         self.render_turn_text()
 
@@ -244,6 +276,8 @@ class Game:
 
             if self.engine.enemy.stance == Stance.defend:
                 self.input_box.render()
+
+            self.render_floating_resources()
 
             pygame.display.flip()
             clock.tick(FPS)

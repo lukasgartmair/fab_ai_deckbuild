@@ -8,9 +8,9 @@ Created on Sun Jul 21 20:22:55 2024
 
 import pygame
 
-FPS = 10
+FPS = 2
 
-width = 1500
+width = 1600
 height = 600
 bounds = (width, height)
 
@@ -54,12 +54,17 @@ width_reference_1 = int(width / divider) * 2
 width_reference_2 = int(width / divider) * 3
 width_reference_3 = int(width / divider) * 4
 
-width_reference_4 = int(width / 5) * 4
+width_reference_pitch = int(width / divider) * 5
+
+width_reference_pile = int(width / divider) * 6
 
 width_references = {
-    0: width_reference_0,
-    1: width_reference_1,
-    2: width_reference_2,
-    3: width_reference_3,
-    4: width_reference_4,
+    "0": width_reference_0,
+    "1": width_reference_1,
+    "2": width_reference_2,
+    "3": width_reference_3,
+    "pile": width_reference_pile,
+    "pitch": width_reference_pitch,
 }
+
+text_offset_piles = -100
