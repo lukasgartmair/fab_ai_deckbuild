@@ -92,10 +92,14 @@ class Enemy:
 
     def check_if_further_attack_possible(self):
         print(self.combat_chain)
-        if len(self.combat_chain) == 0:
-            return False
-        else:
-            return True
+        attack_possible = True
+        if (
+            len(self.combat_chain) == 0
+            or self.combat_chain_iterator > len(self.combat_chain)
+            or len(self.hand) == 0
+        ):
+            attack_possible = False
+        return attack_possible
 
     def draw(self):
         print("enemy is drawing")
