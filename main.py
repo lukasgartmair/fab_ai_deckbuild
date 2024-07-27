@@ -63,13 +63,16 @@ class Game:
 
     def render_floating_resources(self):
         text = font.render(
-            str(self.engine.enemy.floating_resources) + " float. resources",
+            str(self.engine.enemy.floating_resources) + " floating resources",
             True,
             text_color,
         )
         self.window.blit(
             text,
-            (width_references["pitch"], height_references[0] + text_offset_piles * 2),
+            (
+                width_references["pitch"] - 25,
+                height_references[0] + text_offset_piles * 2,
+            ),
         )
 
     def render_deck_pile(self):
@@ -130,15 +133,18 @@ class Game:
             "white",
             (
                 width_references[str(i)],
-                height_references[0] - card_height,
+                height_references[0] + card_height // 1.475,
                 card_width * 0.75,
                 25,
             ),
         )
 
-        text = font_card_title.render(str(current_card.type), True, "black")
+        text = font_card_title.render(str(current_card.type.name), True, "black")
 
-        self.window.blit(text, (width_references[str(i)], height_references[0]))
+        self.window.blit(
+            text,
+            (width_references[str(i)], height_references[0] + card_height // 1.475),
+        )
 
         # POWER
         text = font.render(str(current_card.power), True, "yellow")
