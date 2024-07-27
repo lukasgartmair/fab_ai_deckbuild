@@ -6,7 +6,6 @@ Created on Tue Jul 16 10:59:11 2024
 @author: lukasgartmair
 """
 
-from enum import Enum
 import numpy as np
 import random
 import matplotlib.pyplot as plt
@@ -18,7 +17,7 @@ sns.set_style("white")
 from card import Card, CardColor
 import playstyle
 
-DECK_SIZE = 10
+DECK_SIZE = 20
 
 
 def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
@@ -47,7 +46,7 @@ class Deck:
         self.cards = []
         self.stats = {}
 
-        self.playstyle = playstyle.Ninjalike()
+        self.playstyle = playstyle.Aggressive()
 
         self.build_deck()
         self.calc_stats()
