@@ -34,6 +34,13 @@ class InputBox:
         self.color = self.color_inactive
         if text_temp.isnumeric():
             return text_temp
+        
+        self.player_attack_value = None
+        
+    def reset(self):
+        self.player_attack_value = None
+        self.color = "red"
+        self.text = ""
 
     def check_activation(self, event):
         if event:

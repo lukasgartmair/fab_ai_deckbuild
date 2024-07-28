@@ -16,19 +16,13 @@ class Keywords(Enum):
 
 class Playstyle:
     def __init__(self):
-        self.strategy_parameters = {"mu": 0, "sigma": 0}
+        self.strategy_parameters = {"mu": 4, "sigma": 3}
 
         self.keywords = []
         self.keyword_ratio = {}
 
     def __str__(self):
         return type(self).__name__
-
-
-class DeckStrategy(Enum):
-    defensive = 0
-    neutral = 1
-    aggressive = 2
 
 
 strategy_parameters = {

@@ -204,23 +204,53 @@ class Enemy:
 
             self.combat_chain_iterator += 1
 
-    def get_block(self):
+    def placeholder_block(self):
         if len(self.hand) > 0:
             return self.hand[0]
         else:
             return None
 
-    def defend(self):
-        print("enemy defending")
-        if len(self.hand) > 0:
-            c = self.get_block()
+    def more_elaborate_block(self, player_attack_value):
+        
+        if player_attack_value is not None:
+            match player_attack_value:
+                case player_attack_value if 0 <= player_attack_value < 3:
+                    print("attack not blocked at all")
+                    return []
+                case player_attack_value if 3 <= player_attack_value < 7:
+                    print("attack blocked with {} cards".format(len(self.hand[:1])))
+                    return self.hand[:1]
+                case player_attack_value if 7 <= player_attack_value < 10:
+                    print("attack blocked with {} cards".format(len(self.hand[:2])))
+                    return self.hand[:2]
+                case player_attack_value if 11 <= player_attack_value < 14:
+                    print("attack blocked with {} cards".format(len(self.hand[:3])))
+                    return self.hand[:3]
+                case player_attack_value if 14 <= player_attack_value:
+                    print("attack blocked with {} cards".format(len(self.hand)))
+                    return self.hand[:]
+                case _:
+                    return []
 
-            print(c)
-            self.played_cards.append(c)
-            print("enemy defends with")
-            print(c.name)
-            print("defense: {}".format(c.defense))
-            self.hand.remove(c)
+
+    def get_block(self, player_attack_value):
+        
+        return self.more_elaborate_block(player_attack_value)
+
+    def defend(self, player_attack_value):
+        print("enemy defending")
+        if player_attack_value and len(self.hand) > 0:
+            blocking_cards = self.get_block(player_attack_value)
+
+            if len(blocking_cards) > 0:
+                for bc in blocking_cards:
+                    print(bc)
+                    self.played_cards.append(bc)
+                    print("enemy defends with")
+                    print(bc.name)
+                    print("defense: {}".format(bc.defense))
+                    self.hand.remove(bc)
+
 
     def get_combinations(self, array, current_index):
         combinations = []

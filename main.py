@@ -60,6 +60,21 @@ class Game:
     def render_end_background(self):
         self.background_bw = pygame.image.load("images/background_bw.png")
         self.window.blit(self.background_bw, (0, 0))
+        
+    def render_attack_value(self, player_attack_value):
+        text = font.render(
+            str(player_attack_value) + " attack value",
+            True,
+            text_color,
+        )
+        self.window.blit(
+            text,
+            (
+                width_references["pitch"] - 25,
+                height_references[0] + text_offset_piles * 2,
+            ),
+        )
+
 
     def render_floating_resources(self):
         text = font.render(
@@ -87,7 +102,7 @@ class Game:
     def render_hand(self):
         text = font.render(str(len(self.engine.enemy.hand)) + " hand", True, "white")
         self.window.blit(
-            text, (width_references["hand"], height_references[0] + text_offset_piles)
+            text, (width_references["hand"], height_references[0] + text_offset_piles * 2)
         )
 
     def render_pitch_pile(self):
@@ -267,6 +282,8 @@ class Game:
         clock = pygame.time.Clock()
 
         self.render_initial_game_state()
+        
+        self.input_box.player_attack_value = None
 
         while run:
             events = pygame.event.get()
@@ -286,21 +303,24 @@ class Game:
                         self.render()
 
                         if self.engine.state == GameState.playing:
-                            self.engine.play()
+                            if self.input_box.active:
+                                self.input_box.player_attack_value = int(self.input_box.send_input())
+                                print(self.input_box.player_attack_value)
+                            self.engine.play(self.input_box.player_attack_value)
+                            self.input_box.reset()
 
                         self.render_background()
                         self.render()
 
                     if event.key == pygame.K_RETURN:
-                        if self.input_box.active:
-                            player_attack = self.input_box.send_input()
-                            print(player_attack)
-                        else:
-                            self.engine.enemy.finish_phase()
+
+                        self.engine.enemy.finish_phase()
                         self.render_background()
                         self.render()
 
             if self.engine.enemy.stance == Stance.defend:
+                if self.input_box.player_attack_value is not None:
+                    self.input_box.color = "blue"
                 self.input_box.render()
 
             self.render_floating_resources()

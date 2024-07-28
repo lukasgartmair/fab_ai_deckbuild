@@ -41,13 +41,12 @@ def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
 
 
 class Deck:
-    def __init__(self):
+    def __init__(self, playstyle=playstyle.Playstyle()):
         self.n_cards = DECK_SIZE
         self.cards = []
         self.stats = {}
 
-        self.playstyle = playstyle.Aggressive()
-
+        self.playstyle = playstyle
         self.build_deck()
         self.calc_stats()
 
