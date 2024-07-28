@@ -212,23 +212,24 @@ class Enemy:
 
     def more_elaborate_block(self, player_attack_value):
         
-        val_0 = np.random.randint(2,5)
+        #val_0 = np.random.randint(2,4)
+        val_0 = 3
         
         if player_attack_value is not None:
             match player_attack_value:
                 case player_attack_value if 0 <= player_attack_value < val_0:
                     print("attack not blocked at all")
                     return []
-                case player_attack_value if val_0+3 <= player_attack_value < val_0+7:
+                case player_attack_value if val_0 <= player_attack_value < val_0+3:
                     print("attack blocked with {} cards".format(len(self.hand[:1])))
                     return self.hand[:1]
-                case player_attack_value if val_0+7 <= player_attack_value < val_0+10:
+                case player_attack_value if val_0+3 <= player_attack_value < val_0+7:
                     print("attack blocked with {} cards".format(len(self.hand[:2])))
                     return self.hand[:2]
-                case player_attack_value if val_0+11 <= player_attack_value < val_0+14:
+                case player_attack_value if val_0+7 <= player_attack_value < val_0+11:
                     print("attack blocked with {} cards".format(len(self.hand[:3])))
                     return self.hand[:3]
-                case player_attack_value if val_0+14 <= player_attack_value:
+                case player_attack_value if val_0+11 <= player_attack_value:
                     print("attack blocked with {} cards".format(len(self.hand)))
                     return self.hand[:]
                 case _:
@@ -242,8 +243,9 @@ class Enemy:
     def defend(self, player_attack_value):
         print("enemy defending")
         if player_attack_value and len(self.hand) > 0:
+            print(player_attack_value)
             blocking_cards = self.get_block(player_attack_value)
-
+            print(blocking_cards)
             if len(blocking_cards) > 0:
                 for bc in blocking_cards:
                     print(bc)

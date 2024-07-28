@@ -28,7 +28,7 @@ def generate_rnd_name():
 
 
 def generate_rnd_image():
-    size = 50
+    size = 25
     img_size = (size, size)
     img = get_random_image(img_size)
     img = 255 * img / img.max()

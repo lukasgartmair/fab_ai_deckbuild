@@ -303,14 +303,18 @@ class Game:
                         self.render()
 
                         if self.engine.state == GameState.playing:
-                            if self.input_box.active:
-                                self.input_box.player_attack_value = self.input_box.send_input()
-                                if self.input_box.player_attack_value is not None:
-                                    self.input_box.player_attack_value = int(self.input_box.player_attack_value)
-                                    
-                                    print(self.input_box.player_attack_value)
-                                    self.engine.play(self.input_box.player_attack_value)
-                                    self.input_box.reset()
+                            if self.engine.enemy.stance == Stance.defend:
+                                if self.input_box.active:
+                                    self.input_box.player_attack_value = self.input_box.send_input()
+                                    if self.input_box.player_attack_value is not None:
+                                        self.input_box.player_attack_value = int(self.input_box.player_attack_value)
+                                        
+                                        print(self.input_box.player_attack_value)
+                                        self.engine.play(self.input_box.player_attack_value)
+                                        self.input_box.reset()
+
+                            else:
+                                self.engine.play(self.input_box.player_attack_value)
 
                         self.render_background()
                         self.render()
