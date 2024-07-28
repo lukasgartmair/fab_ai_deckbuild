@@ -55,6 +55,12 @@ class Enemy:
         self.combat_chain = {}
         self.pitch = []
 
+    def reduce_life(self, value):
+        self.life -= value
+
+    def add_life(self, value):
+        self.life += value
+
     def finish_phase(self):
         self.floating_resources = 0
 
@@ -211,33 +217,30 @@ class Enemy:
             return None
 
     def more_elaborate_block(self, player_attack_value):
-        
-        #val_0 = np.random.randint(2,4)
+        # val_0 = np.random.randint(2,4)
         val_0 = 3
-        
+
         if player_attack_value is not None:
             match player_attack_value:
                 case player_attack_value if 0 <= player_attack_value < val_0:
                     print("attack not blocked at all")
                     return []
-                case player_attack_value if val_0 <= player_attack_value < val_0+3:
+                case player_attack_value if val_0 <= player_attack_value < val_0 + 3:
                     print("attack blocked with {} cards".format(len(self.hand[:1])))
                     return self.hand[:1]
-                case player_attack_value if val_0+3 <= player_attack_value < val_0+7:
+                case player_attack_value if val_0 + 3 <= player_attack_value < val_0 + 7:
                     print("attack blocked with {} cards".format(len(self.hand[:2])))
                     return self.hand[:2]
-                case player_attack_value if val_0+7 <= player_attack_value < val_0+11:
+                case player_attack_value if val_0 + 7 <= player_attack_value < val_0 + 11:
                     print("attack blocked with {} cards".format(len(self.hand[:3])))
                     return self.hand[:3]
-                case player_attack_value if val_0+11 <= player_attack_value:
+                case player_attack_value if val_0 + 11 <= player_attack_value:
                     print("attack blocked with {} cards".format(len(self.hand)))
                     return self.hand[:]
                 case _:
                     return []
 
-
     def get_block(self, player_attack_value):
-        
         return self.more_elaborate_block(player_attack_value)
 
     def defend(self, player_attack_value):
@@ -254,7 +257,6 @@ class Enemy:
                     print(bc.name)
                     print("defense: {}".format(bc.defense))
                     self.hand.remove(bc)
-
 
     def get_combinations(self, array, current_index):
         combinations = []

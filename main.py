@@ -60,7 +60,7 @@ class Game:
     def render_end_background(self):
         self.background_bw = pygame.image.load("images/background_bw.png")
         self.window.blit(self.background_bw, (0, 0))
-        
+
     def render_attack_value(self, player_attack_value):
         text = font.render(
             str(player_attack_value) + " attack value",
@@ -74,7 +74,6 @@ class Game:
                 height_references[0] + text_offset_piles * 2,
             ),
         )
-
 
     def render_floating_resources(self):
         text = font.render(
@@ -102,7 +101,8 @@ class Game:
     def render_hand(self):
         text = font.render(str(len(self.engine.enemy.hand)) + " hand", True, "white")
         self.window.blit(
-            text, (width_references["hand"], height_references[0] + text_offset_piles * 2)
+            text,
+            (width_references["hand"], height_references[0] + text_offset_piles * 2),
         )
 
     def render_pitch_pile(self):
@@ -208,6 +208,13 @@ class Game:
             ),
         )
 
+    def render_enemy_life(self):
+        text = font.render(str(len(self.engine.enemy.hand)) + " life", True, "white")
+        self.window.blit(
+            text,
+            (width_references["hand"], height_references[0] + text_offset_piles * 2),
+        )
+
     def render_enemy_play(self):
         for i, current_card in enumerate(self.engine.enemy.played_cards):
             self.render_card(i, current_card, width_references, height_references)
@@ -282,7 +289,7 @@ class Game:
         clock = pygame.time.Clock()
 
         self.render_initial_game_state()
-        
+
         self.input_box.player_attack_value = None
 
         while run:
@@ -305,12 +312,18 @@ class Game:
                         if self.engine.state == GameState.playing:
                             if self.engine.enemy.stance == Stance.defend:
                                 if self.input_box.active:
-                                    self.input_box.player_attack_value = self.input_box.send_input()
+                                    self.input_box.player_attack_value = (
+                                        self.input_box.send_input()
+                                    )
                                     if self.input_box.player_attack_value is not None:
-                                        self.input_box.player_attack_value = int(self.input_box.player_attack_value)
-                                        
+                                        self.input_box.player_attack_value = int(
+                                            self.input_box.player_attack_value
+                                        )
+
                                         print(self.input_box.player_attack_value)
-                                        self.engine.play(self.input_box.player_attack_value)
+                                        self.engine.play(
+                                            self.input_box.player_attack_value
+                                        )
                                         self.input_box.reset()
 
                             else:
@@ -320,12 +333,15 @@ class Game:
                         self.render()
 
                     if event.key == pygame.K_RETURN:
-                        
                         if self.input_box.active:
-                            self.input_box.player_attack_value = self.input_box.send_input()
+                            self.input_box.player_attack_value = (
+                                self.input_box.send_input()
+                            )
                             if self.input_box.player_attack_value is not None:
-                                self.input_box.player_attack_value = int(self.input_box.player_attack_value)
-                                
+                                self.input_box.player_attack_value = int(
+                                    self.input_box.player_attack_value
+                                )
+
                                 print(self.input_box.player_attack_value)
                                 self.engine.play(self.input_box.player_attack_value)
                                 self.input_box.reset()
@@ -333,7 +349,7 @@ class Game:
                         else:
                             self.engine.enemy.finish_phase()
                             self.render_background()
-                            
+
                         self.render_background()
                         self.render()
 
