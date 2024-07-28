@@ -11,7 +11,7 @@ import pygame
 FPS = 5
 
 width = 1600
-height = 600
+height = 900
 bounds = (width, height)
 
 pygame.font.init()

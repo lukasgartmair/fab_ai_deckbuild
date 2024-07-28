@@ -304,17 +304,32 @@ class Game:
 
                         if self.engine.state == GameState.playing:
                             if self.input_box.active:
-                                self.input_box.player_attack_value = int(self.input_box.send_input())
-                                print(self.input_box.player_attack_value)
-                            self.engine.play(self.input_box.player_attack_value)
-                            self.input_box.reset()
+                                self.input_box.player_attack_value = self.input_box.send_input()
+                                if self.input_box.player_attack_value is not None:
+                                    self.input_box.player_attack_value = int(self.input_box.player_attack_value)
+                                    
+                                    print(self.input_box.player_attack_value)
+                                    self.engine.play(self.input_box.player_attack_value)
+                                    self.input_box.reset()
 
                         self.render_background()
                         self.render()
 
                     if event.key == pygame.K_RETURN:
+                        
+                        if self.input_box.active:
+                            self.input_box.player_attack_value = self.input_box.send_input()
+                            if self.input_box.player_attack_value is not None:
+                                self.input_box.player_attack_value = int(self.input_box.player_attack_value)
+                                
+                                print(self.input_box.player_attack_value)
+                                self.engine.play(self.input_box.player_attack_value)
+                                self.input_box.reset()
 
-                        self.engine.enemy.finish_phase()
+                        else:
+                            self.engine.enemy.finish_phase()
+                            self.render_background()
+                            
                         self.render_background()
                         self.render()
 
