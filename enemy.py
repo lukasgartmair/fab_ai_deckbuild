@@ -12,6 +12,8 @@ from deck import Deck
 from pile import Pile
 from enum import Enum
 
+from fantasynames.fantasy_identity import FantasyIdentity
+
 VALUE_MAX_PLACEHOLDER = 100
 
 
@@ -38,7 +40,10 @@ class Enemy:
     playKey = None
 
     def __init__(self, play_key=None):
-        self.name = "ai_enemy"
+        self.identity = FantasyIdentity()
+        self.name = self.identity.name
+        self.race = self.identity.race
+        self.image = self.identity.image
         self.stance = Stance.defend
         self.intellect = 4
         self.life = 20

@@ -21,7 +21,7 @@ from settings import FPS
 class Game:
     def __init__(self):
         self.engine = GameEngine()
-        pygame.display.set_caption("Flesh and Blood AI enemy")
+        pygame.display.set_caption("Fight against the {} '{}'".format(self.engine.enemy.race, self.engine.enemy.name))
 
         self.renderer = Renderer(self.engine)
 
