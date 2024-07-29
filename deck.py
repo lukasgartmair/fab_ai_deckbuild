@@ -17,7 +17,7 @@ sns.set_style("white")
 from card import Card, CardColor
 import playstyle
 
-DECK_SIZE = 20
+DECK_SIZE = 50
 
 
 def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
