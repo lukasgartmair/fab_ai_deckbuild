@@ -14,12 +14,14 @@ from enum import Enum
 
 VALUE_MAX_PLACEHOLDER = 100
 
+
 def n_chance(p=0.85):
     if np.random.rand() < p:
         return True
     else:
         print("chance triggered")
         return False
+
 
 def shift_list(a):
     x = a.pop()
@@ -93,12 +95,10 @@ class Enemy:
             print("combat_chain")
             print(self.combat_chain)
         else:
-            
             self.stance = Stance.defend
             self.calc_combat_chain()
             print("combat_chain")
             print(self.combat_chain)
-
 
     def check_if_further_defense_possible(self):
         if len(self.hand) == 0:
@@ -136,14 +136,14 @@ class Enemy:
 
     def calc_combat_chain_damage_output(self):
         combat_chain_index = 0
-        
+
         max_damage_output = 0
         number_of_cards_to_pitch = VALUE_MAX_PLACEHOLDER
         power_minus_cost = 0
 
         virtual_hand = self.hand.copy()
         virtual_hand_tmp = virtual_hand.copy()
-    
+
         for i in range(len(virtual_hand)):
             if len(virtual_hand_tmp) > 0:
                 current_card = virtual_hand_tmp[0]
@@ -189,17 +189,16 @@ class Enemy:
         combat_chain_index = 0
 
         virtual_hand = self.hand.copy()
-        
+
         # play strongest attacks first, but by a small chance not to be not too predictable -> shuffle, weakest first makes no sense at all
         if n_chance():
             virtual_hand = sorted(virtual_hand, key=lambda x: x.power, reverse=True)
         else:
             np.random.shuffle(virtual_hand)
-            
+
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
             if len(virtual_hand_tmp) > 0:
-                
                 current_card = virtual_hand_tmp[0]
                 possible_cards_to_pitch = self.get_combinations(virtual_hand_tmp, 0)
 
@@ -286,11 +285,16 @@ class Enemy:
             return None
 
     def get_cards_not_intended_to_be_used_in_combat_chain(self):
-        
-        return [c for c in self.hand if (c not in [cp["attack"] for cp in self.combat_chain.values()] and c not in [cp["pitch"] for cp in self.combat_chain.values()])]
+        return [
+            c
+            for c in self.hand
+            if (
+                c not in [cp["attack"] for cp in self.combat_chain.values()]
+                and c not in [cp["pitch"] for cp in self.combat_chain.values()]
+            )
+        ]
 
     def more_elaborate_block_with_unused_cards(self, player_attack_value):
-        
         val_0 = 3
 
         if player_attack_value is not None:
@@ -300,16 +304,23 @@ class Enemy:
                     return []
                 case player_attack_value if val_0 <= player_attack_value < val_0 + 3:
                     print("attack blocked with {} cards".format(len(self.hand[:1])))
-                    unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
+                    unused_cards = (
+                        self.get_cards_not_intended_to_be_used_in_combat_chain()
+                    )
                     if len(unused_cards) > 0:
                         return unused_cards[:1]
                     else:
                         return self.hand[:1]
                 case player_attack_value if val_0 + 3 <= player_attack_value < val_0 + 7:
                     print("attack blocked with {} cards".format(len(self.hand[:2])))
-                    unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
+                    unused_cards = (
+                        self.get_cards_not_intended_to_be_used_in_combat_chain()
+                    )
                     if len(unused_cards) == 1:
-                        return unused_cards + [c for c in self.hand if c != unused_cards[0]][:1]
+                        return (
+                            unused_cards
+                            + [c for c in self.hand if c != unused_cards[0]][:1]
+                        )
                     elif len(unused_cards) == 2:
                         return unused_cards
                     else:
@@ -317,14 +328,20 @@ class Enemy:
                 case player_attack_value if val_0 + 7 <= player_attack_value < val_0 + 11:
                     print("attack blocked with {} cards".format(len(self.hand[:3])))
                     if len(unused_cards) == 1:
-                        return unused_cards + [c for c in self.hand if c != unused_cards[0]][:1]
+                        return (
+                            unused_cards
+                            + [c for c in self.hand if c != unused_cards[0]][:1]
+                        )
                     elif len(unused_cards) == 2:
-                        return unused_cards[:2] + [c for c in self.hand if c != unused_cards[0]][:1]
+                        return (
+                            unused_cards[:2]
+                            + [c for c in self.hand if c != unused_cards[0]][:1]
+                        )
                     elif len(unused_cards) == 3:
                         return unused_cards
                     else:
                         return self.hand[:3]
-                    
+
                 case player_attack_value if val_0 + 11 <= player_attack_value:
                     print("attack blocked with {} cards".format(len(self.hand)))
                     return self.hand[:]
@@ -412,7 +429,6 @@ class Enemy:
                     best_pitch = k
 
         return best_pitch
-
 
 
 if __name__ == "__main__":
