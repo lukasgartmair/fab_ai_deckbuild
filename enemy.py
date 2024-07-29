@@ -78,7 +78,6 @@ class Enemy:
         self.combat_chain_iterator = 0
 
         if self.stance == Stance.attack:
-            self.combat_chain = []
             self.pitch = []
             self.draw()
 
@@ -88,7 +87,12 @@ class Enemy:
             print("combat_chain")
             print(self.combat_chain)
         else:
+            
             self.stance = Stance.defend
+            self.calc_combat_chain()
+            print("combat_chain")
+            print(self.combat_chain)
+
 
     def check_if_further_defense_possible(self):
         if len(self.hand) == 0:
@@ -216,6 +220,52 @@ class Enemy:
         else:
             return None
 
+    def get_cards_not_intended_to_be_used_in_combat_chain(self):
+        
+        return [c for c in self.hand if c not in [cp["attack"] for cp in self.combat_chain.values()] and c not in [cp["pitch"] for cp in self.combat_chain.values()]]
+
+    def more_elaborate_block_with_unused_cards(self, player_attack_value):
+        
+        val_0 = 3
+
+        if player_attack_value is not None:
+            match player_attack_value:
+                case player_attack_value if 0 <= player_attack_value < val_0:
+                    print("attack not blocked at all")
+                    return []
+                case player_attack_value if val_0 <= player_attack_value < val_0 + 3:
+                    print("attack blocked with {} cards".format(len(self.hand[:1])))
+                    unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
+                    if len(unused_cards) > 0:
+                        return unused_cards[:1]
+                    else:
+                        return self.hand[:1]
+                case player_attack_value if val_0 + 3 <= player_attack_value < val_0 + 7:
+                    print("attack blocked with {} cards".format(len(self.hand[:2])))
+                    unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
+                    if len(unused_cards) == 1:
+                        return unused_cards + [c for c in self.hand if c != unused_cards[0]][:1]
+                    elif len(unused_cards) == 2:
+                        return unused_cards
+                    else:
+                        return self.hand[:2]
+                case player_attack_value if val_0 + 7 <= player_attack_value < val_0 + 11:
+                    print("attack blocked with {} cards".format(len(self.hand[:3])))
+                    if len(unused_cards) == 1:
+                        return unused_cards + [c for c in self.hand if c != unused_cards[0]][:1]
+                    elif len(unused_cards) == 2:
+                        return unused_cards[:2] + [c for c in self.hand if c != unused_cards[0]][:1]
+                    elif len(unused_cards) == 3:
+                        return unused_cards
+                    else:
+                        return self.hand[:3]
+                    
+                case player_attack_value if val_0 + 11 <= player_attack_value:
+                    print("attack blocked with {} cards".format(len(self.hand)))
+                    return self.hand[:]
+                case _:
+                    return []
+
     def more_elaborate_block(self, player_attack_value):
         # val_0 = np.random.randint(2,4)
         val_0 = 3
@@ -241,7 +291,7 @@ class Enemy:
                     return []
 
     def get_block(self, player_attack_value):
-        return self.more_elaborate_block(player_attack_value)
+        return self.more_elaborate_block_with_unused_cards(player_attack_value)
 
     def defend(self, player_attack_value):
         print("enemy defending")
