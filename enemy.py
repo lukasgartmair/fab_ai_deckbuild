@@ -14,6 +14,12 @@ from enum import Enum
 
 VALUE_MAX_PLACEHOLDER = 100
 
+def n_chance(p=0.85):
+    if np.random.rand() < p:
+        return True
+    else:
+        print("chance triggered")
+        return False
 
 def shift_list(a):
     x = a.pop()
@@ -128,13 +134,72 @@ class Enemy:
         else:
             print("can't draw anymore, deck fatigued")
 
+    def calc_combat_chain_damage_output(self):
+        combat_chain_index = 0
+        
+        max_damage_output = 0
+        number_of_cards_to_pitch = VALUE_MAX_PLACEHOLDER
+        power_minus_cost = 0
+
+        virtual_hand = self.hand.copy()
+        virtual_hand_tmp = virtual_hand.copy()
+    
+        for i in range(len(virtual_hand)):
+            if len(virtual_hand_tmp) > 0:
+                current_card = virtual_hand_tmp[0]
+                possible_cards_to_pitch = self.get_combinations(virtual_hand_tmp, 0)
+
+                pitch_combinations = {}
+                for j, pi in enumerate(possible_cards_to_pitch):
+                    pitch_total = 0
+                    for p in pi:
+                        pitch_total += p.pitch
+
+                    pitch_combinations[pi] = pitch_total
+
+                if current_card.cost > 0:
+                    cards_to_pitch = self.determine_pitch_combination(
+                        current_card.cost, pitch_combinations
+                    )
+
+                    if len(cards_to_pitch) == 0:
+                        print("no pitch possible")
+                        virtual_hand = shift_list(virtual_hand_tmp)
+                        continue
+                    else:
+                        self.combat_chain[combat_chain_index] = {
+                            "attack": current_card,
+                            "pitch": cards_to_pitch,
+                        }
+                        combat_chain_index += 1
+
+                        virtual_hand_tmp.remove(current_card)
+                        for p in cards_to_pitch:
+                            virtual_hand_tmp.remove(p)
+                else:
+                    self.combat_chain[combat_chain_index] = {
+                        "attack": current_card,
+                        "pitch": [],
+                    }
+                    combat_chain_index += 1
+
+                    virtual_hand_tmp.remove(current_card)
+
     def calc_combat_chain(self):
         combat_chain_index = 0
 
         virtual_hand = self.hand.copy()
+        
+        # play strongest attacks first, but by a small chance not to be not too predictable -> shuffle, weakest first makes no sense at all
+        if n_chance():
+            virtual_hand = sorted(virtual_hand, key=lambda x: x.power, reverse=True)
+        else:
+            np.random.shuffle(virtual_hand)
+            
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
             if len(virtual_hand_tmp) > 0:
+                
                 current_card = virtual_hand_tmp[0]
                 possible_cards_to_pitch = self.get_combinations(virtual_hand_tmp, 0)
 
@@ -222,7 +287,7 @@ class Enemy:
 
     def get_cards_not_intended_to_be_used_in_combat_chain(self):
         
-        return [c for c in self.hand if c not in [cp["attack"] for cp in self.combat_chain.values()] and c not in [cp["pitch"] for cp in self.combat_chain.values()]]
+        return [c for c in self.hand if (c not in [cp["attack"] for cp in self.combat_chain.values()] and c not in [cp["pitch"] for cp in self.combat_chain.values()])]
 
     def more_elaborate_block_with_unused_cards(self, player_attack_value):
         
@@ -348,71 +413,6 @@ class Enemy:
 
         return best_pitch
 
-    # def calc_possible_attacks(self):
-    #     pitch = []
-
-    #     max_damage_output = 0
-    #     number_of_cards_to_pitch = VALUE_MAX_PLACEHOLDER
-    #     power_minus_cost = 0
-    #     combat_chain = []
-
-    #     virtual_hand = self.hand.copy()
-
-    #     for i, current_card in enumerate((virtual_hand)):
-    #         cards_to_pitch = []
-    #         print("---> card number {}, {}".format(i, current_card.name))
-    #         print()
-
-    #         possible_cards_to_pitch = self.get_combinations(virtual_hand, i)
-
-    #         pitch_combinations = {}
-    #         for j, pi in enumerate(possible_cards_to_pitch):
-    #             pitch_total = 0
-    #             for p in pi:
-    #                 # print(p.name)
-    #                 # print(p.pitch)
-    #                 pitch_total += p.pitch
-
-    #             pitch_combinations[pi] = pitch_total
-    #             # print("total pitch {}".format(pitch_total))
-    #             # print("-----")
-
-    #         if current_card.cost > 0:
-    #             cards_to_pitch = self.determine_pitch_combination(
-    #                 current_card.cost, pitch_combinations
-    #             )
-    #             if len(cards_to_pitch) == 0:
-    #                 print("no pitch possible")
-    #                 continue
-
-    #         print("")
-    #         print(current_card.name)
-    #         print(current_card.cost)
-    #         print("best pitch")
-    #         if current_card.cost > 0:
-    #             for c in cards_to_pitch:
-    #                 print(c.name)
-    #                 print(c.pitch)
-    #         else:
-    #             print("no pitch neccessary")
-
-    #         if (
-    #             current_card.power >= max_damage_output
-    #             and (current_card.power - current_card.cost) >= power_minus_cost
-    #             and len(cards_to_pitch) <= number_of_cards_to_pitch
-    #         ):
-    #             combat_chain = [current_card]
-    #             max_damage_output = current_card.power
-    #             power_minus_cost = current_card.power - current_card.cost
-    #             number_of_cards_to_pitch = len(cards_to_pitch)
-    #             if len(cards_to_pitch) > 0:
-    #                 pitch.append(cards_to_pitch)
-
-    #     print("")
-    #     print("best play")
-    #     print(combat_chain)
-    #     self.combat_chain = combat_chain
-    #     self.pitch = pitch
 
 
 if __name__ == "__main__":
