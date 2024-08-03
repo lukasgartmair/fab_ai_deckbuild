@@ -21,7 +21,7 @@ class PlayerClasses(Enum):
     merchant = 9
     shapeshifter = 10
     bard = 11
-
+    generic = 12
 
 class Keywords(Enum):
     go_again = 0

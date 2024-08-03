@@ -49,11 +49,12 @@ class Enemy:
         self.player_class = random.choice(list(PlayerClasses))
         self.stance = Stance.defend
         self.intellect = 4
+        self.talents = []
         self.life = 20
         self.hand = []
         self.pile = Pile()
         self.play_key = None
-        self.original_deck = Deck()
+        self.original_deck = Deck(self.player_class)
         self.deck = self.original_deck.cards
         self.graveyard = []
         self.banished_zone = []

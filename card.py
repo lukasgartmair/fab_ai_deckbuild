@@ -10,6 +10,7 @@ from enum import Enum
 import itertools
 import pygame
 import numpy as np
+from playstyle import PlayerClasses
 from wonderwords import RandomSentence
 from randimage import get_random_image, show_array
 
@@ -65,6 +66,7 @@ class Card:
         self.card_id = next(id_iter)
         self.name = generate_rnd_name()
         self.card_type = np.random.choice(list(CardType))
+        self.card_class = PlayerClasses.generic
         self.cost = 0
         self.power = power
         self.defense = 0

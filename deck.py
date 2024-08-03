@@ -11,7 +11,7 @@ import random
 import matplotlib.pyplot as plt
 from beautifultable import beautifultable
 import seaborn as sns
-from playstyle import Keywords
+from playstyle import Keywords, PlayerClasses
 
 sns.set_style("white")
 
@@ -19,6 +19,13 @@ from card import Card, CardColor
 import playstyle
 
 DECK_SIZE = 50
+
+def n_chance(p=0.85):
+    if np.random.rand() < p:
+        return True
+    else:
+        print("chance triggered")
+        return False
 
 
 def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
@@ -47,13 +54,13 @@ def calc_keyword_distribution(playstyle_obj, n=DECK_SIZE):
     )
     return sampled_keywords
 
-
 class Deck:
-    def __init__(self, playstyle=playstyle.Playstyle()):
+    def __init__(self, player_class=PlayerClasses.generic, playstyle=playstyle.Playstyle()):
         self.n_cards = DECK_SIZE
         self.cards = []
         self.stats = {}
 
+        self.player_class = player_class
         self.playstyle = playstyle
         self.build_deck()
         self.calc_stats()
@@ -76,6 +83,11 @@ class Deck:
         self.cards = [
             Card(np.random.choice(power_distribution)) for n in range(self.n_cards)
         ]
+        
+        for c in self.cards:
+            if n_chance(p=0.4):   
+                print(self.player_class)
+                c.card_class = self.player_class
 
         indices = list(range(len(self.cards)))
         random.shuffle(indices)
