@@ -67,6 +67,9 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     for inp_box in self.input_boxes:
                         inp_box.update(event=event)
+                        if event.key == pygame.K_BACKSPACE:
+                            self.renderer.render_background()
+                            self.renderer.render()
 
                     if event.key == pygame.K_SPACE:
                         self.renderer.render()
