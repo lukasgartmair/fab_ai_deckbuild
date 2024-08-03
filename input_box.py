@@ -13,17 +13,39 @@ font_size = 25
 font_style = pygame.font.match_font("z003")
 font2 = pygame.font.Font(font_style, font_size)
 
+class Attack:
+    def __init__(self):
+        self.physical = None
+        self.arcane = None
+        
+    def reset(self):
+        self.physical = None
+        self.arcane = None     
+        
+    def set_values(self, inp_box):
+        if inp_box.box_type == "physical":
+            self.physical = inp_box.send_input()
+            print("self.physical")
+            print(self.physical)
+        elif inp_box.box_type == "arcane":
+            self.arcane = inp_box.send_input()
+            print("self.arcane")
+            print(self.arcane)
 
 class InputBox:
-    def __init__(self, window):
+    def __init__(self, window, y=150,box_type="physical"):
         self.window = window
         self.active = False
+        self.box_type = box_type
         self.color_inactive = pygame.Color("red")
         self.color_active = pygame.Color("green")
         self.color = self.color_inactive
         self.font = pygame.font.Font(None, 32)
-
-        self.box = pygame.Rect(100, 150, 140, 32)
+        self.x = 100
+        self.y = y
+        self.width = 140
+        self.height = 32
+        self.box = pygame.Rect(self.x, y, self.width, self.height)
         self.text = ""
 
     def send_input(self):
@@ -33,14 +55,14 @@ class InputBox:
         self.active = False
         self.color = self.color_inactive
         if text_temp.isnumeric():
-            return text_temp
+            return int(text_temp)
 
-        self.player_attack_value = None
 
     def reset(self):
-        self.player_attack_value = None
+
         self.color = "red"
         self.text = ""
+
 
     def check_activation(self, event):
         if event:
@@ -53,10 +75,10 @@ class InputBox:
                 self.color = self.color_active if self.active else self.color_inactive
 
     def render(self):
-        message = "Enter your attack value here"
+        message = "{} DAMAGE value".format(self.box_type.upper())
         text = font2.render(message, True, (0, 0, 0))
         self.window.blit(text, (self.box.x, self.box.y - 30))
-        txt_surface = self.font.render(self.text, True, self.color)
+        txt_surface = self.font.render(self.text, True, "blue")
         self.window.blit(txt_surface, (self.box.x + 5, self.box.y + 5))
         pygame.draw.rect(self.window, self.color, self.box, 2)
 

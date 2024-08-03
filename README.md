@@ -17,3 +17,8 @@ Playing manual:
 6. Press SPACE to trigger the next enemy attack
 
 7. And so on
+
+
+Credits:
+
+The python-package "fantasynames" by "jessica-px" is included with the files, as the official build is failing.

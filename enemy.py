@@ -17,6 +17,8 @@ from fantasynames.fantasy_identity import FantasyIdentity
 VALUE_MAX_PLACEHOLDER = 100
 
 
+
+
 def n_chance(p=0.85):
     if np.random.rand() < p:
         return True
@@ -34,7 +36,6 @@ def shift_list(a):
 class Stance(Enum):
     defend = 0
     attack = 1
-
 
 class Enemy:
     playKey = None
@@ -299,15 +300,15 @@ class Enemy:
             )
         ]
 
-    def more_elaborate_block_with_unused_cards(self, player_attack_value):
+    def more_elaborate_block_with_unused_cards(self, player_attack):
         val_0 = 3
 
-        if player_attack_value is not None:
-            match player_attack_value:
-                case player_attack_value if 0 <= player_attack_value < val_0:
+        if player_attack.physical is not None:
+            match player_attack.physical:
+                case player_attack.physical if 0 <= player_attack.physical < val_0:
                     print("attack not blocked at all")
                     return []
-                case player_attack_value if val_0 <= player_attack_value < val_0 + 3:
+                case player_attack.physical if val_0 <= player_attack.physical < val_0 + 3:
                     print("attack blocked with {} cards".format(len(self.hand[:1])))
                     unused_cards = (
                         self.get_cards_not_intended_to_be_used_in_combat_chain()
@@ -316,7 +317,7 @@ class Enemy:
                         return unused_cards[:1]
                     else:
                         return self.hand[:1]
-                case player_attack_value if val_0 + 3 <= player_attack_value < val_0 + 7:
+                case player_attack.physical if val_0 + 3 <= player_attack.physical < val_0 + 7:
                     print("attack blocked with {} cards".format(len(self.hand[:2])))
                     unused_cards = (
                         self.get_cards_not_intended_to_be_used_in_combat_chain()
@@ -330,7 +331,7 @@ class Enemy:
                         return unused_cards
                     else:
                         return self.hand[:2]
-                case player_attack_value if val_0 + 7 <= player_attack_value < val_0 + 11:
+                case player_attack.physical if val_0 + 7 <= player_attack.physical < val_0 + 11:
                     print("attack blocked with {} cards".format(len(self.hand[:3])))
                     if len(unused_cards) == 1:
                         return (
@@ -347,44 +348,49 @@ class Enemy:
                     else:
                         return self.hand[:3]
 
-                case player_attack_value if val_0 + 11 <= player_attack_value:
+                case player_attack.physical if val_0 + 11 <= player_attack.physical:
                     print("attack blocked with {} cards".format(len(self.hand)))
                     return self.hand[:]
                 case _:
                     return []
+        else:
+            return []
 
-    def more_elaborate_block(self, player_attack_value):
+    def more_elaborate_block(self, player_attack):
         # val_0 = np.random.randint(2,4)
         val_0 = 3
 
-        if player_attack_value is not None:
-            match player_attack_value:
-                case player_attack_value if 0 <= player_attack_value < val_0:
+        if player_attack.physical is not None:
+            match player_attack.physical:
+                case player_attack.physical if 0 <= player_attack.physical < val_0:
                     print("attack not blocked at all")
                     return []
-                case player_attack_value if val_0 <= player_attack_value < val_0 + 3:
+                case player_attack.physical if val_0 <= player_attack.physical < val_0 + 3:
                     print("attack blocked with {} cards".format(len(self.hand[:1])))
                     return self.hand[:1]
-                case player_attack_value if val_0 + 3 <= player_attack_value < val_0 + 7:
+                case player_attack.physical if val_0 + 3 <= player_attack.physical < val_0 + 7:
                     print("attack blocked with {} cards".format(len(self.hand[:2])))
                     return self.hand[:2]
-                case player_attack_value if val_0 + 7 <= player_attack_value < val_0 + 11:
+                case player_attack.physical if val_0 + 7 <= player_attack.physical < val_0 + 11:
                     print("attack blocked with {} cards".format(len(self.hand[:3])))
                     return self.hand[:3]
-                case player_attack_value if val_0 + 11 <= player_attack_value:
+                case player_attack.physical if val_0 + 11 <= player_attack.physical:
                     print("attack blocked with {} cards".format(len(self.hand)))
                     return self.hand[:]
                 case _:
                     return []
+        else:
+            return []
+    
+    def get_block(self, player_attack):
+        return self.more_elaborate_block_with_unused_cards(player_attack)
 
-    def get_block(self, player_attack_value):
-        return self.more_elaborate_block_with_unused_cards(player_attack_value)
-
-    def defend(self, player_attack_value):
+    def defend(self, player_attack):
         print("enemy defending")
-        if player_attack_value and len(self.hand) > 0:
-            print(player_attack_value)
-            blocking_cards = self.get_block(player_attack_value)
+        print(player_attack)
+        if len(self.hand) > 0:
+            print(player_attack.physical)
+            blocking_cards = self.get_block(player_attack)
             print(blocking_cards)
             if len(blocking_cards) > 0:
                 for bc in blocking_cards:

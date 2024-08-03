@@ -10,7 +10,6 @@ from enum import Enum
 import pygame
 from deck import Deck
 from enemy import Enemy, Stance
-
 from statemachine import StateMachine
 from statemachine.states import States
 

@@ -19,21 +19,21 @@ images = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
 import random
 
-classes = ["hobbit","elf","dwarf","human"]
+classes = ["hobbit", "elf", "dwarf", "human"]
+
 
 class FantasyIdentity:
     def __init__(self):
         self.race = random.choice(classes)
         self.name = self.get_fantasy_name()
         self.image = random.choice(images)
-        
+
     def get_fantasy_name(self):
-    
         if self.race == "hobbit":
             return hobbit()
         elif self.race == "elf":
-            return elf() 
+            return elf()
         elif self.race == "dwarf":
-            return dwarf() 
+            return dwarf()
         elif self.race == "human":
-            return human() 
+            return human()

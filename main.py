@@ -14,14 +14,18 @@ from enemy import Stance
 from engine import GameState, GameEngine
 
 from renderer import Renderer
+from input_box import Attack
 
 from settings import FPS
-
 
 class Game:
     def __init__(self):
         self.engine = GameEngine()
-        pygame.display.set_caption("Fight against the {} '{}'".format(self.engine.enemy.race, self.engine.enemy.name))
+        pygame.display.set_caption(
+            "Fight against the {} '{}'".format(
+                self.engine.enemy.race, self.engine.enemy.name
+            )
+        )
 
         self.renderer = Renderer(self.engine)
 
@@ -39,8 +43,13 @@ class Game:
         clock = pygame.time.Clock()
 
         self.renderer.render_initial_game_state()
+        
+        self.attack = Attack()
 
-        self.renderer.input_box.player_attack_value = None
+        self.input_boxes = [
+            self.renderer.input_box_physical,
+            self.renderer.input_box_arcane,
+        ]
 
         while run:
             events = pygame.event.get()
@@ -51,71 +60,48 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
-                self.renderer.input_box.check_activation(event)
+                for inp_box in self.input_boxes:
+                    inp_box.check_activation(event)
 
                 if event.type == pygame.KEYDOWN:
-                    self.renderer.input_box.update(event=event)
+                    for inp_box in self.input_boxes:
+                        inp_box.update(event=event)
 
                     if event.key == pygame.K_SPACE:
                         self.renderer.render()
 
                         if self.engine.state == GameState.playing:
                             if self.engine.enemy.stance == Stance.defend:
-                                if self.renderer.input_box.active:
-                                    self.renderer.input_box.player_attack_value = (
-                                        self.renderer.input_box.send_input()
-                                    )
-                                    if (
-                                        self.renderer.input_box.player_attack_value
-                                        is not None
-                                    ):
-                                        self.renderer.input_box.player_attack_value = int(
-                                            self.renderer.input_box.player_attack_value
-                                        )
+                                for inp_box in self.input_boxes:
+                                    if inp_box.active:
+                                        self.attack.set_values(inp_box)
 
-                                        print(
-                                            self.renderer.input_box.player_attack_value
-                                        )
-                                        self.engine.play(
-                                            self.renderer.input_box.player_attack_value
-                                        )
-                                        self.renderer.input_box.reset()
+                                self.engine.play(self.attack)
+                                
+                                for inp_box in self.input_boxes:
+                                    inp_box.reset()
 
                             else:
-                                self.engine.play(
-                                    self.renderer.input_box.player_attack_value
-                                )
+                                self.engine.play(self.attack)
+
 
                         self.renderer.render_background()
                         self.renderer.render()
 
                     if event.key == pygame.K_RETURN:
-                        if self.renderer.input_box.active:
-                            self.renderer.input_box.player_attack_value = (
-                                self.renderer.input_box.send_input()
-                            )
-                            if self.renderer.input_box.player_attack_value is not None:
-                                self.renderer.input_box.player_attack_value = int(
-                                    self.renderer.input_box.player_attack_value
-                                )
+                        self.renderer.render()
 
-                                print(self.renderer.input_box.player_attack_value)
-                                self.engine.play(
-                                    self.renderer.input_box.player_attack_value
-                                )
-                                self.renderer.input_box.reset()
+                        if self.engine.state == GameState.playing:
 
-                        else:
                             self.engine.enemy.finish_phase()
                             self.renderer.render_background()
 
-                        self.renderer.render_background()
-                        self.renderer.render()
+                            self.renderer.render_background()
+                            self.renderer.render()
 
-            if self.engine.enemy.stance == Stance.defend:
-                if self.renderer.input_box.player_attack_value is not None:
-                    self.renderer.input_box.color = "blue"
-                self.renderer.input_box.render()
+                if self.engine.enemy.stance == Stance.defend:
+                    for inp_box in self.input_boxes:
+                        inp_box.render()
 
             self.renderer.render_floating_resources()
 

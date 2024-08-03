@@ -32,7 +32,9 @@ from settings import (
 class Renderer:
     def __init__(self, engine):
         self.window = pygame.display.set_mode(bounds)
-        self.input_box = InputBox(self.window)
+        self.input_box_physical = InputBox(self.window, box_type="physical")
+        self.input_box_arcane = InputBox(self.window, y=220 ,box_type="arcane")
+        
         self.engine = engine
 
         self.background = pygame.image.load("images/background.png")
@@ -40,9 +42,12 @@ class Renderer:
             self.background, self.window.get_size()
         )
 
-        self.enemy_image = pygame.image.load("images/enemy_images/" + self.engine.enemy.image)
+        self.enemy_image = pygame.image.load(
+            "images/enemy_images/" + self.engine.enemy.image
+        )
         self.enemy_image = pygame.transform.scale(
-            self.enemy_image, (int(card_width * card_scale), int(card_height * card_scale))
+            self.enemy_image,
+            (int(card_width * card_scale), int(card_height * card_scale)),
         )
 
     def render_background(self):
@@ -82,7 +87,9 @@ class Renderer:
 
     def render_deck_pile(self):
         if len(self.engine.enemy.deck) > 0:
-            self.window.blit(self.enemy_image, (width_references["pile"], height_references[0]))
+            self.window.blit(
+                self.enemy_image, (width_references["pile"], height_references[0])
+            )
 
         text = font.render(str(len(self.engine.enemy.deck)) + " deck", True, "white")
         self.window.blit(
@@ -221,7 +228,11 @@ class Renderer:
                 color = player_1_color
 
             text = font.render(
-                "{}".format(self.engine.enemy.name)  + " is " + (self.engine.enemy.stance.name + "ing").upper(), True, color
+                "{}".format(self.engine.enemy.name)
+                + " is "
+                + (self.engine.enemy.stance.name + "ing").upper(),
+                True,
+                color,
             )
 
             self.window.blit(text, (20, 50))
@@ -269,6 +280,6 @@ class Renderer:
         text = font.render(message, True, player_2_color)
         self.window.blit(text, (20, 50))
 
-        self.input_box.render()
+        self.input_box_physical.render()
 
         self.render()
