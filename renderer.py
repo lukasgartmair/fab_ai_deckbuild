@@ -55,6 +55,8 @@ class Renderer:
             "black", 400, 150, 25, 25, font="z003", text="dominate", outline=3
         )
 
+        
+
     def render_background(self):
         self.window.blit(self.background, (0, 0))
 

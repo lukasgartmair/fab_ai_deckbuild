@@ -70,7 +70,7 @@ class Game:
                         self.renderer.render_background()
                         self.renderer.render()
 
-                if self.renderer.check_box_dominate.isChecked():
+                if self.renderer.check_box_dominate.isChecked() == True:
                     self.modifiers.dominate = True
                 else:
                     self.modifiers.dominate = False
@@ -95,6 +95,9 @@ class Game:
 
                                 for inp_box in self.input_boxes:
                                     inp_box.reset()
+                                if self.renderer.check_box_dominate.isChecked() == True:
+                                    self.renderer.check_box_dominate.convert()
+                                self.modifiers.reset()
 
                             else:
                                 self.engine.play()
@@ -104,12 +107,14 @@ class Game:
 
                     if event.key == pygame.K_RETURN:
                         self.renderer.render()
-
                         if self.engine.state == GameState.playing:
                             self.engine.enemy.finish_phase()
                             self.attack.reset()
-                            self.modifiers.reset()
+                            if self.renderer.check_box_dominate.isChecked() == True:
+                                self.renderer.check_box_dominate.convert()
 
+                            self.modifiers.reset()
+                            
                             self.renderer.render_background()
                             self.renderer.render()
 
