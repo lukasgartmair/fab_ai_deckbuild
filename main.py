@@ -14,7 +14,7 @@ from enemy import Stance
 from engine import GameState, GameEngine
 
 from renderer import Renderer
-from input_box import Attack
+from engine import Attack, Modifiers
 
 from settings import FPS
 
@@ -46,7 +46,7 @@ class Game:
         self.renderer.render_initial_game_state()
 
         self.attack = Attack()
-
+        self.modifiers = Modifiers()
         self.input_boxes = [
             self.renderer.input_box_physical,
             self.renderer.input_box_arcane,
@@ -64,6 +64,17 @@ class Game:
                 for inp_box in self.input_boxes:
                     inp_box.check_activation(event)
 
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.renderer.check_box_dominate.isOver(pygame.mouse.get_pos()):
+                        self.renderer.check_box_dominate.convert()
+                        self.renderer.render_background()
+                        self.renderer.render()
+
+                if self.renderer.check_box_dominate.isChecked():
+                    self.modifiers.dominate = True
+                else:
+                    self.modifiers.dominate = False
+
                 if event.type == pygame.KEYDOWN:
                     for inp_box in self.input_boxes:
                         inp_box.update(event=event)
@@ -80,13 +91,13 @@ class Game:
                                     if inp_box.active:
                                         self.attack.set_values(inp_box)
 
-                                self.engine.play(self.attack)
+                                self.engine.play(self.attack, self.modifiers)
 
                                 for inp_box in self.input_boxes:
                                     inp_box.reset()
 
                             else:
-                                self.engine.play(self.attack)
+                                self.engine.play()
 
                         self.renderer.render_background()
                         self.renderer.render()
@@ -97,6 +108,7 @@ class Game:
                         if self.engine.state == GameState.playing:
                             self.engine.enemy.finish_phase()
                             self.attack.reset()
+                            self.modifiers.reset()
 
                             self.renderer.render_background()
                             self.renderer.render()
@@ -105,6 +117,8 @@ class Game:
                     for inp_box in self.input_boxes:
                         if inp_box.box_type == "physical":
                             inp_box.render()
+
+                    self.renderer.check_box_dominate.draw(self.renderer.window)
 
             self.renderer.render_floating_resources()
 

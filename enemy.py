@@ -415,7 +415,7 @@ class Enemy:
     def get_block(self, player_attack):
         return self.more_elaborate_block_with_unused_cards(player_attack)
 
-    def defend(self, player_attack):
+    def defend(self, player_attack, modifiers):
         print("enemy defending")
         print(player_attack)
         if len(self.hand) > 0:
@@ -423,6 +423,9 @@ class Enemy:
             blocking_cards = self.get_block(player_attack)
             print(blocking_cards)
             if len(blocking_cards) > 0:
+                if modifiers.dominate == True:
+                    blocking_cards = blocking_cards[:1]
+
                 for bc in blocking_cards:
                     print(bc)
                     self.played_cards.append(bc)

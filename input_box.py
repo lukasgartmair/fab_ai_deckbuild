@@ -7,31 +7,12 @@ Created on Sun Jul 21 19:48:35 2024
 """
 
 import pygame
+from engine import Attack
 
 pygame.font.init()
 font_size = 25
 font_style = pygame.font.match_font("z003")
 font2 = pygame.font.Font(font_style, font_size)
-
-
-class Attack:
-    def __init__(self):
-        self.physical = None
-        self.arcane = None
-
-    def reset(self):
-        self.physical = None
-        self.arcane = None
-
-    def set_values(self, inp_box):
-        if inp_box.box_type == "physical":
-            self.physical = inp_box.send_input()
-            print("self.physical")
-            print(self.physical)
-        elif inp_box.box_type == "arcane":
-            self.arcane = inp_box.send_input()
-            print("self.arcane")
-            print(self.arcane)
 
 
 class InputBox:

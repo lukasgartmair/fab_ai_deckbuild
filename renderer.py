@@ -7,6 +7,7 @@ Created on Mon Jul 29 19:03:39 2024
 """
 
 import pygame
+import PygameUtils as pu
 from card import card_colors
 from enemy import Stance
 from engine import GameState
@@ -48,6 +49,10 @@ class Renderer:
         self.enemy_image = pygame.transform.scale(
             self.enemy_image,
             (int(card_width * card_scale), int(card_height * card_scale)),
+        )
+
+        self.check_box_dominate = pu.checkbox(
+            "black", 400, 150, 25, 25, font="z003", text="dominate", outline=3
         )
 
     def render_background(self):

@@ -14,6 +14,36 @@ from statemachine import StateMachine
 from statemachine.states import States
 
 
+class Attack:
+    def __init__(self):
+        self.physical = None
+        self.arcane = None
+
+    def reset(self):
+        self.physical = None
+        self.arcane = None
+
+    def set_values(self, inp_box):
+        if inp_box.box_type == "physical":
+            self.physical = inp_box.send_input()
+            print("self.physical")
+            print(self.physical)
+        elif inp_box.box_type == "arcane":
+            self.arcane = inp_box.send_input()
+            print("self.arcane")
+            print(self.arcane)
+
+
+class Modifiers:
+    def __init__(self):
+        self.dominate = False
+        self.intimidate = False
+
+    def reset(self):
+        self.dominate = False
+        self.intimidate = False
+
+
 class GameState(Enum):
     playing = 0
     ended = 1
@@ -36,13 +66,13 @@ class GameEngine:
 
         self.enemy.draw()
 
-    def play(self, player_attack):
+    def play(self, player_attack=None, modifiers=None):
         if self.enemy.stance == Stance.defend:
             if self.enemy.further_defense_possible == False:
                 print("no more defensive actions from the enemy this turn")
                 print("press enter to change the enemy stance to ATTACK")
             else:
-                self.enemy.defend(player_attack)
+                self.enemy.defend(player_attack, modifiers)
 
         elif self.enemy.stance == Stance.attack:
             if self.enemy.further_attack_possible == False:
