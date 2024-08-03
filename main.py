@@ -18,6 +18,7 @@ from input_box import Attack
 
 from settings import FPS
 
+
 class Game:
     def __init__(self):
         self.engine = GameEngine()
@@ -43,7 +44,7 @@ class Game:
         clock = pygame.time.Clock()
 
         self.renderer.render_initial_game_state()
-        
+
         self.attack = Attack()
 
         self.input_boxes = [
@@ -77,13 +78,12 @@ class Game:
                                         self.attack.set_values(inp_box)
 
                                 self.engine.play(self.attack)
-                                
+
                                 for inp_box in self.input_boxes:
                                     inp_box.reset()
 
                             else:
                                 self.engine.play(self.attack)
-
 
                         self.renderer.render_background()
                         self.renderer.render()
@@ -92,7 +92,6 @@ class Game:
                         self.renderer.render()
 
                         if self.engine.state == GameState.playing:
-
                             self.engine.enemy.finish_phase()
                             self.renderer.render_background()
 

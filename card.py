@@ -28,7 +28,7 @@ def generate_rnd_name():
 
 
 def generate_rnd_image():
-    size = 10
+    size = 5
     img_size = (size, size)
     img = get_random_image(img_size)
     img = 255 * img / img.max()
@@ -36,10 +36,10 @@ def generate_rnd_image():
 
 
 class CardType(Enum):
-    # non_attack_action = 0
+    non_attack_action = 0
     attack_action = 1
-    # attack_reaction = 2
-    # defensive_reaction = 3
+    attack_reaction = 2
+    defensive_reaction = 3
 
 
 class CardColor(Enum):
@@ -64,7 +64,7 @@ class Card:
     def __init__(self, power):
         self.card_id = next(id_iter)
         self.name = generate_rnd_name()
-        self.type = np.random.choice(list(CardType))
+        self.card_type = np.random.choice(list(CardType))
         self.cost = 0
         self.power = power
         self.defense = 0
@@ -85,7 +85,9 @@ class Card:
 
         self.color = np.random.choice(list(CardColor))
         self.pitch = pitch_values[self.color.name]
-        self.defense = defensive_values[self.type.name]
-        self.cost = self.power + self.defense + self.pitch - TARGET_VALUE
-        if self.cost < 0:
-            self.cost = 0
+        self.defense = defensive_values[self.card_type.name]
+
+        if self.card_type == "attack_action":
+            self.cost = self.power + self.defense + self.pitch - TARGET_VALUE
+            if self.cost < 0:
+                self.cost = 0

@@ -33,8 +33,8 @@ class Renderer:
     def __init__(self, engine):
         self.window = pygame.display.set_mode(bounds)
         self.input_box_physical = InputBox(self.window, box_type="physical")
-        self.input_box_arcane = InputBox(self.window, y=220 ,box_type="arcane")
-        
+        self.input_box_arcane = InputBox(self.window, y=220, box_type="arcane")
+
         self.engine = engine
 
         self.background = pygame.image.load("images/background.png")
@@ -140,6 +140,29 @@ class Renderer:
 
         self.window.blit(text, (width_references[str(i)], height_references[0]))
 
+        # KEYWORDS
+        factor_keyword = 1.6
+        self.rect = pygame.draw.rect(
+            self.window,
+            "green",
+            (
+                width_references[str(i)],
+                height_references[0] + card_height // factor_keyword,
+                card_width * 0.75,
+                25,
+            ),
+        )
+
+        text = font_card_title.render(str(current_card.keyword), True, "black")
+
+        self.window.blit(
+            text,
+            (
+                width_references[str(i)],
+                height_references[0] + card_height // factor_keyword,
+            ),
+        )
+
         # TYPE
         self.rect = pygame.draw.rect(
             self.window,
@@ -152,7 +175,7 @@ class Renderer:
             ),
         )
 
-        text = font_card_title.render(str(current_card.type.name), True, "black")
+        text = font_card_title.render(str(current_card.card_type.name), True, "black")
 
         self.window.blit(
             text,

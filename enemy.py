@@ -17,8 +17,6 @@ from fantasynames.fantasy_identity import FantasyIdentity
 VALUE_MAX_PLACEHOLDER = 100
 
 
-
-
 def n_chance(p=0.85):
     if np.random.rand() < p:
         return True
@@ -36,6 +34,7 @@ def shift_list(a):
 class Stance(Enum):
     defend = 0
     attack = 1
+
 
 class Enemy:
     playKey = None
@@ -381,7 +380,7 @@ class Enemy:
                     return []
         else:
             return []
-    
+
     def get_block(self, player_attack):
         return self.more_elaborate_block_with_unused_cards(player_attack)
 

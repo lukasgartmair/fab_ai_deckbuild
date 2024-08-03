@@ -13,15 +13,16 @@ font_size = 25
 font_style = pygame.font.match_font("z003")
 font2 = pygame.font.Font(font_style, font_size)
 
+
 class Attack:
     def __init__(self):
         self.physical = None
         self.arcane = None
-        
+
     def reset(self):
         self.physical = None
-        self.arcane = None     
-        
+        self.arcane = None
+
     def set_values(self, inp_box):
         if inp_box.box_type == "physical":
             self.physical = inp_box.send_input()
@@ -32,8 +33,9 @@ class Attack:
             print("self.arcane")
             print(self.arcane)
 
+
 class InputBox:
-    def __init__(self, window, y=150,box_type="physical"):
+    def __init__(self, window, y=150, box_type="physical"):
         self.window = window
         self.active = False
         self.box_type = box_type
@@ -57,12 +59,9 @@ class InputBox:
         if text_temp.isnumeric():
             return int(text_temp)
 
-
     def reset(self):
-
         self.color = "red"
         self.text = ""
-
 
     def check_activation(self, event):
         if event:

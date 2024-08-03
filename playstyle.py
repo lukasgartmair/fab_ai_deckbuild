@@ -9,17 +9,23 @@ from enum import Enum
 
 
 class Keywords(Enum):
-    go_again = 0
-    dominate = 1
-    intimidate = 2
+    none = 0
+    go_again = 1
+    dominate = 2
+    intimidate = 3
 
 
 class Playstyle:
     def __init__(self):
         self.strategy_parameters = {"mu": 4, "sigma": 3}
 
-        self.keywords = []
-        self.keyword_ratio = {}
+        self.keywords = Keywords._member_names_
+        self.keyword_ratios = {
+            "none": 25,
+            "go_again": 25,
+            "dominate": 25,
+            "intimidate": 25,
+        }
 
     def __str__(self):
         return type(self).__name__
@@ -36,13 +42,18 @@ class Aggressive(Playstyle):
     def __init__(self):
         super().__init__()
         self.strategy_parameters = {"mu": 4, "sigma": 2}
+        self.keywords = Keywords._member_names_
+        self.keyword_ratios = {
+            "none": 0,
+            "go_again": 50,
+            "dominate": 50,
+            "intimidate": 0,
+        }
 
 
 class Ninjalike(Playstyle):
     def __init__(self):
         super().__init__()
         self.strategy_parameters = {"mu": 3, "sigma": 2}
-
-        self.keywords = [Keywords.go_again]
-
-        self.keyword_ratio = {"go_again": 0.25}
+        self.keywords = [Keywords.go_again.name]
+        self.keyword_ratios = {"go_again": 100}

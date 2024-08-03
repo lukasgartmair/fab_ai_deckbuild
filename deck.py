@@ -11,6 +11,7 @@ import random
 import matplotlib.pyplot as plt
 from beautifultable import beautifultable
 import seaborn as sns
+from playstyle import Keywords
 
 sns.set_style("white")
 
@@ -40,6 +41,13 @@ def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
     return s
 
 
+def calc_keyword_distribution(playstyle_obj, n=DECK_SIZE):
+    sampled_keywords = random.choices(
+        playstyle_obj.keywords, weights=playstyle_obj.keyword_ratios.values(), k=n
+    )
+    return sampled_keywords
+
+
 class Deck:
     def __init__(self, playstyle=playstyle.Playstyle()):
         self.n_cards = DECK_SIZE
@@ -62,26 +70,27 @@ class Deck:
     def build_deck(self):
         power_distribution = calc_power_distribution(self.playstyle)
         power_distribution = [1 if x == 0 else x for x in power_distribution]
+
+        keyword_distribution = calc_keyword_distribution(self.playstyle)
+
         self.cards = [
             Card(np.random.choice(power_distribution)) for n in range(self.n_cards)
         ]
 
-        if len(self.playstyle.keywords) > 0:
-            for kw in self.playstyle.keywords:
-                n_choices = np.round(
-                    self.playstyle.keyword_ratio[kw.name] * len(self.cards)
-                ).astype(int)
-                cards_without_keyword = [c for c in self.cards if c.keyword is None]
-                chosen_cards = random.choices(cards_without_keyword, k=n_choices)
-                for c in chosen_cards:
-                    c.keyword = kw
+        indices = list(range(len(self.cards)))
+        random.shuffle(indices)
+        print(len(indices))
+        print(keyword_distribution)
+        print(len(self.cards))
+        for i, card in enumerate(self.cards):
+            card.keyword = keyword_distribution[indices[i]]
 
         print("deck contents:")
         for i, c in enumerate(self.cards):
             print("Card {}: {}".format(i, c.name))
 
     def calc_stats(self):
-        self.card_types = [c.type.name for c in self.cards]
+        self.card_types = [c.card_type.name for c in self.cards]
 
         self.n_reds = len([c for c in self.cards if c.color == CardColor.red])
         self.n_yellows = len([c for c in self.cards if c.color == CardColor.yellow])
@@ -100,10 +109,10 @@ class Deck:
         self.in_deck = len(self.cards)
         self.non_blocking = len([c for c in self.cards if c.defense == 0])
         self.attack_actions = len(
-            [c for c in self.cards if c.type.name == "attack_action"]
+            [c for c in self.cards if c.card_type.name == "attack_action"]
         )
         self.non_attack_actions = len(
-            [c for c in self.cards if c.type.name == "non_attack_action"]
+            [c for c in self.cards if c.card_type.name == "non_attack_action"]
         )
 
         # averages
@@ -111,7 +120,7 @@ class Deck:
         self.pitch_avg = np.mean([c.pitch for c in self.cards])
         # TODO is this power avg only for attack action cards ir all cards?!
         self.power_avg = np.mean(
-            [c.power for c in self.cards if c.type.name == "attack_action"]
+            [c.power for c in self.cards if c.card_type.name == "attack_action"]
         )
         self.defense_avg = np.mean([c.defense for c in self.cards if c.defense > 0])
 
