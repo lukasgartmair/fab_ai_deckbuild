@@ -12,6 +12,7 @@ from deck import Deck
 from pile import Pile
 from enum import Enum
 from playstyle import Keywords
+from card import CardType
 
 from fantasynames.fantasy_identity import FantasyIdentity
 
@@ -58,6 +59,9 @@ class Enemy:
         self.arsenal = []
         self.weapon_zone_1 = []
         self.weapon_zone_2 = []
+
+        self.further_attack_possible = True
+        self.further_defense_possible = True
 
         self.floating_resources = 0
 
@@ -202,53 +206,59 @@ class Enemy:
             np.random.shuffle(virtual_hand)
 
         virtual_hand = sorted(
-            virtual_hand, key=lambda x: x.keyword.value, reverse=False
+            virtual_hand, key=lambda x: x.keywords[0].value, reverse=False
         )
 
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
             if len(virtual_hand_tmp) > 0:
                 current_card = virtual_hand_tmp[0]
-                possible_cards_to_pitch = self.get_combinations(virtual_hand_tmp, 0)
 
-                pitch_combinations = {}
-                for j, pi in enumerate(possible_cards_to_pitch):
-                    pitch_total = 0
-                    for p in pi:
-                        pitch_total += p.pitch
+                if current_card.card_type in [
+                    CardType.attack_action,
+                    CardType.non_attack_action,
+                    CardType.attack_reaction,
+                ]:
+                    possible_cards_to_pitch = self.get_combinations(virtual_hand_tmp, 0)
 
-                    pitch_combinations[pi] = pitch_total
+                    pitch_combinations = {}
+                    for j, pi in enumerate(possible_cards_to_pitch):
+                        pitch_total = 0
+                        for p in pi:
+                            pitch_total += p.pitch
 
-                if current_card.cost > 0:
-                    cards_to_pitch = self.determine_pitch_combination(
-                        current_card.cost, pitch_combinations
-                    )
+                        pitch_combinations[pi] = pitch_total
 
-                    if len(cards_to_pitch) == 0:
-                        print("no pitch possible")
-                        virtual_hand = shift_list(virtual_hand_tmp)
-                        continue
+                    if current_card.cost > 0:
+                        cards_to_pitch = self.determine_pitch_combination(
+                            current_card.cost, pitch_combinations
+                        )
+
+                        if len(cards_to_pitch) == 0:
+                            print("no pitch possible")
+                            virtual_hand = shift_list(virtual_hand_tmp)
+                            continue
+                        else:
+                            self.combat_chain[combat_chain_index] = {
+                                "attack": current_card,
+                                "pitch": cards_to_pitch,
+                            }
+                            combat_chain_index += 1
+
+                            virtual_hand_tmp.remove(current_card)
+                            for p in cards_to_pitch:
+                                virtual_hand_tmp.remove(p)
                     else:
                         self.combat_chain[combat_chain_index] = {
                             "attack": current_card,
-                            "pitch": cards_to_pitch,
+                            "pitch": [],
                         }
                         combat_chain_index += 1
 
                         virtual_hand_tmp.remove(current_card)
-                        for p in cards_to_pitch:
-                            virtual_hand_tmp.remove(p)
+
                 else:
-                    self.combat_chain[combat_chain_index] = {
-                        "attack": current_card,
-                        "pitch": [],
-                    }
-                    combat_chain_index += 1
-
-                    virtual_hand_tmp.remove(current_card)
-
-            else:
-                break
+                    break
 
     def attack(self):
         print("enemy attacking")
@@ -260,7 +270,9 @@ class Enemy:
         ):
             if (
                 self.combat_chain_iterator == 0
-                or self.combat_chain[self.combat_chain_iterator - 1]["attack"].keyword
+                or self.combat_chain[self.combat_chain_iterator - 1]["attack"].keywords[
+                    0
+                ]
                 == Keywords.go_again
             ):
                 c = self.combat_chain[self.combat_chain_iterator]["attack"]

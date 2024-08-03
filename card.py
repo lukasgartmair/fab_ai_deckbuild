@@ -70,7 +70,7 @@ class Card:
         self.defense = 0
         self.pitch = 0
         self.color = 0
-        self.keyword = None
+        self.keywords = []
         self.image = generate_rnd_image()
         self.calc_card_values()
 

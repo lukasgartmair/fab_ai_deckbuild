@@ -80,7 +80,7 @@ class Deck:
         indices = list(range(len(self.cards)))
         random.shuffle(indices)
         for i, card in enumerate(self.cards):
-            card.keyword = keyword_distribution[indices[i]]
+            card.keywords = [keyword_distribution[indices[i]]]
 
         print("deck contents:")
         for i, c in enumerate(self.cards):
@@ -98,7 +98,7 @@ class Deck:
         self.pitches = [c.pitch for c in self.cards]
         self.costs = [c.cost for c in self.cards]
 
-        self.keywords = [c.keyword for c in self.cards if c is not None]
+        self.keywords = [c.keywords for c in self.cards if c is not None]
         print(self.keywords)
         print(len(self.keywords))
 

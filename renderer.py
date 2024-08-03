@@ -142,7 +142,7 @@ class Renderer:
 
         # KEYWORDS
         factor_keyword = 1.6
-        if current_card.keyword.name != "none":
+        if current_card.keywords[0].name != "none":
             self.rect = pygame.draw.rect(
                 self.window,
                 "green",
@@ -154,7 +154,9 @@ class Renderer:
                 ),
             )
 
-            text = font_card_title.render(str(current_card.keyword.name), True, "black")
+            text = font_card_title.render(
+                str(current_card.keywords[0].name), True, "black"
+            )
 
             self.window.blit(
                 text,
