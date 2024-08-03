@@ -8,6 +8,21 @@ Created on Tue Jul 16 15:16:25 2024
 from enum import Enum
 
 
+class PlayerClasses(Enum):
+    ninja = 0
+    ranger = 1
+    brute = 2
+    mechanologist = 3
+    runeblade = 4
+    wizard = 5
+    warrior = 6
+    guardian = 7
+    illusionist = 8
+    merchant = 9
+    shapeshifter = 10
+    bard = 11
+
+
 class Keywords(Enum):
     go_again = 0
     dominate = 1

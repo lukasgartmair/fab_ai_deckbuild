@@ -11,9 +11,9 @@ import itertools
 from deck import Deck
 from pile import Pile
 from enum import Enum
-from playstyle import Keywords
+from playstyle import Keywords, PlayerClasses
 from card import CardType
-
+import random
 from fantasynames.fantasy_identity import FantasyIdentity
 
 VALUE_MAX_PLACEHOLDER = 100
@@ -46,6 +46,7 @@ class Enemy:
         self.name = self.identity.name
         self.race = self.identity.race
         self.image = self.identity.image
+        self.player_class = random.choice(list(PlayerClasses))
         self.stance = Stance.defend
         self.intellect = 4
         self.life = 20
@@ -314,7 +315,7 @@ class Enemy:
             return None
 
     def get_cards_not_intended_to_be_used_in_combat_chain(self):
-        return [
+        unused_cards = [
             c
             for c in self.hand
             if (
@@ -322,6 +323,12 @@ class Enemy:
                 and c not in [cp["pitch"] for cp in self.combat_chain.values()]
             )
         ]
+
+        # put defensive reactions in front
+        unused_cards = sorted(
+            unused_cards, key=lambda x: x.card_type.value, reverse=True
+        )
+        return unused_cards
 
     def more_elaborate_block_with_unused_cards(self, player_attack):
         val_0 = 3

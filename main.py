@@ -24,7 +24,7 @@ class Game:
         self.engine = GameEngine()
         pygame.display.set_caption(
             "Fight against the {} '{}'".format(
-                self.engine.enemy.race, self.engine.enemy.name
+                self.engine.enemy.player_classname.lower(), self.engine.enemy.name
             )
         )
 
