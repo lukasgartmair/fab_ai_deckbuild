@@ -79,9 +79,6 @@ class Deck:
 
         indices = list(range(len(self.cards)))
         random.shuffle(indices)
-        print(len(indices))
-        print(keyword_distribution)
-        print(len(self.cards))
         for i, card in enumerate(self.cards):
             card.keyword = keyword_distribution[indices[i]]
 

@@ -11,6 +11,7 @@ import itertools
 from deck import Deck
 from pile import Pile
 from enum import Enum
+from playstyle import Keywords
 
 from fantasynames.fantasy_identity import FantasyIdentity
 
@@ -90,6 +91,9 @@ class Enemy:
 
         self.combat_chain_iterator = 0
 
+        self.further_attack_possible = True
+        self.further_defense_possible = True
+
         if self.stance == Stance.attack:
             self.pitch = []
             self.draw()
@@ -107,20 +111,16 @@ class Enemy:
 
     def check_if_further_defense_possible(self):
         if len(self.hand) == 0:
-            return False
-        else:
-            return True
+            self.further_defense_possible = False
 
     def check_if_further_attack_possible(self):
         print(self.combat_chain)
-        attack_possible = True
         if (
             len(self.combat_chain) == 0
             or self.combat_chain_iterator > len(self.combat_chain)
             or len(self.hand) == 0
         ):
-            attack_possible = False
-        return attack_possible
+            self.further_attack_possible = False
 
     def draw(self):
         print("enemy is drawing")
@@ -201,6 +201,10 @@ class Enemy:
         else:
             np.random.shuffle(virtual_hand)
 
+        virtual_hand = sorted(
+            virtual_hand, key=lambda x: x.keyword.value, reverse=False
+        )
+
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
             if len(virtual_hand_tmp) > 0:
@@ -254,34 +258,42 @@ class Enemy:
             len(self.combat_chain) > 0
             and self.combat_chain_iterator in self.combat_chain
         ):
-            c = self.combat_chain[self.combat_chain_iterator]["attack"]
-            print(c.name)
-            print("power: {}".format(c.power))
-            print("cost: {}".format(c.cost))
-            print("pitch")
-            pitch = self.combat_chain[self.combat_chain_iterator]["pitch"]
-            if len(pitch) > 0:
+            if (
+                self.combat_chain_iterator == 0
+                or self.combat_chain[self.combat_chain_iterator - 1]["attack"].keyword
+                == Keywords.go_again
+            ):
+                c = self.combat_chain[self.combat_chain_iterator]["attack"]
+                print(c.name)
+                print("power: {}".format(c.power))
+                print("cost: {}".format(c.cost))
+                print("pitch")
+                pitch = self.combat_chain[self.combat_chain_iterator]["pitch"]
+                if len(pitch) > 0:
+                    for p in pitch:
+                        print(str(p))
+
                 for p in pitch:
-                    print(str(p))
+                    self.pitched_cards.append(p)
 
-            for p in pitch:
-                self.pitched_cards.append(p)
+                    self.floating_resources += p.pitch
 
-                self.floating_resources += p.pitch
+                self.played_cards.append(c)
 
-            self.played_cards.append(c)
+                for p in self.played_cards:
+                    if p in self.hand:
+                        self.hand.remove(p)
 
-            for p in self.played_cards:
-                if p in self.hand:
-                    self.hand.remove(p)
+                for p in self.pitched_cards:
+                    if p in self.hand:
+                        self.hand.remove(p)
 
-            for p in self.pitched_cards:
-                if p in self.hand:
-                    self.hand.remove(p)
+                self.floating_resources -= c.cost
 
-            self.floating_resources -= c.cost
+                self.combat_chain_iterator += 1
 
-            self.combat_chain_iterator += 1
+            else:
+                self.further_attack_possible = False
 
     def placeholder_block(self):
         if len(self.hand) > 0:

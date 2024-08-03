@@ -142,26 +142,27 @@ class Renderer:
 
         # KEYWORDS
         factor_keyword = 1.6
-        self.rect = pygame.draw.rect(
-            self.window,
-            "green",
-            (
-                width_references[str(i)],
-                height_references[0] + card_height // factor_keyword,
-                card_width * 0.75,
-                25,
-            ),
-        )
+        if current_card.keyword.name != "none":
+            self.rect = pygame.draw.rect(
+                self.window,
+                "green",
+                (
+                    width_references[str(i)],
+                    height_references[0] + card_height // factor_keyword,
+                    card_width * 0.75,
+                    25,
+                ),
+            )
 
-        text = font_card_title.render(str(current_card.keyword), True, "black")
+            text = font_card_title.render(str(current_card.keyword.name), True, "black")
 
-        self.window.blit(
-            text,
-            (
-                width_references[str(i)],
-                height_references[0] + card_height // factor_keyword,
-            ),
-        )
+            self.window.blit(
+                text,
+                (
+                    width_references[str(i)],
+                    height_references[0] + card_height // factor_keyword,
+                ),
+            )
 
         # TYPE
         self.rect = pygame.draw.rect(

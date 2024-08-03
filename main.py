@@ -100,7 +100,8 @@ class Game:
 
                 if self.engine.enemy.stance == Stance.defend:
                     for inp_box in self.input_boxes:
-                        inp_box.render()
+                        if inp_box.box_type == "physical":
+                            inp_box.render()
 
             self.renderer.render_floating_resources()
 
