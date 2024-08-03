@@ -96,7 +96,7 @@ class Game:
 
                         if self.engine.state == GameState.playing:
                             self.engine.enemy.finish_phase()
-                            self.renderer.render_background()
+                            self.attack.reset()
 
                             self.renderer.render_background()
                             self.renderer.render()
