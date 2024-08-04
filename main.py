@@ -95,6 +95,7 @@ class Game:
 
                                 for inp_box in self.input_boxes:
                                     inp_box.reset()
+                                    self.attack.reset()
                                 if self.renderer.check_box_dominate.isChecked() == True:
                                     self.renderer.check_box_dominate.convert()
                                 self.modifiers.reset()
