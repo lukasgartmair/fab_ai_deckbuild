@@ -11,8 +11,7 @@ import itertools
 from deck import Deck
 from pile import Pile
 from enum import Enum
-from playstyle import Keywords, PlayerClasses
-from card import CardType
+from playstyle import Keywords, PlayerClasses, CardType
 import random
 from fantasynames.fantasy_identity import FantasyIdentity
 
@@ -48,7 +47,7 @@ class Enemy:
         self.image = self.identity.image
         self.player_class = random.choice(list(PlayerClasses))
         self.stance = Stance.defend
-        self.intellect = 4
+        self.intellect = 5
         self.talents = []
         self.life = 20
         self.hand = []

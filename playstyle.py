@@ -23,6 +23,7 @@ class PlayerClasses(Enum):
     bard = 11
     generic = 12
 
+
 class Keywords(Enum):
     go_again = 0
     dominate = 1
@@ -30,16 +31,28 @@ class Keywords(Enum):
     none = 3
 
 
+class CardType(Enum):
+    non_attack_action = 0
+    attack_action = 1
+    attack_reaction = 2
+    defensive_reaction = 3
+
+
 class Playstyle:
     def __init__(self):
         self.strategy_parameters = {"mu": 4, "sigma": 3}
-
+        self.card_type_ratios = {
+            "non_attack_action": 15,
+            "attack_action": 60,
+            "attack_reaction": 15,
+            "defensive_reaction": 10,
+        }
         self.keywords = list(Keywords)
         self.keyword_ratios = {
-            "none": 25,
-            "go_again": 25,
-            "dominate": 25,
-            "intimidate": 25,
+            "go_again": 75,
+            "dominate": 20,
+            "intimidate": 0,
+            "none": 5,
         }
 
     def __str__(self):
@@ -59,10 +72,10 @@ class Aggressive(Playstyle):
         self.strategy_parameters = {"mu": 4, "sigma": 2}
         self.keywords = list(Keywords)
         self.keyword_ratios = {
-            "none": 0,
-            "go_again": 50,
-            "dominate": 50,
+            "go_again": 65,
+            "dominate": 15,
             "intimidate": 0,
+            "none": 20,
         }
 
 

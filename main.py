@@ -114,7 +114,7 @@ class Game:
                                 self.renderer.check_box_dominate.convert()
 
                             self.modifiers.reset()
-                            
+
                             self.renderer.render_background()
                             self.renderer.render()
 

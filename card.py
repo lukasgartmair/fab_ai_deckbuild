@@ -36,13 +36,6 @@ def generate_rnd_image():
     return pygame.surfarray.make_surface(img)
 
 
-class CardType(Enum):
-    non_attack_action = 0
-    attack_action = 1
-    attack_reaction = 2
-    defensive_reaction = 3
-
-
 class CardColor(Enum):
     red = (0,)
     yellow = (1,)
@@ -62,26 +55,25 @@ defensive_values = {
 
 
 class Card:
-    def __init__(self, power):
+    def __init__(self):
         self.card_id = next(id_iter)
         self.name = generate_rnd_name()
-        self.card_type = np.random.choice(list(CardType))
+        self.card_type = None
         self.card_class = PlayerClasses.generic
         self.cost = 0
-        self.power = power
+        self.power = 0
         self.defense = 0
         self.pitch = 0
         self.color = 0
         self.keywords = []
         self.image = generate_rnd_image()
-        self.calc_card_values()
 
     def __str__(self):
         return "Card {} -'{}' with power {} / defense {} / pitch {} / cost {}".format(
             self.card_id, self.name, self.power, self.defense, self.pitch, self.cost
         )
 
-    def calc_card_values(self):
+    def calc_values(self):
         # (Power (6) + Defense (3) + Pi
         # https://fab.cardsrealm.com/en-us/articles/guide-everything-about-value-and-turn-cycle-in-flesh-and-bloodtch (1)) - Cost (2) = 8
 
@@ -89,7 +81,6 @@ class Card:
         self.pitch = pitch_values[self.color.name]
         self.defense = defensive_values[self.card_type.name]
 
-        if self.card_type == "attack_action":
-            self.cost = self.power + self.defense + self.pitch - TARGET_VALUE
-            if self.cost < 0:
-                self.cost = 0
+        self.cost = self.power + self.defense + self.pitch - TARGET_VALUE
+        if self.cost < 0:
+            self.cost = 0

@@ -55,8 +55,6 @@ class Renderer:
             "black", 400, 150, 25, 25, font="z003", text="dominate", outline=3
         )
 
-        
-
     def render_background(self):
         self.window.blit(self.background, (0, 0))
 
@@ -160,9 +158,7 @@ class Renderer:
             ),
         )
 
-        text = font_card_title.render(
-            str(current_card.card_class.name), True, "white"
-        )
+        text = font_card_title.render(str(current_card.card_class.name), True, "white")
 
         self.window.blit(
             text,

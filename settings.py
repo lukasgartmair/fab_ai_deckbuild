@@ -49,10 +49,11 @@ height_reference_1 = int(height / 2)
 height_references = {0: height_reference_0, 1: height_reference_1}
 
 divider = 7
-width_reference_0 = int(width / divider)
-width_reference_1 = int(width / divider) * 2
-width_reference_2 = int(width / divider) * 3
-width_reference_3 = int(width / divider) * 4
+width_reference_0 = 20
+width_reference_1 = int(width / divider) * 1
+width_reference_2 = int(width / divider) * 2
+width_reference_3 = int(width / divider) * 3
+width_reference_4 = int(width / divider) * 4
 
 width_reference_pitch = int(width / divider) * 5
 
@@ -64,6 +65,7 @@ width_references = {
     "1": width_reference_1,
     "2": width_reference_2,
     "3": width_reference_3,
+    "4": width_reference_4,
     "pile": width_reference_pile,
     "pitch": width_reference_pitch,
     "hand": width_reference_hand,

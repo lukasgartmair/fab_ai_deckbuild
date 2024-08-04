@@ -11,7 +11,7 @@ import random
 import matplotlib.pyplot as plt
 from beautifultable import beautifultable
 import seaborn as sns
-from playstyle import Keywords, PlayerClasses
+from playstyle import Keywords, PlayerClasses, CardType
 
 sns.set_style("white")
 
@@ -19,6 +19,7 @@ from card import Card, CardColor
 import playstyle
 
 DECK_SIZE = 50
+
 
 def n_chance(p=0.85):
     if np.random.rand() < p:
@@ -34,7 +35,7 @@ def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
         playstyle_obj.strategy_parameters["sigma"],
     )
     s = np.random.normal(mu, sigma, n)
-    s = [np.round(si).astype(int) for si in s if si > 0]
+    s = [np.round(si).astype(int) if si > 0 else 0 for si in s]
 
     plot = False
     if plot:
@@ -54,8 +55,18 @@ def calc_keyword_distribution(playstyle_obj, n=DECK_SIZE):
     )
     return sampled_keywords
 
+
+def calc_card_type_distribution(playstyle_obj, n=DECK_SIZE):
+    sampled_card_types = random.choices(
+        list(CardType), weights=playstyle_obj.card_type_ratios.values(), k=n
+    )
+    return sampled_card_types
+
+
 class Deck:
-    def __init__(self, player_class=PlayerClasses.generic, playstyle=playstyle.Playstyle()):
+    def __init__(
+        self, player_class=PlayerClasses.generic, playstyle=playstyle.Playstyle()
+    ):
         self.n_cards = DECK_SIZE
         self.cards = []
         self.stats = {}
@@ -77,22 +88,24 @@ class Deck:
     def build_deck(self):
         power_distribution = calc_power_distribution(self.playstyle)
         power_distribution = [1 if x == 0 else x for x in power_distribution]
-
         keyword_distribution = calc_keyword_distribution(self.playstyle)
+        card_type_distribution = calc_card_type_distribution(self.playstyle)
 
-        self.cards = [
-            Card(np.random.choice(power_distribution)) for n in range(self.n_cards)
-        ]
-        
+        self.cards = [Card() for n in range(self.n_cards)]
+
         for c in self.cards:
-            if n_chance(p=0.4):   
+            if n_chance(p=0.4):
                 print(self.player_class)
                 c.card_class = self.player_class
 
         indices = list(range(len(self.cards)))
         random.shuffle(indices)
         for i, card in enumerate(self.cards):
+            card.power = power_distribution[indices[i]]
             card.keywords = [keyword_distribution[indices[i]]]
+            card.card_type = card_type_distribution[indices[i]]
+
+            card.calc_values()
 
         print("deck contents:")
         for i, c in enumerate(self.cards):
