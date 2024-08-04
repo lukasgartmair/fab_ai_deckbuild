@@ -1,7 +1,7 @@
 Experimental Flesh and Blood enemy engine, that is able to sample random generated decks based on certain strategies and
 determine the "optimal" moves for each hand in order to provide a quasi-human enemy experience / a practice dummy whatever. 
 
-For now all enemy cards are attack actions and have go again - to be changed
+For now the missing arsenal is simply addressed by intellect 5 for the enemy.
 
 Playing manual:
 

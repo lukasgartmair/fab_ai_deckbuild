@@ -383,7 +383,7 @@ class Enemy:
 
                 case player_attack.physical if val_0 + 11 <= player_attack.physical:
                     print("attack blocked with {} cards".format(len(self.hand)))
-                    return self.hand[:]
+                    return self.hand[:4]
                 case _:
                     return []
         else:
