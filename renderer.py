@@ -170,7 +170,7 @@ class Renderer:
 
         # KEYWORDS
         factor_keyword = 1.6
-        if current_card.keywords[0].name != "none":
+        if current_card.keywords[0].name != "no_keyword":
             self.rect = pygame.draw.rect(
                 self.window,
                 "green",

@@ -52,12 +52,11 @@ class Playstyle:
             "go_again": 75,
             "dominate": 20,
             "intimidate": 0,
-            "none": 5,
+            "no_keyword": 5,
         }
 
     def __str__(self):
         return type(self).__name__
-
 
 strategy_parameters = {
     "aggressive": {"mu": 4, "sigma": 2},
@@ -70,12 +69,11 @@ class Aggressive(Playstyle):
     def __init__(self):
         super().__init__()
         self.strategy_parameters = {"mu": 4, "sigma": 2}
-        self.keywords = list(Keyword)
+        self.keywords = [Keyword.go_again, Keyword.dominate, Keyword.none]
         self.keyword_ratios = {
             "go_again": 65,
             "dominate": 15,
-            "intimidate": 0,
-            "none": 20,
+            "no_keyword": 20,
         }
 
 
