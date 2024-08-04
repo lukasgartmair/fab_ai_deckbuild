@@ -8,7 +8,7 @@ Created on Tue Jul 16 15:16:25 2024
 from enum import Enum
 
 
-class PlayerClasses(Enum):
+class PlayerClass(Enum):
     ninja = 0
     ranger = 1
     brute = 2
@@ -21,10 +21,10 @@ class PlayerClasses(Enum):
     # merchant = 9
     # shapeshifter = 10
     # bard = 11
-    generic = 12
+    generic = 9
 
 
-class Keywords(Enum):
+class Keyword(Enum):
     go_again = 0
     dominate = 1
     intimidate = 2
@@ -47,7 +47,7 @@ class Playstyle:
             "attack_reaction": 15,
             "defensive_reaction": 10,
         }
-        self.keywords = list(Keywords)
+        self.keywords = list(Keyword)
         self.keyword_ratios = {
             "go_again": 75,
             "dominate": 20,
@@ -70,7 +70,7 @@ class Aggressive(Playstyle):
     def __init__(self):
         super().__init__()
         self.strategy_parameters = {"mu": 4, "sigma": 2}
-        self.keywords = list(Keywords)
+        self.keywords = list(Keyword)
         self.keyword_ratios = {
             "go_again": 65,
             "dominate": 15,
@@ -83,5 +83,5 @@ class Ninjalike(Playstyle):
     def __init__(self):
         super().__init__()
         self.strategy_parameters = {"mu": 3, "sigma": 2}
-        self.keywords = [Keywords.go_again]
+        self.keywords = [Keyword.go_again]
         self.keyword_ratios = {"go_again": 100}

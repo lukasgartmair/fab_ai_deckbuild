@@ -11,7 +11,9 @@ import itertools
 from deck import Deck
 from pile import Pile
 from enum import Enum
-from playstyle import Keywords, PlayerClasses, CardType
+from playstyle import Keyword, PlayerClass, CardType
+from equipment import EquipmentSuite
+from weapon import Weapon
 import random
 from fantasynames.fantasy_identity import FantasyIdentity
 
@@ -45,7 +47,7 @@ class Enemy:
         self.name = self.identity.name
         self.race = self.identity.race
         self.image = self.identity.image
-        self.player_class = random.choice(list(PlayerClasses))
+        self.player_class = random.choice(list(PlayerClass))
         self.stance = Stance.defend
         self.intellect = 5
         self.talents = []
@@ -58,8 +60,11 @@ class Enemy:
         self.graveyard = []
         self.banished_zone = []
         self.arsenal = []
-        self.weapon_zone_1 = []
+
+        self.weapon_zone_1 = Weapon()
         self.weapon_zone_2 = []
+
+        self.equipment_suite = EquipmentSuite()
 
         self.further_attack_possible = True
         self.further_defense_possible = True
@@ -274,7 +279,7 @@ class Enemy:
                 or self.combat_chain[self.combat_chain_iterator - 1]["attack"].keywords[
                     0
                 ]
-                == Keywords.go_again
+                == Keyword.go_again
             ):
                 c = self.combat_chain[self.combat_chain_iterator]["attack"]
                 print(c.name)
