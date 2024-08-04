@@ -18,9 +18,9 @@ class PlayerClasses(Enum):
     warrior = 6
     guardian = 7
     illusionist = 8
-    merchant = 9
-    shapeshifter = 10
-    bard = 11
+    # merchant = 9
+    # shapeshifter = 10
+    # bard = 11
     generic = 12
 
 

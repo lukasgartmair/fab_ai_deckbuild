@@ -363,6 +363,9 @@ class Enemy:
                         return self.hand[:2]
                 case player_attack.physical if val_0 + 7 <= player_attack.physical < val_0 + 11:
                     print("attack blocked with {} cards".format(len(self.hand[:3])))
+                    unused_cards = (
+                        self.get_cards_not_intended_to_be_used_in_combat_chain()
+                    )
                     if len(unused_cards) == 1:
                         return (
                             unused_cards
