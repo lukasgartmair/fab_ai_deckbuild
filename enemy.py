@@ -111,7 +111,7 @@ class Enemy:
         if "intimidated_cards" in self.banished_zone:
             self.hand += self.banished_zone["intimidated_cards"]
 
-            self.banished_zone = {}
+            self.banished_zone["intimidated_cards"] = []
 
         if self.stance == Stance.attack:
             self.pitch = []
