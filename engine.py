@@ -36,12 +36,11 @@ class Attack:
 
 class Modifiers:
     def __init__(self):
-        self.dominate = False
-        self.intimidate = False
+        self.modifier_dict = {"dominate":False, "intimidate":False}
 
     def reset(self):
-        self.dominate = False
-        self.intimidate = False
+        self.modifier_dict = {"dominate":False, "intimidate":False}
+
 
 
 class GameState(Enum):

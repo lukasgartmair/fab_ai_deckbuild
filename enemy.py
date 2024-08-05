@@ -58,7 +58,7 @@ class Enemy:
         self.original_deck = Deck(self.player_class)
         self.deck = self.original_deck.cards
         self.graveyard = []
-        self.banished_zone = []
+        self.banished_zone = {}
         self.arsenal = []
 
         self.weapon_zone_1 = Weapon()
@@ -103,6 +103,11 @@ class Enemy:
 
         self.further_attack_possible = True
         self.further_defense_possible = True
+        
+        if "intimidated_cards" in self.banished_zone:
+            self.hand += self.banished_zone["intimidated_cards"]
+            
+        self.banished_zone = {}
 
         if self.stance == Stance.attack:
             self.pitch = []
@@ -419,6 +424,7 @@ class Enemy:
                     return []
         else:
             return []
+        
 
     def get_block(self, player_attack):
         return self.more_elaborate_block_with_unused_cards(player_attack)
@@ -427,12 +433,27 @@ class Enemy:
         print("enemy defending")
         print(player_attack)
         if len(self.hand) > 0:
+            
+            if modifiers.modifier_dict["intimidate"] == True:
+                random_banished_card = random.choice(self.hand)
+                if "intimidated_cards" not in self.banished_zone:
+                    self.banished_zone["intimidated_cards"] = []
+                    
+                self.banished_zone["intimidated_cards"].append(random_banished_card)
+                self.hand.remove(random_banished_card)
+                    
+            
+            
             print(player_attack.physical)
             blocking_cards = self.get_block(player_attack)
             print(blocking_cards)
             if len(blocking_cards) > 0:
-                if modifiers.dominate == True:
+                
+                if modifiers.modifier_dict["dominate"] == True:
                     blocking_cards = blocking_cards[:1]
+                
+                print("banished zone")
+                print(self.banished_zone)
 
                 for bc in blocking_cards:
                     print(bc)

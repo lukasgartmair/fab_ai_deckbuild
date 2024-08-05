@@ -65,15 +65,18 @@ class Game:
                     inp_box.check_activation(event)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.renderer.check_box_dominate.isOver(pygame.mouse.get_pos()):
-                        self.renderer.check_box_dominate.convert()
-                        self.renderer.render_background()
-                        self.renderer.render()
+                        for check_box in self.renderer.check_boxes:
 
-                if self.renderer.check_box_dominate.isChecked() == True:
-                    self.modifiers.dominate = True
-                else:
-                    self.modifiers.dominate = False
+                            if check_box.cb.isOver(pygame.mouse.get_pos()):
+                                check_box.check_activation()
+                                self.renderer.render_background()
+                                self.renderer.render()
+
+                for check_box in self.renderer.check_boxes:
+                    if check_box.cb.isChecked() == True:
+                        self.modifiers.modifier_dict[check_box.name] = True
+                    else:
+                        self.modifiers.modifier_dict[check_box.name] = False
 
                 if event.type == pygame.KEYDOWN:
                     for inp_box in self.input_boxes:
@@ -96,8 +99,9 @@ class Game:
                                 for inp_box in self.input_boxes:
                                     inp_box.reset()
                                     self.attack.reset()
-                                if self.renderer.check_box_dominate.isChecked() == True:
-                                    self.renderer.check_box_dominate.convert()
+                                for check_box in self.renderer.check_boxes:
+                                    check_box.reset()
+                                    
                                 self.modifiers.reset()
 
                             else:
@@ -111,8 +115,8 @@ class Game:
                         if self.engine.state == GameState.playing:
                             self.engine.enemy.finish_phase()
                             self.attack.reset()
-                            if self.renderer.check_box_dominate.isChecked() == True:
-                                self.renderer.check_box_dominate.convert()
+                            for check_box in self.renderer.check_boxes:
+                                check_box.check_activation()
 
                             self.modifiers.reset()
 
@@ -123,8 +127,9 @@ class Game:
                     for inp_box in self.input_boxes:
                         if inp_box.box_type == "physical":
                             inp_box.render()
-
-                    self.renderer.check_box_dominate.draw(self.renderer.window)
+                            
+                    for check_box in self.renderer.check_boxes:
+                        check_box.cb.draw(self.renderer.window)
 
             self.renderer.render_floating_resources()
 

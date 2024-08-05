@@ -7,8 +7,9 @@ Created on Mon Jul 29 19:03:39 2024
 """
 
 import pygame
-import PygameUtils as pu
+
 from card import card_colors
+from check_box import CheckBox
 from enemy import Stance
 from engine import GameState
 from input_box import InputBox
@@ -51,9 +52,12 @@ class Renderer:
             (int(card_width * card_scale), int(card_height * card_scale)),
         )
 
-        self.check_box_dominate = pu.checkbox(
-            "black", 400, 150, 25, 25, font="z003", text="dominate", outline=3
-        )
+        self.check_box_dominate = CheckBox("dominate")
+        
+        self.check_box_intimidate = CheckBox("intimidate",y=100)
+
+        self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
+        
 
     def render_background(self):
         self.window.blit(self.background, (0, 0))
@@ -107,6 +111,13 @@ class Renderer:
             text,
             (width_references["hand"], height_references[0] + text_offset_piles * 2),
         )
+        
+    def render_banished_zone(self):
+        text = font.render(str(len(self.engine.enemy.banished_zone)) + " banished", True, "white")
+        self.window.blit(
+            text, (width_references["banished"], height_references[0]*2)
+        )
+
 
     def render_pitch_pile(self):
         if len(self.engine.enemy.pitched_cards) > 0:
@@ -317,6 +328,8 @@ class Renderer:
         self.render_deck_pile()
 
         self.render_hand()
+        
+        self.render_banished_zone()
 
         self.render_pitch_pile()
 

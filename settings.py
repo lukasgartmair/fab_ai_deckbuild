@@ -69,6 +69,7 @@ width_references = {
     "pile": width_reference_pile,
     "pitch": width_reference_pitch,
     "hand": width_reference_hand,
+    "banished" : width_reference_pile - 40 
 }
 
 text_offset_piles = -100
