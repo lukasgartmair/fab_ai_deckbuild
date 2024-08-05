@@ -106,16 +106,22 @@ class Game:
                             else:
                                 self.engine.play()
 
-                        self.renderer.render_background()
-                        self.renderer.render()
+                            self.renderer.render_background()
+                            self.renderer.render()
 
                     if event.key == pygame.K_RETURN:
                         self.renderer.render()
                         if self.engine.state == GameState.playing:
                             self.engine.enemy.finish_phase()
-                            self.attack.reset()
+
+                            for inp_box in self.input_boxes:
+                                inp_box.reset()
+                                self.attack.reset()
+
                             for check_box in self.renderer.check_boxes:
-                                check_box.check_activation()
+                                check_box.reset()
+
+                            self.attack.reset()
 
                             self.modifiers.reset()
 
