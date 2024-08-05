@@ -7,7 +7,7 @@ Created on Sun Jul 21 19:48:35 2024
 """
 
 import pygame
-from engine import Attack
+from attack import Attack
 
 pygame.font.init()
 font_size = 25

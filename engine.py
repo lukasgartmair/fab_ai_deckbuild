@@ -14,34 +14,6 @@ from statemachine import StateMachine
 from statemachine.states import States
 
 
-class Attack:
-    def __init__(self):
-        self.physical = None
-        self.arcane = None
-
-    def reset(self):
-        self.physical = None
-        self.arcane = None
-
-    def set_values(self, inp_box):
-        if inp_box.box_type == "physical":
-            self.physical = inp_box.send_input()
-            print("self.physical")
-            print(self.physical)
-        elif inp_box.box_type == "arcane":
-            self.arcane = inp_box.send_input()
-            print("self.arcane")
-            print(self.arcane)
-
-
-class Modifiers:
-    def __init__(self):
-        self.modifier_dict = {"dominate": False, "intimidate": False}
-
-    def reset(self):
-        self.modifier_dict = {"dominate": False, "intimidate": False}
-
-
 class GameState(Enum):
     playing = 0
     ended = 1

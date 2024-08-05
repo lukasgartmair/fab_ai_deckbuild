@@ -14,8 +14,8 @@ from enemy import Stance
 from engine import GameState, GameEngine
 
 from renderer import Renderer
-from engine import Attack, Modifiers
-
+from attack import Attack
+from modifiers import Modifiers
 from settings import FPS
 
 

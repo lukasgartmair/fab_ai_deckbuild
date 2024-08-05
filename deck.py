@@ -17,14 +17,7 @@ from settings import DECK_SIZE
 sns.set_style("white")
 
 from card import Card, CardColor
-
-
-def n_chance(p=0.85):
-    if np.random.rand() < p:
-        return True
-    else:
-        print("chance triggered")
-        return False
+from utils import n_chance
 
 
 def calc_power_distribution(playstyle_obj, n=DECK_SIZE):

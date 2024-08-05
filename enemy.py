@@ -17,21 +17,9 @@ from weapon import Weapon
 import random
 from fantasynames.fantasy_identity import FantasyIdentity
 
+from utils import n_chance, shift_list
+
 VALUE_MAX_PLACEHOLDER = 100
-
-
-def n_chance(p=0.85):
-    if np.random.rand() < p:
-        return True
-    else:
-        print("chance triggered")
-        return False
-
-
-def shift_list(a):
-    x = a.pop()
-    a.insert(0, x)
-    return a
 
 
 class Stance(Enum):
@@ -220,9 +208,11 @@ class Enemy:
         else:
             np.random.shuffle(virtual_hand)
 
-        virtual_hand = sorted(
-            virtual_hand, key=lambda x: x.keywords[0].value, reverse=False
-        )
+        # play go agains first with a certain chance
+        if n_chance(p=0.50):
+            virtual_hand = sorted(
+                virtual_hand, key=lambda x: x.keywords[0].value, reverse=False
+            )
 
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
