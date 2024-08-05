@@ -128,7 +128,7 @@ class Renderer:
                 self.render_card("pitch", pc, width_references, height_references)
 
         text = font.render(
-            str(len(self.engine.enemy.pitched_cards)) + " pitched",
+            str(len(self.engine.enemy.pitched_cards)) + " pitch",
             True,
             "white",
         )
