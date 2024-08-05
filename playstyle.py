@@ -28,7 +28,7 @@ class Keyword(Enum):
     go_again = 0
     dominate = 1
     intimidate = 2
-    none = 3
+    no_keyword = 3
 
 
 class CardType(Enum):
@@ -70,7 +70,7 @@ class Aggressive(Playstyle):
     def __init__(self):
         super().__init__()
         self.strategy_parameters = {"mu": 4, "sigma": 2}
-        self.keywords = [Keyword.go_again, Keyword.dominate, Keyword.none]
+        self.keywords = [Keyword.go_again, Keyword.dominate, Keyword.no_keyword]
         self.keyword_ratios = {
             "go_again": 65,
             "dominate": 15,
