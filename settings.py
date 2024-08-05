@@ -10,7 +10,7 @@ import pygame
 
 FPS = 5
 
-CARD_RESOLUTION = 5
+CARD_RESOLUTION = 25
 
 width = 1600
 height = 900
