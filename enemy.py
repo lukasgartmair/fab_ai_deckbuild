@@ -62,6 +62,7 @@ class Enemy:
         self.deck = self.original_deck.cards
         self.graveyard = []
         self.banished_zone = {}
+        self.banished_zone["intimidated_cards"] = []
         self.arsenal = []
 
         self.weapon_zone_1 = Weapon()
@@ -110,7 +111,7 @@ class Enemy:
         if "intimidated_cards" in self.banished_zone:
             self.hand += self.banished_zone["intimidated_cards"]
 
-        self.banished_zone = {}
+            self.banished_zone = {}
 
         if self.stance == Stance.attack:
             self.pitch = []
@@ -437,8 +438,7 @@ class Enemy:
         if len(self.hand) > 0:
             if modifiers.modifier_dict["intimidate"] == True:
                 random_banished_card = random.choice(self.hand)
-                if "intimidated_cards" not in self.banished_zone:
-                    self.banished_zone["intimidated_cards"] = []
+                print(self.banished_zone["intimidated_cards"])
 
                 self.banished_zone["intimidated_cards"].append(random_banished_card)
                 self.hand.remove(random_banished_card)

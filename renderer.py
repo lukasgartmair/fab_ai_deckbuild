@@ -116,9 +116,10 @@ class Renderer:
         )
 
     def render_banished_zone(self):
-        text = font.render(
-            str(len(self.engine.enemy.banished_zone)) + " banished", True, "white"
-        )
+        n_banished_cards = 0
+        for k, v in self.engine.enemy.banished_zone.items():
+            n_banished_cards += len(v)
+        text = font.render(str(n_banished_cards) + " banished", True, "white")
         self.window.blit(text, (width_references["banished"], height_references[0] * 2))
 
     def render_pitch_pile(self):
