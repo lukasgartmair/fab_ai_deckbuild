@@ -40,6 +40,9 @@ class InputBox:
         if text_temp.isnumeric():
             return int(text_temp)
 
+    def has_text(self):
+        return self.text != ""
+
     def reset(self):
         self.color = "red"
         self.text = ""

@@ -90,7 +90,7 @@ class Game:
                         if self.engine.state == GameState.playing:
                             if self.engine.enemy.stance == Stance.defend:
                                 for inp_box in self.input_boxes:
-                                    if inp_box.text != "":
+                                    if inp_box.has_text():
                                         self.attack.set_values(inp_box)
 
                                 self.engine.play(self.attack, self.modifiers)
