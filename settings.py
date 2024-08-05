@@ -10,6 +10,8 @@ import pygame
 
 FPS = 5
 
+CARD_RESOLUTION = 5
+
 width = 1600
 height = 900
 bounds = (width, height)
@@ -30,10 +32,6 @@ card_height = 332
 card_width = 238
 
 card_scale = 0.75
-cardBack = pygame.image.load("images/card_back.png")
-cardBack = pygame.transform.scale(
-    cardBack, (int(card_width * card_scale), int(card_height * card_scale))
-)
 
 
 player_1_color = (249, 243, 153)
@@ -69,7 +67,7 @@ width_references = {
     "pile": width_reference_pile,
     "pitch": width_reference_pitch,
     "hand": width_reference_hand,
-    "banished" : width_reference_pile - 40 
+    "banished": width_reference_pile - 40,
 }
 
 text_offset_piles = -100

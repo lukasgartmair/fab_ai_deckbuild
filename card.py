@@ -13,6 +13,7 @@ import numpy as np
 from playstyle import PlayerClass
 from wonderwords import RandomSentence
 from randimage import get_random_image, show_array
+from settings import CARD_RESOLUTION
 
 id_iter = itertools.count()
 
@@ -29,7 +30,7 @@ def generate_rnd_name():
 
 
 def generate_rnd_image():
-    size = 100
+    size = CARD_RESOLUTION
     img_size = (size, size)
     img = get_random_image(img_size)
     img = 255 * img / img.max()

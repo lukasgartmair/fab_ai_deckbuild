@@ -65,12 +65,11 @@ class Game:
                     inp_box.check_activation(event)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                        for check_box in self.renderer.check_boxes:
-
-                            if check_box.cb.isOver(pygame.mouse.get_pos()):
-                                check_box.check_activation()
-                                self.renderer.render_background()
-                                self.renderer.render()
+                    for check_box in self.renderer.check_boxes:
+                        if check_box.cb.isOver(pygame.mouse.get_pos()):
+                            check_box.check_activation()
+                            self.renderer.render_background()
+                            self.renderer.render()
 
                 for check_box in self.renderer.check_boxes:
                     if check_box.cb.isChecked() == True:
@@ -101,7 +100,7 @@ class Game:
                                     self.attack.reset()
                                 for check_box in self.renderer.check_boxes:
                                     check_box.reset()
-                                    
+
                                 self.modifiers.reset()
 
                             else:
@@ -127,7 +126,7 @@ class Game:
                     for inp_box in self.input_boxes:
                         if inp_box.box_type == "physical":
                             inp_box.render()
-                            
+
                     for check_box in self.renderer.check_boxes:
                         check_box.cb.draw(self.renderer.window)
 

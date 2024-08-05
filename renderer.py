@@ -13,6 +13,8 @@ from check_box import CheckBox
 from enemy import Stance
 from engine import GameState
 from input_box import InputBox
+
+
 from settings import (
     player_1_color,
     player_2_color,
@@ -23,7 +25,6 @@ from settings import (
     card_height,
     card_width,
     card_scale,
-    cardBack,
     font_card_title,
     font,
     text_color,
@@ -39,25 +40,27 @@ class Renderer:
 
         self.engine = engine
 
-        self.background = pygame.image.load("images/bw5.png")
+        self.background = pygame.image.load("images/background.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )
 
         self.enemy_image = pygame.image.load(
-            "images/enemy_images/" + self.engine.enemy.image
+            "images/"
+            + self.engine.enemy.player_class.name
+            + "/"
+            + self.engine.enemy.image
         )
         self.enemy_image = pygame.transform.scale(
             self.enemy_image,
-            (int(card_width * card_scale), int(card_height * card_scale)),
+            (int(card_height * 0.8 * card_scale), int(card_height * card_scale)),
         )
 
         self.check_box_dominate = CheckBox("dominate")
-        
-        self.check_box_intimidate = CheckBox("intimidate",y=120)
+
+        self.check_box_intimidate = CheckBox("intimidate", y=120)
 
         self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
-        
 
     def render_background(self):
         self.window.blit(self.background, (0, 0))
@@ -111,13 +114,12 @@ class Renderer:
             text,
             (width_references["hand"], height_references[0] + text_offset_piles * 2),
         )
-        
-    def render_banished_zone(self):
-        text = font.render(str(len(self.engine.enemy.banished_zone)) + " banished", True, "white")
-        self.window.blit(
-            text, (width_references["banished"], height_references[0]*2)
-        )
 
+    def render_banished_zone(self):
+        text = font.render(
+            str(len(self.engine.enemy.banished_zone)) + " banished", True, "white"
+        )
+        self.window.blit(text, (width_references["banished"], height_references[0] * 2))
 
     def render_pitch_pile(self):
         if len(self.engine.enemy.pitched_cards) > 0:
@@ -328,7 +330,7 @@ class Renderer:
         self.render_deck_pile()
 
         self.render_hand()
-        
+
         self.render_banished_zone()
 
         self.render_pitch_pile()

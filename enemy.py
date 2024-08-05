@@ -43,11 +43,14 @@ class Enemy:
     playKey = None
 
     def __init__(self, play_key=None):
-        self.identity = FantasyIdentity()
+        self.player_class = random.choice(
+            [p for p in list(PlayerClass) if p.name != "generic"]
+        )
+        self.identity = FantasyIdentity(self.player_class)
         self.name = self.identity.name
         self.race = self.identity.race
         self.image = self.identity.image
-        self.player_class = random.choice(list(PlayerClass))
+
         self.stance = Stance.defend
         self.intellect = 5
         self.talents = []
@@ -103,10 +106,10 @@ class Enemy:
 
         self.further_attack_possible = True
         self.further_defense_possible = True
-        
+
         if "intimidated_cards" in self.banished_zone:
             self.hand += self.banished_zone["intimidated_cards"]
-            
+
         self.banished_zone = {}
 
         if self.stance == Stance.attack:
@@ -424,7 +427,6 @@ class Enemy:
                     return []
         else:
             return []
-        
 
     def get_block(self, player_attack):
         return self.more_elaborate_block_with_unused_cards(player_attack)
@@ -433,25 +435,21 @@ class Enemy:
         print("enemy defending")
         print(player_attack)
         if len(self.hand) > 0:
-            
             if modifiers.modifier_dict["intimidate"] == True:
                 random_banished_card = random.choice(self.hand)
                 if "intimidated_cards" not in self.banished_zone:
                     self.banished_zone["intimidated_cards"] = []
-                    
+
                 self.banished_zone["intimidated_cards"].append(random_banished_card)
                 self.hand.remove(random_banished_card)
-                    
-            
-            
+
             print(player_attack.physical)
             blocking_cards = self.get_block(player_attack)
             print(blocking_cards)
             if len(blocking_cards) > 0:
-                
                 if modifiers.modifier_dict["dominate"] == True:
                     blocking_cards = blocking_cards[:1]
-                
+
                 print("banished zone")
                 print(self.banished_zone)
 

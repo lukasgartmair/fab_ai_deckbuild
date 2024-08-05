@@ -13,19 +13,18 @@ from fantasynames.human_diverse import human
 
 from os import listdir
 from os.path import isfile, join
-
-mypath = "images/enemy_images"
-images = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-
 import random
 
-classes = ["hobbit", "elf", "dwarf", "human"]
+
+races = ["hobbit", "elf", "dwarf", "human"]
 
 
 class FantasyIdentity:
-    def __init__(self):
-        self.race = random.choice(classes)
+    def __init__(self, player_class):
+        self.race = random.choice(races)
         self.name = self.get_fantasy_name()
+        image_path = "images/" + player_class.name + "/"
+        images = [f for f in listdir(image_path) if isfile(join(image_path, f))]
         self.image = random.choice(images)
 
     def get_fantasy_name(self):

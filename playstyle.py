@@ -58,6 +58,7 @@ class Playstyle:
     def __str__(self):
         return type(self).__name__
 
+
 strategy_parameters = {
     "aggressive": {"mu": 4, "sigma": 2},
     "neutral": {"mu": 3, "sigma": 1},
