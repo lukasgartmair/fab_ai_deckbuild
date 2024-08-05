@@ -6,4 +6,5 @@ pygame_ce==2.4.0
 randimage==1.2
 seaborn==0.13.2
 statemachine==0.1
+utils_pygame==0.0.1
 wonderwords==2.2.0

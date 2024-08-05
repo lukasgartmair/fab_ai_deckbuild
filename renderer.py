@@ -39,7 +39,7 @@ class Renderer:
 
         self.engine = engine
 
-        self.background = pygame.image.load("images/background.png")
+        self.background = pygame.image.load("images/bw5.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )
@@ -54,7 +54,7 @@ class Renderer:
 
         self.check_box_dominate = CheckBox("dominate")
         
-        self.check_box_intimidate = CheckBox("intimidate",y=100)
+        self.check_box_intimidate = CheckBox("intimidate",y=120)
 
         self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
         
@@ -75,7 +75,7 @@ class Renderer:
         self.window.blit(
             text,
             (
-                width_references["pitch"] - 25,
+                width_references["pitched"] - 25,
                 height_references[0] + text_offset_piles * 2,
             ),
         )
