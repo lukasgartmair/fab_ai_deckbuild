@@ -3,6 +3,8 @@ determine the "optimal" moves for each hand in order to provide a quasi-human en
 
 For now the missing arsenal is simply addressed by intellect 5 for the enemy.
 
+You need to install PYTHON for this to run, then install the dependencies with "pip install -r requirements.txt"
+
 Playing manual:
 
 1. Run the main.py file to start
