@@ -10,8 +10,7 @@ import pygame
 
 FPS = 5
 
-CARD_RESOLUTION = 25
-
+CARD_RESOLUTION = 10
 DECK_SIZE = 100
 
 width = 1600

@@ -78,7 +78,7 @@ class Renderer:
         self.window.blit(
             text,
             (
-                width_references["pitched"] - 25,
+                width_references["pitch"] - 25,
                 height_references[0] + text_offset_piles * 2,
             ),
         )
@@ -128,7 +128,7 @@ class Renderer:
                 self.render_card("pitch", pc, width_references, height_references)
 
         text = font.render(
-            str(len(self.engine.enemy.pitched_cards)) + " pitch",
+            str(len(self.engine.enemy.pitched_cards)) + " pitched",
             True,
             "white",
         )
