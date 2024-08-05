@@ -12,6 +12,8 @@ FPS = 5
 
 CARD_RESOLUTION = 25
 
+DECK_SIZE = 100
+
 width = 1600
 height = 900
 bounds = (width, height)

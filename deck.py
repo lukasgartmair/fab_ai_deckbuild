@@ -11,14 +11,12 @@ import random
 import matplotlib.pyplot as plt
 from beautifultable import beautifultable
 import seaborn as sns
-from playstyle import Keyword, PlayerClass, CardType
+from playstyle import Keyword, PlayerClass, CardType, Playstyle
+from settings import DECK_SIZE
 
 sns.set_style("white")
 
 from card import Card, CardColor
-import playstyle
-
-DECK_SIZE = 50
 
 
 def n_chance(p=0.85):
@@ -64,9 +62,7 @@ def calc_card_type_distribution(playstyle_obj, n=DECK_SIZE):
 
 
 class Deck:
-    def __init__(
-        self, player_class=PlayerClass.generic, playstyle=playstyle.Playstyle()
-    ):
+    def __init__(self, player_class=PlayerClass.generic, playstyle=Playstyle()):
         self.n_cards = DECK_SIZE
         self.cards = []
         self.stats = {}
