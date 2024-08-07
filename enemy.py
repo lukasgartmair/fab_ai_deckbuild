@@ -11,13 +11,14 @@ import itertools
 from deck import Deck
 from pile import Pile
 from enum import Enum
-from playstyle import Keyword, PlayerClass, CardType
+from playstyle import Keyword, PlayerClass, CardType, get_playstyle
 from equipment import EquipmentSuite
 from weapon import Weapon
 import random
 from fantasynames.fantasy_identity import FantasyIdentity
 from enemy_block import EnemyBlock
 from utils import n_chance, shift_list
+from ability import Ability
 
 VALUE_MAX_PLACEHOLDER = 100
 
@@ -46,8 +47,11 @@ class Enemy:
         self.hand = []
         self.pile = Pile()
         self.play_key = None
+        
+        self.playstyöe =get_playstyle()
         self.original_deck = Deck(self.player_class)
         self.deck = self.original_deck.cards
+        
         self.graveyard = []
         self.banished_zone = {}
         self.banished_zone["intimidated_cards"] = []
@@ -72,6 +76,8 @@ class Enemy:
         self.pitch = []
 
         self.block = EnemyBlock(self.hand, self.combat_chain)
+        
+        self.ability = Ability()
 
     def reduce_life(self, value):
         self.life -= value

@@ -14,6 +14,7 @@ from playstyle import PlayerClass
 from wonderwords import RandomSentence
 from randimage import get_random_image, show_array
 from settings import CARD_RESOLUTION
+from playstyle import CardType
 
 id_iter = itertools.count()
 
@@ -63,6 +64,7 @@ class Card:
         self.card_class = PlayerClass.generic
         self.cost = 0
         self.power = 0
+        self.arcane = 0
         self.defense = 0
         self.pitch = 0
         self.color = 0
@@ -85,3 +87,13 @@ class Card:
         self.cost = self.power + self.defense + self.pitch - TARGET_VALUE
         if self.cost < 0:
             self.cost = 0
+            
+    def adjust_arcane_power(self):
+        
+        if self.power > 0 and self.card_type != CardType.defensive_reaction:
+            
+            self.arcane = np.random.randint(1,4)
+            self.power -= self.arcane
+            if self.power < 0:
+                self.power = 0
+        
