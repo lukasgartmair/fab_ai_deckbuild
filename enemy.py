@@ -48,7 +48,7 @@ class Enemy:
         self.pile = Pile()
         self.play_key = None
 
-        self.playstyöe = get_playstyle()
+        self.playstyöe = get_playstyle(self.player_class)
         self.original_deck = Deck(self.player_class)
         self.deck = self.original_deck.cards
 
