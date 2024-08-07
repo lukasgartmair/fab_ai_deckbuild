@@ -49,7 +49,7 @@ class Playstyle:
         }
         self.keywords = list(Keyword)
         self.keyword_ratios = {
-            "go_again": 75,
+            "go_again": 80,
             "dominate": 20,
             "intimidate": 0,
             "no_keyword": 5,

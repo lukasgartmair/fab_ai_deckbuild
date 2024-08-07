@@ -85,3 +85,4 @@ class Card:
         self.cost = self.power + self.defense + self.pitch - TARGET_VALUE
         if self.cost < 0:
             self.cost = 0
+

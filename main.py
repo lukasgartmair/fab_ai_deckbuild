@@ -9,15 +9,18 @@ Created on Mon Nov 13 10:29:21 2023
 import sys
 import traceback
 import pygame
-
+import numpy as np
 from enemy import Stance
 from engine import GameState, GameEngine
 
 from renderer import Renderer
 from attack import Attack
 from modifiers import Modifiers
-from settings import FPS
+from settings import FPS, RND_SEED
 
+import random
+np.random.seed(RND_SEED)
+random.seed(RND_SEED) 
 
 class Game:
     def __init__(self):
@@ -36,6 +39,7 @@ class Game:
             active_scene.terminate()
         pygame.display.quit()
         pygame.quit()
+        
         sys.exit()
 
     def run(self):

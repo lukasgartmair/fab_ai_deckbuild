@@ -10,6 +10,8 @@ import pygame
 
 FPS = 5
 
+RND_SEED = 100
+
 CARD_RESOLUTION = 10
 DECK_SIZE = 100
 

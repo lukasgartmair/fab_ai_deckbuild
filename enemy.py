@@ -16,7 +16,7 @@ from equipment import EquipmentSuite
 from weapon import Weapon
 import random
 from fantasynames.fantasy_identity import FantasyIdentity
-
+from enemy_block import EnemyBlock
 from utils import n_chance, shift_list
 
 VALUE_MAX_PLACEHOLDER = 100
@@ -70,6 +70,9 @@ class Enemy:
 
         self.combat_chain = {}
         self.pitch = []
+        
+        
+        self.block = EnemyBlock(self.hand, self.combat_chain)
 
     def reduce_life(self, value):
         self.life -= value
@@ -100,6 +103,8 @@ class Enemy:
             self.hand += self.banished_zone["intimidated_cards"]
 
             self.banished_zone["intimidated_cards"] = []
+            
+        self.block.reset()
 
         if self.stance == Stance.attack:
             self.pitch = []
@@ -196,6 +201,15 @@ class Enemy:
                     combat_chain_index += 1
 
                     virtual_hand_tmp.remove(current_card)
+                    
+    def order_hand_by_power_desc(self, hand):
+        hand = sorted(hand, key=lambda x: x.power, reverse=True)
+        return hand
+    
+    def order_hand_by_go_again_desc(self, hand):
+        hand = sorted(
+            hand, key=lambda x: x.keywords[0].value, reverse=False)
+        return hand
 
     def calc_combat_chain(self):
         combat_chain_index = 0
@@ -204,15 +218,14 @@ class Enemy:
 
         # play strongest attacks first, but by a small chance not to be not too predictable -> shuffle, weakest first makes no sense at all
         if n_chance():
-            virtual_hand = sorted(virtual_hand, key=lambda x: x.power, reverse=True)
+            virtual_hand = self.order_hand_by_power_desc(virtual_hand)
         else:
             np.random.shuffle(virtual_hand)
 
         # play go agains first with a certain chance
         if n_chance(p=0.50):
-            virtual_hand = sorted(
-                virtual_hand, key=lambda x: x.keywords[0].value, reverse=False
-            )
+            virtual_hand = self.order_hand_by_go_again_desc(virtual_hand)
+            
 
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
@@ -264,163 +277,68 @@ class Enemy:
 
                 else:
                     break
+                
+    def pitch_floating_resources(self, amount):
+        self.floating_resources += amount
+    
+    def use_floating_resources(self, amount):
+        self.floating_resources -= amount
+        
+    def remove_card_from_hand(self, card):
+        if card in self.hand:
+            self.hand.remove(card)
+        else:
+            print("card not in hand but should be !?")
 
     def attack(self):
         print("enemy attacking")
 
         print("enemy attacks with")
-        if (
-            len(self.combat_chain) > 0
-            and self.combat_chain_iterator in self.combat_chain
-        ):
-            if (
-                self.combat_chain_iterator == 0
-                or self.combat_chain[self.combat_chain_iterator - 1]["attack"].keywords[
-                    0
-                ]
-                == Keyword.go_again
+        if len(self.combat_chain) > 0:
+            if (self.combat_chain_iterator in self.combat_chain
             ):
-                c = self.combat_chain[self.combat_chain_iterator]["attack"]
-                print(c.name)
-                print("power: {}".format(c.power))
-                print("cost: {}".format(c.cost))
-                print("pitch")
-                pitch = self.combat_chain[self.combat_chain_iterator]["pitch"]
-                if len(pitch) > 0:
+                if (
+                    self.combat_chain_iterator == 0
+                    or self.combat_chain[self.combat_chain_iterator - 1]["attack"].keywords[
+                        0
+                    ]
+                    == Keyword.go_again
+                ):
+                    c = self.combat_chain[self.combat_chain_iterator]["attack"]
+                    print(c.name)
+                    print("power: {}".format(c.power))
+                    print("cost: {}".format(c.cost))
+                    print("pitch")
+                    pitch = self.combat_chain[self.combat_chain_iterator]["pitch"]
+                    if len(pitch) > 0:
+                        for p in pitch:
+                            print(str(p))
+    
                     for p in pitch:
-                        print(str(p))
-
-                for p in pitch:
-                    self.pitched_cards.append(p)
-
-                    self.floating_resources += p.pitch
-
-                self.played_cards.append(c)
-
-                for p in self.played_cards:
-                    if p in self.hand:
-                        self.hand.remove(p)
-
-                for p in self.pitched_cards:
-                    if p in self.hand:
-                        self.hand.remove(p)
-
-                self.floating_resources -= c.cost
-
-                self.combat_chain_iterator += 1
+                        self.pitched_cards.append(p)
+    
+                        self.pitch_floating_resources(p.pitch)
+    
+                    self.played_cards.append(c)
+    
+                    for p in self.played_cards:
+                        if p in self.hand:
+                            self.remove_card_from_hand(p)
+    
+                    for p in self.pitched_cards:
+                        if p in self.hand:
+                            self.remove_card_from_hand(p)
+    
+                    self.use_floating_resources(c.cost)
+    
+                    self.combat_chain_iterator += 1
 
             else:
                 self.further_attack_possible = False
 
-    def placeholder_block(self):
-        if len(self.hand) > 0:
-            return self.hand[0]
-        else:
-            return None
 
-    def get_cards_not_intended_to_be_used_in_combat_chain(self):
-        unused_cards = [
-            c
-            for c in self.hand
-            if (
-                c not in [cp["attack"] for cp in self.combat_chain.values()]
-                and c not in [cp["pitch"] for cp in self.combat_chain.values()]
-            )
-        ]
+        
 
-        # put defensive reactions in front
-        unused_cards = sorted(
-            unused_cards, key=lambda x: x.card_type.value, reverse=True
-        )
-        return unused_cards
-
-    def more_elaborate_block_with_unused_cards(self, player_attack):
-        val_0 = 3
-
-        if player_attack.physical is not None:
-            match player_attack.physical:
-                case player_attack.physical if 0 <= player_attack.physical < val_0:
-                    print("attack not blocked at all")
-                    return []
-                case player_attack.physical if val_0 <= player_attack.physical < val_0 + 3:
-                    print("attack blocked with {} cards".format(len(self.hand[:1])))
-                    unused_cards = (
-                        self.get_cards_not_intended_to_be_used_in_combat_chain()
-                    )
-                    if len(unused_cards) > 0:
-                        return unused_cards[:1]
-                    else:
-                        return self.hand[:1]
-                case player_attack.physical if val_0 + 3 <= player_attack.physical < val_0 + 7:
-                    print("attack blocked with {} cards".format(len(self.hand[:2])))
-                    unused_cards = (
-                        self.get_cards_not_intended_to_be_used_in_combat_chain()
-                    )
-                    if len(unused_cards) == 1:
-                        return (
-                            unused_cards
-                            + [c for c in self.hand if c != unused_cards[0]][:1]
-                        )
-                    elif len(unused_cards) == 2:
-                        return unused_cards
-                    else:
-                        return self.hand[:2]
-                case player_attack.physical if val_0 + 7 <= player_attack.physical < val_0 + 11:
-                    print("attack blocked with {} cards".format(len(self.hand[:3])))
-                    unused_cards = (
-                        self.get_cards_not_intended_to_be_used_in_combat_chain()
-                    )
-                    if len(unused_cards) == 1:
-                        return (
-                            unused_cards
-                            + [c for c in self.hand if c != unused_cards[0]][:1]
-                        )
-                    elif len(unused_cards) == 2:
-                        return (
-                            unused_cards[:2]
-                            + [c for c in self.hand if c != unused_cards[0]][:1]
-                        )
-                    elif len(unused_cards) == 3:
-                        return unused_cards
-                    else:
-                        return self.hand[:3]
-
-                case player_attack.physical if val_0 + 11 <= player_attack.physical:
-                    print("attack blocked with {} cards".format(len(self.hand)))
-                    return self.hand[:4]
-                case _:
-                    return []
-        else:
-            return []
-
-    def more_elaborate_block(self, player_attack):
-        # val_0 = np.random.randint(2,4)
-        val_0 = 3
-
-        if player_attack.physical is not None:
-            match player_attack.physical:
-                case player_attack.physical if 0 <= player_attack.physical < val_0:
-                    print("attack not blocked at all")
-                    return []
-                case player_attack.physical if val_0 <= player_attack.physical < val_0 + 3:
-                    print("attack blocked with {} cards".format(len(self.hand[:1])))
-                    return self.hand[:1]
-                case player_attack.physical if val_0 + 3 <= player_attack.physical < val_0 + 7:
-                    print("attack blocked with {} cards".format(len(self.hand[:2])))
-                    return self.hand[:2]
-                case player_attack.physical if val_0 + 7 <= player_attack.physical < val_0 + 11:
-                    print("attack blocked with {} cards".format(len(self.hand[:3])))
-                    return self.hand[:3]
-                case player_attack.physical if val_0 + 11 <= player_attack.physical:
-                    print("attack blocked with {} cards".format(len(self.hand)))
-                    return self.hand[:]
-                case _:
-                    return []
-        else:
-            return []
-
-    def get_block(self, player_attack):
-        return self.more_elaborate_block_with_unused_cards(player_attack)
 
     def defend(self, player_attack, modifiers):
         print("enemy defending")
@@ -434,7 +352,10 @@ class Enemy:
                 self.hand.remove(random_banished_card)
 
             print(player_attack.physical)
-            blocking_cards = self.get_block(player_attack)
+            
+            self.block.preserve_good_chain()
+            blocking_cards = self.block.defend(player_attack)
+            
             print(blocking_cards)
             if len(blocking_cards) > 0:
                 if modifiers.modifier_dict["dominate"] == True:
