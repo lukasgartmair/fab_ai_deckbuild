@@ -53,13 +53,13 @@ def calc_card_type_distribution(playstyle_obj, n=DECK_SIZE):
     )
     return sampled_card_types
 
+
 def create_arcane_cards(cards, arcane_ratio, n=DECK_SIZE):
-    
-    arcane_cards = random.choices(
-        list(cards), k=int(n*arcane_ratio))
-    
+    arcane_cards = random.choices(list(cards), k=int(n * arcane_ratio))
+
     for ac in arcane_cards:
         ac.adjust_arcane_power()
+
 
 class Deck:
     def __init__(self, player_class=PlayerClass.generic, playstyle=Playstyle()):
@@ -89,7 +89,7 @@ class Deck:
         card_type_distribution = calc_card_type_distribution(self.playstyle)
 
         self.cards = [Card() for n in range(self.n_cards)]
-        
+
         if self.playstyle.arcane_ratio > 0:
             create_arcane_cards(self.cards, self.playstyle.arcane_ratio)
 

@@ -87,13 +87,10 @@ class Card:
         self.cost = self.power + self.defense + self.pitch - TARGET_VALUE
         if self.cost < 0:
             self.cost = 0
-            
+
     def adjust_arcane_power(self):
-        
         if self.power > 0 and self.card_type != CardType.defensive_reaction:
-            
-            self.arcane = np.random.randint(1,4)
+            self.arcane = np.random.randint(1, 4)
             self.power -= self.arcane
             if self.power < 0:
                 self.power = 0
-        

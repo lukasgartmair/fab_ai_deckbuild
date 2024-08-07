@@ -36,14 +36,15 @@ class CardType(Enum):
     attack_action = 1
     attack_reaction = 2
     defensive_reaction = 3
-    
+
+
 def get_playstyle(player_class):
     match player_class:
         case player_class if player_class == PlayerClass.wizard:
             return WizardBasic()
         case player_class if player_class == PlayerClass.runeblade:
             return RunebladeBasic()
-        
+
         case _:
             return Playstyle()
 
@@ -64,7 +65,7 @@ class Playstyle:
             "intimidate": 0,
             "no_keyword": 5,
         }
-        
+
         self.arcane_ratio = 0
 
     def __str__(self):
@@ -82,7 +83,8 @@ class RunebladeBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.arcane_ratio = 0.5
-        
+
+
 class WizardBasic(Playstyle):
     def __init__(self):
         super().__init__()

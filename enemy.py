@@ -47,11 +47,11 @@ class Enemy:
         self.hand = []
         self.pile = Pile()
         self.play_key = None
-        
-        self.playstyöe =get_playstyle()
+
+        self.playstyöe = get_playstyle()
         self.original_deck = Deck(self.player_class)
         self.deck = self.original_deck.cards
-        
+
         self.graveyard = []
         self.banished_zone = {}
         self.banished_zone["intimidated_cards"] = []
@@ -76,7 +76,7 @@ class Enemy:
         self.pitch = []
 
         self.block = EnemyBlock(self.hand, self.combat_chain)
-        
+
         self.ability = Ability()
 
     def reduce_life(self, value):
