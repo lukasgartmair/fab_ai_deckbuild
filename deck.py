@@ -90,12 +90,8 @@ class Deck:
 
         self.cards = [Card() for n in range(self.n_cards)]
 
-        if self.playstyle.arcane_ratio > 0:
-            create_arcane_cards(self.cards, self.playstyle.arcane_ratio)
-
         for c in self.cards:
             if n_chance(p=0.4):
-                print(self.player_class)
                 c.card_class = self.player_class
 
         indices = list(range(len(self.cards)))
@@ -106,6 +102,11 @@ class Deck:
             card.card_type = card_type_distribution[indices[i]]
 
             card.calc_values()
+
+        print(self.playstyle.arcane_ratio)
+        if self.playstyle.arcane_ratio > 0:
+            create_arcane_cards(self.cards, self.playstyle.arcane_ratio)
+            print("created_aracane cards")
 
         print("deck contents:")
         for i, c in enumerate(self.cards):

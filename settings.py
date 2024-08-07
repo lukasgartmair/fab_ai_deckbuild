@@ -49,6 +49,8 @@ height_reference_0 = int(height / 3) * 1.2
 height_reference_1 = int(height / 2)
 height_references = {0: height_reference_0, 1: height_reference_1}
 
+arcane_offset = 20
+
 divider = 7
 width_reference_0 = 20
 width_reference_1 = int(width / divider) * 1

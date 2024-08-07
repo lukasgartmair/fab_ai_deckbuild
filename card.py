@@ -91,6 +91,7 @@ class Card:
     def adjust_arcane_power(self):
         if self.power > 0 and self.card_type != CardType.defensive_reaction:
             self.arcane = np.random.randint(1, 4)
+            print(self.arcane)
             self.power -= self.arcane
             if self.power < 0:
                 self.power = 0

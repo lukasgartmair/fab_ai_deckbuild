@@ -13,7 +13,6 @@ def n_chance(p=0.85):
     if np.random.rand() < p:
         return True
     else:
-        print("chance triggered")
         return False
 
 

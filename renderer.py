@@ -29,6 +29,7 @@ from settings import (
     font,
     text_color,
     text_offset_piles,
+    arcane_offset,
 )
 
 
@@ -241,6 +242,18 @@ class Renderer:
                 height_references[0] + (card_height // offset_factor),
             ),
         )
+
+        # ARCANE POWER
+        if current_card.arcane > 0:
+            text = font.render("+{}".format(str(current_card.arcane)), True, "green")
+
+            self.window.blit(
+                text,
+                (
+                    width_references[str(i)] + arcane_offset,
+                    height_references[0] + (card_height // offset_factor),
+                ),
+            )
 
         # DEFENSE
         text = font.render(str(current_card.defense), True, "black")
