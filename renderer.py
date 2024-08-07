@@ -171,11 +171,12 @@ class Renderer:
                 25,
             ),
         )
-        
-        if current_card.card_class.name != "generic":
 
-            text = font_card_title.render(str(current_card.card_class.name), True, "white")
-    
+        if current_card.card_class.name != "generic":
+            text = font_card_title.render(
+                str(current_card.card_class.name), True, "white"
+            )
+
             self.window.blit(
                 text,
                 (
@@ -197,13 +198,12 @@ class Renderer:
                 25,
             ),
         )
-        
-        if current_card.keywords[0].name != "no_keyword":
 
+        if current_card.keywords[0].name != "no_keyword":
             text = font_card_title.render(
                 str(current_card.keywords[0].name), True, "black"
             )
-    
+
             self.window.blit(
                 text,
                 (

@@ -70,8 +70,7 @@ class Enemy:
 
         self.combat_chain = {}
         self.pitch = []
-        
-        
+
         self.block = EnemyBlock(self.hand, self.combat_chain)
 
     def reduce_life(self, value):
@@ -103,7 +102,7 @@ class Enemy:
             self.hand += self.banished_zone["intimidated_cards"]
 
             self.banished_zone["intimidated_cards"] = []
-            
+
         self.block.reset()
 
         if self.stance == Stance.attack:
@@ -201,14 +200,13 @@ class Enemy:
                     combat_chain_index += 1
 
                     virtual_hand_tmp.remove(current_card)
-                    
+
     def order_hand_by_power_desc(self, hand):
         hand = sorted(hand, key=lambda x: x.power, reverse=True)
         return hand
-    
+
     def order_hand_by_go_again_desc(self, hand):
-        hand = sorted(
-            hand, key=lambda x: x.keywords[0].value, reverse=False)
+        hand = sorted(hand, key=lambda x: x.keywords[0].value, reverse=False)
         return hand
 
     def calc_combat_chain(self):
@@ -225,7 +223,6 @@ class Enemy:
         # play go agains first with a certain chance
         if n_chance(p=0.50):
             virtual_hand = self.order_hand_by_go_again_desc(virtual_hand)
-            
 
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
@@ -277,13 +274,13 @@ class Enemy:
 
                 else:
                     break
-                
+
     def pitch_floating_resources(self, amount):
         self.floating_resources += amount
-    
+
     def use_floating_resources(self, amount):
         self.floating_resources -= amount
-        
+
     def remove_card_from_hand(self, card):
         if card in self.hand:
             self.hand.remove(card)
@@ -295,13 +292,12 @@ class Enemy:
 
         print("enemy attacks with")
         if len(self.combat_chain) > 0:
-            if (self.combat_chain_iterator in self.combat_chain
-            ):
+            if self.combat_chain_iterator in self.combat_chain:
                 if (
                     self.combat_chain_iterator == 0
-                    or self.combat_chain[self.combat_chain_iterator - 1]["attack"].keywords[
-                        0
-                    ]
+                    or self.combat_chain[self.combat_chain_iterator - 1][
+                        "attack"
+                    ].keywords[0]
                     == Keyword.go_again
                 ):
                     c = self.combat_chain[self.combat_chain_iterator]["attack"]
@@ -313,32 +309,28 @@ class Enemy:
                     if len(pitch) > 0:
                         for p in pitch:
                             print(str(p))
-    
+
                     for p in pitch:
                         self.pitched_cards.append(p)
-    
+
                         self.pitch_floating_resources(p.pitch)
-    
+
                     self.played_cards.append(c)
-    
+
                     for p in self.played_cards:
                         if p in self.hand:
                             self.remove_card_from_hand(p)
-    
+
                     for p in self.pitched_cards:
                         if p in self.hand:
                             self.remove_card_from_hand(p)
-    
+
                     self.use_floating_resources(c.cost)
-    
+
                     self.combat_chain_iterator += 1
 
             else:
                 self.further_attack_possible = False
-
-
-        
-
 
     def defend(self, player_attack, modifiers):
         print("enemy defending")
@@ -352,10 +344,10 @@ class Enemy:
                 self.hand.remove(random_banished_card)
 
             print(player_attack.physical)
-            
+
             self.block.preserve_good_chain()
             blocking_cards = self.block.defend(player_attack)
-            
+
             print(blocking_cards)
             if len(blocking_cards) > 0:
                 if modifiers.modifier_dict["dominate"] == True:
