@@ -7,10 +7,12 @@ Created on Sun Jul 21 20:22:55 2024
 """
 
 import pygame
+import random
 
 FPS = 5
 
-RND_SEED = 122
+# 122 wizard
+RND_SEED = random.randint(0, 100)
 
 CARD_RESOLUTION = 5
 DECK_SIZE = 100

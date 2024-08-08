@@ -77,6 +77,10 @@ class Enemy:
 
         self.block = EnemyBlock(self.hand, self.combat_chain)
 
+        self.arcane_barrier_total = sum(
+            [e.arcane_barrier for e in self.equipment_suite.get_equipment_pieces()]
+        )
+
         self.ability = Ability()
 
     def reduce_life(self, value):
@@ -211,7 +215,7 @@ class Enemy:
         hand = sorted(hand, key=lambda x: x.power, reverse=True)
         return hand
 
-    def order_hand_by_go_again_desc(self, hand):
+    def order_hand_by_go_again(self, hand):
         hand = sorted(hand, key=lambda x: x.keywords[0].value, reverse=False)
         return hand
 
@@ -228,7 +232,7 @@ class Enemy:
 
         # play go agains first with a certain chance
         if n_chance(p=0.50):
-            virtual_hand = self.order_hand_by_go_again_desc(virtual_hand)
+            virtual_hand = self.order_hand_by_go_again(virtual_hand)
 
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
@@ -286,6 +290,8 @@ class Enemy:
 
     def use_floating_resources(self, amount):
         self.floating_resources -= amount
+        # if self.floating_resources < 0:
+        #     self.floating_resources = 0
 
     def remove_card_from_hand(self, card):
         if card in self.hand:
@@ -317,17 +323,11 @@ class Enemy:
                             print(str(p))
 
                     for p in pitch:
-                        self.pitched_cards.append(p)
-
-                        self.pitch_floating_resources(p.pitch)
+                        self.pitch_card(p)
 
                     self.played_cards.append(c)
 
                     for p in self.played_cards:
-                        if p in self.hand:
-                            self.remove_card_from_hand(p)
-
-                    for p in self.pitched_cards:
                         if p in self.hand:
                             self.remove_card_from_hand(p)
 
@@ -337,6 +337,102 @@ class Enemy:
 
             else:
                 self.further_attack_possible = False
+
+    def pitch_card(self, c):
+        self.pitched_cards.append(c)
+        self.pitch_floating_resources(c.pitch)
+        self.hand.remove(c)
+
+    def defend_arcane(self, player_attack):
+        print("DEFENDING ARCANE")
+
+        unused_cards = self.block.get_cards_not_intended_to_be_used_in_combat_chain()
+
+        unused_cards_sorted_by_pitch_asc = sorted(
+            unused_cards, key=lambda x: x.pitch, reverse=False
+        )
+
+        # TODO INCLUDE ABS FROM EQUIPMENT
+
+        match player_attack.arcane:
+            case player_attack.arcane if player_attack.arcane == 1:
+                if self.floating_resources > 0:
+                    self.use_floating_resources(player_attack.arcane)
+                else:
+                    if len(unused_cards_sorted_by_pitch_asc) > 0:
+                        c = unused_cards_sorted_by_pitch_asc[:1]
+                        if len(c) == 1:
+                            self.pitch_card(c[0])
+                            self.use_floating_resources(player_attack.arcane)
+                        else:
+                            if len(self.hand) > 0:
+                                hand_sorted_by_power_asc = sorted(
+                                    self.hand, key=lambda x: x.power, reverse=False
+                                )
+
+                                c = hand_sorted_by_power_asc[0]
+                                self.pitch_card(c)
+                                self.use_floating_resources(player_attack.arcane)
+
+            case player_attack.arcane if player_attack.arcane == 2:
+                if self.floating_resources > 0:
+                    self.use_floating_resources(player_attack.arcane)
+                else:
+                    if len(unused_cards_sorted_by_pitch_asc) > 0:
+                        c = unused_cards_sorted_by_pitch_asc[:1]
+                        c = [
+                            ci
+                            for ci in unused_cards_sorted_by_pitch_asc
+                            if ci.pitch > 1
+                        ]
+                        if len(c) == 1:
+                            self.pitch_card(c[0])
+                            self.use_floating_resources(player_attack.arcane)
+
+                        else:
+                            if len(self.hand) > 0:
+                                hand_sorted_by_power_asc = sorted(
+                                    self.hand, key=lambda x: x.power, reverse=False
+                                )
+                                hand_sorted_by_power_asc = [
+                                    hi
+                                    for hi in hand_sorted_by_power_asc
+                                    if hi.pitch > 1
+                                ]
+                                if len(hand_sorted_by_power_asc) > 0:
+                                    c = hand_sorted_by_power_asc[0]
+                                    self.pitch_card(c)
+                                    self.use_floating_resources(player_attack.arcane)
+
+            case player_attack.arcane if player_attack.arcane == 3:
+                if self.floating_resources > 0:
+                    self.use_floating_resources(player_attack.arcane)
+                else:
+                    if len(unused_cards_sorted_by_pitch_asc) > 0:
+                        c = unused_cards_sorted_by_pitch_asc[:1]
+                        c = [
+                            ci
+                            for ci in unused_cards_sorted_by_pitch_asc
+                            if ci.pitch == 3
+                        ]
+                        if len(c) == 1:
+                            self.pitch_card(c[0])
+                            self.use_floating_resources(player_attack.arcane)
+
+                        else:
+                            if len(self.hand) > 0:
+                                hand_sorted_by_power_asc = sorted(
+                                    self.hand, key=lambda x: x.power, reverse=False
+                                )
+                                hand_sorted_by_power_asc = [
+                                    hi
+                                    for hi in hand_sorted_by_power_asc
+                                    if hi.pitch == 3
+                                ]
+                                if len(hand_sorted_by_power_asc) > 0:
+                                    c = hand_sorted_by_power_asc[0]
+                                    self.pitch_card(c)
+                                    self.use_floating_resources(player_attack.arcane)
 
     def defend(self, player_attack, modifiers):
         print("enemy defending")
@@ -349,10 +445,13 @@ class Enemy:
                 self.banished_zone["intimidated_cards"].append(random_banished_card)
                 self.hand.remove(random_banished_card)
 
+            if player_attack.arcane is not None:
+                self.defend_arcane(player_attack)
+
             print(player_attack.physical)
 
-            self.block.preserve_good_chain()
-            blocking_cards = self.block.defend(player_attack)
+            # self.block.preserve_good_chain()
+            blocking_cards = self.block.defend_physical(player_attack)
 
             print(blocking_cards)
             if len(blocking_cards) > 0:

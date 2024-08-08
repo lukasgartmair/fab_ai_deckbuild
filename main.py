@@ -136,8 +136,8 @@ class Game:
 
                 if self.engine.enemy.stance == Stance.defend:
                     for inp_box in self.input_boxes:
-                        if inp_box.box_type == "physical":
-                            inp_box.render()
+                        # if inp_box.box_type == "physical":
+                        inp_box.render()
 
                     for check_box in self.renderer.check_boxes:
                         check_box.cb.draw(self.renderer.window)

@@ -125,8 +125,8 @@ class Renderer:
 
     def render_pitch_pile(self):
         if len(self.engine.enemy.pitched_cards) > 0:
-            for pc in self.engine.enemy.pitched_cards:
-                self.render_card("pitch", pc, width_references, height_references)
+            for i, pc in enumerate(self.engine.enemy.pitched_cards):
+                self.render_card("pitch", pc)
 
         text = font.render(
             str(len(self.engine.enemy.pitched_cards)) + " pitch",
@@ -137,7 +137,7 @@ class Renderer:
             text, (width_references["pitch"], height_references[0] + text_offset_piles)
         )
 
-    def render_card(self, i, current_card, width_references, height_references):
+    def render_card(self, i, current_card):
         offset_factor = 1.35
 
         print(current_card)
@@ -300,7 +300,7 @@ class Renderer:
 
     def render_enemy_play(self):
         for i, current_card in enumerate(self.engine.enemy.played_cards):
-            self.render_card(i, current_card, width_references, height_references)
+            self.render_card(i, current_card)
 
     def render_turn_text(self):
         if self.engine.state == GameState.playing:

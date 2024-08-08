@@ -24,7 +24,7 @@ class EnemyBlock:
     def reset(self):
         self.base_value = self.base_value_original
 
-    def defend(self, player_attack):
+    def defend_physical(self, player_attack):
         return self.more_elaborate_block_with_unused_cards(player_attack)
 
     def placeholder_block(self):
@@ -104,29 +104,3 @@ class EnemyBlock:
                     return []
         else:
             return []
-
-    # def more_elaborate_block(self, player_attack):
-    #     # self.base_value = np.random.randint(2,4)
-    #     self.base_value = 3
-
-    #     if player_attack.physical is not None:
-    #         match player_attack.physical:
-    #             case player_attack.physical if 0 <= player_attack.physical < self.base_value:
-    #                 print("attack not blocked at all")
-    #                 return []
-    #             case player_attack.physical if self.base_value <= player_attack.physical < self.base_value + 3:
-    #                 print("attack blocked with {} cards".format(len(self.enemy_hand[:1])))
-    #                 return self.enemy_hand[:1]
-    #             case player_attack.physical if self.base_value + 3 <= player_attack.physical < self.base_value + 7:
-    #                 print("attack blocked with {} cards".format(len(self.enemy_hand[:2])))
-    #                 return self.enemy_hand[:2]
-    #             case player_attack.physical if self.base_value + 7 <= player_attack.physical < self.base_value + 11:
-    #                 print("attack blocked with {} cards".format(len(self.enemy_hand[:3])))
-    #                 return self.enemy_hand[:3]
-    #             case player_attack.physical if self.base_value + 11 <= player_attack.physical:
-    #                 print("attack blocked with {} cards".format(len(self.enemy_hand)))
-    #                 return self.enemy_hand[:]
-    #             case _:
-    #                 return []
-    #     else:
-    #         return []

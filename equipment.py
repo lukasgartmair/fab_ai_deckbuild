@@ -7,13 +7,6 @@ Created on Sun Aug  4 13:45:02 2024
 """
 
 from enum import Enum
-import numpy as np
-import random
-
-
-class ArcaneBarrier:
-    def __init__(self):
-        self.value = 0
 
 
 class EquipmentType(Enum):
@@ -34,6 +27,7 @@ class EquipmentPiece:
     def __init__(self, equipment_type):
         self.equipment_type = equipment_type
         self.defensive_value = 1
+        self.arcane_barrier = 2
         self.keywords = []
         self.destroyed = False
 
@@ -44,3 +38,6 @@ class EquipmentSuite:
         self.chest = EquipmentPiece(EquipmentType.chest)
         self.arms = EquipmentPiece(EquipmentType.arms)
         self.legs = EquipmentPiece(EquipmentType.legs)
+
+    def get_equipment_pieces(self):
+        return [self.head, self.chest, self.arms, self.legs]
