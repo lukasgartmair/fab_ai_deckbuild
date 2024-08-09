@@ -113,7 +113,7 @@ class Deck:
             card.keywords = [keyword_distribution[indices[i]]]
             card.card_type = card_type_distribution[indices[i]]
 
-            card.calc_values()
+            card.calc_card_values()
 
         print(self.playstyle.arcane_ratio)
         if self.playstyle.arcane_ratio > 0:

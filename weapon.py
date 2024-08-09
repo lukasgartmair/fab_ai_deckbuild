@@ -64,14 +64,25 @@ class Weapon(Card):
 
         self.name = generate_rnd_name()
 
-        self.physical = np.random.randint(1, 4)
-        self.arcane = np.random.randint(0, 3)
-        self.keywords = [Keyword.go_again]
-        self.cost = np.random.randint(1, 3)
-
+        self.physical = np.random.randint(1, 3)
+        self.arcane = np.random.randint(0, 2)
+        if n_chance(p=0.5):
+            self.keywords = [Keyword.go_again]
+        else:
+            self.keywords = [Keyword.no_keyword]
+        
+        power = self.physical + self.arcane 
+        match power:
+            case power if power < 2:
+                self.cost = 0
+            case power if 2 <= power < 4:
+                self.cost = 1
+            case power if power > 4:
+                self.cost = 2
+        
         self.image = generate_rnd_image()
 
-        self.color = CardColor.blue
+        self.color = CardColor.red
         self.card_type = CardType.weapon
 
         self.hand_occupation = hand_occupation

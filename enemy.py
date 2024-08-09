@@ -189,10 +189,11 @@ class Enemy:
         not_pitchable_cards = self.arsenal + self.weapons
 
         virtual_hand = self.hand.copy() + self.arsenal + self.weapons
+
         np.random.shuffle(virtual_hand)
 
         # play strongest attacks first, but by a small chance not to be not too predictable -> shuffle, weakest first makes no sense at all
-        if n_chance():
+        if n_chance(p=1):
             virtual_hand = self.order_hand_by_physical_desc(virtual_hand)
         else:
             np.random.shuffle(virtual_hand)
@@ -200,16 +201,14 @@ class Enemy:
         # play go agains first with a certain chance
         if n_chance(p=0.50):
             virtual_hand = self.order_hand_by_go_again(virtual_hand)
-
+            
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
             if len(virtual_hand_tmp) > 0:
                 current_card = virtual_hand_tmp[0]
 
-                if current_card.card_type in [
-                    CardType.attack_action,
-                    CardType.non_attack_action,
-                    CardType.attack_reaction,
+                if current_card.card_type not in [
+                    CardType.defensive_reaction
                 ]:
                     possible_cards_to_pitch = self.get_combinations(
                         [v for v in virtual_hand_tmp if v not in not_pitchable_cards], 0
@@ -227,7 +226,7 @@ class Enemy:
                         cards_to_pitch = self.determine_pitch_combination(
                             current_card.cost, pitch_combinations
                         )
-
+                        
                         if len(cards_to_pitch) == 0:
                             print("no pitch possible")
                             virtual_hand = shift_list(virtual_hand_tmp)
@@ -271,7 +270,6 @@ class Enemy:
     def attack(self):
         print("enemy attacking")
 
-        print("enemy attacks with")
         if len(self.combat_chain) > 0:
             if self.combat_chain_iterator in self.combat_chain:
                 if (
@@ -282,14 +280,14 @@ class Enemy:
                     == Keyword.go_again
                 ):
                     c = self.combat_chain[self.combat_chain_iterator]["attack"]
-                    print(c.name)
-                    print("physical: {}".format(c.physical))
-                    print("cost: {}".format(c.cost))
-                    print("pitch")
+                    # print(c.name)
+                    # print("physical: {}".format(c.physical))
+                    # print("cost: {}".format(c.cost))
+                    # print("pitch")
                     pitch = self.combat_chain[self.combat_chain_iterator]["pitch"]
-                    if len(pitch) > 0:
-                        for p in pitch:
-                            print(str(p))
+                    # if len(pitch) > 0:
+                    #     for p in pitch:
+                    #         print(str(p))
 
                     for p in pitch:
                         self.pitch_card(p)
@@ -297,8 +295,7 @@ class Enemy:
                     self.played_cards.append(c)
 
                     for p in self.played_cards:
-                        if p in self.hand:
-                            self.remove_card_from_hand(p)
+                        self.remove_card_from_hand(p)
                         if p in self.arsenal:
                             self.arsenal.remove(p)
 
@@ -433,7 +430,7 @@ class Enemy:
                 print(self.banished_zone)
 
                 for bc in blocking_cards:
-                    print(bc)
+                    # print(bc)
                     self.played_cards.append(bc)
                     print("enemy defends with")
                     print(bc.name)

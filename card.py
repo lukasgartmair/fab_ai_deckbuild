@@ -83,7 +83,7 @@ class Card:
             )
         )
 
-    def calc_values(self):
+    def calc_card_values(self):
         # (physical (6) + Defense (3) + Pi
         # https://fab.cardsrealm.com/en-us/articles/guide-everything-about-value-and-turn-cycle-in-flesh-and-bloodtch (1)) - Cost (2) = 8
 
@@ -94,6 +94,8 @@ class Card:
         self.cost = self.physical + self.defense + self.pitch - TARGET_VALUE
         if self.cost < 0:
             self.cost = 0
+        elif self.cost > 4:
+            self.cost = 4
 
     def adjust_arcane_physical(self):
         if self.physical > 0 and self.card_type != CardType.defensive_reaction:
