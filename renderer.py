@@ -118,11 +118,16 @@ class Renderer:
         )
 
     def render_weapons(self):
-        for i, w in enumerate(self.engine.enemy.weapons):
-            if i == 0:
-                self.render_card(1.5, w.card, y=grid.top_point(grid_height * 0.65))
+        weapons_to_render = [
+            w
+            for w in self.engine.enemy.weapons
+            if w not in self.engine.enemy.played_cards
+        ]
+        for i, w in enumerate(weapons_to_render):
+            if w.weapon_id == 0:
+                self.render_card(w, i=1.5, y=grid.top_point(grid_height * 0.65))
             else:
-                self.render_card(4, w.card, y=grid.top_point(grid_height * 0.65))
+                self.render_card(w, i=4, y=grid.top_point(grid_height * 0.65))
 
     def render_deck(self):
         text = font.render(str(len(self.engine.enemy.deck)) + " deck", True, "white")
@@ -141,8 +146,8 @@ class Renderer:
         self.window.blit(
             text,
             (
-                grid.left_point(grid_width * 0.8),
-                grid.top_point(5),
+                grid.left_point(grid_width // 2 - 1),
+                grid.top_point(grid_height * 0.9),
             ),
         )
 
@@ -172,7 +177,7 @@ class Renderer:
     def render_pitch(self):
         if len(self.engine.enemy.pitched_cards) > 0:
             for i, pc in enumerate(self.engine.enemy.pitched_cards):
-                self.render_card(4, pc)
+                self.render_card(pc, x=grid.left_point(grid_width * 0.8))
 
         text = font.render(
             str(len(self.engine.enemy.pitched_cards)) + " pitch",
@@ -183,12 +188,12 @@ class Renderer:
         self.window.blit(
             text,
             (
-                grid.left_point(12),
+                grid.left_point(grid_width * 0.8),
                 grid.top_point(5),
             ),
         )
 
-    def render_card(self, i, current_card, y=None):
+    def render_card(self, current_card, i=0, x=None, y=None):
         # offset_factor = 10*i if i != 0 else 0
 
         if y is None:
@@ -197,9 +202,11 @@ class Renderer:
         else:
             vert_pos = y
 
-        hor_card_grid_point = 2 + int(i) * 2.5
-
-        hor_pos = grid.left_point(hor_card_grid_point)
+        if x is None:
+            hor_card_grid_point = 2 + int(i) * 2.5
+            hor_pos = grid.left_point(hor_card_grid_point)
+        else:
+            hor_pos = x
 
         print(current_card)
         current_card.image = pygame.transform.scale(
@@ -295,7 +302,7 @@ class Renderer:
         )
 
         # POWER
-        text = font.render(str(current_card.power), True, "yellow")
+        text = font.render(str(current_card.physical), True, "yellow")
 
         self.window.blit(
             text,
@@ -363,7 +370,7 @@ class Renderer:
 
     def render_enemy_play(self):
         for i, current_card in enumerate(self.engine.enemy.played_cards):
-            self.render_card(i, current_card)
+            self.render_card(current_card, i=i)
 
     def render_turn_text(self):
         if self.engine.state == GameState.playing:

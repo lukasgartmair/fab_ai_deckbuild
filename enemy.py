@@ -76,7 +76,7 @@ class Enemy:
         self.combat_chain = {}
         self.pitch = []
 
-        self.block = EnemyBlock(self.hand, self.combat_chain)
+        self.block = EnemyBlock(self.hand, self.arsenal, self.combat_chain)
 
         self.arcane_barrier_total = sum(
             [e.arcane_barrier for e in self.equipment_suite.get_equipment_pieces()]
@@ -175,61 +175,8 @@ class Enemy:
         else:
             print("can't draw anymore, deck fatigued")
 
-    def calc_combat_chain_damage_output(self):
-        combat_chain_index = 0
-
-        max_damage_output = 0
-        number_of_cards_to_pitch = VALUE_MAX_PLACEHOLDER
-        power_minus_cost = 0
-
-        virtual_hand = self.hand.copy() + self.arsenal
-        virtual_hand_tmp = virtual_hand.copy()
-
-        for i in range(len(virtual_hand)):
-            if len(virtual_hand_tmp) > 0:
-                current_card = virtual_hand_tmp[0]
-                possible_cards_to_pitch = self.get_combinations(
-                    [v for v in virtual_hand_tmp if v not in self.arsenal], 0
-                )
-
-                pitch_combinations = {}
-                for j, pi in enumerate(possible_cards_to_pitch):
-                    pitch_total = 0
-                    for p in pi:
-                        pitch_total += p.pitch
-
-                    pitch_combinations[pi] = pitch_total
-
-                if current_card.cost > 0:
-                    cards_to_pitch = self.determine_pitch_combination(
-                        current_card.cost, pitch_combinations
-                    )
-
-                    if len(cards_to_pitch) == 0:
-                        print("no pitch possible")
-                        virtual_hand = shift_list(virtual_hand_tmp)
-                        continue
-                    else:
-                        self.combat_chain[combat_chain_index] = {
-                            "attack": current_card,
-                            "pitch": cards_to_pitch,
-                        }
-                        combat_chain_index += 1
-
-                        virtual_hand_tmp.remove(current_card)
-                        for p in cards_to_pitch:
-                            virtual_hand_tmp.remove(p)
-                else:
-                    self.combat_chain[combat_chain_index] = {
-                        "attack": current_card,
-                        "pitch": [],
-                    }
-                    combat_chain_index += 1
-
-                    virtual_hand_tmp.remove(current_card)
-
-    def order_hand_by_power_desc(self, hand):
-        hand = sorted(hand, key=lambda x: x.power, reverse=True)
+    def order_hand_by_physical_desc(self, hand):
+        hand = sorted(hand, key=lambda x: x.physical, reverse=True)
         return hand
 
     def order_hand_by_go_again(self, hand):
@@ -239,12 +186,14 @@ class Enemy:
     def calc_combat_chain(self):
         combat_chain_index = 0
 
-        virtual_hand = self.hand.copy() + self.arsenal
+        not_pitchable_cards = self.arsenal + self.weapons
+
+        virtual_hand = self.hand.copy() + self.arsenal + self.weapons
         np.random.shuffle(virtual_hand)
 
         # play strongest attacks first, but by a small chance not to be not too predictable -> shuffle, weakest first makes no sense at all
         if n_chance():
-            virtual_hand = self.order_hand_by_power_desc(virtual_hand)
+            virtual_hand = self.order_hand_by_physical_desc(virtual_hand)
         else:
             np.random.shuffle(virtual_hand)
 
@@ -263,7 +212,7 @@ class Enemy:
                     CardType.attack_reaction,
                 ]:
                     possible_cards_to_pitch = self.get_combinations(
-                        [v for v in virtual_hand_tmp if v not in self.arsenal], 0
+                        [v for v in virtual_hand_tmp if v not in not_pitchable_cards], 0
                     )
 
                     pitch_combinations = {}
@@ -334,7 +283,7 @@ class Enemy:
                 ):
                     c = self.combat_chain[self.combat_chain_iterator]["attack"]
                     print(c.name)
-                    print("power: {}".format(c.power))
+                    print("physical: {}".format(c.physical))
                     print("cost: {}".format(c.cost))
                     print("pitch")
                     pitch = self.combat_chain[self.combat_chain_iterator]["pitch"]
@@ -388,11 +337,11 @@ class Enemy:
                             self.use_floating_resources(player_attack.arcane)
                         else:
                             if len(self.hand) > 0:
-                                hand_sorted_by_power_asc = sorted(
-                                    self.hand, key=lambda x: x.power, reverse=False
+                                hand_sorted_by_physical_asc = sorted(
+                                    self.hand, key=lambda x: x.physical, reverse=False
                                 )
 
-                                c = hand_sorted_by_power_asc[0]
+                                c = hand_sorted_by_physical_asc[0]
                                 self.pitch_card(c)
                                 self.use_floating_resources(player_attack.arcane)
 
@@ -413,16 +362,16 @@ class Enemy:
 
                         else:
                             if len(self.hand) > 0:
-                                hand_sorted_by_power_asc = sorted(
-                                    self.hand, key=lambda x: x.power, reverse=False
+                                hand_sorted_by_physical_asc = sorted(
+                                    self.hand, key=lambda x: x.physical, reverse=False
                                 )
-                                hand_sorted_by_power_asc = [
+                                hand_sorted_by_physical_asc = [
                                     hi
-                                    for hi in hand_sorted_by_power_asc
+                                    for hi in hand_sorted_by_physical_asc
                                     if hi.pitch > 1
                                 ]
-                                if len(hand_sorted_by_power_asc) > 0:
-                                    c = hand_sorted_by_power_asc[0]
+                                if len(hand_sorted_by_physical_asc) > 0:
+                                    c = hand_sorted_by_physical_asc[0]
                                     self.pitch_card(c)
                                     self.use_floating_resources(player_attack.arcane)
 
@@ -443,16 +392,16 @@ class Enemy:
 
                         else:
                             if len(self.hand) > 0:
-                                hand_sorted_by_power_asc = sorted(
-                                    self.hand, key=lambda x: x.power, reverse=False
+                                hand_sorted_by_physical_asc = sorted(
+                                    self.hand, key=lambda x: x.physical, reverse=False
                                 )
-                                hand_sorted_by_power_asc = [
+                                hand_sorted_by_physical_asc = [
                                     hi
-                                    for hi in hand_sorted_by_power_asc
+                                    for hi in hand_sorted_by_physical_asc
                                     if hi.pitch == 3
                                 ]
-                                if len(hand_sorted_by_power_asc) > 0:
-                                    c = hand_sorted_by_power_asc[0]
+                                if len(hand_sorted_by_physical_asc) > 0:
+                                    c = hand_sorted_by_physical_asc[0]
                                     self.pitch_card(c)
                                     self.use_floating_resources(player_attack.arcane)
 
@@ -491,6 +440,9 @@ class Enemy:
                     print("defense: {}".format(bc.defense))
                     self.hand.remove(bc)
 
+                    if bc in self.arsenal:
+                        self.arsenal.remove(bc)
+
     def get_combinations(self, array, current_index):
         combinations = []
         array_copy = array.copy()
@@ -507,7 +459,7 @@ class Enemy:
     def determine_pitch_combination(self, cost_to_pay, pitch_combinations):
         number_of_cards_used = self.intellect
         diff_to_cost = cost_to_pay
-        power_wasted = VALUE_MAX_PLACEHOLDER
+        physical_wasted = VALUE_MAX_PLACEHOLDER
         defense_wasted = VALUE_MAX_PLACEHOLDER
         best_pitch = []
         for k, v in pitch_combinations.items():
@@ -515,9 +467,9 @@ class Enemy:
             # print(v)
             number_of_cards_used_temp = len(k)
             diff_to_cost_temp = cost_to_pay - v
-            power_cost_ratio_wasted_temp = np.sum([ki.power for ki in k]) - np.sum(
-                [ki.cost for ki in k]
-            )
+            physical_cost_ratio_wasted_temp = np.sum(
+                [ki.physical for ki in k]
+            ) - np.sum([ki.cost for ki in k])
             defense_wasted_temp = np.sum([ki.defense for ki in k])
 
             if diff_to_cost_temp <= 0:

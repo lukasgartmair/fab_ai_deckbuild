@@ -48,15 +48,22 @@ class HandOccupation(Enum):
 def get_weapons():
     hand_occupation = random.choice(list(HandOccupation))
     if hand_occupation == HandOccupation.one_handed:
-        return [Weapon(hand_occupation.one_handed), Weapon(hand_occupation.one_handed)]
+        return [
+            Weapon(hand_occupation.one_handed, weapon_id=0),
+            Weapon(hand_occupation.one_handed, weapon_id=1),
+        ]
     else:
         return [Weapon(hand_occupation.two_handed)]
 
 
-class Weapon:
-    def __init__(self, hand_occupation):
+class Weapon(Card):
+    def __init__(self, hand_occupation, weapon_id=0):
+        super().__init__()
+
+        self.weapon_id = weapon_id
+
         self.name = generate_rnd_name()
-        self.hand_occupation = hand_occupation
+
         self.physical = np.random.randint(1, 4)
         self.arcane = np.random.randint(0, 3)
         self.keywords = [Keyword.go_again]
@@ -64,13 +71,7 @@ class Weapon:
 
         self.image = generate_rnd_image()
 
-        self.card = Card()
+        self.color = CardColor.blue
+        self.card_type = CardType.weapon
 
-        self.card.power = self.physical
-        self.card.arcane = self.arcane
-        self.card.cost = self.cost
-        self.card.keywords = self.keywords
-        self.card.name = self.name
-        self.card.image = self.image
-        self.card.color = CardColor.blue
-        self.card.card_type = CardType.weapon
+        self.hand_occupation = hand_occupation

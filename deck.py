@@ -20,7 +20,7 @@ from card import Card, CardColor
 from utils import n_chance
 
 
-def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
+def calc_physical_distribution(playstyle_obj, n=DECK_SIZE):
     mu, sigma = (
         playstyle_obj.strategy_parameters["mu"],
         playstyle_obj.strategy_parameters["sigma"],
@@ -34,7 +34,7 @@ def calc_power_distribution(playstyle_obj, n=DECK_SIZE):
         # sns.distplot(s, color="dodgerblue", label="Compact")
         plt.hist(s, alpha=0.5, label=str(playstyle_obj))
         plt.legend()
-        plt.xlabel("power")
+        plt.xlabel("physical")
         plt.ylabel("#cards")
 
     return s
@@ -70,7 +70,7 @@ def create_arcane_cards(cards, arcane_ratio, n=DECK_SIZE):
     arcane_cards = random.choices(list(cards), k=int(n * arcane_ratio))
 
     for ac in arcane_cards:
-        ac.adjust_arcane_power()
+        ac.adjust_arcane_physical()
 
 
 class Deck:
@@ -95,8 +95,8 @@ class Deck:
         return len(self.cards)
 
     def build_deck(self):
-        power_distribution = calc_power_distribution(self.playstyle)
-        power_distribution = [1 if x == 0 else x for x in power_distribution]
+        physical_distribution = calc_physical_distribution(self.playstyle)
+        physical_distribution = [1 if x == 0 else x for x in physical_distribution]
         keyword_distribution = calc_keyword_distribution(self.playstyle)
         card_type_distribution = calc_card_type_distribution(self.playstyle)
 
@@ -109,7 +109,7 @@ class Deck:
         indices = list(range(len(self.cards)))
         random.shuffle(indices)
         for i, card in enumerate(self.cards):
-            card.power = power_distribution[indices[i]]
+            card.physical = physical_distribution[indices[i]]
             card.keywords = [keyword_distribution[indices[i]]]
             card.card_type = card_type_distribution[indices[i]]
 
@@ -131,7 +131,7 @@ class Deck:
         self.n_yellows = len([c for c in self.cards if c.color == CardColor.yellow])
         self.n_blues = len([c for c in self.cards if c.color == CardColor.blue])
 
-        self.powers = [c.power for c in self.cards]
+        self.physicals = [c.physical for c in self.cards]
         self.defenses = [c.defense for c in self.cards]
         self.pitches = [c.pitch for c in self.cards]
         self.costs = [c.cost for c in self.cards]
@@ -153,9 +153,9 @@ class Deck:
         # averages
         self.cost_avg = np.mean([c.cost for c in self.cards])
         self.pitch_avg = np.mean([c.pitch for c in self.cards])
-        # TODO is this power avg only for attack action cards ir all cards?!
-        self.power_avg = np.mean(
-            [c.power for c in self.cards if c.card_type.name == "attack_action"]
+        # TODO is this physical avg only for attack action cards ir all cards?!
+        self.physical_avg = np.mean(
+            [c.physical for c in self.cards if c.card_type.name == "attack_action"]
         )
         self.defense_avg = np.mean([c.defense for c in self.cards if c.defense > 0])
 
@@ -168,7 +168,7 @@ class Deck:
             ["non_blocking", self.non_blocking, "pitch_avg", self.pitch_avg]
         )
         table.append_row(
-            ["attack_actions", self.attack_actions, "power_avg", self.power_avg]
+            ["attack_actions", self.attack_actions, "physical_avg", self.physical_avg]
         )
         table.append_row(
             [
