@@ -13,6 +13,8 @@ from check_box import CheckBox
 from enemy import Stance
 from engine import GameState
 from input_box import InputBox
+from playstyle import Keyword
+from colors import color_palette
 from settings import (
     grid,
     grid_width,
@@ -47,7 +49,7 @@ class Renderer:
 
         self.engine = engine
 
-        self.background = pygame.image.load("images/background.png")
+        self.background = pygame.image.load("images/background2.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )
@@ -271,7 +273,7 @@ class Renderer:
             ),
         )
 
-        if current_card.keywords[0].name != "no_keyword":
+        if current_card.keywords[0] != Keyword.no_keyword:
             text = font_card_title.render(
                 str(current_card.keywords[0].name), True, "black"
             )

@@ -8,6 +8,7 @@ Created on Sun Jul 21 19:48:35 2024
 
 import pygame
 from attack import Attack
+from colors import color_palette
 
 pygame.font.init()
 font_size = 25
@@ -20,8 +21,8 @@ class InputBox:
         self.window = window
         self.active = False
         self.box_type = box_type
-        self.color_inactive = pygame.Color("red")
-        self.color_active = pygame.Color("green")
+        self.color_inactive = pygame.Color(color_palette.color4)
+        self.color_active = pygame.Color(color_palette.white)
         self.color = self.color_inactive
         self.font = pygame.font.Font(None, 32)
         self.x = 100
@@ -44,7 +45,7 @@ class InputBox:
         return self.text != ""
 
     def reset(self):
-        self.color = "red"
+        self.color = pygame.Color(color_palette.color4)
         self.text = ""
 
     def check_activation(self, event):
@@ -61,7 +62,9 @@ class InputBox:
         message = "{} DAMAGE value".format(self.box_type.upper())
         text = font2.render(message, True, (0, 0, 0))
         self.window.blit(text, (self.box.x, self.box.y - 30))
-        txt_surface = self.font.render(self.text, True, "blue")
+        txt_surface = self.font.render(
+            self.text, True, pygame.Color(color_palette.white)
+        )
         self.window.blit(txt_surface, (self.box.x + 5, self.box.y + 5))
         pygame.draw.rect(self.window, self.color, self.box, 2)
 
