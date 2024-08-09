@@ -15,6 +15,7 @@ from wonderwords import RandomSentence
 from randimage import get_random_image, show_array
 from settings import CARD_RESOLUTION
 from playstyle import CardType
+from colors import color_palette
 
 id_iter = itertools.count()
 
@@ -44,7 +45,12 @@ class CardColor(Enum):
     blue = 2
 
 
-card_colors = {"red": (255, 0, 0), "yellow": (255, 255, 0), "blue": (0, 0, 255)}
+# card_colors = {"red": (255, 0, 0), "yellow": (255, 255, 0), "blue": (0, 0, 255)}
+card_colors = {
+    "red": pygame.Color(color_palette.color3),
+    "yellow": pygame.Color(color_palette.color5),
+    "blue": pygame.Color(color_palette.color2),
+}
 
 pitch_values = {"red": 1, "yellow": 2, "blue": 3}
 

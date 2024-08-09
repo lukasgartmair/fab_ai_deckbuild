@@ -7,13 +7,22 @@ Created on Mon Aug  5 17:28:33 2024
 """
 
 import PygameUtils as pu
+from colors import color_palette
+import pygame
 
 
 class CheckBox:
     def __init__(self, name, y=180):
         self.name = name
         self.cb = pu.checkbox(
-            "black", 400, y, 25, 25, font="z003", text=name, outline=3
+            pygame.Color(color_palette.text_color),
+            400,
+            y,
+            25,
+            25,
+            font="z003",
+            text=name,
+            outline=3,
         )
 
     def reset(self):

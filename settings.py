@@ -8,9 +8,16 @@ Created on Sun Jul 21 20:22:55 2024
 
 import pygame
 import random
-
+from enum import Enum
 from pygame_gridcalculator import GridCalculator
 
+
+class DisplayMode:
+    light = 0
+    dark = 1
+
+
+display_mode = DisplayMode.dark
 
 FPS = 5
 

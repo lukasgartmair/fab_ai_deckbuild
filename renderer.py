@@ -15,6 +15,7 @@ from engine import GameState
 from input_box import InputBox
 from playstyle import Keyword
 from colors import color_palette
+from card import CardColor
 from settings import (
     grid,
     grid_width,
@@ -49,7 +50,7 @@ class Renderer:
 
         self.engine = engine
 
-        self.background = pygame.image.load("images/background2.png")
+        self.background = pygame.image.load("images/background.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )
@@ -101,7 +102,7 @@ class Renderer:
 
         # self.rect = pygame.draw.rect(
         #     self.window,
-        #     "white",
+        #     pygame.Color(color_palette.white),
         #     (
         #         grid.left_point(grid_width // 2 - 1),
         #         grid.top_point(grid_height * 0.65),
@@ -110,7 +111,9 @@ class Renderer:
         #     ),
         # )
 
-        text = font_card_title.render(str(self.engine.enemy.name), True, "yellow")
+        text = font_card_title.render(
+            str(self.engine.enemy.name), True, pygame.Color(color_palette.white)
+        )
 
         self.window.blit(
             text,
@@ -138,7 +141,11 @@ class Renderer:
                 )
 
     def render_deck(self):
-        text = font.render(str(len(self.engine.enemy.deck)) + " deck", True, "white")
+        text = font.render(
+            str(len(self.engine.enemy.deck)) + " deck",
+            True,
+            pygame.Color(color_palette.text_color),
+        )
         self.window.blit(
             text,
             (
@@ -149,7 +156,9 @@ class Renderer:
 
     def render_arsenal(self):
         text = font.render(
-            str(len(self.engine.enemy.arsenal)) + " arsenal", True, "white"
+            str(len(self.engine.enemy.arsenal)) + " arsenal",
+            True,
+            pygame.Color(color_palette.text_color),
         )
         self.window.blit(
             text,
@@ -160,7 +169,11 @@ class Renderer:
         )
 
     def render_hand(self):
-        text = font.render(str(len(self.engine.enemy.hand)) + " hand", True, "white")
+        text = font.render(
+            str(len(self.engine.enemy.hand)) + " hand",
+            True,
+            pygame.Color(color_palette.text_color),
+        )
         self.window.blit(
             text,
             (
@@ -173,7 +186,11 @@ class Renderer:
         n_banished_cards = 0
         for k, v in self.engine.enemy.banished_zone.items():
             n_banished_cards += len(v)
-        text = font.render(str(n_banished_cards) + " banished", True, "white")
+        text = font.render(
+            str(n_banished_cards) + " banished",
+            True,
+            pygame.Color(color_palette.text_color),
+        )
         self.window.blit(
             text,
             (
@@ -190,7 +207,7 @@ class Renderer:
         text = font.render(
             str(len(self.engine.enemy.pitched_cards)) + " pitch",
             True,
-            "white",
+            pygame.Color(color_palette.white),
         )
         i = 5
         self.window.blit(
@@ -230,7 +247,14 @@ class Renderer:
             (hor_pos, vert_pos, card_width * 0.75, 25),
         )
 
-        text = font_card_title.render(str(current_card.name), True, "black")
+        if current_card.color == CardColor.yellow:
+            text = font_card_title.render(
+                str(current_card.name), True, pygame.Color(color_palette.black)
+            )
+        else:
+            text = font_card_title.render(
+                str(current_card.name), True, pygame.Color(color_palette.white)
+            )
 
         self.window.blit(text, (hor_pos, vert_pos))
 
@@ -249,7 +273,9 @@ class Renderer:
 
         if current_card.card_class.name != "generic":
             text = font_card_title.render(
-                str(current_card.card_class.name), True, "white"
+                str(current_card.card_class.name),
+                True,
+                pygame.Color(color_palette.white),
             )
 
             self.window.blit(
@@ -264,7 +290,7 @@ class Renderer:
 
         self.rect = pygame.draw.rect(
             self.window,
-            "green",
+            pygame.Color(color_palette.green),
             (
                 hor_pos,
                 vert_pos + card_height // 2 + rect_height * 2,
@@ -275,7 +301,9 @@ class Renderer:
 
         if current_card.keywords[0] != Keyword.no_keyword:
             text = font_card_title.render(
-                str(current_card.keywords[0].name), True, "black"
+                str(current_card.keywords[0].name),
+                True,
+                pygame.Color(color_palette.white),
             )
 
             self.window.blit(
@@ -289,7 +317,7 @@ class Renderer:
         # TYPE
         self.rect = pygame.draw.rect(
             self.window,
-            "white",
+            pygame.Color(color_palette.white),
             (
                 hor_pos,
                 vert_pos + card_height // 2 + rect_height * 3,
@@ -298,7 +326,9 @@ class Renderer:
             ),
         )
 
-        text = font_card_title.render(str(current_card.card_type.name), True, "black")
+        text = font_card_title.render(
+            str(current_card.card_type.name), True, pygame.Color(color_palette.black)
+        )
 
         self.window.blit(
             text,
@@ -309,7 +339,9 @@ class Renderer:
         )
 
         # POWER
-        text = font.render(str(current_card.physical), True, "yellow")
+        text = font.render(
+            str(current_card.physical), True, pygame.Color(color_palette.white)
+        )
 
         self.window.blit(
             text,
@@ -321,7 +353,11 @@ class Renderer:
 
         # ARCANE POWER
         if current_card.arcane > 0:
-            text = font.render("+{}".format(str(current_card.arcane)), True, "green")
+            text = font.render(
+                "+{}".format(str(current_card.arcane)),
+                True,
+                pygame.Color(color_palette.green),
+            )
 
             self.window.blit(
                 text,
@@ -332,7 +368,9 @@ class Renderer:
             )
 
         # DEFENSE
-        text = font.render(str(current_card.defense), True, "black")
+        text = font.render(
+            str(current_card.defense), True, pygame.Color(color_palette.black)
+        )
 
         self.window.blit(
             text,
@@ -356,7 +394,9 @@ class Renderer:
         )
 
         # COST
-        text = font.render(str(current_card.cost), True, "red")
+        text = font.render(
+            str(current_card.cost), True, pygame.Color(color_palette.color2)
+        )
         self.window.blit(
             text,
             (
@@ -366,7 +406,11 @@ class Renderer:
         )
 
     def render_enemy_life(self):
-        text = font.render(str(len(self.engine.enemy.hand)) + " life", True, "white")
+        text = font.render(
+            str(len(self.engine.enemy.hand)) + " life",
+            True,
+            pygame.Color(color_palette.white),
+        )
         self.window.blit(
             text,
             (
@@ -394,7 +438,7 @@ class Renderer:
                 + " is "
                 + (self.engine.enemy.stance.name + "ing").upper(),
                 True,
-                color,
+                pygame.Color(color_palette.white),
             )
 
             self.window.blit(
