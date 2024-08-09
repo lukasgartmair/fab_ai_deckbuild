@@ -84,10 +84,10 @@ class Enemy:
 
         self.ability = Ability()
 
-    def reduce_life(self, value):
+    def decrease_life(self, value=1):
         self.life -= value
 
-    def add_life(self, value):
+    def increase_life(self, value=1):
         self.life += value
 
     def arsenal_empty(self):

@@ -16,6 +16,7 @@ from input_box import InputBox
 from playstyle import Keyword
 from colors import color_palette
 from card import CardColor
+from life_counter import LifeCounter
 from settings import (
     grid,
     grid_width,
@@ -71,6 +72,8 @@ class Renderer:
         self.check_box_intimidate = CheckBox("intimidate", y=170)
 
         self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
+
+        self.life_counter = LifeCounter(self.engine.enemy)
 
     def render_background(self):
         self.window.blit(self.background, (0, 0))
@@ -405,17 +408,20 @@ class Renderer:
             ),
         )
 
-    def render_enemy_life(self):
+    def render_enemy_life_counter(self):
+        self.life_counter.button_up.draw(self.window)
+        self.life_counter.button_down.draw(self.window)
+
         text = font.render(
-            str(len(self.engine.enemy.hand)) + " life",
+            "HP : " + str(self.engine.enemy.life),
             True,
             pygame.Color(color_palette.white),
         )
         self.window.blit(
             text,
             (
-                grid.left_point(7),
-                grid.top_point(2),
+                grid.left_point(10),
+                grid.top_point(1),
             ),
         )
 
@@ -471,6 +477,8 @@ class Renderer:
         self.render_enemy_play()
 
         self.render_floating_resources()
+
+        self.render_enemy_life_counter()
 
         self.render_weapons()
 

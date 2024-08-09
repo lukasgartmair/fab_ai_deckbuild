@@ -70,6 +70,22 @@ class Game:
                 for inp_box in self.input_boxes:
                     inp_box.check_activation(event)
 
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if self.renderer.life_counter.button_up.isOver(
+                        pygame.mouse.get_pos()
+                    ):
+                        print("up")
+                        self.renderer.life_counter.increase_life()
+                    elif self.renderer.life_counter.button_down.isOver(
+                        pygame.mouse.get_pos()
+                    ):
+                        print("down")
+
+                        self.renderer.life_counter.decrease_life()
+
+                    self.renderer.render_background()
+                    self.renderer.render()
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for check_box in self.renderer.check_boxes:
                         if check_box.cb.isOver(pygame.mouse.get_pos()):
