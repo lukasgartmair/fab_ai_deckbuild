@@ -32,7 +32,11 @@ from settings import (
     text_offset_piles,
     arcane_offset,
     rect_height,
+    right_edge,
+    enemy_top_edge,
 )
+
+y_index = 0
 
 
 class Renderer:
@@ -81,8 +85,8 @@ class Renderer:
         self.window.blit(
             text,
             (
-                grid.left_point(grid_width * 0.8),
-                grid.top_point(1),
+                right_edge,
+                grid.top_point(y_index),
             ),
         )
 
@@ -90,11 +94,8 @@ class Renderer:
         if len(self.engine.enemy.deck) > 0:
             self.window.blit(
                 self.enemy_image,
-                (
-                    grid.left_point(grid_width // 2 - 1),
-                    grid.top_point(grid_height * 0.65),
-                ),
-            )
+                (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
+            ),
 
         # self.rect = pygame.draw.rect(
         #     self.window,
@@ -111,10 +112,7 @@ class Renderer:
 
         self.window.blit(
             text,
-            (
-                grid.left_point(grid_width // 2 - 1),
-                grid.top_point(grid_height * 0.65) - 25,
-            ),
+            (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
         )
 
     def render_weapons(self):
@@ -134,8 +132,8 @@ class Renderer:
         self.window.blit(
             text,
             (
-                grid.left_point(grid_width * 0.8),
-                grid.top_point(2),
+                right_edge,
+                grid.top_point(y_index + 1),
             ),
         )
 
@@ -156,8 +154,8 @@ class Renderer:
         self.window.blit(
             text,
             (
-                grid.left_point(grid_width * 0.8),
-                grid.top_point(3),
+                right_edge,
+                grid.top_point(y_index + 2),
             ),
         )
 
@@ -169,15 +167,15 @@ class Renderer:
         self.window.blit(
             text,
             (
-                grid.left_point(grid_width * 0.8),
-                grid.top_point(4),
+                right_edge,
+                grid.top_point(y_index + 3),
             ),
         )
 
     def render_pitch(self):
         if len(self.engine.enemy.pitched_cards) > 0:
             for i, pc in enumerate(self.engine.enemy.pitched_cards):
-                self.render_card(pc, x=grid.left_point(grid_width * 0.8))
+                self.render_card(pc, x=right_edge)
 
         text = font.render(
             str(len(self.engine.enemy.pitched_cards)) + " pitch",
@@ -188,8 +186,8 @@ class Renderer:
         self.window.blit(
             text,
             (
-                grid.left_point(grid_width * 0.8),
-                grid.top_point(5),
+                right_edge,
+                grid.top_point(y_index + 4),
             ),
         )
 
@@ -197,13 +195,13 @@ class Renderer:
         # offset_factor = 10*i if i != 0 else 0
 
         if y is None:
-            vert_card_grid_point = grid.top_point(7)
+            vert_card_grid_point = grid.top_point(6)
             vert_pos = vert_card_grid_point
         else:
             vert_pos = y
 
         if x is None:
-            hor_card_grid_point = 2 + int(i) * 2.5
+            hor_card_grid_point = 1 + int(i) * 2.5
             hor_pos = grid.left_point(hor_card_grid_point)
         else:
             hor_pos = x
@@ -253,7 +251,6 @@ class Renderer:
             )
 
         # KEYWORDS
-        factor_keyword = 1.6
 
         self.rect = pygame.draw.rect(
             self.window,

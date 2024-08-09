@@ -23,12 +23,16 @@ width = 1920
 height = 1080
 bounds = (width, height)
 
-
 grid_width = 18
+
 
 grid_height = 18
 
 grid = GridCalculator(width, height, grid_width, grid_height)
+
+
+right_edge = grid.left_point(grid_width * 0.8)
+enemy_top_edge = grid.top_point(grid_height * 0.65)
 
 pygame.font.init()
 
@@ -54,7 +58,6 @@ rect_height = 25
 player_1_color = (249, 243, 153)
 player_2_color = (28, 0, 46)
 
-right_edge = int(width * 0.1)
 middle_edge = int(width * 0.3)
 middle_edge_2 = int(width * 0.55)
 left_edge = int(width * 0.75)
