@@ -13,7 +13,7 @@ from pile import Pile
 from enum import Enum
 from playstyle import Keyword, PlayerClass, CardType, get_playstyle
 from equipment import EquipmentSuite
-from weapon import Weapon
+from weapon import get_weapons
 import random
 from fantasynames.fantasy_identity import FantasyIdentity
 from enemy_block import EnemyBlock
@@ -57,8 +57,9 @@ class Enemy:
         self.banished_zone["intimidated_cards"] = []
         self.arsenal = []
 
-        self.weapon_zone_1 = Weapon()
-        self.weapon_zone_2 = []
+        self.weapons = get_weapons()
+
+        print(self.weapons)
 
         self.equipment_suite = EquipmentSuite()
 
