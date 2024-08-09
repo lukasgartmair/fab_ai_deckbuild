@@ -70,8 +70,8 @@ class Weapon(Card):
             self.keywords = [Keyword.go_again]
         else:
             self.keywords = [Keyword.no_keyword]
-        
-        power = self.physical + self.arcane 
+
+        power = self.physical + self.arcane
         match power:
             case power if power < 2:
                 self.cost = 0
@@ -79,7 +79,7 @@ class Weapon(Card):
                 self.cost = 1
             case power if power > 4:
                 self.cost = 2
-        
+
         self.image = generate_rnd_image()
 
         self.color = CardColor.red

@@ -201,15 +201,13 @@ class Enemy:
         # play go agains first with a certain chance
         if n_chance(p=0.50):
             virtual_hand = self.order_hand_by_go_again(virtual_hand)
-            
+
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
             if len(virtual_hand_tmp) > 0:
                 current_card = virtual_hand_tmp[0]
 
-                if current_card.card_type not in [
-                    CardType.defensive_reaction
-                ]:
+                if current_card.card_type not in [CardType.defensive_reaction]:
                     possible_cards_to_pitch = self.get_combinations(
                         [v for v in virtual_hand_tmp if v not in not_pitchable_cards], 0
                     )
@@ -226,7 +224,7 @@ class Enemy:
                         cards_to_pitch = self.determine_pitch_combination(
                             current_card.cost, pitch_combinations
                         )
-                        
+
                         if len(cards_to_pitch) == 0:
                             print("no pitch possible")
                             virtual_hand = shift_list(virtual_hand_tmp)

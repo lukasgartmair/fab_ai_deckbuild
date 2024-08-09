@@ -123,9 +123,17 @@ class Renderer:
         ]
         for i, w in enumerate(weapons_to_render):
             if w.weapon_id == 0:
-                self.render_card(w, x=grid.left_point(grid_width // 2 - 1)-card_width, y=grid.top_point(grid_height * 0.65))
+                self.render_card(
+                    w,
+                    x=grid.left_point(grid_width // 2 - 1) - card_width,
+                    y=grid.top_point(grid_height * 0.65),
+                )
             else:
-                self.render_card(w, x=grid.left_point(grid_width // 2 - 1)+card_width , y=grid.top_point(grid_height * 0.65))
+                self.render_card(
+                    w,
+                    x=grid.left_point(grid_width // 2 - 1) + card_width,
+                    y=grid.top_point(grid_height * 0.65),
+                )
 
     def render_deck(self):
         text = font.render(str(len(self.engine.enemy.deck)) + " deck", True, "white")

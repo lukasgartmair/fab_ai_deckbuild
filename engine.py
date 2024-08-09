@@ -37,7 +37,6 @@ class GameEngine:
         self.enemy.draw()
 
     def play(self, player_attack=None, modifiers=None):
-        
         if self.enemy.stance == Stance.defend:
             if self.enemy.further_defense_possible == False:
                 print("no more defensive actions from the enemy this turn")
