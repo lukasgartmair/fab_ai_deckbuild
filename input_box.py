@@ -16,7 +16,7 @@ font2 = pygame.font.Font(font_style, font_size)
 
 
 class InputBox:
-    def __init__(self, window, y=150, box_type="physical"):
+    def __init__(self, window, y=170, box_type="physical"):
         self.window = window
         self.active = False
         self.box_type = box_type

@@ -10,7 +10,7 @@ import PygameUtils as pu
 
 
 class CheckBox:
-    def __init__(self, name, y=160):
+    def __init__(self, name, y=180):
         self.name = name
         self.cb = pu.checkbox(
             "black", 400, y, 25, 25, font="z003", text=name, outline=3

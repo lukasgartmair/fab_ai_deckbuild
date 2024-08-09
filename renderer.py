@@ -38,8 +38,8 @@ from settings import (
 class Renderer:
     def __init__(self, engine):
         self.window = pygame.display.set_mode(bounds)
-        self.input_box_physical = InputBox(self.window, box_type="physical")
-        self.input_box_arcane = InputBox(self.window, y=220, box_type="arcane")
+        self.input_box_physical = InputBox(self.window, y=170, box_type="physical")
+        self.input_box_arcane = InputBox(self.window, y=250, box_type="arcane")
 
         self.engine = engine
 
@@ -59,9 +59,9 @@ class Renderer:
             (int(card_height * 0.8 * card_scale), int(card_height * card_scale)),
         )
 
-        self.check_box_dominate = CheckBox("dominate")
+        self.check_box_dominate = CheckBox("dominate", y=250)
 
-        self.check_box_intimidate = CheckBox("intimidate", y=120)
+        self.check_box_intimidate = CheckBox("intimidate", y=170)
 
         self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
 
