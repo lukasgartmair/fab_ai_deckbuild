@@ -134,6 +134,18 @@ class Renderer:
             ),
         )
 
+    def render_arsenal(self):
+        text = font.render(
+            str(len(self.engine.enemy.arsenal)) + " arsenal", True, "white"
+        )
+        self.window.blit(
+            text,
+            (
+                grid.left_point(grid_width * 0.8),
+                grid.top_point(5),
+            ),
+        )
+
     def render_hand(self):
         text = font.render(str(len(self.engine.enemy.hand)) + " hand", True, "white")
         self.window.blit(
@@ -157,7 +169,7 @@ class Renderer:
             ),
         )
 
-    def render_pitch_pile(self):
+    def render_pitch(self):
         if len(self.engine.enemy.pitched_cards) > 0:
             for i, pc in enumerate(self.engine.enemy.pitched_cards):
                 self.render_card(4, pc)
@@ -404,6 +416,8 @@ class Renderer:
 
         self.render_weapons()
 
+        self.render_arsenal()
+
         self.render_deck()
 
         self.render_enemy()
@@ -412,7 +426,7 @@ class Renderer:
 
         self.render_banished_zone()
 
-        self.render_pitch_pile()
+        self.render_pitch()
 
         self.render_turn_text()
 

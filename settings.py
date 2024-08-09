@@ -19,8 +19,8 @@ RND_SEED = random.randint(0, 100)
 CARD_RESOLUTION = 5
 DECK_SIZE = 100
 
-width = 1600
-height = 1300
+width = 1920
+height = 1080
 bounds = (width, height)
 
 

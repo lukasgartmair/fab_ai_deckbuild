@@ -90,6 +90,18 @@ class Enemy:
     def add_life(self, value):
         self.life += value
 
+    def arsenal_empty(self):
+        if len(self.arsenal) == 0:
+            return True
+        else:
+            return False
+
+    def fill_arsenal(self):
+        if len(self.hand) > 0:
+            c = self.hand[0]
+            self.arsenal.append(c)
+            self.hand.remove(c)
+
     def finish_phase(self):
         self.floating_resources = 0
 
@@ -117,7 +129,9 @@ class Enemy:
         self.block.reset()
 
         if self.stance == Stance.attack:
-            self.pitch = []
+            if self.arsenal_empty():
+                self.fill_arsenal()
+
             self.draw()
 
         if self.stance == Stance.defend:
@@ -168,13 +182,15 @@ class Enemy:
         number_of_cards_to_pitch = VALUE_MAX_PLACEHOLDER
         power_minus_cost = 0
 
-        virtual_hand = self.hand.copy()
+        virtual_hand = self.hand.copy() + self.arsenal
         virtual_hand_tmp = virtual_hand.copy()
 
         for i in range(len(virtual_hand)):
             if len(virtual_hand_tmp) > 0:
                 current_card = virtual_hand_tmp[0]
-                possible_cards_to_pitch = self.get_combinations(virtual_hand_tmp, 0)
+                possible_cards_to_pitch = self.get_combinations(
+                    [v for v in virtual_hand_tmp if v not in self.arsenal], 0
+                )
 
                 pitch_combinations = {}
                 for j, pi in enumerate(possible_cards_to_pitch):
@@ -223,7 +239,8 @@ class Enemy:
     def calc_combat_chain(self):
         combat_chain_index = 0
 
-        virtual_hand = self.hand.copy()
+        virtual_hand = self.hand.copy() + self.arsenal
+        np.random.shuffle(virtual_hand)
 
         # play strongest attacks first, but by a small chance not to be not too predictable -> shuffle, weakest first makes no sense at all
         if n_chance():
@@ -245,7 +262,9 @@ class Enemy:
                     CardType.non_attack_action,
                     CardType.attack_reaction,
                 ]:
-                    possible_cards_to_pitch = self.get_combinations(virtual_hand_tmp, 0)
+                    possible_cards_to_pitch = self.get_combinations(
+                        [v for v in virtual_hand_tmp if v not in self.arsenal], 0
+                    )
 
                     pitch_combinations = {}
                     for j, pi in enumerate(possible_cards_to_pitch):
@@ -331,6 +350,8 @@ class Enemy:
                     for p in self.played_cards:
                         if p in self.hand:
                             self.remove_card_from_hand(p)
+                        if p in self.arsenal:
+                            self.arsenal.remove(p)
 
                     self.use_floating_resources(c.cost)
 
