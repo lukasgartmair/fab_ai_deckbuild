@@ -10,11 +10,13 @@ from enum import Enum
 import numpy as np
 import random
 import pygame
+from playstyle import CardType
 from wonderwords import RandomWord
 from randimage import get_random_image, show_array
 from settings import CARD_RESOLUTION
 from deck import Keyword
 from utils import n_chance
+from card import Card, CardColor
 
 r = RandomWord()
 
@@ -34,7 +36,7 @@ def generate_rnd_image():
     size = CARD_RESOLUTION
     img_size = (size, size)
     img = get_random_image(img_size)
-    img = img / img.max()
+    img = 100 * img / img.max()
     return pygame.surfarray.make_surface(img)
 
 
@@ -61,3 +63,14 @@ class Weapon:
         self.cost = np.random.randint(1, 3)
 
         self.image = generate_rnd_image()
+
+        self.card = Card()
+
+        self.card.power = self.physical
+        self.card.arcane = self.arcane
+        self.card.cost = self.cost
+        self.card.keywords = self.keywords
+        self.card.name = self.name
+        self.card.image = self.image
+        self.card.color = CardColor.blue
+        self.card.card_type = CardType.weapon

@@ -36,6 +36,7 @@ class CardType(Enum):
     attack_action = 1
     attack_reaction = 2
     defensive_reaction = 3
+    weapon = 4
 
 
 def get_playstyle(player_class):

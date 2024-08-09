@@ -9,17 +9,26 @@ Created on Sun Jul 21 20:22:55 2024
 import pygame
 import random
 
+from pygame_gridcalculator import GridCalculator
+
+
 FPS = 5
 
-# 122 wizard
 RND_SEED = random.randint(0, 100)
 
 CARD_RESOLUTION = 5
 DECK_SIZE = 100
 
 width = 1600
-height = 900
+height = 1300
 bounds = (width, height)
+
+
+grid_width = 18
+
+grid_height = 18
+
+grid = GridCalculator(width, height, grid_width, grid_height)
 
 pygame.font.init()
 
@@ -39,6 +48,9 @@ card_width = 238
 card_scale = 0.75
 
 
+rect_height = 25
+
+
 player_1_color = (249, 243, 153)
 player_2_color = (28, 0, 46)
 
@@ -51,7 +63,7 @@ height_reference_0 = int(height / 3) * 1.2
 height_reference_1 = int(height / 2)
 height_references = {0: height_reference_0, 1: height_reference_1}
 
-arcane_offset = 20
+arcane_offset = 25
 
 divider = 7
 width_reference_0 = 20

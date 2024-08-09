@@ -49,7 +49,19 @@ def calc_keyword_distribution(playstyle_obj, n=DECK_SIZE):
 
 def calc_card_type_distribution(playstyle_obj, n=DECK_SIZE):
     sampled_card_types = random.choices(
-        list(CardType), weights=playstyle_obj.card_type_ratios.values(), k=n
+        [
+            c
+            for c in CardType
+            if c
+            in [
+                CardType.attack_action,
+                CardType.non_attack_action,
+                CardType.attack_reaction,
+                CardType.defensive_reaction,
+            ]
+        ],
+        weights=playstyle_obj.card_type_ratios.values(),
+        k=n,
     )
     return sampled_card_types
 

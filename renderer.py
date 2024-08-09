@@ -13,9 +13,10 @@ from check_box import CheckBox
 from enemy import Stance
 from engine import GameState
 from input_box import InputBox
-
-
 from settings import (
+    grid,
+    grid_width,
+    grid_height,
     player_1_color,
     player_2_color,
     bounds,
@@ -30,6 +31,7 @@ from settings import (
     text_color,
     text_offset_piles,
     arcane_offset,
+    rect_height,
 )
 
 
@@ -70,50 +72,76 @@ class Renderer:
         self.background_bw = pygame.image.load("images/background_bw.png")
         self.window.blit(self.background_bw, (0, 0))
 
-    def render_attack_value(self, player_attack_value):
-        text = font.render(
-            str(player_attack_value) + " attack value",
-            True,
-            text_color,
-        )
-        self.window.blit(
-            text,
-            (
-                width_references["pitch"] - 25,
-                height_references[0] + text_offset_piles * 2,
-            ),
-        )
-
     def render_floating_resources(self):
         text = font.render(
-            str(self.engine.enemy.floating_resources) + " floating resources",
+            str(self.engine.enemy.floating_resources) + " floating",
             True,
             text_color,
         )
         self.window.blit(
             text,
             (
-                width_references["pitch"] - 25,
-                height_references[0] + text_offset_piles * 2,
+                grid.left_point(grid_width * 0.8),
+                grid.top_point(1),
             ),
         )
 
-    def render_deck_pile(self):
+    def render_enemy(self):
         if len(self.engine.enemy.deck) > 0:
             self.window.blit(
-                self.enemy_image, (width_references["pile"], height_references[0])
+                self.enemy_image,
+                (
+                    grid.left_point(grid_width // 2 - 1),
+                    grid.top_point(grid_height * 0.65),
+                ),
             )
 
+        # self.rect = pygame.draw.rect(
+        #     self.window,
+        #     "white",
+        #     (
+        #         grid.left_point(grid_width // 2 - 1),
+        #         grid.top_point(grid_height * 0.65),
+        #         card_width*card_scale+10,
+        #         rect_height,
+        #     ),
+        # )
+
+        text = font_card_title.render(str(self.engine.enemy.name), True, "yellow")
+
+        self.window.blit(
+            text,
+            (
+                grid.left_point(grid_width // 2 - 1),
+                grid.top_point(grid_height * 0.65) - 25,
+            ),
+        )
+
+    def render_weapons(self):
+        for i, w in enumerate(self.engine.enemy.weapons):
+            if i == 0:
+                self.render_card(1.5, w.card, y=grid.top_point(grid_height * 0.65))
+            else:
+                self.render_card(4, w.card, y=grid.top_point(grid_height * 0.65))
+
+    def render_deck(self):
         text = font.render(str(len(self.engine.enemy.deck)) + " deck", True, "white")
         self.window.blit(
-            text, (width_references["pile"], height_references[0] + text_offset_piles)
+            text,
+            (
+                grid.left_point(grid_width * 0.8),
+                grid.top_point(2),
+            ),
         )
 
     def render_hand(self):
         text = font.render(str(len(self.engine.enemy.hand)) + " hand", True, "white")
         self.window.blit(
             text,
-            (width_references["hand"], height_references[0] + text_offset_piles * 2),
+            (
+                grid.left_point(grid_width * 0.8),
+                grid.top_point(3),
+            ),
         )
 
     def render_banished_zone(self):
@@ -121,44 +149,63 @@ class Renderer:
         for k, v in self.engine.enemy.banished_zone.items():
             n_banished_cards += len(v)
         text = font.render(str(n_banished_cards) + " banished", True, "white")
-        self.window.blit(text, (width_references["banished"], height_references[0] * 2))
+        self.window.blit(
+            text,
+            (
+                grid.left_point(grid_width * 0.8),
+                grid.top_point(4),
+            ),
+        )
 
     def render_pitch_pile(self):
         if len(self.engine.enemy.pitched_cards) > 0:
             for i, pc in enumerate(self.engine.enemy.pitched_cards):
-                self.render_card("pitch", pc)
+                self.render_card(4, pc)
 
         text = font.render(
             str(len(self.engine.enemy.pitched_cards)) + " pitch",
             True,
             "white",
         )
+        i = 5
         self.window.blit(
-            text, (width_references["pitch"], height_references[0] + text_offset_piles)
+            text,
+            (
+                grid.left_point(12),
+                grid.top_point(5),
+            ),
         )
 
-    def render_card(self, i, current_card):
-        offset_factor = 1.35
+    def render_card(self, i, current_card, y=None):
+        # offset_factor = 10*i if i != 0 else 0
+
+        if y is None:
+            vert_card_grid_point = grid.top_point(7)
+            vert_pos = vert_card_grid_point
+        else:
+            vert_pos = y
+
+        hor_card_grid_point = 2 + int(i) * 2.5
+
+        hor_pos = grid.left_point(hor_card_grid_point)
 
         print(current_card)
         current_card.image = pygame.transform.scale(
             current_card.image,
             (int(card_width * card_scale), int(card_height * card_scale)),
         )
-        self.window.blit(
-            current_card.image, (width_references[str(i)], height_references[0])
-        )
+        self.window.blit(current_card.image, (hor_pos, vert_pos))
 
         # NAME
         self.rect = pygame.draw.rect(
             self.window,
             card_colors[current_card.color.name],
-            (width_references[str(i)], height_references[0], card_width * 0.75, 25),
+            (hor_pos, vert_pos, card_width * 0.75, 25),
         )
 
         text = font_card_title.render(str(current_card.name), True, "black")
 
-        self.window.blit(text, (width_references[str(i)], height_references[0]))
+        self.window.blit(text, (hor_pos, vert_pos))
 
         # CLASS
         factor_keyword = 1.8
@@ -166,10 +213,10 @@ class Renderer:
             self.window,
             "blue",
             (
-                width_references[str(i)],
-                height_references[0] + card_height // factor_keyword,
+                hor_pos,
+                vert_pos + card_height // 2 + rect_height,
                 card_width * 0.75,
-                25,
+                rect_height,
             ),
         )
 
@@ -181,8 +228,8 @@ class Renderer:
             self.window.blit(
                 text,
                 (
-                    width_references[str(i)],
-                    height_references[0] + card_height // factor_keyword,
+                    hor_pos,
+                    vert_pos + card_height // 2 + rect_height,
                 ),
             )
 
@@ -193,10 +240,10 @@ class Renderer:
             self.window,
             "green",
             (
-                width_references[str(i)],
-                height_references[0] + card_height // factor_keyword,
+                hor_pos,
+                vert_pos + card_height // 2 + rect_height * 2,
                 card_width * 0.75,
-                25,
+                rect_height,
             ),
         )
 
@@ -208,8 +255,8 @@ class Renderer:
             self.window.blit(
                 text,
                 (
-                    width_references[str(i)],
-                    height_references[0] + card_height // factor_keyword,
+                    hor_pos,
+                    vert_pos + card_height // 2 + rect_height * 2,
                 ),
             )
 
@@ -218,10 +265,10 @@ class Renderer:
             self.window,
             "white",
             (
-                width_references[str(i)],
-                height_references[0] + card_height // 1.475,
+                hor_pos,
+                vert_pos + card_height // 2 + rect_height * 3,
                 card_width * 0.75,
-                25,
+                rect_height,
             ),
         )
 
@@ -229,7 +276,10 @@ class Renderer:
 
         self.window.blit(
             text,
-            (width_references[str(i)], height_references[0] + card_height // 1.475),
+            (
+                hor_pos,
+                vert_pos + card_height // 2 + rect_height * 3,
+            ),
         )
 
         # POWER
@@ -238,8 +288,8 @@ class Renderer:
         self.window.blit(
             text,
             (
-                width_references[str(i)],
-                height_references[0] + (card_height // offset_factor),
+                hor_pos,
+                vert_pos + card_height // 2 + rect_height * 4,
             ),
         )
 
@@ -250,8 +300,8 @@ class Renderer:
             self.window.blit(
                 text,
                 (
-                    width_references[str(i)] + arcane_offset,
-                    height_references[0] + (card_height // offset_factor),
+                    hor_pos + arcane_offset,
+                    vert_pos + card_height // 2 + rect_height * 4,
                 ),
             )
 
@@ -261,8 +311,8 @@ class Renderer:
         self.window.blit(
             text,
             (
-                width_references[str(i)] + card_width // 2,
-                height_references[0] + (card_height // offset_factor),
+                hor_pos + card_width // 1.7,
+                vert_pos + card_height // 2 + rect_height * 4,
             ),
         )
 
@@ -274,9 +324,8 @@ class Renderer:
         self.window.blit(
             text,
             (
-                width_references[str(i)],
-                height_references[0]
-                - (card_height - card_height // offset_factor - 30),
+                hor_pos,
+                vert_pos - rect_height * 2,
             ),
         )
 
@@ -285,9 +334,8 @@ class Renderer:
         self.window.blit(
             text,
             (
-                width_references[str(i)] + card_width // 2,
-                height_references[0]
-                - (card_height - card_height // offset_factor - 30),
+                hor_pos + card_width // 1.7,
+                vert_pos - rect_height * 2,
             ),
         )
 
@@ -295,7 +343,10 @@ class Renderer:
         text = font.render(str(len(self.engine.enemy.hand)) + " life", True, "white")
         self.window.blit(
             text,
-            (width_references["hand"], height_references[0] + text_offset_piles * 2),
+            (
+                grid.left_point(7),
+                grid.top_point(2),
+            ),
         )
 
     def render_enemy_play(self):
@@ -320,7 +371,13 @@ class Renderer:
                 color,
             )
 
-            self.window.blit(text, (20, 50))
+            self.window.blit(
+                text,
+                (
+                    grid.left_point(1),
+                    grid.top_point(1),
+                ),
+            )
 
     def render_win(self):
         self.render_end_background()
@@ -345,7 +402,11 @@ class Renderer:
 
         self.render_floating_resources()
 
-        self.render_deck_pile()
+        self.render_weapons()
+
+        self.render_deck()
+
+        self.render_enemy()
 
         self.render_hand()
 
