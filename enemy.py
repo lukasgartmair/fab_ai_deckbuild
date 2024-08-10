@@ -42,7 +42,7 @@ class Enemy:
         self.image = self.identity.image
 
         self.stance = Stance.defend
-        self.intellect = 5
+        self.intellect = 4
         self.talents = []
         self.life = 20
         self.hand = []
