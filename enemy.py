@@ -73,7 +73,6 @@ class Enemy:
         self.combat_chain_iterator = 0
 
         self.combat_chain = {}
-        self.pitch = []
 
         self.block = Block(self)
 
@@ -257,8 +256,8 @@ class Enemy:
 
     def use_floating_resources(self, amount):
         self.floating_resources -= amount
-        # if self.floating_resources < 0:
-        #     self.floating_resources = 0
+        if self.floating_resources < 0:
+            self.floating_resources = 0
 
     def remove_card_from_hand(self, card):
         if card in self.hand:
@@ -321,6 +320,8 @@ class Enemy:
 
     def defend(self, player_attack, modifiers):
         self.print_cards()
+
+        self.calc_combat_chain()
 
         print("enemy defending")
         print(player_attack)

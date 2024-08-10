@@ -13,7 +13,8 @@ from card import CardType
 
 class Block:
     def __init__(self, enemy):
-        self.base_value_original = np.random.randint(3, 5)
+        # self.base_value_original = np.random.randint(3, 5)
+        self.base_value_original = 3
         self.base_value = self.base_value_original
         self.enemy = enemy
         self.defensive_cards = []
@@ -90,6 +91,8 @@ class Block:
         print("DEFENDING ARCANE")
 
         unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
+        print(self.enemy.combat_chain)
+        print(unused_cards)
 
         unused_cards_sorted_by_pitch_asc = sorted(
             unused_cards, key=lambda x: x.pitch, reverse=False
@@ -98,114 +101,37 @@ class Block:
         # TODO INCLUDE ABS FROM EQUIPMENT
 
         match player_attack.arcane:
-            case player_attack.arcane if player_attack.arcane == 1:
-                if self.floating_resources > 0:
-                    self.use_floating_resources(player_attack.arcane)
-                    self.increase_arcane_block_balance(amount=player_attack.arcane)
-                else:
-                    if len(unused_cards_sorted_by_pitch_asc) > 0:
-                        c = unused_cards_sorted_by_pitch_asc[:1]
-                        if len(c) == 1:
-                            self.pitch_card(c[0])
-                            self.use_floating_resources(player_attack.arcane)
-                            self.increase_arcane_block_balance(
-                                amount=player_attack.arcane
-                            )
-                        else:
-                            if len(self.hand) > 0:
-                                hand_sorted_by_physical_asc = sorted(
-                                    self.hand, key=lambda x: x.physical, reverse=False
-                                )
-
-                                c = hand_sorted_by_physical_asc[0]
-                                self.pitch_card(c)
-                                self.use_floating_resources(player_attack.arcane)
-                                self.increase_arcane_block_balance(
-                                    amount=player_attack.arcane
-                                )
-
-            case player_attack.arcane if player_attack.arcane == 2:
-                if self.enemy.floating_resources > 1:
-                    self.enemy.use_floating_resources(player_attack.arcane)
-                    self.increase_arcane_block_balance(amount=player_attack.arcane)
-                else:
-                    if len(unused_cards_sorted_by_pitch_asc) > 0:
-                        c = unused_cards_sorted_by_pitch_asc[:1]
-                        c = [
-                            ci
-                            for ci in unused_cards_sorted_by_pitch_asc
-                            if ci.pitch > 1
-                        ]
-                        if len(c) == 1:
-                            self.enemy.pitch_card(c[0])
-                            self.enemy.use_floating_resources(player_attack.arcane)
-                            self.increase_arcane_block_balance(
-                                amount=player_attack.arcane
-                            )
-
-                        else:
-                            if len(self.enemy.hand) > 0:
-                                hand_sorted_by_physical_asc = sorted(
-                                    self.enemy.hand,
-                                    key=lambda x: x.physical,
-                                    reverse=False,
-                                )
-                                hand_sorted_by_physical_asc = [
-                                    hi
-                                    for hi in hand_sorted_by_physical_asc
-                                    if hi.pitch > 1
-                                ]
-                                if len(hand_sorted_by_physical_asc) > 0:
-                                    c = hand_sorted_by_physical_asc[0]
-                                    self.enemy.pitch_card(c)
-                                    self.enemy.use_floating_resources(
-                                        player_attack.arcane
-                                    )
-                                    self.increase_arcane_block_balance(
-                                        amount=player_attack.arcane
-                                    )
-
-            case player_attack.arcane if player_attack.arcane == 3:
-                print("here")
+            case player_attack.arcane if player_attack.arcane == 1 or 2:
+                print("defending one arcane attack")
                 if self.enemy.floating_resources > 0:
                     self.enemy.use_floating_resources(player_attack.arcane)
                     self.increase_arcane_block_balance(amount=player_attack.arcane)
                 else:
-                    if len(unused_cards_sorted_by_pitch_asc) > 0:
-                        c = unused_cards_sorted_by_pitch_asc[:1]
-                        c = [
-                            ci
-                            for ci in unused_cards_sorted_by_pitch_asc
-                            if ci.pitch == 3
-                        ]
-                        if len(c) == 1:
-                            self.enemy.pitch_card(c[0])
-                            self.enemy.use_floating_resources(player_attack.arcane)
-                            self.increase_arcane_block_balance(
-                                amount=player_attack.arcane
-                            )
+                    print("pitch something here")
+                    if len(self.enemy.hand) > 0:
+                        sorted_hand = sorted(
+                            self.enemy.hand, key=lambda x: x.pitch, reverse=False
+                        )
+                        pitch_value = sorted_hand[0].pitch
+                        self.enemy.pitch_card(sorted_hand[0])
+                        self.enemy.use_floating_resources(player_attack.arcane)
+                        self.increase_arcane_block_balance(amount=pitch_value)
 
-                        else:
-                            if len(self.enemy.hand) > 0:
-                                hand_sorted_by_physical_asc = sorted(
-                                    self.enemy.hand,
-                                    key=lambda x: x.physical,
-                                    reverse=False,
-                                )
-                                hand_sorted_by_physical_asc = [
-                                    hi
-                                    for hi in hand_sorted_by_physical_asc
-                                    if hi.pitch == 3
-                                ]
-                                if len(hand_sorted_by_physical_asc) > 0:
-                                    c = hand_sorted_by_physical_asc[0]
-                                    self.enemy.pitch_card(c)
-                                    self.enemy.use_floating_resources(
-                                        player_attack.arcane
-                                    )
-                                    self.increase_arcane_block_balance(
-                                        amount=player_attack.arcane
-                                    )
+            case player_attack.arcane if player_attack.arcane == 3 or 4:
+                print("defending one arcane attack")
+                if self.enemy.floating_resources > 0:
+                    self.enemy.use_floating_resources(player_attack.arcane)
+                    self.increase_arcane_block_balance(amount=player_attack.arcane)
+                else:
+                    print("pitch something here")
+                    if len(self.enemy.hand) > 0:
+                        sorted_hand = sorted(
+                            self.enemy.hand, key=lambda x: x.pitch, reverse=True
+                        )
+                        pitch_value = sorted_hand[0].pitch
+                        self.enemy.pitch_card(sorted_hand[0])
+                        self.enemy.use_floating_resources(player_attack.arcane)
+                        self.increase_arcane_block_balance(amount=pitch_value)
 
     def more_elaborate_block_with_unused_cards(self, player_attack):
         if player_attack.physical is not None:
