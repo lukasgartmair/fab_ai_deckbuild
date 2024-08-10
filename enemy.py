@@ -16,9 +16,10 @@ from equipment import EquipmentSuite
 from weapon import get_weapons
 import random
 from fantasynames.fantasy_identity import FantasyIdentity
-from enemy_block import EnemyBlock
+from block import Block
 from utils import n_chance, shift_list
 from ability import Ability
+from life_counter import LifeCounter
 
 VALUE_MAX_PLACEHOLDER = 100
 
@@ -59,8 +60,6 @@ class Enemy:
 
         self.weapons = get_weapons()
 
-        print(self.weapons)
-
         self.equipment_suite = EquipmentSuite()
 
         self.further_attack_possible = True
@@ -76,13 +75,15 @@ class Enemy:
         self.combat_chain = {}
         self.pitch = []
 
-        self.block = EnemyBlock(self.hand, self.arsenal, self.combat_chain)
+        self.block = Block(self)
 
         self.arcane_barrier_total = sum(
             [e.arcane_barrier for e in self.equipment_suite.get_equipment_pieces()]
         )
 
         self.ability = Ability()
+
+        self.life_counter = LifeCounter(self)
 
     def decrease_life(self, value=1):
         self.life -= value
@@ -137,13 +138,13 @@ class Enemy:
         if self.stance == Stance.defend:
             self.stance = Stance.attack
             self.calc_combat_chain()
-            print("combat_chain")
-            print(self.combat_chain)
+            # print("combat_chain")
+            # print(self.combat_chain)
         else:
             self.stance = Stance.defend
             self.calc_combat_chain()
-            print("combat_chain")
-            print(self.combat_chain)
+            # print("combat_chain")
+            # print(self.combat_chain)
 
     def check_if_further_defense_possible(self):
         if len(self.hand) == 0:
@@ -309,98 +310,18 @@ class Enemy:
         self.pitch_floating_resources(c.pitch)
         self.hand.remove(c)
 
-    def defend_arcane(self, player_attack):
-        print("DEFENDING ARCANE")
+    def print_cards(self):
+        print("HAND")
+        for c in self.hand:
+            print(c.name)
 
-        unused_cards = self.block.get_cards_not_intended_to_be_used_in_combat_chain()
-
-        unused_cards_sorted_by_pitch_asc = sorted(
-            unused_cards, key=lambda x: x.pitch, reverse=False
-        )
-
-        # TODO INCLUDE ABS FROM EQUIPMENT
-
-        match player_attack.arcane:
-            case player_attack.arcane if player_attack.arcane == 1:
-                if self.floating_resources > 0:
-                    self.use_floating_resources(player_attack.arcane)
-                else:
-                    if len(unused_cards_sorted_by_pitch_asc) > 0:
-                        c = unused_cards_sorted_by_pitch_asc[:1]
-                        if len(c) == 1:
-                            self.pitch_card(c[0])
-                            self.use_floating_resources(player_attack.arcane)
-                        else:
-                            if len(self.hand) > 0:
-                                hand_sorted_by_physical_asc = sorted(
-                                    self.hand, key=lambda x: x.physical, reverse=False
-                                )
-
-                                c = hand_sorted_by_physical_asc[0]
-                                self.pitch_card(c)
-                                self.use_floating_resources(player_attack.arcane)
-
-            case player_attack.arcane if player_attack.arcane == 2:
-                if self.floating_resources > 0:
-                    self.use_floating_resources(player_attack.arcane)
-                else:
-                    if len(unused_cards_sorted_by_pitch_asc) > 0:
-                        c = unused_cards_sorted_by_pitch_asc[:1]
-                        c = [
-                            ci
-                            for ci in unused_cards_sorted_by_pitch_asc
-                            if ci.pitch > 1
-                        ]
-                        if len(c) == 1:
-                            self.pitch_card(c[0])
-                            self.use_floating_resources(player_attack.arcane)
-
-                        else:
-                            if len(self.hand) > 0:
-                                hand_sorted_by_physical_asc = sorted(
-                                    self.hand, key=lambda x: x.physical, reverse=False
-                                )
-                                hand_sorted_by_physical_asc = [
-                                    hi
-                                    for hi in hand_sorted_by_physical_asc
-                                    if hi.pitch > 1
-                                ]
-                                if len(hand_sorted_by_physical_asc) > 0:
-                                    c = hand_sorted_by_physical_asc[0]
-                                    self.pitch_card(c)
-                                    self.use_floating_resources(player_attack.arcane)
-
-            case player_attack.arcane if player_attack.arcane == 3:
-                if self.floating_resources > 0:
-                    self.use_floating_resources(player_attack.arcane)
-                else:
-                    if len(unused_cards_sorted_by_pitch_asc) > 0:
-                        c = unused_cards_sorted_by_pitch_asc[:1]
-                        c = [
-                            ci
-                            for ci in unused_cards_sorted_by_pitch_asc
-                            if ci.pitch == 3
-                        ]
-                        if len(c) == 1:
-                            self.pitch_card(c[0])
-                            self.use_floating_resources(player_attack.arcane)
-
-                        else:
-                            if len(self.hand) > 0:
-                                hand_sorted_by_physical_asc = sorted(
-                                    self.hand, key=lambda x: x.physical, reverse=False
-                                )
-                                hand_sorted_by_physical_asc = [
-                                    hi
-                                    for hi in hand_sorted_by_physical_asc
-                                    if hi.pitch == 3
-                                ]
-                                if len(hand_sorted_by_physical_asc) > 0:
-                                    c = hand_sorted_by_physical_asc[0]
-                                    self.pitch_card(c)
-                                    self.use_floating_resources(player_attack.arcane)
+        print("ARSENAL")
+        for c in self.arsenal:
+            print(c.name)
 
     def defend(self, player_attack, modifiers):
+        self.print_cards()
+
         print("enemy defending")
         print(player_attack)
         if len(self.hand) > 0:
@@ -412,22 +333,24 @@ class Enemy:
                 self.hand.remove(random_banished_card)
 
             if player_attack.arcane is not None:
-                self.defend_arcane(player_attack)
+                self.block.defend_arcane(player_attack)
 
             print(player_attack.physical)
 
             # self.block.preserve_good_chain()
-            blocking_cards = self.block.defend_physical(player_attack)
+            self.block.defend_physical(player_attack)
 
-            print(blocking_cards)
-            if len(blocking_cards) > 0:
+            print(self.block.physical_block_cards)
+            if len(self.block.physical_block_cards) > 0:
                 if modifiers.modifier_dict["dominate"] == True:
-                    blocking_cards = blocking_cards[:1]
+                    self.block.physical_block_cards = self.block.physical_block_cards[
+                        :1
+                    ]
 
                 print("banished zone")
                 print(self.banished_zone)
 
-                for bc in blocking_cards:
+                for bc in self.block.physical_block_cards:
                     # print(bc)
                     self.played_cards.append(bc)
                     print("enemy defends with")
@@ -437,6 +360,9 @@ class Enemy:
 
                     if bc in self.arsenal:
                         self.arsenal.remove(bc)
+
+        self.life_counter.calculate_life(player_attack)
+        self.block.reset()
 
     def get_combinations(self, array, current_index):
         combinations = []

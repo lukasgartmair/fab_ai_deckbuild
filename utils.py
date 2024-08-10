@@ -20,3 +20,7 @@ def shift_list(a):
     x = a.pop()
     a.insert(0, x)
     return a
+
+
+def add_two_with_possible_none_type(a, b):
+    return (a or 0) + (b or 0)

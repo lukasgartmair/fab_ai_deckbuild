@@ -115,14 +115,13 @@ class Deck:
 
             card.calc_card_values()
 
-        print(self.playstyle.arcane_ratio)
         if self.playstyle.arcane_ratio > 0:
             create_arcane_cards(self.cards, self.playstyle.arcane_ratio)
             print("created_aracane cards")
 
-        print("deck contents:")
-        for i, c in enumerate(self.cards):
-            print("Card {}: {}".format(i, c.name))
+        # print("deck contents:")
+        # for i, c in enumerate(self.cards):
+        #     print("Card {}: {}".format(i, c.name))
 
     def calc_stats(self):
         self.card_types = [c.card_type.name for c in self.cards]
@@ -137,8 +136,6 @@ class Deck:
         self.costs = [c.cost for c in self.cards]
 
         self.keywords = [c.keywords for c in self.cards if c is not None]
-        print(self.keywords)
-        print(len(self.keywords))
 
         # fabrary deck stats
         self.in_deck = len(self.cards)

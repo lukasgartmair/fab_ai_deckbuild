@@ -16,7 +16,7 @@ from input_box import InputBox
 from playstyle import Keyword
 from colors import color_palette
 from card import CardColor
-from life_counter import LifeCounter
+
 from settings import (
     grid,
     grid_width,
@@ -72,8 +72,6 @@ class Renderer:
         self.check_box_intimidate = CheckBox("intimidate", y=170)
 
         self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
-
-        self.life_counter = LifeCounter(self.engine.enemy)
 
     def render_background(self):
         self.window.blit(self.background, (0, 0))
@@ -235,8 +233,6 @@ class Renderer:
             hor_pos = grid.left_point(hor_card_grid_point)
         else:
             hor_pos = x
-
-        print(current_card)
         current_card.image = pygame.transform.scale(
             current_card.image,
             (int(card_width * card_scale), int(card_height * card_scale)),
@@ -409,8 +405,8 @@ class Renderer:
         )
 
     def render_enemy_life_counter(self):
-        self.life_counter.button_up.draw(self.window)
-        self.life_counter.button_down.draw(self.window)
+        self.engine.enemy.life_counter.button_up.draw(self.window)
+        self.engine.enemy.life_counter.button_down.draw(self.window)
 
         text = font.render(
             "HP : " + str(self.engine.enemy.life),

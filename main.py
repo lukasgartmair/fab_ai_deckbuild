@@ -71,16 +71,13 @@ class Game:
                     inp_box.check_activation(event)
 
                 if event.type == pygame.MOUSEBUTTONUP:
-                    if self.renderer.life_counter.button_up.isOver(
+                    if self.engine.enemy.life_counter.button_up.isOver(
                         pygame.mouse.get_pos()
                     ):
-                        print("up")
                         self.renderer.life_counter.increase_life()
-                    elif self.renderer.life_counter.button_down.isOver(
+                    elif self.engine.enemy.life_counter.button_down.isOver(
                         pygame.mouse.get_pos()
                     ):
-                        print("down")
-
                         self.renderer.life_counter.decrease_life()
 
                     self.renderer.render_background()
