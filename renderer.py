@@ -11,7 +11,6 @@ import pygame
 from card import card_colors
 from check_box import CheckBox
 from enemy import Stance
-from engine import GameState
 from input_box import InputBox
 from playstyle import Keyword
 from colors import color_palette
@@ -426,7 +425,7 @@ class Renderer:
             self.render_card(current_card, i=i)
 
     def render_turn_text(self):
-        if self.engine.state == GameState.playing:
+        if self.engine.state_machine.current_state == self.engine.state_machine.playing:
             color = None
 
             if self.engine.enemy.stance == Stance.defend:
@@ -452,19 +451,23 @@ class Renderer:
             )
 
     def render_win(self):
-        self.render_end_background()
+        self.bg = pygame.image.load("images/background3.png")
+        self.bg = pygame.transform.smoothscale(self.bg, self.window.get_size())
+        self.window.blit(self.bg, (0, 0))
 
-        message = "The " + self.engine.currentPlayer.name + " trancended!"
-        text = font.render(message, True, player_2_color)
-        self.window.blit(text, (20, 50))
+        message = "You won...but what..."
+        text = font.render(message, True, color_palette.color3)
+        self.window.blit(text, (grid.left_point(5), grid.top_point(5)))
+        pygame.display.update()
 
     def render_start_screen(self):
-        self.background_start = pygame.image.load("images/background_start.png")
-        self.window.blit(self.background_start, (0, 0))
+        self.bg = pygame.image.load("images/background2.png")
+        self.bg = pygame.transform.smoothscale(self.bg, self.window.get_size())
+        self.window.blit(self.bg, (0, 0))
 
         message = "Enter the abyss.."
-        text = font.render(message, True, (100, 0, 0))
-        self.window.blit(text, (20, 50))
+        text = font.render(message, True, color_palette.color3)
+        self.window.blit(text, (grid.left_point(1), grid.top_point(1)))
         pygame.display.update()
 
     def render(self):
@@ -492,7 +495,7 @@ class Renderer:
 
         self.render_turn_text()
 
-        if self.engine.state == GameState.ended:
+        if self.engine.state_machine.current_state == self.engine.state_machine.ended:
             self.render_win()
 
         pygame.display.update()

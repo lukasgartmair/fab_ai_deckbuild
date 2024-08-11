@@ -44,7 +44,7 @@ class Enemy:
         self.stance = Stance.defend
         self.intellect = 4
         self.talents = []
-        self.life = 20
+        self.life = 5
         self.hand = []
         self.pile = Pile()
         self.play_key = None
