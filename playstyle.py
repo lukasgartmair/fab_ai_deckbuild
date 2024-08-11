@@ -22,6 +22,12 @@ class PlayerClass(Enum):
     # shapeshifter = 10
     # bard = 11
     generic = 9
+    
+    
+class Talent(Enum):
+    pass
+    
+
 
 
 class Keyword(Enum):
