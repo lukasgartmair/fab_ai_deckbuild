@@ -56,3 +56,6 @@ class LifeCounter:
         print(result)
         if result > 0:
             self.enemy.life -= result
+
+        if self.enemy.life <= 0:
+            self.enemy.life = 0

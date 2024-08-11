@@ -404,8 +404,9 @@ class Renderer:
         )
 
     def render_enemy_life_counter(self):
-        self.engine.enemy.life_counter.button_up.draw(self.window)
-        self.engine.enemy.life_counter.button_down.draw(self.window)
+        if self.engine.state_machine.current_state == self.engine.state_machine.playing:
+            self.engine.enemy.life_counter.button_up.draw(self.window)
+            self.engine.enemy.life_counter.button_down.draw(self.window)
 
         text = font.render(
             "HP : " + str(self.engine.enemy.life),
@@ -458,7 +459,9 @@ class Renderer:
         message = "You won...but what..."
         text = font.render(message, True, color_palette.color3)
         self.window.blit(text, (grid.left_point(5), grid.top_point(5)))
-        pygame.display.update()
+
+        self.render_enemy_life_counter()
+        self.render_enemy()
 
     def render_start_screen(self):
         self.bg = pygame.image.load("images/background2.png")
@@ -468,9 +471,20 @@ class Renderer:
         message = "Enter the abyss.."
         text = font.render(message, True, color_palette.color3)
         self.window.blit(text, (grid.left_point(1), grid.top_point(1)))
-        pygame.display.update()
+        pygame.display.flip()
 
-    def render(self):
+    def update_display(self):
+        pygame.display.flip()
+
+    def render_initial_game_state(self):
+        self.render_background()
+
+        message = ""
+        text = font.render(message, True, player_2_color)
+        self.window.blit(text, (20, 50))
+
+        self.input_box_physical.render()
+
         self.render_background()
 
         self.render_enemy_play()
@@ -494,19 +508,3 @@ class Renderer:
         self.render_pitch()
 
         self.render_turn_text()
-
-        if self.engine.state_machine.current_state == self.engine.state_machine.ended:
-            self.render_win()
-
-        pygame.display.update()
-
-    def render_initial_game_state(self):
-        self.render_background()
-
-        message = ""
-        text = font.render(message, True, player_2_color)
-        self.window.blit(text, (20, 50))
-
-        self.input_box_physical.render()
-
-        self.render()

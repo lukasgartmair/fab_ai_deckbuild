@@ -15,18 +15,21 @@ from statemachine.states import States, State
 
 
 class GameState(Enum):
-    playing = 0
-    ended = 1
+    starting = 0
+    playing = 1
+    ended = 2
 
 
 class GameStateMachine(StateMachine):
     # states = States.from_enum(GameState, initial=GameState.playing)
 
-    playing = State("playing", initial=True)
+    starting = State("starting", initial=True)
+    playing = State("playing")
     ended = State("ended")
 
+    start_game = starting.to(playing)
     end_game = playing.to(ended)
-    restart = ended.to(playing)
+    restart_game = ended.to(starting)
 
 
 class GameEngine:
@@ -39,6 +42,11 @@ class GameEngine:
         self.state_machine = GameStateMachine()
 
         self.enemy.draw()
+
+    def restart(self):
+        self.deck = Deck()
+        self.enemy = Enemy(play_key=pygame.K_SPACE)
+        self.state_machine.restart_game()
 
     def check_win_condition(self):
         print(self.enemy.life)
