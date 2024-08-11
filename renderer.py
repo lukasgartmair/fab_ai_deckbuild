@@ -55,17 +55,6 @@ class Renderer:
             self.background, self.window.get_size()
         )
 
-        self.enemy_image = pygame.image.load(
-            "images/"
-            + self.engine.enemy.player_class.name
-            + "/"
-            + self.engine.enemy.image
-        )
-        self.enemy_image = pygame.transform.scale(
-            self.enemy_image,
-            (int(card_height * 0.8 * card_scale), int(card_height * card_scale)),
-        )
-
         self.check_box_dominate = CheckBox("dominate", y=250)
 
         self.check_box_intimidate = CheckBox("intimidate", y=170)
@@ -96,20 +85,9 @@ class Renderer:
     def render_enemy(self):
         if len(self.engine.enemy.deck) > 0:
             self.window.blit(
-                self.enemy_image,
+                self.engine.enemy.image,
                 (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
             ),
-
-        # self.rect = pygame.draw.rect(
-        #     self.window,
-        #     pygame.Color(color_palette.white),
-        #     (
-        #         grid.left_point(grid_width // 2 - 1),
-        #         grid.top_point(grid_height * 0.65),
-        #         card_width*card_scale+10,
-        #         rect_height,
-        #     ),
-        # )
 
         text = font_card_title.render(
             str(self.engine.enemy.name), True, pygame.Color(color_palette.white)
@@ -117,7 +95,18 @@ class Renderer:
 
         self.window.blit(
             text,
-            (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
+            (grid.left_point(grid_width // 2 - 1), enemy_top_edge - 25),
+        )
+
+        text = font_card_title.render(
+            str(self.engine.enemy.player_class.name).upper(),
+            True,
+            pygame.Color(color_palette.white),
+        )
+
+        self.window.blit(
+            text,
+            (grid.left_point(grid_width // 2 - 1), enemy_top_edge - 50),
         )
 
     def render_weapons(self):

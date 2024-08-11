@@ -37,23 +37,18 @@ class GameEngine:
     state = None
 
     def __init__(self):
-        self.deck = Deck()
         self.enemy = Enemy(play_key=pygame.K_SPACE)
         self.state_machine = GameStateMachine()
 
         self.enemy.draw()
 
     def restart(self):
-        self.deck = Deck()
         self.enemy = Enemy(play_key=pygame.K_SPACE)
         self.state_machine.restart_game()
 
     def check_win_condition(self):
-        print(self.enemy.life)
         if self.enemy.life <= 0:
-            print("here")
             self.state_machine.end_game()
-            print(self.state_machine.current_state)
 
     def play(self, player_attack=None, modifiers=None):
         if self.enemy.stance == Stance.defend:

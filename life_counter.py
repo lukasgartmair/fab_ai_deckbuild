@@ -53,7 +53,6 @@ class LifeCounter:
 
         print("result")
         result = attack_total - block_total
-        print(result)
         if result > 0:
             self.enemy.life -= result
 
