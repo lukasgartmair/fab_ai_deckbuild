@@ -11,7 +11,6 @@ import pygame
 from card import card_colors
 from check_box import CheckBox
 from enemy import Stance
-from engine import GameState
 from input_box import InputBox
 from playstyle import Keyword
 from colors import color_palette
@@ -56,17 +55,6 @@ class Renderer:
             self.background, self.window.get_size()
         )
 
-        self.enemy_image = pygame.image.load(
-            "images/"
-            + self.engine.enemy.player_class.name
-            + "/"
-            + self.engine.enemy.image
-        )
-        self.enemy_image = pygame.transform.scale(
-            self.enemy_image,
-            (int(card_height * 0.8 * card_scale), int(card_height * card_scale)),
-        )
-
         self.check_box_dominate = CheckBox("dominate", y=250)
 
         self.check_box_intimidate = CheckBox("intimidate", y=170)
@@ -97,20 +85,9 @@ class Renderer:
     def render_enemy(self):
         if len(self.engine.enemy.deck) > 0:
             self.window.blit(
-                self.enemy_image,
+                self.engine.enemy.image,
                 (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
             ),
-
-        # self.rect = pygame.draw.rect(
-        #     self.window,
-        #     pygame.Color(color_palette.white),
-        #     (
-        #         grid.left_point(grid_width // 2 - 1),
-        #         grid.top_point(grid_height * 0.65),
-        #         card_width*card_scale+10,
-        #         rect_height,
-        #     ),
-        # )
 
         text = font_card_title.render(
             str(self.engine.enemy.name), True, pygame.Color(color_palette.white)
@@ -118,7 +95,18 @@ class Renderer:
 
         self.window.blit(
             text,
-            (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
+            (grid.left_point(grid_width // 2 - 1), enemy_top_edge - 25),
+        )
+
+        text = font_card_title.render(
+            str(self.engine.enemy.player_class.name).upper(),
+            True,
+            pygame.Color(color_palette.white),
+        )
+
+        self.window.blit(
+            text,
+            (grid.left_point(grid_width // 2 - 1), enemy_top_edge - 50),
         )
 
     def render_weapons(self):
@@ -405,8 +393,9 @@ class Renderer:
         )
 
     def render_enemy_life_counter(self):
-        self.engine.enemy.life_counter.button_up.draw(self.window)
-        self.engine.enemy.life_counter.button_down.draw(self.window)
+        if self.engine.state_machine.current_state == self.engine.state_machine.playing:
+            self.engine.enemy.life_counter.button_up.draw(self.window)
+            self.engine.enemy.life_counter.button_down.draw(self.window)
 
         text = font.render(
             "HP : " + str(self.engine.enemy.life),
@@ -426,7 +415,7 @@ class Renderer:
             self.render_card(current_card, i=i)
 
     def render_turn_text(self):
-        if self.engine.state == GameState.playing:
+        if self.engine.state_machine.current_state == self.engine.state_machine.playing:
             color = None
 
             if self.engine.enemy.stance == Stance.defend:
@@ -452,22 +441,39 @@ class Renderer:
             )
 
     def render_win(self):
-        self.render_end_background()
+        self.bg = pygame.image.load("images/background3.png")
+        self.bg = pygame.transform.smoothscale(self.bg, self.window.get_size())
+        self.window.blit(self.bg, (0, 0))
 
-        message = "The " + self.engine.currentPlayer.name + " trancended!"
+        message = "You won...but what..."
+        text = font.render(message, True, color_palette.color3)
+        self.window.blit(text, (grid.left_point(5), grid.top_point(5)))
+
+        self.render_enemy_life_counter()
+        self.render_enemy()
+
+    def render_start_screen(self):
+        self.bg = pygame.image.load("images/background2.png")
+        self.bg = pygame.transform.smoothscale(self.bg, self.window.get_size())
+        self.window.blit(self.bg, (0, 0))
+
+        message = "Enter the abyss.."
+        text = font.render(message, True, color_palette.color3)
+        self.window.blit(text, (grid.left_point(1), grid.top_point(1)))
+        pygame.display.flip()
+
+    def update_display(self):
+        pygame.display.flip()
+
+    def render_initial_game_state(self):
+        self.render_background()
+
+        message = ""
         text = font.render(message, True, player_2_color)
         self.window.blit(text, (20, 50))
 
-    def render_start_screen(self):
-        self.background_start = pygame.image.load("images/background_start.png")
-        self.window.blit(self.background_start, (0, 0))
+        self.input_box_physical.render()
 
-        message = "Enter the abyss.."
-        text = font.render(message, True, (100, 0, 0))
-        self.window.blit(text, (20, 50))
-        pygame.display.update()
-
-    def render(self):
         self.render_background()
 
         self.render_enemy_play()
@@ -491,19 +497,3 @@ class Renderer:
         self.render_pitch()
 
         self.render_turn_text()
-
-        if self.engine.state == GameState.ended:
-            self.render_win()
-
-        pygame.display.update()
-
-    def render_initial_game_state(self):
-        self.render_background()
-
-        message = ""
-        text = font.render(message, True, player_2_color)
-        self.window.blit(text, (20, 50))
-
-        self.input_box_physical.render()
-
-        self.render()

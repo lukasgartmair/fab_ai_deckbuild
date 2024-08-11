@@ -11,18 +11,25 @@ import pygame
 from deck import Deck
 from enemy import Enemy, Stance
 from statemachine import StateMachine
-from statemachine.states import States
+from statemachine.states import States, State
 
 
 class GameState(Enum):
-    playing = 0
-    ended = 1
+    starting = 0
+    playing = 1
+    ended = 2
 
 
 class GameStateMachine(StateMachine):
-    states = States.from_enum(GameState, initial=GameState.playing)
+    # states = States.from_enum(GameState, initial=GameState.playing)
 
-    end = states.playing.to(states.ended)
+    starting = State("starting", initial=True)
+    playing = State("playing")
+    ended = State("ended")
+
+    start_game = starting.to(playing)
+    end_game = playing.to(ended)
+    restart_game = ended.to(starting)
 
 
 class GameEngine:
@@ -30,11 +37,18 @@ class GameEngine:
     state = None
 
     def __init__(self):
-        self.deck = Deck()
         self.enemy = Enemy(play_key=pygame.K_SPACE)
-        self.state = GameState.playing
+        self.state_machine = GameStateMachine()
 
         self.enemy.draw()
+
+    def restart(self):
+        self.enemy = Enemy(play_key=pygame.K_SPACE)
+        self.state_machine.restart_game()
+
+    def check_win_condition(self):
+        if self.enemy.life <= 0:
+            self.state_machine.end_game()
 
     def play(self, player_attack=None, modifiers=None):
         if self.enemy.stance == Stance.defend:

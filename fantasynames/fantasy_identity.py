@@ -25,7 +25,7 @@ class FantasyIdentity:
         self.name = self.get_fantasy_name()
         image_path = "images/" + player_class.name + "/"
         images = [f for f in listdir(image_path) if isfile(join(image_path, f))]
-        self.image = random.choice(images)
+        self.image_number = random.choice(images)
 
     def get_fantasy_name(self):
         if self.race == "hobbit":

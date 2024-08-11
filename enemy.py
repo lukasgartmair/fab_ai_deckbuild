@@ -20,6 +20,8 @@ from block import Block
 from utils import n_chance, shift_list
 from ability import Ability
 from life_counter import LifeCounter
+import pygame
+import image
 
 VALUE_MAX_PLACEHOLDER = 100
 
@@ -39,7 +41,11 @@ class Enemy:
         self.identity = FantasyIdentity(self.player_class)
         self.name = self.identity.name
         self.race = self.identity.race
-        self.image = self.identity.image
+        self.image_path = (
+            "images/" + self.player_class.name + "/" + self.identity.image_number
+        )
+
+        self.image = image.load_image(self.image_path)
 
         self.stance = Stance.defend
         self.intellect = 4
