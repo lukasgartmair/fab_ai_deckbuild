@@ -31,4 +31,3 @@ if __name__ == "__main__":
         tb = traceback.format_exc()
         print(tb)
         Game.quit_everything()
-5

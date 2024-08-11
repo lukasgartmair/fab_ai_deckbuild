@@ -142,9 +142,20 @@ class Renderer:
             (grid.left_point(7), grid.top_point(3)),
         )
 
+    def render_create_deck_message(self):
+        text = font_header2.render(
+            "Opening door to the next room...",
+            True,
+            pygame.Color(color_palette.white),
+        )
+
+        self.window.blit(
+            text,
+            (grid.left_point(6), grid.top_point(6)),
+        )
+
     def render_lore(self):
         lore = random.choice(lore_dict[self.engine.enemy.player_class.name])
-        print(lore)
         lore = lore.replace("{}", self.engine.enemy.name)
 
         blit_text(self.window, lore, (grid.left_point(5), grid.top_point(5)), font_lore)

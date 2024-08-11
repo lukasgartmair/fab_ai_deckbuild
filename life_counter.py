@@ -40,18 +40,18 @@ class LifeCounter:
         self.enemy.decrease_life()
 
     def calculate_life(self, player_attack):
-        print("Block balance:")
+        # print("Block balance:")
 
         block_total = self.enemy.block.calc_total_block()
-        print(block_total)
+        # print(block_total)
 
         attack_total = add_two_with_possible_none_type(
             player_attack.physical, player_attack.arcane
         )
 
-        print(attack_total)
+        # print(attack_total)
 
-        print("result")
+        # print("result")
         result = attack_total - block_total
         if result > 0:
             self.enemy.life -= result

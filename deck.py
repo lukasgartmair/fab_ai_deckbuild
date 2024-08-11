@@ -10,12 +10,8 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from beautifultable import beautifultable
-import seaborn as sns
-from playstyle import Keyword, PlayerClass, CardType, Playstyle
+from playstyle import PlayerClass, CardType, Playstyle
 from settings import DECK_SIZE
-
-sns.set_style("white")
-
 from card import Card, CardColor
 from utils import n_chance
 
@@ -30,8 +26,6 @@ def calc_physical_distribution(playstyle_obj, n=DECK_SIZE):
 
     plot = False
     if plot:
-        # plt.figure(figsize=(10,7), dpi= 80)
-        # sns.distplot(s, color="dodgerblue", label="Compact")
         plt.hist(s, alpha=0.5, label=str(playstyle_obj))
         plt.legend()
         plt.xlabel("physical")
@@ -117,7 +111,6 @@ class Deck:
 
         if self.playstyle.arcane_ratio > 0:
             create_arcane_cards(self.cards, self.playstyle.arcane_ratio)
-            print("created_aracane cards")
 
         # print("deck contents:")
         # for i, c in enumerate(self.cards):

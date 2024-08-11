@@ -25,15 +25,15 @@ class Block:
         self.arcane_block = 0
 
     def calc_total_block(self):
-        print("total_arcane_block")
-        print(self.arcane_block)
+        # print("total_arcane_block")
+        # print(self.arcane_block)
         return add_two_with_possible_none_type(
             self.calc_total_physical_block(), self.arcane_block
         )
 
     def calc_total_physical_block(self):
-        print("total_physical_block")
-        print(sum([p.defense for p in self.physical_block_cards]))
+        # print("total_physical_block")
+        # print(sum([p.defense for p in self.physical_block_cards]))
         return sum([p.defense for p in self.physical_block_cards])
 
     def increase_physical_block_balance(self, amount=1):
@@ -91,8 +91,8 @@ class Block:
         print("DEFENDING ARCANE")
 
         unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
-        print(self.enemy.combat_chain)
-        print(unused_cards)
+        # print(self.enemy.combat_chain)
+        # print(unused_cards)
 
         # TODO INCLUDE ABS FROM EQUIPMENT
 

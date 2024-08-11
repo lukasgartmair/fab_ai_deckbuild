@@ -12,9 +12,9 @@ import random
 import pygame
 from playstyle import CardType
 from wonderwords import RandomWord
-from randimage import get_random_image, show_array
+from randimage import get_random_image
 from settings import CARD_RESOLUTION
-from deck import Keyword
+from playstyle import Keyword
 from utils import n_chance
 from card import Card, CardColor
 

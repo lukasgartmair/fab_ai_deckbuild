@@ -28,15 +28,18 @@ class TitleScene(SceneBase):
         for event in events:
             if event.type == pygame.QUIT:
                 Game.quit_everything(self)
-
-            if (event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN) or (
-                event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
+            if (
+                self.engine.state_machine.current_state
+                == self.engine.state_machine.starting
             ):
-                self.switch_to_scene(
-                    scene_manager.get_game_scene(self.engine, self.renderer)
-                )
-                self.engine.state_machine.start_game()
-                self.is_active = False
+                if event.type == pygame.KEYDOWN and (
+                    event.key == pygame.K_RETURN or event.key == pygame.K_SPACE
+                ):
+                    self.switch_to_scene(
+                        scene_manager.get_game_scene(self.engine, self.renderer)
+                    )
+                    self.engine.state_machine.start_game()
+                    self.is_active = False
 
     def get_scene_data(self):
         pass
@@ -51,5 +54,3 @@ class TitleScene(SceneBase):
             self.renderer.render_enter_new_level()
             self.renderer.render_enemy(color=color_palette.black)
             self.renderer.render_lore()
-            print(self.engine.enemy.name)
-            print(self.engine.enemy.player_class.name)
