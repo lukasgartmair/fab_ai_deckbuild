@@ -91,11 +91,10 @@ class Renderer:
         )
 
     def render_enemy(self, color=color_palette.white):
-        if len(self.engine.enemy.deck) > 0:
-            self.window.blit(
-                self.engine.enemy.image,
-                (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
-            ),
+        self.window.blit(
+            self.engine.enemy.image,
+            (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
+        ),
 
         text = font_card_title.render(str(self.engine.enemy.name), True, color)
 

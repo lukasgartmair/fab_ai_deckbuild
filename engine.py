@@ -53,6 +53,10 @@ class GameEngine:
         if self.enemy.life <= 0:
             self.state_machine.end_game()
 
+    def check_fatigue_condition(self):
+        if len(self.enemy.hand) + len(self.enemy.deck) == 0:
+            self.state_machine.end_game()
+
     def play(self, player_attack=None, modifiers=None):
         if self.enemy.stance == Stance.defend:
             if self.enemy.further_defense_possible == False:
