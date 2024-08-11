@@ -15,14 +15,14 @@ from settings import grid
 
 import PygameUtils as pu
 
-button_size_x = 75
-button_size_y = 400
+button_size_x = 100
+button_size_y = 500
 
 
 class EndScene(SceneBase):
     def __init__(self, *kargs):
         super().__init__(*kargs)
-        print("End Scene")
+        # print("End Scene")
 
         self.restart_button = pu.button(
             pygame.Color(color_palette.color3),
@@ -31,7 +31,7 @@ class EndScene(SceneBase):
             button_size_y,
             button_size_x,
             font="z003",
-            text="Face the truth!",
+            text="Face the truth!".upper(),
         )
 
     def process_input(self, events):
@@ -45,7 +45,7 @@ class EndScene(SceneBase):
                         scene_manager.get_title_scene(self.engine, self.renderer)
                     )
                     self.is_active = False
-                    self.engine.restart()
+                    self.engine.advance_level()
 
                     self.render()
 

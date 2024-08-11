@@ -19,7 +19,7 @@ from game import Game
 class GameScene(SceneBase):
     def __init__(self, *kargs):
         super().__init__(*kargs)
-        print("Game Scene")
+        # print("Game Scene")
 
         self.attack = Attack()
         self.modifiers = Modifiers()

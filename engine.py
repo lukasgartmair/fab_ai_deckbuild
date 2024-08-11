@@ -12,6 +12,7 @@ from deck import Deck
 from enemy import Enemy, Stance
 from statemachine import StateMachine
 from statemachine.states import States, State
+from level_manager import LevelManager
 
 
 class GameState(Enum):
@@ -39,12 +40,13 @@ class GameEngine:
     def __init__(self):
         self.enemy = Enemy(play_key=pygame.K_SPACE)
         self.state_machine = GameStateMachine()
-
+        self.level_manager = LevelManager(level=0)
         self.enemy.draw()
 
-    def restart(self):
+    def advance_level(self):
         self.enemy = Enemy(play_key=pygame.K_SPACE)
         self.state_machine.restart_game()
+        self.level_manager.advance_level()
 
     def check_win_condition(self):
         if self.enemy.life <= 0:

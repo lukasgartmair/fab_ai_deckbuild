@@ -16,7 +16,7 @@ from settings import FPS
 class Game:
     def __init__(self):
         self.engine = GameEngine()
-        pygame.display.set_caption("Fight!")
+        # pygame.display.set_caption("Fight!")
 
         self.renderer = Renderer(self.engine)
 

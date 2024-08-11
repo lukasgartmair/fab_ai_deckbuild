@@ -45,6 +45,9 @@ y_index = 0
 class Renderer:
     def __init__(self, engine):
         self.window = pygame.display.set_mode(bounds)
+
+        pygame.display.set_caption("There will be Flesh and Blood")
+
         self.input_box_physical = InputBox(self.window, y=170, box_type="physical")
         self.input_box_arcane = InputBox(self.window, y=250, box_type="arcane")
 
@@ -99,14 +102,41 @@ class Renderer:
         )
 
         text = font_card_title.render(
-            str(self.engine.enemy.player_class.name).upper(),
+            "# "
+            + str(self.engine.level_manager.current_level)
+            + " - "
+            + str(self.engine.enemy.player_class.name).upper(),
             True,
             pygame.Color(color_palette.white),
         )
 
         self.window.blit(
             text,
-            (grid.left_point(grid_width // 2 - 1), enemy_top_edge - 50),
+            (grid.left_point(grid_width // 2 - 1), enemy_top_edge + card_height * 0.76),
+        )
+
+    def render_enter_new_level(self):
+        text = font.render(
+            "This is room #" + str(self.engine.level_manager.current_level).upper(),
+            True,
+            pygame.Color(color_palette.white),
+        )
+
+        self.window.blit(
+            text,
+            (grid.left_point(7), grid.top_point(9)),
+        )
+
+    def render_enter_next_level(self):
+        text = font.render(
+            "Enter room #" + str(self.engine.level_manager.current_level).upper(),
+            True,
+            pygame.Color(color_palette.white),
+        )
+
+        self.window.blit(
+            text,
+            (grid.left_point(7), grid.top_point(9)),
         )
 
     def render_weapons(self):
@@ -460,7 +490,6 @@ class Renderer:
         message = "Enter the abyss.."
         text = font.render(message, True, color_palette.color3)
         self.window.blit(text, (grid.left_point(1), grid.top_point(1)))
-        pygame.display.flip()
 
     def update_display(self):
         pygame.display.flip()

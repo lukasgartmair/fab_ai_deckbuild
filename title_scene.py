@@ -15,7 +15,7 @@ from game import Game
 class TitleScene(SceneBase):
     def __init__(self, *kargs):
         super().__init__(*kargs)
-        print("Title Scene")
+        # print("Title Scene")
         self.skip = False
 
     def process_input(self, events):
@@ -47,4 +47,4 @@ class TitleScene(SceneBase):
         if self.is_active:
             self.renderer.render_start_screen()
 
-            pygame.display.flip()
+            self.renderer.render_enter_new_level()

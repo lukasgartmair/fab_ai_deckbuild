@@ -8,7 +8,6 @@ Created on Sun Jul 21 20:22:55 2024
 
 import pygame
 import random
-from enum import Enum
 from pygame_gridcalculator import GridCalculator
 
 
@@ -23,15 +22,14 @@ FPS = 10
 
 RND_SEED = random.randint(0, 100)
 
-CARD_RESOLUTION = 5
-DECK_SIZE = 100
+CARD_RESOLUTION = 50
+DECK_SIZE = 60
 
 width = 1920
 height = 1080
 bounds = (width, height)
 
 grid_width = 18
-
 
 grid_height = 18
 
