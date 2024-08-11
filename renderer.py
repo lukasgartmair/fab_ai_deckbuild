@@ -15,7 +15,9 @@ from input_box import InputBox
 from playstyle import Keyword
 from colors import color_palette
 from card import CardColor
-
+from utils import blit_text
+from lore import lore_dict
+import random
 from settings import (
     grid,
     grid_width,
@@ -37,6 +39,9 @@ from settings import (
     rect_height,
     right_edge,
     enemy_top_edge,
+    font_lore,
+    font_header,
+    font_header2,
 )
 
 y_index = 0
@@ -85,16 +90,14 @@ class Renderer:
             ),
         )
 
-    def render_enemy(self):
+    def render_enemy(self, color=color_palette.white):
         if len(self.engine.enemy.deck) > 0:
             self.window.blit(
                 self.engine.enemy.image,
                 (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
             ),
 
-        text = font_card_title.render(
-            str(self.engine.enemy.name), True, pygame.Color(color_palette.white)
-        )
+        text = font_card_title.render(str(self.engine.enemy.name), True, color)
 
         self.window.blit(
             text,
@@ -107,7 +110,7 @@ class Renderer:
             + " - "
             + str(self.engine.enemy.player_class.name).upper(),
             True,
-            pygame.Color(color_palette.white),
+            color,
         )
 
         self.window.blit(
@@ -116,7 +119,7 @@ class Renderer:
         )
 
     def render_enter_new_level(self):
-        text = font.render(
+        text = font_header2.render(
             "This is room #" + str(self.engine.level_manager.current_level).upper(),
             True,
             pygame.Color(color_palette.white),
@@ -124,7 +127,7 @@ class Renderer:
 
         self.window.blit(
             text,
-            (grid.left_point(7), grid.top_point(9)),
+            (grid.left_point(7), grid.top_point(3)),
         )
 
     def render_enter_next_level(self):
@@ -136,8 +139,15 @@ class Renderer:
 
         self.window.blit(
             text,
-            (grid.left_point(7), grid.top_point(9)),
+            (grid.left_point(7), grid.top_point(3)),
         )
+
+    def render_lore(self):
+        lore = random.choice(lore_dict[self.engine.enemy.player_class.name])
+        print(lore)
+        lore = lore.replace("{}", self.engine.enemy.name)
+
+        blit_text(self.window, lore, (grid.left_point(5), grid.top_point(5)), font_lore)
 
     def render_weapons(self):
         weapons_to_render = [
@@ -183,7 +193,7 @@ class Renderer:
             text,
             (
                 grid.left_point(grid_width // 2 - 1),
-                grid.top_point(grid_height * 0.9),
+                grid.top_point(grid_height * 0.92),
             ),
         )
 
@@ -488,41 +498,8 @@ class Renderer:
         self.window.blit(self.bg, (0, 0))
 
         message = "Enter the abyss.."
-        text = font.render(message, True, color_palette.color3)
+        text = font_header.render(message, True, color_palette.color3)
         self.window.blit(text, (grid.left_point(1), grid.top_point(1)))
 
     def update_display(self):
         pygame.display.flip()
-
-    def render_initial_game_state(self):
-        self.render_background()
-
-        message = ""
-        text = font.render(message, True, player_2_color)
-        self.window.blit(text, (20, 50))
-
-        self.input_box_physical.render()
-
-        self.render_background()
-
-        self.render_enemy_play()
-
-        self.render_floating_resources()
-
-        self.render_enemy_life_counter()
-
-        self.render_weapons()
-
-        self.render_arsenal()
-
-        self.render_deck()
-
-        self.render_enemy()
-
-        self.render_hand()
-
-        self.render_banished_zone()
-
-        self.render_pitch()
-
-        self.render_turn_text()

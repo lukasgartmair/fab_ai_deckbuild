@@ -10,6 +10,7 @@ import pygame
 from scene_base import SceneBase
 import scene_manager
 from game import Game
+from colors import color_palette
 
 
 class TitleScene(SceneBase):
@@ -48,3 +49,7 @@ class TitleScene(SceneBase):
             self.renderer.render_start_screen()
 
             self.renderer.render_enter_new_level()
+            self.renderer.render_enemy(color=color_palette.black)
+            self.renderer.render_lore()
+            print(self.engine.enemy.name)
+            print(self.engine.enemy.player_class.name)
