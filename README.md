@@ -7,11 +7,13 @@ You need to install PYTHON for this to run, then install the dependencies with "
 
 Playing manual:
 
-1. Run the main.py file to start
+1. Run the main.py file to start 
 
-2. The enemy starts defending, the player attacks first
+2. With SPACE or RETURN skip the introduction screen
 
-3. Enter your attack value in the box and press SPACE to get the blocking move of the enemy
+3. The enemy starts defending, the player attacks first
+
+4. Enter your attack value in the box and press SPACE to get the blocking move of the enemy
 
 5. If you choose to not attack any further or there are no more blocks possible, 
     press RETURN to change the enemy stance to attacking
@@ -19,6 +21,8 @@ Playing manual:
 6. Press SPACE to trigger the next enemy attack
 
 7. And so on
+
+8. On the endscreen press SPACE or RETURN to go to the next level
 
 
 Credits / Disclaimer:
