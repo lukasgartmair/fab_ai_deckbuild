@@ -13,8 +13,8 @@ from card import CardType
 
 class Block:
     def __init__(self, enemy):
-        # self.base_value_original = np.random.randint(3, 5)
-        self.base_value_original = 3
+        self.base_value_original = np.random.randint(2, 5)
+        # self.base_value_original = 3
         self.base_value = self.base_value_original
         self.enemy = enemy
         self.defensive_cards = []
