@@ -41,11 +41,11 @@ class GameEngine:
         self.enemy = Enemy(play_key=pygame.K_SPACE)
         self.state_machine = GameStateMachine()
         self.level_manager = LevelManager(level=1)
-        self.enemy.draw()
+        self.enemy.initialize_play()
 
     def advance_level(self):
         self.enemy = Enemy(play_key=pygame.K_SPACE)
-        self.enemy.draw()
+        self.enemy.initialize_play()
         self.state_machine.restart_game()
         self.level_manager.advance_level()
 

@@ -25,7 +25,14 @@ class PlayerClass(Enum):
     
     
 class Talent(Enum):
-    pass
+    light = 0
+    shadow = 1
+    draconic = 2
+    royal = 3
+    draconic_illusionist = 4
+    elemental_lightning = 5
+    elemental_ice = 6
+    elemental_earth = 7
     
 
 
@@ -34,6 +41,9 @@ class Keyword(Enum):
     go_again = 0
     dominate = 1
     intimidate = 2
+    # crush = 3
+    # reprise = 4
+    # combo = 5
     no_keyword = 3
 
 
