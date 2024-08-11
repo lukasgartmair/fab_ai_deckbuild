@@ -89,16 +89,17 @@ class Enemy:
         self.ability = Ability()
 
         self.life_counter = LifeCounter(self)
-        
+
         self.action_points = 0
-        
+
     def initialize_play(self):
+        self.floating_resources = 0
         self.draw()
         self.reset_action_points()
-        
+
     def reset_action_points(self):
         self.action_points = 1
-    
+
     def use_action_points(self, amount=1):
         if self.action_points >= amount:
             self.action_points -= amount
@@ -125,7 +126,7 @@ class Enemy:
             self.hand.remove(c)
 
     def finish_phase(self):
-        self.floating_resources = 0
+        self.initialize_play()
 
         for card in self.played_cards:
             self.graveyard.append(card)
@@ -379,7 +380,8 @@ class Enemy:
                     print("enemy defends with")
                     print(bc.name)
                     print("defense: {}".format(bc.defense))
-                    self.hand.remove(bc)
+                    if bc in self.hand:
+                        self.hand.remove(bc)
 
                     if bc in self.arsenal:
                         self.arsenal.remove(bc)
