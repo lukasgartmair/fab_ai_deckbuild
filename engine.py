@@ -19,7 +19,10 @@ class GameState(Enum):
     starting = 0
     playing = 1
     ended = 2
-
+    
+class WinCondition(Enum):
+    enemy_died = 0
+    enemy_fatigued = 1
 
 class GameStateMachine(StateMachine):
     # states = States.from_enum(GameState, initial=GameState.playing)
@@ -33,6 +36,7 @@ class GameStateMachine(StateMachine):
     restart_game = ended.to(starting)
 
 
+
 class GameEngine:
     enemy = None
     state = None
@@ -42,8 +46,10 @@ class GameEngine:
         self.state_machine = GameStateMachine()
         self.level_manager = LevelManager(level=1)
         self.enemy.initialize_play()
+        self.win_condition = None
 
     def advance_level(self):
+        self.win_condition = None
         self.enemy = Enemy(play_key=pygame.K_SPACE)
         self.enemy.initialize_play()
         self.state_machine.restart_game()
@@ -51,10 +57,13 @@ class GameEngine:
 
     def check_win_condition(self):
         if self.enemy.life <= 0:
+            self.win_condition = WinCondition.enemy_died
             self.state_machine.end_game()
+
 
     def check_fatigue_condition(self):
         if len(self.enemy.hand) + len(self.enemy.deck) == 0:
+            self.win_condition = WinCondition.enemy_fatigued
             self.state_machine.end_game()
             return True
 

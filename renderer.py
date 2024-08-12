@@ -58,7 +58,7 @@ class Renderer:
 
         self.engine = engine
 
-        self.background = pygame.image.load("images/background.png")
+        self.background = pygame.image.load("images/backgrounds/background.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )
@@ -73,7 +73,7 @@ class Renderer:
         self.window.blit(self.background, (0, 0))
 
     def render_end_background(self):
-        self.background_bw = pygame.image.load("images/background_bw.png")
+        self.background_bw = pygame.image.load("images/backgrounds/background_bw.png")
         self.window.blit(self.background_bw, (0, 0))
 
     def render_floating_resources(self):
@@ -490,19 +490,23 @@ class Renderer:
             )
 
     def render_win(self):
-        self.bg = pygame.image.load("images/background3.png")
+        self.bg = pygame.image.load("images/backgrounds/background3.png")
         self.bg = pygame.transform.smoothscale(self.bg, self.window.get_size())
         self.window.blit(self.bg, (0, 0))
 
         message = "You won...but what..."
         text = font.render(message, True, color_palette.color3)
         self.window.blit(text, (grid.left_point(5), grid.top_point(5)))
+        
+        msg = "The " + self.engine.win_condition.name.replace("_"," ") + "..."
+        text = font.render(msg, True, color_palette.color3)
+        self.window.blit(text, (grid.left_point(8), grid.top_point(3)))
 
         self.render_enemy_life_counter()
         self.render_enemy()
 
     def render_start_screen(self):
-        self.bg = pygame.image.load("images/background2.png")
+        self.bg = pygame.image.load("images/backgrounds/background2.png")
         self.bg = pygame.transform.smoothscale(self.bg, self.window.get_size())
         self.window.blit(self.bg, (0, 0))
 
