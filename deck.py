@@ -67,6 +67,13 @@ def create_arcane_cards(cards, arcane_ratio, n=DECK_SIZE):
         ac.adjust_arcane_physical()
 
 
+def calc_card_color_distribution(playstyle_obj, n=DECK_SIZE):
+    sampled_card_colors = random.choices(
+        list(CardColor), weights=playstyle_obj.pitch_ratios.values(), k=n
+    )
+    return sampled_card_colors
+
+
 class Deck:
     def __init__(self, player_class=PlayerClass.generic, playstyle=Playstyle()):
         self.n_cards = DECK_SIZE
@@ -93,6 +100,7 @@ class Deck:
         physical_distribution = [1 if x == 0 else x for x in physical_distribution]
         keyword_distribution = calc_keyword_distribution(self.playstyle)
         card_type_distribution = calc_card_type_distribution(self.playstyle)
+        card_color_distribution = calc_card_color_distribution(self.playstyle)
 
         self.cards = [Card() for n in range(self.n_cards)]
 
@@ -103,6 +111,7 @@ class Deck:
         indices = list(range(len(self.cards)))
         random.shuffle(indices)
         for i, card in enumerate(self.cards):
+            card.color = card_color_distribution[indices[i]]
             card.physical = physical_distribution[indices[i]]
             card.keywords = [keyword_distribution[indices[i]]]
             card.card_type = card_type_distribution[indices[i]]

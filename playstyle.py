@@ -8,6 +8,12 @@ Created on Tue Jul 16 15:16:25 2024
 from enum import Enum
 
 
+class CardColor(Enum):
+    red = 0
+    yellow = 1
+    blue = 2
+
+
 class PlayerClass(Enum):
     ninja = 0
     ranger = 1
@@ -103,6 +109,12 @@ class Playstyle:
         }
 
         self.arcane_ratio = 0
+
+        self.pitch_ratios = {
+            CardColor.red: 33,
+            CardColor.yellow: 33,
+            CardColor.blue: 33,
+        }
 
     def __str__(self):
         return type(self).__name__

@@ -14,7 +14,7 @@ from playstyle import PlayerClass
 from wonderwords import RandomSentence
 from randimage import get_random_image, show_array
 from settings import CARD_RESOLUTION
-from playstyle import CardType
+from playstyle import CardType, CardColor
 from colors import color_palette
 
 id_iter = itertools.count()
@@ -37,12 +37,6 @@ def generate_rnd_image():
     img = get_random_image(img_size)
     img = 255 * img / img.max()
     return pygame.surfarray.make_surface(img)
-
-
-class CardColor(Enum):
-    red = (0,)
-    yellow = (1,)
-    blue = 2
 
 
 # card_colors = {"red": (255, 0, 0), "yellow": (255, 255, 0), "blue": (0, 0, 255)}
@@ -73,7 +67,7 @@ class Card:
         self.arcane = 0
         self.defense = 0
         self.pitch = 0
-        self.color = 0
+        self.color = CardColor.red
         self.keywords = []
         self.image = generate_rnd_image()
 
@@ -93,7 +87,6 @@ class Card:
         # (physical (6) + Defense (3) + Pi
         # https://fab.cardsrealm.com/en-us/articles/guide-everything-about-value-and-turn-cycle-in-flesh-and-bloodtch (1)) - Cost (2) = 8
 
-        self.color = np.random.choice(list(CardColor))
         self.pitch = pitch_values[self.color.name]
         self.defense = defensive_values[self.card_type.name]
 
