@@ -2,6 +2,7 @@ beautifultable==1.1.0
 colorir==2.0.4
 matplotlib==3.6.0
 numpy==1.24.3
+particle==0.25.0
 pygame==2.6.0
 pygame_ce==2.4.0
 pygame_gridcalculator==2.0.0
