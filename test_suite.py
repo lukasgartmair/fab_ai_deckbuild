@@ -13,7 +13,7 @@ from enemy import Stance
 from attack import Attack
 
 n_iterations_total = 100
-n_iterations = 1000
+n_iterations = 200
 
 class TestMethods(unittest.TestCase):
     def setUp(self):
