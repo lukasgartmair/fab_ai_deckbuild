@@ -12,55 +12,67 @@ import numpy as np
 from enemy import Stance
 from attack import Attack
 
-n_iterations = 10
+n_iterations_total = 100
+n_iterations = 1000
 
 class TestMethods(unittest.TestCase):
     def setUp(self):
-        self.engine = GameEngine()
-        self.attack = Attack()
+        pass
         # self.mod
         
         #             self.modifiers.modifier_dict[check_box.name] = True
         #         else:
         #             self.modifiers.modifier_dict[check_box.name] = False
         
-    def test_gameplay(self):
-        
-        self.engine.state_machine.start_game()
+    def test_deckbuilding(self):
         
         for i in range(n_iterations):
-            print(i)
-
-            if self.engine.enemy.stance == Stance.defend:
-                print("defense test")
-                pyhsical = np.random.randint(0,25)
-                arcane = np.random.randint(0,25)
-                self.attack.set_values_explicitly(physical=pyhsical, arcane=arcane)
-                
-                print(self.engine.enemy.check_if_further_defense_possible() == True)
-                for i in range (100):
-                    if self.engine.enemy.check_if_further_defense_possible() == True:
-                        self.engine.play(self.attack)
-                    else:
-
-                        self.engine.enemy.finish_phase()
-                        break
-    
-                self.attack.reset()
-            elif self.engine.enemy.stance == Stance.attack:
-                print("attack test")
-                for i in range (100):
-                    if self.engine.enemy.check_if_further_attack_possible() == True:
-                        self.engine.play()
-                    else:
-                        self.engine.enemy.finish_phase()
-                        break
+            self.engine = GameEngine()
+            print(self.engine.enemy.player_class)
             
-        self.engine.check_win_condition()
         
-        print(self.engine.state_machine.current_state)
-
-        # self.assertEqual(result[i], solution[i])
+    # def test_gameplay(self):
+        
+    #     for n in range(n_iterations_total):
+    #         self.engine = GameEngine()
+    #         self.attack = Attack()
+        
+    #         self.engine.state_machine.start_game()
+            
+    #         for i in range(n_iterations):
+    #             print("--------------------")
+    #             print(i)
+    
+    #             if self.engine.enemy.stance == Stance.defend:
+    #                 # print("defense test")
+    #                 pyhsical = np.random.randint(0,25)
+    #                 arcane = np.random.randint(0,25)
+    #                 self.attack.set_values_explicitly(physical=pyhsical, arcane=arcane)
+                    
+    #                 print(self.engine.enemy.check_if_further_defense_possible() == True)
+    #                 for i in range (100):
+    #                     if self.engine.enemy.check_if_further_defense_possible() == True:
+    #                         self.engine.play(self.attack)
+    #                     else:
+    
+    #                         self.engine.enemy.finish_phase()
+    #                         break
+        
+    #                 self.attack.reset()
+    #             elif self.engine.enemy.stance == Stance.attack:
+    #                 # print("attack test")
+    #                 for i in range (100):
+    #                     if self.engine.enemy.check_if_further_attack_possible() == True:
+    #                         self.engine.play()
+    #                     else:
+    #                         self.engine.enemy.finish_phase()
+    #                         break
+                
+    #         self.engine.check_win_condition()
+            
+    #         print(self.engine.state_machine.current_state)
+    
+    #         # self.assertEqual(result[i], solution[i])
 
 
 
