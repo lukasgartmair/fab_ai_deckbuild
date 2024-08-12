@@ -23,7 +23,7 @@ FPS = 5
 RND_SEED = random.randint(0, 100)
 
 CARD_RESOLUTION = 25
-DECK_SIZE = 160
+DECK_SIZE = 60
 
 width = 1920
 height = 1080
