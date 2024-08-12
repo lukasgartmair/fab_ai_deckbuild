@@ -154,9 +154,12 @@ class Renderer:
         )
 
     def render_lore(self):
-
-
-        blit_text(self.window, self.engine.enemy.lore, (grid.left_point(5), grid.top_point(5)), font_lore)
+        blit_text(
+            self.window,
+            self.engine.enemy.lore,
+            (grid.left_point(5), grid.top_point(5)),
+            font_lore,
+        )
 
     def render_weapons(self):
         weapons_to_render = [
@@ -253,6 +256,20 @@ class Renderer:
             (
                 right_edge,
                 grid.top_point(y_index + 4),
+            ),
+        )
+
+    def render_graveyard(self):
+        text = font.render(
+            str(len(self.engine.enemy.graveyard)) + " graveyard",
+            True,
+            pygame.Color(color_palette.text_color),
+        )
+        self.window.blit(
+            text,
+            (
+                right_edge,
+                grid.top_point(y_index + 13),
             ),
         )
 
@@ -497,8 +514,8 @@ class Renderer:
         message = "You won...but what..."
         text = font.render(message, True, color_palette.color3)
         self.window.blit(text, (grid.left_point(5), grid.top_point(5)))
-        
-        msg = "The " + self.engine.win_condition.name.replace("_"," ") + "..."
+
+        msg = "The " + self.engine.win_condition.name.replace("_", " ") + "..."
         text = font.render(msg, True, color_palette.color3)
         self.window.blit(text, (grid.left_point(8), grid.top_point(3)))
 

@@ -21,21 +21,19 @@ lore_dict = {
             and rotting limbs, a gallery of their madness. {} finds a perverse
             beauty in their creations, each mechanical monstrosity a testament to
             their deranged quest for perfection in pain and metal."''',
-            
-            '''"{}, a mechanologist steeped in morbid artifice, carved nightmares from steel and bone. In his labyrinthine sanctum, 
+        '''"{}, a mechanologist steeped in morbid artifice, carved nightmares from steel and bone. In his labyrinthine sanctum, 
             gears ground against sinew, birthing monstrous amalgams that quivered with perverse vitality. His hands, stained with ichor, 
             tore at the boundaries of life, wrenching the arcane into grotesque form. {}’s creations, wracked with agonized 
             animation, howled in a chorus of metallic despair. Obsessed with the union of flesh and machine, he forged 
             abominations that gnawed at reality, each shriek a testament to his unholy craft—a twisted symphony of 
             eternal suffering in the guise of progress."''',
-            
-            '''"{}, a mechanologist of deranged genius, etched the profane into metal and marrow. His workshop, a sepulchral 
+        '''"{}, a mechanologist of deranged genius, etched the profane into metal and marrow. His workshop, a sepulchral 
             abyss of grinding iron and sinew, exhaled the stench of corrupted creation. {}’s hands, slick with 
             bloodied oil, wove malignant symphonies of flesh and gear, birthing horrors that twitched with perverse 
             life. Each grotesque construct, a blasphemy against nature, moaned in tortured existence, caught between 
             the realms of life and decay. Driven by a nihilistic pursuit of twisted perfection, {} fractured 
             the essence of reality, leaving behind a legacy of agony—a mechanized purgatory where the damned 
-            eternally suffer."'''
+            eternally suffer."''',
     ],
     "brute": [
         '''"In the decaying ruins of a forsaken city, the Brute known as {}
@@ -59,7 +57,7 @@ lore_dict = {
         feral and void of reason, blazed with the hunger of a thousand tormented souls. He shattered 
         bone with brutish hands, tearing through the world like a storm of flesh and iron. Where 
         he trod, the earth bled, and the very air quivered in terror—a relentless force of 
-        pure, unbridled malevolence."'''
+        pure, unbridled malevolence."''',
     ],
     "ninja": [
         '''"In the depths of a forgotten temple, the Ninja known as {}
@@ -85,7 +83,7 @@ lore_dict = {
         eyes, twin abysses of forgotten torment, reflected the abyss within, where humanity was devoured. His 
         breath, a chilling exhalation of spectral miasma, foretold the grim end. Beneath his garb, ancient 
         runes pulsed with arcane malice, marking him as a vessel of dark vengeance. In his wake, 
-        only echoes of despair lingered, haunting the void left behind."'''
+        only echoes of despair lingered, haunting the void left behind."''',
     ],
     "ranger": [
         '''"In the cursed forest of Nighthollow, the Ranger known as {}
@@ -105,14 +103,14 @@ lore_dict = {
         presence was a harbinger of maleficence; each step reverberated with the silent screams of the damned. 
         Marked by eldritch sigils, his bow sang a dirge of finality, sealing the fate of all who 
         encountered him in the unending dark."''',
-        '''"{}, the dread ranger of cursed woodlands, emerged as an enigma of unholy precision. Cloaked in 
+        """"{}, the dread ranger of cursed woodlands, emerged as an enigma of unholy precision. Cloaked in 
         the rotting shrouds of fallen prey, his eyes, voids of cold malice, sought out the unwary. His 
         arrows, dark as the abyss and laced with necrotic malice, struck silently, leaving a trail of spectral 
         despair. {}’s very presence twisted the forest, warping it into a nightmarish labyrinth of eternal 
         suffering. Each whisper of his passage echoed with the torment of countless victims, their souls bound 
         to the unholy ground. With every breath, the ranger exhaled decay, an omen of dread that 
         sealed the fate of those who crossed his path."
-        '''
+        """,
     ],
     "runeblade": [
         '''"In the forsaken ruins of an ancient citadel, the Runeblade known as
@@ -138,7 +136,7 @@ lore_dict = {
         those it struck. The blade thrummed with the whispers of forgotten gods, their voices a cacophony 
         of madness. {}'s wielder, bound in shadowy torment, wielded the blade with an unholy precision, 
         their very existence a blight upon the living. The runeblade’s curse lingered, devouring souls and 
-        sealing their fates in eternal agony."'''
+        sealing their fates in eternal agony."''',
     ],
     "wizard": [
         '''"In the labyrinthine depths of a forsaken tower, the Wizard known as
@@ -150,8 +148,8 @@ lore_dict = {
         crackles with eldritch power. The tower's halls are lined with
         jarred eyes and preserved screams, a gallery of his twisted experiments.
         {} finds macabre delight in the suffering he causes, his
-        sanity unraveling as he delves deeper into forbidden realms."'''
-        ,'''"{}, the accursed sorcerer of the Void’s maw, dabbled in arcane abominations beyond mortal ken. His 
+        sanity unraveling as he delves deeper into forbidden realms."''',
+        '''"{}, the accursed sorcerer of the Void’s maw, dabbled in arcane abominations beyond mortal ken. His 
         sanctum, a festering labyrinth of eldritch tomes and pulsating runes, exuded a stench of ancient corruption. 
         {}’s spells, wrenched from the depths of cosmic despair, twisted reality into grotesque forms, merging 
         flesh with writhing shadows. His eyes, orbs of abyssal fire, burned with the knowledge of infernal 
@@ -164,8 +162,7 @@ lore_dict = {
         space into nightmarish distortions. His visage, a mask of eldritch despair, flickered with eldritch flames. 
         The wizard’s hands, dripping with eldritch ichor, summoned horrors from the void, unleashing aberrations that 
         devoured sanity. {}'s presence was a blight upon existence, leaving only echoes of madness 
-        and the hollow screams of those ensnared in his dark weave."'''
-
+        and the hollow screams of those ensnared in his dark weave."''',
     ],
     "warrior": [
         '''"In the scorched wastelands of a forgotten battlefield, the Warrior known as
@@ -191,7 +188,7 @@ lore_dict = {
         reality itself, leaving rifts that bled shadows. {}’s eyes, darkened voids of primal torment, 
         burned with the fury of a thousand lost souls. His war cry, an unholy symphony of 
         despair and madness, shattered the minds of his enemies. The warrior’s path was a trail 
-        of ruin, marked by the screams of the damned."'''
+        of ruin, marked by the screams of the damned."''',
     ],
     "guardian": [
         '''"In the heart of a decaying, forgotten sanctuary, the Guardian known as
@@ -217,8 +214,7 @@ lore_dict = {
         His presence, a miasma of forgotten curses and decaying essence, twisted reality around him. The 
         guardian’s every step resonated with eldritch vibrations, tearing at the fabric of sanity. His voice, 
         a guttural rasp of eternal torment, promised an eternity of suffering. {}’s touch was a 
-        death sentence, sealing the fate of all who sought to breach his cursed domain."'''
-
+        death sentence, sealing the fate of all who sought to breach his cursed domain."''',
     ],
     "illusionist": [
         '''"In the shadowed recesses of a crumbling theater, the Illusionist known as
@@ -244,7 +240,6 @@ lore_dict = {
         nightmare of ceaseless torment and unending dread. His whispers, cold and serpentine, coiled 
         through the air, unraveling sanity with each chilling syllable. Those ensnared by {}’s 
         deceptions were trapped in a maelstrom of their own fears, lost in an ever-shifting 
-        landscape of madness, where the boundary between illusion and reality bled into infinite horror."'''
-
+        landscape of madness, where the boundary between illusion and reality bled into infinite horror."''',
     ],
 }

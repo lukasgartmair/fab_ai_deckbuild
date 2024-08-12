@@ -19,10 +19,12 @@ class GameState(Enum):
     starting = 0
     playing = 1
     ended = 2
-    
+
+
 class WinCondition(Enum):
     enemy_died = 0
     enemy_fatigued = 1
+
 
 class GameStateMachine(StateMachine):
     # states = States.from_enum(GameState, initial=GameState.playing)
@@ -34,7 +36,6 @@ class GameStateMachine(StateMachine):
     start_game = starting.to(playing)
     end_game = playing.to(ended)
     restart_game = ended.to(starting)
-
 
 
 class GameEngine:
@@ -60,7 +61,6 @@ class GameEngine:
             self.win_condition = WinCondition.enemy_died
             self.state_machine.end_game()
 
-
     def check_fatigue_condition(self):
         if len(self.enemy.hand) + len(self.enemy.deck) == 0:
             self.win_condition = WinCondition.enemy_fatigued
@@ -68,7 +68,6 @@ class GameEngine:
             return True
 
     def play(self, player_attack=None, modifiers=None):
-        
         if self.enemy.stance == Stance.defend:
             if self.enemy.further_defense_possible == False:
                 print("no more defensive actions from the enemy this turn")

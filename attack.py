@@ -25,7 +25,7 @@ class Attack:
             self.arcane = inp_box.send_input()
             # print("self.arcane")
             # print(self.arcane)
-            
-    def set_values_explicitly(self,physical=0, arcane=0):
+
+    def set_values_explicitly(self, physical=0, arcane=0):
         self.physical = physical
         self.arcane = arcane

@@ -96,7 +96,7 @@ class Enemy:
         else:
             self.lore = ""
         self.lore = self.lore.replace("{}", self.name)
-  
+
         self.action_points = 0
 
     def initialize_play(self):
@@ -133,7 +133,8 @@ class Enemy:
             self.hand.remove(c)
 
     def finish_phase(self):
-        self.initialize_play()
+        self.floating_resources = 0
+        self.reset_action_points()
 
         for card in self.played_cards:
             self.graveyard.append(card)
@@ -162,8 +163,6 @@ class Enemy:
             if self.arsenal_empty():
                 self.fill_arsenal()
 
-            self.draw()
-
         if self.stance == Stance.defend:
             self.stance = Stance.attack
             self.calc_combat_chain()
@@ -171,6 +170,7 @@ class Enemy:
             # print(self.combat_chain)
         else:
             self.stance = Stance.defend
+            self.draw()
             self.calc_combat_chain()
             # print("combat_chain")
             # print(self.combat_chain)
