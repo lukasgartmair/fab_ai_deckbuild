@@ -16,7 +16,7 @@ from playstyle import Keyword
 from colors import color_palette
 from card import CardColor
 from utils import blit_text
-from lore import lore_dict
+
 import random
 from settings import (
     grid,
@@ -154,13 +154,9 @@ class Renderer:
         )
 
     def render_lore(self):
-        if self.engine.enemy.player_class.name in lore_dict:
-            lore = random.choice(lore_dict[self.engine.enemy.player_class.name])
-        else:
-            lore = ""
-        lore = lore.replace("{}", self.engine.enemy.name)
 
-        blit_text(self.window, lore, (grid.left_point(5), grid.top_point(5)), font_lore)
+
+        blit_text(self.window, self.engine.enemy.lore, (grid.left_point(5), grid.top_point(5)), font_lore)
 
     def render_weapons(self):
         weapons_to_render = [

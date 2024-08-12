@@ -22,6 +22,7 @@ from ability import Ability
 from life_counter import LifeCounter
 import pygame
 import image
+from lore import lore_dict
 
 VALUE_MAX_PLACEHOLDER = 100
 
@@ -90,6 +91,12 @@ class Enemy:
 
         self.life_counter = LifeCounter(self)
 
+        if self.player_class.name in lore_dict:
+            self.lore = random.choice(lore_dict[self.player_class.name])
+        else:
+            self.lore = ""
+        self.lore = self.lore.replace("{}", self.name)
+  
         self.action_points = 0
 
     def initialize_play(self):
