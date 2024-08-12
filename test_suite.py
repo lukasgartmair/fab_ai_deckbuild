@@ -24,55 +24,53 @@ class TestMethods(unittest.TestCase):
         #         else:
         #             self.modifiers.modifier_dict[check_box.name] = False
         
-    def test_deckbuilding(self):
+    # def test_deckbuilding(self):
         
-        for i in range(n_iterations):
-            self.engine = GameEngine()
-            print(self.engine.enemy.player_class)
-            
-        
-    # def test_gameplay(self):
-        
-    #     for n in range(n_iterations_total):
+    #     for i in range(n_iterations):
     #         self.engine = GameEngine()
-    #         self.attack = Attack()
-        
-    #         self.engine.state_machine.start_game()
+    #         print(self.engine.enemy.player_class)
             
-    #         for i in range(n_iterations):
-    #             print("--------------------")
-    #             print(i)
+        
+    def test_gameplay(self):
+        
+        for n in range(n_iterations_total):
+            self.engine = GameEngine()
+            self.attack = Attack()
+        
+            self.engine.state_machine.start_game()
+            
+            for i in range(n_iterations):
+                print("--------------------")
+                print(i)
     
-    #             if self.engine.enemy.stance == Stance.defend:
-    #                 # print("defense test")
-    #                 pyhsical = np.random.randint(0,25)
-    #                 arcane = np.random.randint(0,25)
-    #                 self.attack.set_values_explicitly(physical=pyhsical, arcane=arcane)
+                if self.engine.enemy.stance == Stance.defend:
+                    # print("defense test")
+                    pyhsical = np.random.randint(0,25)
+                    arcane = np.random.randint(0,25)
+                    self.attack.set_values_explicitly(physical=pyhsical, arcane=arcane)
                     
-    #                 print(self.engine.enemy.check_if_further_defense_possible() == True)
-    #                 for i in range (100):
-    #                     if self.engine.enemy.check_if_further_defense_possible() == True:
-    #                         self.engine.play(self.attack)
-    #                     else:
+                    print(self.engine.enemy.check_if_further_defense_possible() == True)
+                    for j in range (100):
+                        if self.engine.enemy.check_if_further_defense_possible() == True:
+                            self.engine.play(self.attack)
+                        else:
     
-    #                         self.engine.enemy.finish_phase()
-    #                         break
+                            self.engine.enemy.finish_phase()
+                            break
         
-    #                 self.attack.reset()
-    #             elif self.engine.enemy.stance == Stance.attack:
-    #                 # print("attack test")
-    #                 for i in range (100):
-    #                     if self.engine.enemy.check_if_further_attack_possible() == True:
-    #                         self.engine.play()
-    #                     else:
-    #                         self.engine.enemy.finish_phase()
-    #                         break
+                    self.attack.reset()
+                elif self.engine.enemy.stance == Stance.attack:
+                    # print("attack test")
+                    for k in range (100):
+                        if self.engine.enemy.check_if_further_attack_possible() == True:
+                            self.engine.play()
+                        else:
+                            self.engine.enemy.finish_phase()
+                            break
                 
-    #         self.engine.check_win_condition()
+            self.engine.check_win_condition()
             
-    #         print(self.engine.state_machine.current_state)
-    
-    #         # self.assertEqual(result[i], solution[i])
+            print(self.engine.state_machine.current_state)
 
 
 
