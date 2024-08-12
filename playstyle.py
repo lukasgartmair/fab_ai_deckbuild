@@ -26,24 +26,24 @@ class PlayerClass(Enum):
 
 def get_playstyle(player_class):
     match player_class:
-        case player_class if player_class == PlayerClass.ninja:
-            return NinjaBasic()
-        case player_class if player_class == PlayerClass.ranger:
-            return RangerBasic()
-        case player_class if player_class == PlayerClass.brute:
-            return BruteBasic()
-        case player_class if player_class == PlayerClass.mechanologist:
-            return MechanologistBasic()
-        case player_class if player_class == PlayerClass.runeblade:
-            return RunebladeBasic()
-        case player_class if player_class == PlayerClass.wizard:
-            return WizardBasic()
-        case player_class if player_class == PlayerClass.warrior:
-            return WarriorBasic()
-        case player_class if player_class == PlayerClass.guardian:
-            return GuardianBasic()
-        case player_class if player_class == PlayerClass.illusionist:
-            return IllusionistBasic()
+        # case player_class if player_class == PlayerClass.ninja:
+        #     return NinjaBasic()
+        # case player_class if player_class == PlayerClass.ranger:
+        #     return RangerBasic()
+        # case player_class if player_class == PlayerClass.brute:
+        #     return BruteBasic()
+        # case player_class if player_class == PlayerClass.mechanologist:
+        #     return MechanologistBasic()
+        # case player_class if player_class == PlayerClass.runeblade:
+        #     return RunebladeBasic()
+        # case player_class if player_class == PlayerClass.wizard:
+        #     return WizardBasic()
+        # case player_class if player_class == PlayerClass.warrior:
+        #     return WarriorBasic()
+        # case player_class if player_class == PlayerClass.guardian:
+        #     return GuardianBasic()
+        # case player_class if player_class == PlayerClass.illusionist:
+        #     return IllusionistBasic()
 
         case _:
             return Playstyle()

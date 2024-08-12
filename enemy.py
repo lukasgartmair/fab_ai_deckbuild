@@ -342,16 +342,16 @@ class Enemy:
             print(c.name)
 
     def defend(self, player_attack, modifiers):
-        self.print_cards()
+        # self.print_cards()
 
         self.calc_combat_chain()
 
-        print("enemy defending")
-        print(player_attack)
+        # print("enemy defending")
+        # print(player_attack)
         if len(self.hand) > 0:
             if modifiers.modifier_dict["intimidate"] == True:
                 random_banished_card = random.choice(self.hand)
-                print(self.banished_zone["intimidated_cards"])
+                # print(self.banished_zone["intimidated_cards"])
 
                 self.banished_zone["intimidated_cards"].append(random_banished_card)
                 self.hand.remove(random_banished_card)
@@ -359,27 +359,27 @@ class Enemy:
             if player_attack.arcane is not None:
                 self.block.defend_arcane(player_attack)
 
-            print(player_attack.physical)
+            # print(player_attack.physical)
 
             # self.block.preserve_good_chain()
             self.block.defend_physical(player_attack)
 
-            print(self.block.physical_block_cards)
+            # print(self.block.physical_block_cards)
             if len(self.block.physical_block_cards) > 0:
                 if modifiers.modifier_dict["dominate"] == True:
                     self.block.physical_block_cards = self.block.physical_block_cards[
                         :1
                     ]
 
-                print("banished zone")
-                print(self.banished_zone)
+                # print("banished zone")
+                # print(self.banished_zone)
 
                 for bc in self.block.physical_block_cards:
                     # print(bc)
                     self.played_cards.append(bc)
-                    print("enemy defends with")
-                    print(bc.name)
-                    print("defense: {}".format(bc.defense))
+                    # print("enemy defends with")
+                    # print(bc.name)
+                    # print("defense: {}".format(bc.defense))
                     if bc in self.hand:
                         self.hand.remove(bc)
 
@@ -392,7 +392,7 @@ class Enemy:
     def get_combinations(self, array, current_index):
         combinations = []
         array_copy = array.copy()
-        print(array_copy)
+        # print(array_copy)
         if len(array_copy) >= 2:
             array_copy.pop(current_index)
             for i in range(self.intellect):

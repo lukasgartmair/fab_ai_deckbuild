@@ -98,6 +98,7 @@ class GameScene(SceneBase):
                         self.engine.state_machine.current_state
                         == self.engine.state_machine.playing
                     ):
+                        
                         self.engine.enemy.finish_phase()
 
                         for inp_box in self.input_boxes:
@@ -112,6 +113,12 @@ class GameScene(SceneBase):
                         self.modifiers.reset()
 
                         self.render()
+     
+                        if self.engine.check_fatigue_condition() == True:
+                            self.switch_to_scene(
+                                scene_manager.get_end_scene(self.engine, self.renderer)
+                            )
+                            self.is_active = False
 
     def update(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:

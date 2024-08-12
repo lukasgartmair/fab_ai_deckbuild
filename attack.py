@@ -19,9 +19,13 @@ class Attack:
     def set_values(self, inp_box):
         if inp_box.box_type == "physical":
             self.physical = inp_box.send_input()
-            print("self.physical")
-            print(self.physical)
+            # print("self.physical")
+            # print(self.physical)
         elif inp_box.box_type == "arcane":
             self.arcane = inp_box.send_input()
-            print("self.arcane")
-            print(self.arcane)
+            # print("self.arcane")
+            # print(self.arcane)
+            
+    def set_values_explicitly(self,physical=0, arcane=0):
+        self.physical = physical
+        self.arcane = arcane
