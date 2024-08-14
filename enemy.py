@@ -99,6 +99,15 @@ class Enemy:
 
         self.action_points = 0
 
+        self.survival_mode = False
+        self.check_if_in_survival_mode()
+
+    def check_if_in_survival_mode(self):
+        if self.life <= 5:
+            self.survival_mode = True
+        else:
+            self.survival_mode = False
+
     def initialize_play(self):
         self.floating_resources = 0
         self.draw()
@@ -170,6 +179,7 @@ class Enemy:
             # print(self.combat_chain)
         else:
             self.stance = Stance.defend
+            self.check_if_in_survival_mode()
             self.draw()
             self.calc_combat_chain()
             # print("combat_chain")
@@ -256,7 +266,6 @@ class Enemy:
                         )
 
                         if len(cards_to_pitch) == 0:
-                            print("no pitch possible")
                             virtual_hand = shift_list(virtual_hand_tmp)
                             continue
                         else:

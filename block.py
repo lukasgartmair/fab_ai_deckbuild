@@ -9,6 +9,7 @@ Created on Wed Aug  7 19:54:38 2024
 import numpy as np
 from utils import n_chance, add_two_with_possible_none_type
 from card import CardType
+import itertools
 
 
 class Block:
@@ -62,7 +63,11 @@ class Block:
 
         np.random.shuffle(self.defensive_cards)
 
-        self.more_elaborate_block_with_unused_cards(player_attack)
+        if self.enemy.survival_mode == False:
+            self.more_elaborate_block_with_unused_cards(player_attack)
+        elif self.enemy.survival_mode == True:
+            self.block_all_physical_damage(player_attack)
+
         self.calc_total_physical_block()
 
     def placeholder_block(self):
@@ -146,6 +151,36 @@ class Block:
                     self.enemy.pitch_card(card)
                     self.enemy.use_floating_resources(player_attack.arcane)
                     self.increase_arcane_block_balance(amount=pitch_value)
+
+    def get_combinations(self, array, r=0):
+        combinations = []
+        if len(array) > 0:
+            for i in range(1, len(array) + 1):
+                combinations.append([c for c in itertools.combinations(array, i)])
+        combinations = [d[0] for d in combinations]
+        return combinations
+
+    def determine_physical_defense_combination(self, player_attack, combinations):
+        # number_of_cards_used = self.enemy.intellect
+        best_defense = []
+        block_precision = 100
+        for v in combinations:
+            # number_of_cards_used_temp = len(v)
+            block_precision_temp = sum([d.defense for d in v]) - player_attack.physical
+
+            # if number_of_cards_used_temp <= number_of_cards_used and
+            if abs(block_precision_temp) < block_precision:
+                #     number_of_cards_used = number_of_cards_used_temp
+                block_precision = abs(block_precision_temp)
+                best_defense = v
+        return best_defense
+
+    def block_all_physical_damage(self, player_attack):
+        if player_attack.physical is not None:
+            combinations = self.get_combinations(self.enemy.hand)
+            self.physical_block_cards = self.determine_physical_defense_combination(
+                player_attack, combinations
+            )
 
     def more_elaborate_block_with_unused_cards(self, player_attack):
         if player_attack.physical is not None:
