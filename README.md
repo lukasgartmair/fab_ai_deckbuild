@@ -1,8 +1,6 @@
 Experimental Flesh and Blood enemy engine, that is able to sample random generated decks based on certain strategies and
 determine the "optimal" moves for each hand in order to provide a quasi-human enemy experience / a practice dummy whatever. 
 
-For now the missing arsenal is simply addressed by intellect 5 for the enemy.
-
 You need to install PYTHON for this to run, then install the dependencies with "pip install -r requirements.txt"
 
 Playing manual:
