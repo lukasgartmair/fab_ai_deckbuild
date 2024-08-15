@@ -11,9 +11,13 @@ from engine import GameEngine, GameStateMachine
 import numpy as np
 from enemy import Stance
 from attack import Attack
+from analyzer import Analyzer, GlobalAnalyzer
+from modifiers import Modifiers
+from engine import GameState
 
-n_iterations_total = 100
-n_iterations = 200
+n_runs = 1
+n_turns = 20
+n_iterations = 4
 
 
 class TestMethods(unittest.TestCase):
@@ -30,51 +34,77 @@ class TestMethods(unittest.TestCase):
     #     for i in range(n_iterations):
     #         self.engine = GameEngine()
     #         print(self.engine.enemy.player_class)
-    
+
     def test_test(self):
         pass
 
     def test_gameplay(self):
-        for n in range(n_iterations_total):
-            self.engine = GameEngine()
-            self.attack = Attack()
+        global_analyzer = GlobalAnalyzer()
 
+        self.engine = GameEngine()
+
+        for n in range(n_runs):
             self.engine.state_machine.start_game()
 
-            for i in range(n_iterations):
+            if n != 0:
+                self.engine.advance_level()
+
+            for i in range(n_turns * 2):
                 print("--------------------")
+                print("TURN")
                 print(i)
 
                 if self.engine.enemy.stance == Stance.defend:
-                    # print("defense test")
-                    pyhsical = np.random.randint(0, 25)
-                    arcane = np.random.randint(0, 25)
-                    self.attack.set_values_explicitly(physical=pyhsical, arcane=arcane)
+                    for j in range(n_iterations):
+                        if self.engine.enemy.further_defense_possible:
+                            pyhsical = np.random.randint(0, 6)
+                            arcane = np.random.randint(0, 3)
+                            self.engine.attack.set_values_explicitly(
+                                physical=pyhsical, arcane=arcane
+                            )
 
-                    print(self.engine.enemy.check_if_further_defense_possible() == True)
-                    for j in range(100):
-                        if (
-                            self.engine.enemy.check_if_further_defense_possible()
-                            == True
-                        ):
-                            self.engine.play(self.attack)
+                            print("enemy defending")
+                            self.engine.play(self.engine.attack)
+
+                            self.engine.attack.reset()
+
+                            print("enemy life:")
+                            print(self.engine.enemy.life)
+                            print()
+
+                            self.engine.check_win_condition()
+                            if (
+                                self.engine.state_machine.current_state
+                                == GameState.ended
+                            ):
+                                break
                         else:
-                            self.engine.enemy.finish_phase()
-                            break
+                            continue  # only executed if the inner loop did NOT break
+                        break  # only executed if the inner loop DID break
 
-                    self.attack.reset()
+                    self.engine.enemy.finish_phase()
+
                 elif self.engine.enemy.stance == Stance.attack:
-                    # print("attack test")
-                    for k in range(100):
-                        if self.engine.enemy.check_if_further_attack_possible() == True:
+                    for j in range(n_iterations):
+                        if self.engine.enemy.further_attack_possible:
+                            print("enemy attacking")
                             self.engine.play()
+
+                            print("enemy life:")
+                            print(self.engine.enemy.life)
+
+                            self.engine.check_win_condition()
+                            if (
+                                self.engine.state_machine.current_state
+                                == GameState.ended
+                            ):
+                                break
+
                         else:
-                            self.engine.enemy.finish_phase()
-                            break
+                            continue  # only executed if the inner loop did NOT break
+                        break  # only executed if the inner loop DID break
 
-            self.engine.check_win_condition()
-
-            print(self.engine.state_machine.current_state)
+                    self.engine.enemy.finish_phase()
 
 
 if __name__ == "__main__":

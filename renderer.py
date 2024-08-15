@@ -499,17 +499,17 @@ class Renderer:
             color = None
 
             if self.engine.enemy.stance == Stance.defend:
-                color = player_2_color
+                color = pygame.Color(color_palette.white)
 
             else:
-                color = player_1_color
+                color = pygame.Color(color_palette.color2)
 
             text = font.render(
                 "{}".format(self.engine.enemy.name)
                 + " is "
                 + (self.engine.enemy.stance.name + "ing").upper(),
                 True,
-                pygame.Color(color_palette.white),
+                color,
             )
 
             self.window.blit(

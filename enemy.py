@@ -23,6 +23,7 @@ from life_counter import LifeCounter
 import pygame
 import image
 from lore import lore_dict
+from modifiers import Modifiers
 
 VALUE_MAX_PLACEHOLDER = 100
 
@@ -83,6 +84,8 @@ class Enemy:
 
         self.block = Block(self)
 
+        self.modifiers = Modifiers()
+
         self.arcane_barrier_total = sum(
             [e.arcane_barrier for e in self.equipment_suite.get_equipment_pieces()]
         )
@@ -109,13 +112,14 @@ class Enemy:
             self.survival_mode = False
 
     def initialize_play(self):
-        self.floating_resources = 0
         self.draw()
-        self.reset_action_points()
+        self.reset_play()
 
     def reset_play(self):
         self.floating_resources = 0
         self.reset_action_points()
+        self.further_attack_possible = True
+        self.further_defense_possible = True
 
     def reset_action_points(self):
         self.action_points = 1
@@ -192,15 +196,14 @@ class Enemy:
             # print(self.combat_chain)
 
     def check_if_further_defense_possible(self):
-        if len(self.hand) == 0:
+        if len(self.hand) == 0 and len(self.arsenal) == 0:
             self.further_defense_possible = False
 
     def check_if_further_attack_possible(self):
-        print(self.combat_chain)
         if (
             len(self.combat_chain) == 0
             or self.combat_chain_iterator > len(self.combat_chain)
-            or len(self.hand) == 0
+            or (len(self.hand) == 0 and len(self.arsenal) == 0)
             or self.action_points == 0
         ):
             self.further_attack_possible = False
@@ -361,7 +364,7 @@ class Enemy:
         for c in self.arsenal:
             print(c.name)
 
-    def defend(self, player_attack, modifiers):
+    def defend(self, player_attack):
         # self.print_cards()
 
         self.calc_combat_chain()
@@ -369,7 +372,7 @@ class Enemy:
         # print("enemy defending")
         # print(player_attack)
         if len(self.hand) > 0:
-            if modifiers.modifier_dict["intimidate"] == True:
+            if self.modifiers.modifier_dict["intimidate"] == True:
                 random_banished_card = random.choice(self.hand)
                 # print(self.banished_zone["intimidated_cards"])
 
@@ -386,7 +389,7 @@ class Enemy:
 
             # print(self.block.physical_block_cards)
             if len(self.block.physical_block_cards) > 0:
-                if modifiers.modifier_dict["dominate"] == True:
+                if self.modifiers.modifier_dict["dominate"] == True:
                     self.block.physical_block_cards = self.block.physical_block_cards[
                         :1
                     ]

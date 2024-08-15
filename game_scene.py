@@ -11,8 +11,7 @@ from scene_base import SceneBase
 from engine import GameState
 import scene_manager
 from enemy import Stance
-from attack import Attack
-from modifiers import Modifiers
+
 from game import Game
 
 
@@ -21,8 +20,6 @@ class GameScene(SceneBase):
         super().__init__(*kargs)
         # print("Game Scene")
 
-        self.attack = Attack()
-        self.modifiers = Modifiers()
         self.input_boxes = [
             self.renderer.input_box_physical,
             self.renderer.input_box_arcane,
@@ -56,9 +53,9 @@ class GameScene(SceneBase):
 
             for check_box in self.renderer.check_boxes:
                 if check_box.cb.isChecked() == True:
-                    self.modifiers.modifier_dict[check_box.name] = True
+                    self.engine.modifiers.modifier_dict[check_box.name] = True
                 else:
-                    self.modifiers.modifier_dict[check_box.name] = False
+                    self.engine.modifiers.modifier_dict[check_box.name] = False
 
             if event.type == pygame.KEYDOWN:
                 for inp_box in self.input_boxes:
@@ -76,17 +73,17 @@ class GameScene(SceneBase):
                         if self.engine.enemy.stance == Stance.defend:
                             for inp_box in self.input_boxes:
                                 if inp_box.has_text():
-                                    self.attack.set_values(inp_box)
+                                    self.engine.attack.set_values(inp_box)
 
-                            self.engine.play(self.attack, self.modifiers)
+                            self.engine.play(self.engine.attack, self.engine.modifiers)
 
                             for inp_box in self.input_boxes:
                                 inp_box.reset()
-                                self.attack.reset()
+                                self.engine.attack.reset()
                             for check_box in self.renderer.check_boxes:
                                 check_box.reset()
 
-                            self.modifiers.reset()
+                            self.engine.modifiers.reset()
 
                         else:
                             self.engine.play()
@@ -102,14 +99,14 @@ class GameScene(SceneBase):
 
                         for inp_box in self.input_boxes:
                             inp_box.reset()
-                            self.attack.reset()
+                            self.engine.attack.reset()
 
                         for check_box in self.renderer.check_boxes:
                             check_box.reset()
 
-                        self.attack.reset()
+                        self.engine.attack.reset()
 
-                        self.modifiers.reset()
+                        self.engine.modifiers.reset()
 
                         self.render()
 

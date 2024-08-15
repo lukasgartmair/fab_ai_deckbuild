@@ -13,6 +13,7 @@ from enemy import Enemy, Stance
 from statemachine import StateMachine
 from statemachine.states import States, State
 from level_manager import LevelManager
+from attack import Attack
 
 
 class GameState(Enum):
@@ -48,6 +49,7 @@ class GameEngine:
         self.level_manager = LevelManager(level=1)
         self.enemy.initialize_play()
         self.win_condition = None
+        self.attack = Attack()
 
     def advance_level(self):
         self.win_condition = None
@@ -67,13 +69,13 @@ class GameEngine:
             self.state_machine.end_game()
             return True
 
-    def play(self, player_attack=None, modifiers=None):
+    def play(self, player_attack=None):
         if self.enemy.stance == Stance.defend:
             if self.enemy.further_defense_possible == False:
                 print("no more defensive actions from the enemy this turn")
                 print("press enter to change the enemy stance to ATTACK")
             else:
-                self.enemy.defend(player_attack, modifiers)
+                self.enemy.defend(player_attack)
 
         elif self.enemy.stance == Stance.attack:
             if self.enemy.further_attack_possible == False:

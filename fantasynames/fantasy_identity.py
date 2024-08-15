@@ -21,7 +21,6 @@ races = ["elf", "dwarf", "human"]
 
 class FantasyIdentity:
     def __init__(self, player_class):
-
         self.race = random.choice(races)
         self.name = self.get_fantasy_name()
         image_path = "images/" + player_class.name + "/"
