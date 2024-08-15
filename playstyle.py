@@ -139,6 +139,9 @@ class NinjaBasic(Playstyle):
 class RangerBasic(Playstyle):
     def __init__(self):
         super().__init__()
+        self.strategy_parameters = {"mu": 7, "sigma": 4}
+        self.keywords = [Keyword.go_again, Keyword.no_keyword]
+        self.keyword_ratios = {"go_again": 40, "no_keyword": 60}
 
 
 class BruteBasic(Playstyle):
