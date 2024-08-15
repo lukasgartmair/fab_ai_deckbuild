@@ -11,7 +11,7 @@ from engine import GameEngine, GameStateMachine
 import numpy as np
 from enemy import Stance
 from attack import Attack
-from analyzer import Analyzer, GlobalAnalyzer
+
 from modifiers import Modifiers
 from engine import GameState
 
@@ -39,8 +39,6 @@ class TestMethods(unittest.TestCase):
         pass
 
     def test_gameplay(self):
-        global_analyzer = GlobalAnalyzer()
-
         self.engine = GameEngine()
 
         for n in range(n_runs):
@@ -105,6 +103,9 @@ class TestMethods(unittest.TestCase):
                         break  # only executed if the inner loop DID break
 
                     self.engine.enemy.finish_phase()
+
+        print("here")
+        print(self.engine.analyzer.data)
 
 
 if __name__ == "__main__":

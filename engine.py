@@ -14,6 +14,7 @@ from statemachine import StateMachine
 from statemachine.states import States, State
 from level_manager import LevelManager
 from attack import Attack
+from analyzer import GlobalAnalyzer
 
 
 class GameState(Enum):
@@ -51,6 +52,12 @@ class GameEngine:
         self.win_condition = None
         self.attack = Attack()
 
+        self.analyzer = GlobalAnalyzer(self)
+
+    def finish_turn(self):
+        self.analyzer.write_turn_data()
+        self.level_manager.turn_index += 1
+
     def advance_level(self):
         self.win_condition = None
         self.enemy = Enemy(play_key=pygame.K_SPACE)
@@ -76,6 +83,7 @@ class GameEngine:
                 print("press enter to change the enemy stance to ATTACK")
             else:
                 self.enemy.defend(player_attack)
+                self.finish_turn()
 
         elif self.enemy.stance == Stance.attack:
             if self.enemy.further_attack_possible == False:
@@ -84,3 +92,4 @@ class GameEngine:
 
             else:
                 self.enemy.attack()
+                self.finish_turn()

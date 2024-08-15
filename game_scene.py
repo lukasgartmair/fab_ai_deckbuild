@@ -55,7 +55,7 @@ class GameScene(SceneBase):
                 if check_box.cb.isChecked() == True:
                     self.engine.modifiers.modifier_dict[check_box.name] = True
                 else:
-                    self.engine.modifiers.modifier_dict[check_box.name] = False
+                    self.engine.enemy.modifiers.modifier_dict[check_box.name] = False
 
             if event.type == pygame.KEYDOWN:
                 for inp_box in self.input_boxes:
@@ -75,7 +75,7 @@ class GameScene(SceneBase):
                                 if inp_box.has_text():
                                     self.engine.attack.set_values(inp_box)
 
-                            self.engine.play(self.engine.attack, self.engine.modifiers)
+                            self.engine.play(self.engine.attack)
 
                             for inp_box in self.input_boxes:
                                 inp_box.reset()
@@ -83,7 +83,7 @@ class GameScene(SceneBase):
                             for check_box in self.renderer.check_boxes:
                                 check_box.reset()
 
-                            self.engine.modifiers.reset()
+                            self.engine.enemy.modifiers.reset()
 
                         else:
                             self.engine.play()
@@ -106,7 +106,7 @@ class GameScene(SceneBase):
 
                         self.engine.attack.reset()
 
-                        self.engine.modifiers.reset()
+                        self.engine.enemy.modifiers.reset()
 
                         self.render()
 
