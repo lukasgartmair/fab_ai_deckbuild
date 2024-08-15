@@ -30,6 +30,9 @@ class TestMethods(unittest.TestCase):
     #     for i in range(n_iterations):
     #         self.engine = GameEngine()
     #         print(self.engine.enemy.player_class)
+    
+    def test_test(self):
+        pass
 
     def test_gameplay(self):
         for n in range(n_iterations_total):
