@@ -16,11 +16,12 @@ from os.path import isfile, join
 import random
 
 
-races = ["hobbit", "elf", "dwarf", "human"]
+races = ["elf", "dwarf", "human"]
 
 
 class FantasyIdentity:
     def __init__(self, player_class):
+
         self.race = random.choice(races)
         self.name = self.get_fantasy_name()
         image_path = "images/" + player_class.name + "/"
@@ -28,9 +29,9 @@ class FantasyIdentity:
         self.image_number = random.choice(images)
 
     def get_fantasy_name(self):
-        if self.race == "hobbit":
-            return hobbit()
-        elif self.race == "elf":
+        # if self.race == "hobbit":
+        #     return hobbit()
+        if self.race == "elf":
             return elf()
         elif self.race == "dwarf":
             return dwarf()
