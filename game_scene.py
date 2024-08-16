@@ -53,7 +53,7 @@ class GameScene(SceneBase):
 
             for check_box in self.renderer.check_boxes:
                 if check_box.cb.isChecked() == True:
-                    self.engine.modifiers.modifier_dict[check_box.name] = True
+                    self.engine.enemy.modifiers.modifier_dict[check_box.name] = True
                 else:
                     self.engine.enemy.modifiers.modifier_dict[check_box.name] = False
 
