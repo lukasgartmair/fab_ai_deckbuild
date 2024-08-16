@@ -117,6 +117,8 @@ class Enemy:
 
     def initialize_play(self):
         self.draw()
+        if self.stance == Stance.attack:
+            self.calc_combat_chain()
         self.reset_play()
 
     def reset_play(self):
