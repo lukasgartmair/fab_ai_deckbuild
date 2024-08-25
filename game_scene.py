@@ -8,7 +8,7 @@ Created on Wed Dec 27 09:16:56 2023
 
 import pygame
 from scene_base import SceneBase
-from engine import GameState
+from engine import GameStateMachine
 import scene_manager
 from enemy import Stance
 

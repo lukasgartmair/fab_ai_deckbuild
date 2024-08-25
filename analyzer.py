@@ -11,15 +11,14 @@ class GlobalAnalyzer:
     def __init__(self, engine):
         self.engine = engine
         self.data = {}
-        self.write_game_data()
-
-    def write_game_data(self):
-        self.data["enemy_name"] = self.engine.enemy.name
-        self.data["player_class"] = self.engine.enemy.player_class.name
 
     def write_turn_data(self):
         if self.engine.level_manager.current_level not in self.data:
             self.data[self.engine.level_manager.current_level] = {}
+
+            self.data[self.engine.level_manager.current_level][
+                "enemy"
+            ] = self.engine.enemy
 
         if (
             self.engine.level_manager.turn_index
@@ -47,3 +46,14 @@ class GlobalAnalyzer:
         self.data[self.engine.level_manager.current_level][
             self.engine.level_manager.turn_index
         ]["banished_zone"] = self.engine.enemy.banished_zone
+
+    def analyze_game_data(self):
+        print("GAME ANALYSIS")
+        print("------------------")
+        for k, v in self.data.items():
+            print("current_level")
+            print(k)
+            print("enemy")
+            print(v["enemy"].name)
+            print("# turns played")
+            print(len(v))
