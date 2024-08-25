@@ -80,6 +80,9 @@ class Keyword(Enum):
     # quell = 10
     beat_chest = 10
     boost = 11
+    charge = 12
+    opt = 13
+    reload = 14
     no_keyword = 3
 
 
@@ -114,6 +117,8 @@ class Playstyle:
             CardColor.blue: 33,
         }
 
+        assert len(self.keywords) == len(self.keyword_ratios)
+
     def __str__(self):
         return type(self).__name__
 
@@ -131,7 +136,13 @@ class RangerBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.strategy_parameters = {"mu": 7, "sigma": 4}
-        self.keywords = [Keyword.go_again, Keyword.no_keyword]
+        self.keywords = [
+            Keyword.go_again,
+            Keyword.beat_chest,
+            Keyword.dominate,
+            Keyword.intimidate,
+            Keyword.no_keyword,
+        ]
         self.keyword_ratios = {"go_again": 40, "no_keyword": 60}
 
 
@@ -185,27 +196,34 @@ class RunebladeBasic(Playstyle):
 class WizardBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 2, "sigma": 3}
+        self.strategy_parameters = {"mu": 3, "sigma": 3}
+        self.keywords = [Keyword.opt, Keyword.go_again, Keyword.no_keyword]
+        self.keyword_ratios = {"opt": 50, "go_again": 30, "no_keyword": 20}
         self.arcane_ratio = 0.8
+        self.pitch_ratios = {
+            CardColor.red: 35,
+            CardColor.yellow: 20,
+            CardColor.blue: 45,
+        }
 
 
 class WarriorBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 4, "sigma": 3}
-        self.keywords = [Keyword.go_again, Keyword.no_keyword]
-        self.keyword_ratios = {"go_again": 50, "no_keyword": 50}
+        self.strategy_parameters = {"mu": 3.5, "sigma": 2}
+        self.keywords = [Keyword.charge, Keyword.go_again, Keyword.no_keyword]
+        self.keyword_ratios = {"charge": 50, "go_again": 30, "no_keyword": 20}
         self.card_type_ratios = {
-            "non_attack_action": 5,
-            "attack_action": 60,
-            "attack_reaction": 30,
+            "non_attack_action": 40,
+            "attack_action": 40,
+            "attack_reaction": 15,
             "defensive_reaction": 5,
         }
 
         self.pitch_ratios = {
-            CardColor.red: 50,
-            CardColor.yellow: 0,
-            CardColor.blue: 50,
+            CardColor.red: 30,
+            CardColor.yellow: 70,
+            CardColor.blue: 0,
         }
 
 

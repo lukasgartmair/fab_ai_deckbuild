@@ -40,6 +40,9 @@ class Enemy:
         self.player_class = random.choice(
             [p for p in list(PlayerClass) if p.name != "generic"]
         )
+
+        self.player_class = PlayerClass.wizard
+
         self.identity = FantasyIdentity(self.player_class)
         self.name = self.identity.name
         self.race = self.identity.race
@@ -58,6 +61,8 @@ class Enemy:
         self.hand = []
         self.pile = Pile()
         self.play_key = None
+
+        self.soul = []
 
         self.playstyle = get_playstyle(self.player_class)
         self.original_deck = Deck(self.player_class, self.playstyle)
