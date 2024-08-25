@@ -192,7 +192,7 @@ class Renderer:
             self.engine.enemy.stance == Stance.defend
             and self.engine.enemy.further_defense_possible == False
         ):
-            message = "'You broke my defense - Hit me or change my stance'"
+            message = "'You broke my defense - Hit me again or change my stance'"
 
         text = font.render(
             message,

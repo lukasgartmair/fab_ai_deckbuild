@@ -77,6 +77,9 @@ class GameEngine:
             return True
 
     def play(self, player_attack=None):
+        
+        self.enemy.check_if_further_move_possible()
+        
         if self.enemy.stance == Stance.defend:
             if self.enemy.further_defense_possible == False:
                 print("no more defensive actions from the enemy this turn")
@@ -94,4 +97,4 @@ class GameEngine:
                 self.enemy.attack()
                 self.finish_turn()
 
-        self.enemy.check_if_further_move_possible()
+
