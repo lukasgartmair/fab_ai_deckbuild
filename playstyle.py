@@ -130,14 +130,14 @@ class NinjaBasic(Playstyle):
         self.strategy_parameters = {"mu": 4, "sigma": 3}
         self.keywords = [Keyword.go_again, Keyword.combo]
         self.keyword_ratios = {"go_again": 70, "combo": 30}
-        
+
         self.card_type_ratios = {
             "non_attack_action": 35,
             "attack_action": 50,
             "attack_reaction": 5,
             "defensive_reaction": 10,
         }
-        
+
         self.pitch_ratios = {
             CardColor.red: 60,
             CardColor.yellow: 5,
@@ -154,20 +154,19 @@ class RangerBasic(Playstyle):
             Keyword.no_keyword,
         ]
         self.keyword_ratios = {"go_again": 70, "no_keyword": 30}
-        
+
         self.card_type_ratios = {
             "non_attack_action": 35,
             "attack_action": 50,
             "attack_reaction": 5,
             "defensive_reaction": 10,
         }
-        
+
         self.pitch_ratios = {
             CardColor.red: 60,
             CardColor.yellow: 15,
             CardColor.blue: 25,
         }
-
 
 
 class BruteBasic(Playstyle):
@@ -208,51 +207,49 @@ class MechanologistBasic(Playstyle):
         self.strategy_parameters = {"mu": 4, "sigma": 4}
         self.keywords = [Keyword.boost, Keyword.no_keyword]
         self.keyword_ratios = {"boost": 80, "no_keyword": 20}
-    
-        
+
         self.card_type_ratios = {
             "non_attack_action": 50,
             "attack_action": 40,
             "attack_reaction": 5,
             "defensive_reaction": 5,
         }
-        
+
         self.pitch_ratios = {
             CardColor.red: 35,
             CardColor.yellow: 15,
             CardColor.blue: 40,
         }
 
+
 class RunebladeBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.strategy_parameters = {"mu": 6, "sigma": 2}
         self.arcane_ratio = 0.5
-        
-        self.keywords = [Keyword.go_again, Keyword.blood_debt,  Keyword.no_keyword]
-        self.keyword_ratios = {"go_again": 70, "blood_debt":10,"no_keyword": 20}
-        
+
+        self.keywords = [Keyword.go_again, Keyword.blood_debt, Keyword.no_keyword]
+        self.keyword_ratios = {"go_again": 70, "blood_debt": 10, "no_keyword": 20}
+
         self.card_type_ratios = {
             "non_attack_action": 50,
             "attack_action": 40,
             "attack_reaction": 5,
             "defensive_reaction": 5,
         }
-        
+
         self.card_type_ratios = {
             "non_attack_action": 60,
             "attack_action": 30,
             "attack_reaction": 5,
             "defensive_reaction": 5,
         }
-        
+
         self.pitch_ratios = {
             CardColor.red: 50,
             CardColor.yellow: 10,
             CardColor.blue: 40,
         }
-
-
 
 
 class WizardBasic(Playstyle):

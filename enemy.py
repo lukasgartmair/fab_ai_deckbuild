@@ -358,8 +358,12 @@ class Enemy:
                     self.use_floating_resources(c.cost)
                     self.use_action_points()
 
-#TODO for now combo also gives another action point also mech boost - add mechanics
-                    if (Keyword.go_again in c.keywords) or  (Keyword.combo in c.keywords)  or (Keyword.boost in c.keywords):
+                    # TODO for now combo also gives another action point also mech boost - add mechanics
+                    if (
+                        (Keyword.go_again in c.keywords)
+                        or (Keyword.combo in c.keywords)
+                        or (Keyword.boost in c.keywords)
+                    ):
                         self.get_action_points()
 
                     self.combat_chain_iterator += 1
