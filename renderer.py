@@ -17,6 +17,7 @@ from colors import color_palette
 from card import CardColor
 from utils import blit_text
 import image
+import PygameUtils as pu
 import random
 from settings import (
     grid,
@@ -46,6 +47,8 @@ from settings import (
 
 y_index = 0
 
+button_size = 25
+
 
 class Renderer:
     def __init__(self, engine):
@@ -70,6 +73,21 @@ class Renderer:
         self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
 
         self.enemy_image = image.load_image(self.engine.enemy.image_path)
+
+        self.button_up = pu.button(
+            pygame.Color(color_palette.color2),
+            grid.left_point(13),
+            grid.top_point(0),
+            button_size,
+            button_size,
+        )
+        self.button_down = pu.button(
+            pygame.Color(color_palette.color2),
+            grid.left_point(13),
+            grid.top_point(0) + button_size + 5,
+            button_size,
+            button_size,
+        )
 
     def render_background(self):
         self.window.blit(self.background, (0, 0))
@@ -502,8 +520,8 @@ class Renderer:
 
     def render_enemy_life_counter(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:
-            self.engine.enemy.life_counter.button_up.draw(self.window)
-            self.engine.enemy.life_counter.button_down.draw(self.window)
+            self.button_up.draw(self.window)
+            self.button_down.draw(self.window)
 
         text = font.render(
             "HP : " + str(self.engine.enemy.life),

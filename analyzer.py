@@ -48,6 +48,12 @@ class GlobalAnalyzer:
             self.engine.level_manager
         )
 
+        self.data[self.engine.level_manager.current_level][
+            self.engine.level_manager.turn_index
+        ][self.engine.level_manager.move_index]["life_counter"] = copy.deepcopy(
+            self.engine.enemy.life_counter
+        )
+
         # print("here")
         # d = {'x':self.engine}
         # print(dill.detect.baditems(d))

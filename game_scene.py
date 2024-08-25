@@ -34,13 +34,9 @@ class GameScene(SceneBase):
                 inp_box.check_activation(event)
 
             if event.type == pygame.MOUSEBUTTONUP:
-                if self.engine.enemy.life_counter.button_up.isOver(
-                    pygame.mouse.get_pos()
-                ):
+                if self.renderer.button_up.isOver(pygame.mouse.get_pos()):
                     self.engine.enemy.life_counter.increase_life()
-                elif self.engine.enemy.life_counter.button_down.isOver(
-                    pygame.mouse.get_pos()
-                ):
+                elif self.renderer.button_down.isOver(pygame.mouse.get_pos()):
                     self.engine.enemy.life_counter.decrease_life()
 
                 self.render()
