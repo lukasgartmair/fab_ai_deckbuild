@@ -23,7 +23,7 @@ TARGET_VALUE = 8
 MAX_ATTACK = 6
 MIN_ATTACK = 2
 
-MAX_CARD_COST = 3
+MAX_CARD_COST = 4
 
 
 def generate_rnd_name():
