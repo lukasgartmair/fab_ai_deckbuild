@@ -12,7 +12,7 @@ class GlobalAnalyzer:
         self.engine = engine
         self.data = {}
 
-    def write_turn_data(self):
+    def write_enemy_turn_data(self):
         if self.engine.level_manager.current_level not in self.data:
             self.data[self.engine.level_manager.current_level] = {}
 
@@ -54,6 +54,6 @@ class GlobalAnalyzer:
             print("current_level")
             print(k)
             print("enemy")
-            print(v["enemy"].name)
-            print("# turns played")
+            print(str(v["enemy"].player_class.name) + " " + str(v["enemy"].name))
+            print("# enemy turns played")
             print(len(v))

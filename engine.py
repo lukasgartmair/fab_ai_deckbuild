@@ -46,8 +46,8 @@ class GameEngine:
 
         self.analyzer = GlobalAnalyzer(self)
 
-    def finish_turn(self):
-        self.analyzer.write_turn_data()
+    def finish_enemy_turn(self):
+        self.analyzer.write_enemy_turn_data()
         self.level_manager.turn_index += 1
 
     def advance_level(self):
@@ -76,7 +76,7 @@ class GameEngine:
                 print("no more defensive actions from the enemy this turn")
                 print("press enter to change the enemy stance to ATTACK")
             self.enemy.defend(player_attack)
-            self.finish_turn()
+            self.finish_enemy_turn()
 
         elif self.enemy.stance == Stance.attack:
             if self.enemy.further_attack_possible == False:
@@ -85,4 +85,4 @@ class GameEngine:
 
             else:
                 self.enemy.attack()
-                self.finish_turn()
+                self.finish_enemy_turn()

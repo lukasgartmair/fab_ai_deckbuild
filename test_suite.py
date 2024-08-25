@@ -11,7 +11,7 @@ from engine import GameEngine, GameStateMachine
 import numpy as np
 from enemy import Stance
 from attack import Attack
-
+import random
 from modifiers import Modifiers
 
 n_runs = 1
@@ -55,12 +55,10 @@ class TestMethods(unittest.TestCase):
                 i += 1
 
                 if self.engine.enemy.stance == Stance.defend:
-                    for j in range(n_iterations):
+                    for j in range(random.randint(1, n_iterations + 1)):
                         pyhsical = np.random.randint(0, 6)
                         arcane = np.random.randint(0, 3)
-                        self.engine.attack.set_values_explicitly(
-                            physical=pyhsical, arcane=arcane
-                        )
+                        self.engine.attack.set_values(physical=pyhsical, arcane=arcane)
 
                         print("enemy defending")
                         self.engine.play(self.engine.attack)
@@ -105,7 +103,7 @@ class TestMethods(unittest.TestCase):
 
                     self.engine.enemy.finish_phase()
 
-        print(self.engine.analyzer.data)
+        # print(self.engine.analyzer.data)
 
         print("here")
         self.engine.analyzer.analyze_game_data()
