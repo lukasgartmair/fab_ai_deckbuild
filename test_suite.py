@@ -110,7 +110,7 @@ class TestMethods(unittest.TestCase):
                     self.engine.enemy.finish_turn()
                     self.engine.finish_turn()
 
-            self.engine.analyzer.analyze_game_data()
+        self.engine.analyzer.analyze_game_data()
 
 
 if __name__ == "__main__":

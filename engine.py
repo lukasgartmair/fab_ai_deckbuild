@@ -94,4 +94,4 @@ class GameEngine:
 
             else:
                 self.enemy.attack()
-                self.finish_move()
+            self.finish_move()

@@ -55,3 +55,6 @@ class GlobalAnalyzer:
         #     print("enemy")
         #     print(str(v["enemy"].player_class.name) + " " + str(v["enemy"].name))
         pprint.pprint(self.data)
+
+        print(self.data[1][1][1]["engine"].level_manager.move_index)
+        print(self.data[1][1][2]["engine"].level_manager.move_index)
