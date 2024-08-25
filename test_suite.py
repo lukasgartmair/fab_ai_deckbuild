@@ -69,7 +69,7 @@ class TestMethods(unittest.TestCase):
                         self.engine.attack.reset()
 
                         print("enemy life:")
-                        print(self.engine.enemy.life)
+                        print(self.engine.enemy.life_counter.life)
                         print()
 
                         self.engine.check_win_condition()
@@ -94,7 +94,7 @@ class TestMethods(unittest.TestCase):
                             self.engine.play()
 
                             print("enemy life:")
-                            print(self.engine.enemy.life)
+                            print(self.engine.enemy.life_counter.life)
 
                             self.engine.check_win_condition()
                             if (

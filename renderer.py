@@ -524,7 +524,7 @@ class Renderer:
             self.button_down.draw(self.window)
 
         text = font.render(
-            "HP : " + str(self.engine.enemy.life),
+            "HP : " + str(self.engine.enemy.life_counter.life),
             True,
             pygame.Color(color_palette.white),
         )

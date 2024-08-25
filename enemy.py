@@ -54,7 +54,7 @@ class Enemy:
 
         self.intellect = 4
         self.talents = []
-        self.life = 20
+        self.starting_life = 20
         self.hand = []
         self.pile = Pile()
         self.play_key = None
@@ -94,7 +94,7 @@ class Enemy:
 
         self.ability = Ability()
 
-        self.life_counter = LifeCounter(self)
+        self.life_counter = LifeCounter(self.starting_life)
 
         if self.player_class.name in lore_dict:
             self.lore = random.choice(lore_dict[self.player_class.name])
@@ -108,7 +108,7 @@ class Enemy:
         self.check_if_in_survival_mode()
 
     def check_if_in_survival_mode(self):
-        if self.life <= 5:
+        if self.life_counter.life <= 5:
             self.survival_mode = True
         else:
             self.survival_mode = False
@@ -137,12 +137,6 @@ class Enemy:
             return True
         else:
             return False
-
-    def decrease_life(self, value=1):
-        self.life -= value
-
-    def increase_life(self, value=1):
-        self.life += value
 
     def arsenal_empty(self):
         if len(self.arsenal) == 0:
@@ -426,7 +420,7 @@ class Enemy:
                     if bc in self.arsenal:
                         self.arsenal.remove(bc)
 
-        self.life_counter.calculate_life(player_attack)
+        self.life_counter.calculate_life(player_attack, self.block)
         self.block.reset()
 
     def get_combinations(self, array, current_index):

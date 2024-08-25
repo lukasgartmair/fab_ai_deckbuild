@@ -14,19 +14,19 @@ from utils import add_two_with_possible_none_type
 
 
 class LifeCounter:
-    def __init__(self, enemy):
-        self.enemy = enemy
+    def __init__(self, life):
+        self.life = life
 
-    def increase_life(self):
-        self.enemy.increase_life()
+    def decrease_life(self, value=1):
+        self.life -= value
 
-    def decrease_life(self):
-        self.enemy.decrease_life()
+    def increase_life(self, value=1):
+        self.life += value
 
-    def calculate_life(self, player_attack):
+    def calculate_life(self, player_attack, enemy_block):
         # print("Block balance:")
 
-        block_total = self.enemy.block.calc_total_block()
+        block_total = enemy_block.calc_total_block()
         # print(block_total)
 
         attack_total = add_two_with_possible_none_type(
@@ -38,7 +38,7 @@ class LifeCounter:
         # print("result")
         result = attack_total - block_total
         if result > 0:
-            self.enemy.life -= result
+            self.life -= result
 
-        if self.enemy.life <= 0:
-            self.enemy.life = 0
+        if self.life <= 0:
+            self.life = 0

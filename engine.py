@@ -74,7 +74,7 @@ class GameEngine:
         self.level_manager.advance_level()
 
     def check_win_condition(self):
-        if self.enemy.life <= 0:
+        if self.enemy.life_counter.life <= 0:
             self.win_condition = WinCondition.enemy_died
             self.state_machine.end_game()
 

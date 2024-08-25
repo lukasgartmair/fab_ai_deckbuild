@@ -50,7 +50,7 @@ class GlobalAnalyzer:
 
         self.data[self.engine.level_manager.current_level][
             self.engine.level_manager.turn_index
-        ][self.engine.level_manager.move_index]["life_counter"] = copy.deepcopy(
+        ][self.engine.level_manager.move_index]["life_counter"] = copy.copy(
             self.engine.enemy.life_counter
         )
 
@@ -75,3 +75,7 @@ class GlobalAnalyzer:
 
         print(self.data[1][1][1]["level_manager"].turn_index)
         print(self.data[1][2][1]["level_manager"].turn_index)
+
+        print(self.data[1][1][1]["life_counter"].life_counter.life)
+
+        print(self.data[1][2][1]["life_counter"].life_counter.life)
