@@ -47,20 +47,8 @@ class GameEngine:
 
         self.analyzer = GlobalAnalyzer(self)
 
-    # def __getstate__(self):
-    #     state = self.__dict__.copy()
-    #     # Don't pickle baz
-    #     self.enemy_temp = self.enemy
-    #     del self.enemy
-    #     return state
-
-    # def __setstate__(self, state):
-    #     self.__dict__.update(state)
-
-    #     self.enemy = self.enemy_temp
-
-    def finish_move(self):
-        self.analyzer.write_move_data()
+    def finish_move(self, player_attack):
+        self.analyzer.write_move_data(player_attack)
         self.level_manager.advandce_move()
 
     def finish_turn(self):
@@ -92,7 +80,7 @@ class GameEngine:
                 print("no more defensive actions from the enemy this turn")
                 print("press enter to change the enemy stance to ATTACK")
             self.enemy.defend(player_attack)
-            self.finish_move()
+            self.finish_move(player_attack)
 
         elif self.enemy.stance == Stance.attack:
             if self.enemy.further_attack_possible == False:
@@ -101,4 +89,4 @@ class GameEngine:
 
             else:
                 self.enemy.attack()
-            self.finish_move()
+            self.finish_move(player_attack)

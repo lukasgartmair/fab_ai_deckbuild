@@ -213,8 +213,8 @@ class GuardianBasic(Playstyle):
             "defensive_reaction": 25,
         }
         self.pitch_ratios = {
-            CardColor.red: 50,
-            CardColor.yellow: 0,
+            CardColor.red: 0,
+            CardColor.yellow: 50,
             CardColor.blue: 50,
         }
 
