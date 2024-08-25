@@ -224,8 +224,6 @@ class Enemy:
         ):
             self.further_defense_possible = False
 
-        print(self.further_defense_possible)
-
     def draw(self):
         print("enemy is drawing")
         if len(self.deck) > 0:
