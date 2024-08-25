@@ -16,6 +16,8 @@ from level_manager import LevelManager
 from attack import Attack
 from analyzer import GlobalAnalyzer
 
+from copy import deepcopy
+
 
 class WinCondition(Enum):
     enemy_died = 0
@@ -46,9 +48,16 @@ class GameEngine:
 
         self.analyzer = GlobalAnalyzer(self)
 
-    def finish_enemy_turn(self):
-        self.analyzer.write_enemy_turn_data()
-        self.level_manager.turn_index += 1
+    # def __deepcopy__(self, memo):
+
+    #     return GameEngine()
+
+    def finish_move(self):
+        self.analyzer.write_move_data()
+        self.level_manager.advandce_move()
+
+    def finish_turn(self):
+        self.level_manager.advandce_turn()
 
     def advance_level(self):
         self.win_condition = None
@@ -76,7 +85,7 @@ class GameEngine:
                 print("no more defensive actions from the enemy this turn")
                 print("press enter to change the enemy stance to ATTACK")
             self.enemy.defend(player_attack)
-            self.finish_enemy_turn()
+            self.finish_move()
 
         elif self.enemy.stance == Stance.attack:
             if self.enemy.further_attack_possible == False:
@@ -85,4 +94,4 @@ class GameEngine:
 
             else:
                 self.enemy.attack()
-                self.finish_enemy_turn()
+                self.finish_move()

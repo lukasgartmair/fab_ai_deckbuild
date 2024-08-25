@@ -16,7 +16,7 @@ from playstyle import Keyword
 from colors import color_palette
 from card import CardColor
 from utils import blit_text
-
+import image
 import random
 from settings import (
     grid,
@@ -69,6 +69,8 @@ class Renderer:
 
         self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
 
+        self.enemy_image = image.load_image(self.engine.enemy.image_path)
+
     def render_background(self):
         self.window.blit(self.background, (0, 0))
 
@@ -92,7 +94,7 @@ class Renderer:
 
     def render_enemy(self, color=color_palette.white):
         self.window.blit(
-            self.engine.enemy.image,
+            self.enemy_image,
             (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
         ),
 

@@ -21,7 +21,7 @@ from utils import n_chance, shift_list
 from ability import Ability
 from life_counter import LifeCounter
 import pygame
-import image
+
 from lore import lore_dict
 from modifiers import Modifiers
 
@@ -46,8 +46,6 @@ class Enemy:
         self.image_path = (
             "images/" + self.player_class.name + "/" + self.identity.image_number
         )
-
-        self.image = image.load_image(self.image_path)
 
         if n_chance(p=0.5):
             self.stance = Stance.defend
@@ -158,7 +156,25 @@ class Enemy:
             self.arsenal.append(c)
             self.hand.remove(c)
 
-    def finish_phase(self):
+    def change_stance(self):
+        if self.stance == Stance.defend:
+            self.stance = Stance.attack
+            self.calc_combat_chain()
+            # print("combat_chain")
+            # print(self.combat_chain)
+
+        elif self.stance == Stance.attack:
+            if self.arsenal_empty():
+                self.fill_arsenal()
+
+            self.stance = Stance.defend
+            self.check_if_in_survival_mode()
+            self.draw()
+            self.calc_combat_chain()
+            # print("combat_chain")
+            # print(self.combat_chain)
+
+    def finish_turn(self):
         self.reset_play()
 
         for card in self.played_cards:
@@ -184,22 +200,7 @@ class Enemy:
 
         self.block.reset()
 
-        if self.stance == Stance.attack:
-            if self.arsenal_empty():
-                self.fill_arsenal()
-
-        if self.stance == Stance.defend:
-            self.stance = Stance.attack
-            self.calc_combat_chain()
-            # print("combat_chain")
-            # print(self.combat_chain)
-        else:
-            self.stance = Stance.defend
-            self.check_if_in_survival_mode()
-            self.draw()
-            self.calc_combat_chain()
-            # print("combat_chain")
-            # print(self.combat_chain)
+        self.change_stance()
 
     def check_if_further_move_possible(self):
         if self.stance == Stance.attack:
