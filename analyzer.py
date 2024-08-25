@@ -76,6 +76,6 @@ class GlobalAnalyzer:
         print(self.data[1][1][1]["level_manager"].turn_index)
         print(self.data[1][2][1]["level_manager"].turn_index)
 
-        print(self.data[1][1][1]["life_counter"].life_counter.life)
+        print(self.data[1][1][1]["life_counter"].life)
 
-        print(self.data[1][2][1]["life_counter"].life_counter.life)
+        print(self.data[1][5][1]["life_counter"].life)
