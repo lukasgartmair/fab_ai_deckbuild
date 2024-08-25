@@ -16,8 +16,6 @@ from level_manager import LevelManager
 from attack import Attack
 from analyzer import GlobalAnalyzer
 
-from copy import deepcopy
-
 
 class WinCondition(Enum):
     enemy_died = 0
@@ -40,6 +38,7 @@ class GameEngine:
 
     def __init__(self):
         self.enemy = Enemy(play_key=pygame.K_SPACE)
+        self.enemy_temp = None
         self.state_machine = GameStateMachine()
         self.level_manager = LevelManager(level=1)
         self.enemy.initialize_play()
@@ -48,9 +47,17 @@ class GameEngine:
 
         self.analyzer = GlobalAnalyzer(self)
 
-    # def __deepcopy__(self, memo):
+    # def __getstate__(self):
+    #     state = self.__dict__.copy()
+    #     # Don't pickle baz
+    #     self.enemy_temp = self.enemy
+    #     del self.enemy
+    #     return state
 
-    #     return GameEngine()
+    # def __setstate__(self, state):
+    #     self.__dict__.update(state)
+
+    #     self.enemy = self.enemy_temp
 
     def finish_move(self):
         self.analyzer.write_move_data()

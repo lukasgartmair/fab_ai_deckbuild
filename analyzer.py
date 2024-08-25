@@ -6,8 +6,9 @@ Created on Thu Aug 15 16:20:37 2024
 @author: lukasgartmair
 """
 
-import copy
 import pprint
+import copy
+import dill
 
 
 class GlobalAnalyzer:
@@ -43,7 +44,17 @@ class GlobalAnalyzer:
 
         self.data[self.engine.level_manager.current_level][
             self.engine.level_manager.turn_index
-        ][self.engine.level_manager.move_index]["engine"] = copy.copy(self.engine)
+        ][self.engine.level_manager.move_index]["level_manager"] = copy.deepcopy(
+            self.engine.level_manager
+        )
+
+        # print("here")
+        # d = {'x':self.engine}
+        # print(dill.detect.baditems(d))
+
+        # self.data[self.engine.level_manager.current_level][
+        #     self.engine.level_manager.turn_index
+        # ][self.engine.level_manager.move_index]["enemy"] = copy.deepcopy(self.engine.enemy.arsenal)
 
     def analyze_game_data(self):
         print("GAME ANALYSIS")
@@ -54,7 +65,7 @@ class GlobalAnalyzer:
         #     print(k)
         #     print("enemy")
         #     print(str(v["enemy"].player_class.name) + " " + str(v["enemy"].name))
-        pprint.pprint(self.data)
+        # pprint.pprint(self.data)
 
-        print(self.data[1][1][1]["engine"].level_manager.move_index)
-        print(self.data[1][1][2]["engine"].level_manager.move_index)
+        print(self.data[1][1][1]["level_manager"].turn_index)
+        print(self.data[1][2][1]["level_manager"].turn_index)
