@@ -41,7 +41,7 @@ class Enemy:
             [p for p in list(PlayerClass) if p.name != "generic"]
         )
 
-        self.player_class = PlayerClass.wizard
+        # self.player_class = PlayerClass.wizard
 
         self.identity = FantasyIdentity(self.player_class)
         self.name = self.identity.name
