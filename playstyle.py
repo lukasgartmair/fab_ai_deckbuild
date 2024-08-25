@@ -78,6 +78,7 @@ class Keyword(Enum):
     # soul = 8
     # blood_debt = 9
     # quell = 10
+    beat_chest = 10
     boost = 11
     no_keyword = 3
 
@@ -102,9 +103,6 @@ class Playstyle:
         self.keywords = list(Keyword)
         self.keyword_ratios = {
             "go_again": 60,
-            "dominate": 0,
-            "intimidate": 0,
-            "boost": 0,
             "no_keyword": 40,
         }
 
@@ -118,13 +116,6 @@ class Playstyle:
 
     def __str__(self):
         return type(self).__name__
-
-
-strategy_parameters = {
-    "aggressive": {"mu": 4, "sigma": 2},
-    "neutral": {"mu": 3, "sigma": 1},
-    "defensive": {"mu": 1.5, "sigma": 2},
-}
 
 
 class NinjaBasic(Playstyle):
@@ -147,14 +138,32 @@ class RangerBasic(Playstyle):
 class BruteBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 5, "sigma": 1}
-        self.keywords = [Keyword.dominate, Keyword.intimidate]
-        self.keyword_ratios = {"dominate": 50, "intimidate": 50}
+        self.strategy_parameters = {"mu": 6, "sigma": 1}
+        self.keywords = [
+            Keyword.go_again,
+            Keyword.beat_chest,
+            Keyword.dominate,
+            Keyword.intimidate,
+            Keyword.no_keyword,
+        ]
+        self.keyword_ratios = {
+            "go_again": 30,
+            "beat_chest": 10,
+            "dominate": 25,
+            "intimidate": 25,
+            "no_keyword": 10,
+        }
         self.card_type_ratios = {
             "non_attack_action": 5,
-            "attack_action": 80,
-            "attack_reaction": 10,
-            "defensive_reaction": 5,
+            "attack_action": 60,
+            "attack_reaction": 35,
+            "defensive_reaction": 0,
+        }
+
+        self.pitch_ratios = {
+            CardColor.red: 50,
+            CardColor.yellow: 20,
+            CardColor.blue: 30,
         }
 
 

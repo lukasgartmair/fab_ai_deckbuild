@@ -23,6 +23,8 @@ TARGET_VALUE = 8
 MAX_ATTACK = 6
 MIN_ATTACK = 2
 
+MAX_CARD_COST = 3
+
 
 def generate_rnd_name():
     s = RandomSentence()
@@ -94,7 +96,7 @@ class Card:
         if self.cost < 0:
             self.cost = 0
         elif self.cost > 4:
-            self.cost = 4
+            self.cost = MAX_CARD_COST
 
     def adjust_arcane_physical(self):
         if self.physical > 0 and self.card_type != CardType.defensive_reaction:

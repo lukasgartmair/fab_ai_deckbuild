@@ -35,6 +35,10 @@ def calc_physical_distribution(playstyle_obj, n=DECK_SIZE):
 
 
 def calc_keyword_distribution(playstyle_obj, n=DECK_SIZE):
+    print(type(playstyle_obj).__name__)
+    print(playstyle_obj.keywords)
+    print(playstyle_obj.keyword_ratios.values())
+
     sampled_keywords = random.choices(
         playstyle_obj.keywords, weights=playstyle_obj.keyword_ratios.values(), k=n
     )
@@ -84,7 +88,8 @@ class Deck:
         self.playstyle = playstyle
         self.build_deck()
         self.calc_stats()
-        self.get_stats()
+
+        self.print_stats()
 
     def shuffle(self):
         np.random.shuffle(self.cards)
@@ -126,55 +131,73 @@ class Deck:
         #     print("Card {}: {}".format(i, c.name))
 
     def calc_stats(self):
-        self.card_types = [c.card_type.name for c in self.cards]
+        self.stats["card_types"] = [c.card_type.name for c in self.cards]
 
-        self.n_reds = len([c for c in self.cards if c.color == CardColor.red])
-        self.n_yellows = len([c for c in self.cards if c.color == CardColor.yellow])
-        self.n_blues = len([c for c in self.cards if c.color == CardColor.blue])
+        self.stats["sn_reds"] = len([c for c in self.cards if c.color == CardColor.red])
+        self.stats["n_yellows"] = len(
+            [c for c in self.cards if c.color == CardColor.yellow]
+        )
+        self.stats["n_blues"] = len(
+            [c for c in self.cards if c.color == CardColor.blue]
+        )
 
-        self.physicals = [c.physical for c in self.cards]
-        self.defenses = [c.defense for c in self.cards]
-        self.pitches = [c.pitch for c in self.cards]
-        self.costs = [c.cost for c in self.cards]
+        self.stats["physicals"] = [c.physical for c in self.cards]
+        self.stats["defenses"] = [c.defense for c in self.cards]
+        self.stats["pitches"] = [c.pitch for c in self.cards]
+        self.stats["costs"] = [c.cost for c in self.cards]
 
-        self.keywords = [c.keywords for c in self.cards if c is not None]
+        self.stats["keywords"] = [c.keywords for c in self.cards if c is not None]
 
         # fabrary deck stats
-        self.in_deck = len(self.cards)
-        self.non_blocking = len([c for c in self.cards if c.defense == 0])
-        self.attack_actions = len(
+        self.stats["in_deck"] = len(self.cards)
+        self.stats["non_blocking"] = len([c for c in self.cards if c.defense == 0])
+        self.stats["attack_actions"] = len(
             [c for c in self.cards if c.card_type.name == "attack_action"]
         )
-        self.non_attack_actions = len(
+        self.stats["non_attack_actions"] = len(
             [c for c in self.cards if c.card_type.name == "non_attack_action"]
         )
 
         # averages
-        self.cost_avg = np.mean([c.cost for c in self.cards])
-        self.pitch_avg = np.mean([c.pitch for c in self.cards])
+        self.stats["cost_avg"] = np.mean([c.cost for c in self.cards])
+        self.stats["pitch_avg"] = np.mean([c.pitch for c in self.cards])
         # TODO is this physical avg only for attack action cards ir all cards?!
-        self.physical_avg = np.mean(
+        self.stats["physical_avg"] = np.mean(
             [c.physical for c in self.cards if c.card_type.name == "attack_action"]
         )
-        self.defense_avg = np.mean([c.defense for c in self.cards if c.defense > 0])
+        self.stats["defense_avg"] = np.mean(
+            [c.defense for c in self.cards if c.defense > 0]
+        )
 
-    def get_stats(self):
+    def print_stats(self):
         print("Deck statistics")
         table = beautifultable.BeautifulTable()
         table.columns.header = ["totals", "value", "averages", "value"]
-        table.append_row(["in_deck", self.in_deck, "cost_avg", self.cost_avg])
         table.append_row(
-            ["non_blocking", self.non_blocking, "pitch_avg", self.pitch_avg]
+            ["in_deck", self.stats["in_deck"], "cost_avg", self.stats["cost_avg"]]
         )
         table.append_row(
-            ["attack_actions", self.attack_actions, "physical_avg", self.physical_avg]
+            [
+                "non_blocking",
+                self.stats["non_blocking"],
+                "pitch_avg",
+                self.stats["pitch_avg"],
+            ]
+        )
+        table.append_row(
+            [
+                "attack_actions",
+                self.stats["attack_actions"],
+                "physical_avg",
+                self.stats["physical_avg"],
+            ]
         )
         table.append_row(
             [
                 "non_attack_actions",
-                self.non_attack_actions,
+                self.stats["non_attack_actions"],
                 "defense_avg",
-                self.defense_avg,
+                self.stats["defense_avg"],
             ]
         )
         print(table)

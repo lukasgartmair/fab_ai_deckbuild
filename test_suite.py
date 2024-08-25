@@ -13,7 +13,7 @@ from enemy import Stance
 import random
 from modifiers import Modifiers
 
-n_runs = 2
+n_runs = 1
 n_turns = 5
 n_iterations = 4
 
@@ -27,11 +27,10 @@ class TestMethods(unittest.TestCase):
         #         else:
         #             self.modifiers.modifier_dict[check_box.name] = False
 
-    # def test_deckbuilding(self):
-
-    #     for i in range(100):
-    #         self.engine = GameEngine()
-    #         print(self.engine.enemy.player_class)
+    def test_deckbuilding(self):
+        for i in range(100):
+            self.engine = GameEngine()
+            print(self.engine.enemy.player_class)
 
     def test_test(self):
         pass
