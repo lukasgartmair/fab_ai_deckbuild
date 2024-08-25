@@ -100,7 +100,7 @@ class Playstyle:
             "attack_reaction": 15,
             "defensive_reaction": 10,
         }
-        self.keywords = list(Keyword)
+        self.keywords = [Keyword.go_again, Keyword.no_keyword]
         self.keyword_ratios = {
             "go_again": 60,
             "no_keyword": 40,

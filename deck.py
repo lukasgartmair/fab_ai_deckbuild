@@ -35,9 +35,9 @@ def calc_physical_distribution(playstyle_obj, n=DECK_SIZE):
 
 
 def calc_keyword_distribution(playstyle_obj, n=DECK_SIZE):
-    print(type(playstyle_obj).__name__)
-    print(playstyle_obj.keywords)
-    print(playstyle_obj.keyword_ratios.values())
+    # print(type(playstyle_obj).__name__)
+    # print(playstyle_obj.keywords)
+    # print(playstyle_obj.keyword_ratios.values())
 
     sampled_keywords = random.choices(
         playstyle_obj.keywords, weights=playstyle_obj.keyword_ratios.values(), k=n
