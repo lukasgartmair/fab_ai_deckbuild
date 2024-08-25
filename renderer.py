@@ -181,6 +181,32 @@ class Renderer:
                     y=grid.top_point(grid_height * 0.65),
                 )
 
+    def render_no_moves_left(self):
+        message = ""
+        if (
+            self.engine.enemy.stance == Stance.attack
+            and self.engine.enemy.further_attack_possible == False
+        ):
+            message = "'I wont't further attack you - Let me defend now!'"
+        elif (
+            self.engine.enemy.stance == Stance.defend
+            and self.engine.enemy.further_defense_possible == False
+        ):
+            message = "'You broke my defense - Hit me or change my stance'"
+
+        text = font.render(
+            message,
+            True,
+            pygame.Color(color_palette.color3),
+        )
+        self.window.blit(
+            text,
+            (
+                grid.left_point(1),
+                grid.top_point(1),
+            ),
+        )
+
     def render_deck(self):
         text = font.render(
             str(len(self.engine.enemy.deck)) + " deck",
@@ -485,8 +511,8 @@ class Renderer:
         self.window.blit(
             text,
             (
-                grid.left_point(10),
-                grid.top_point(1),
+                grid.left_point(11),
+                grid.top_point(0),
             ),
         )
 
@@ -516,7 +542,7 @@ class Renderer:
                 text,
                 (
                     grid.left_point(1),
-                    grid.top_point(1),
+                    grid.top_point(0),
                 ),
             )
 

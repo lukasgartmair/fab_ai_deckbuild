@@ -93,3 +93,5 @@ class GameEngine:
             else:
                 self.enemy.attack()
                 self.finish_turn()
+
+        self.enemy.check_if_further_move_possible()

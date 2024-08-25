@@ -201,9 +201,11 @@ class Enemy:
             # print("combat_chain")
             # print(self.combat_chain)
 
-    def check_if_further_defense_possible(self):
-        if len(self.hand) == 0 and len(self.arsenal) == 0:
-            self.further_defense_possible = False
+    def check_if_further_move_possible(self):
+        if self.stance == Stance.attack:
+            self.check_if_further_attack_possible()
+        elif self.stance == Stance.defend:
+            self.check_if_further_defense_possible()
 
     def check_if_further_attack_possible(self):
         if (
@@ -213,6 +215,16 @@ class Enemy:
             or self.action_points == 0
         ):
             self.further_attack_possible = False
+
+    def check_if_further_defense_possible(self):
+        if (len(self.hand) == 0 and len(self.arsenal) == 0) or (
+            (len(self.hand) == 0)
+            and (len(self.arsenal) == 1)
+            and (self.arsenal[0].card_type != CardType.defensive_reaction)
+        ):
+            self.further_defense_possible = False
+
+        print(self.further_defense_possible)
 
     def draw(self):
         print("enemy is drawing")

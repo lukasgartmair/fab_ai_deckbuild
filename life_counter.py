@@ -20,15 +20,15 @@ class LifeCounter:
         self.enemy = enemy
         self.button_up = pu.button(
             pygame.Color(color_palette.color2),
-            grid.left_point(12),
-            grid.top_point(1),
+            grid.left_point(13),
+            grid.top_point(0),
             button_size,
             button_size,
         )
         self.button_down = pu.button(
             pygame.Color(color_palette.color2),
-            grid.left_point(12),
-            grid.top_point(1) + button_size + 5,
+            grid.left_point(13),
+            grid.top_point(0) + button_size + 5,
             button_size,
             button_size,
         )
