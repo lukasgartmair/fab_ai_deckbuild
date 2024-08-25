@@ -104,7 +104,7 @@ class TestMethods(unittest.TestCase):
 
                     self.engine.enemy.finish_phase()
 
-        print("here")
+
         print(self.engine.analyzer.data)
 
 
