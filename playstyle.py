@@ -208,6 +208,9 @@ class MechanologistBasic(Playstyle):
         self.keywords = [Keyword.boost, Keyword.no_keyword]
         self.keyword_ratios = {"boost": 80, "no_keyword": 20}
 
+        self.card_classes = [PlayerClass.generic, PlayerClass.mechanologist]
+        self.card_class_ratios = {"generic": 20, "mechanologist": 80}
+
         self.card_type_ratios = {
             "non_attack_action": 50,
             "attack_action": 40,
@@ -230,13 +233,6 @@ class RunebladeBasic(Playstyle):
 
         self.keywords = [Keyword.go_again, Keyword.blood_debt, Keyword.no_keyword]
         self.keyword_ratios = {"go_again": 70, "blood_debt": 10, "no_keyword": 20}
-
-        self.card_type_ratios = {
-            "non_attack_action": 50,
-            "attack_action": 40,
-            "attack_reaction": 5,
-            "defensive_reaction": 5,
-        }
 
         self.card_type_ratios = {
             "non_attack_action": 60,

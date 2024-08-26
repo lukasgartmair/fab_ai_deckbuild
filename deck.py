@@ -78,6 +78,15 @@ def calc_card_color_distribution(playstyle_obj, n=DECK_SIZE):
     return sampled_card_colors
 
 
+def calc_card_class_distribution(playstyle_obj, n=DECK_SIZE):
+    sampled_card_classes = random.choices(
+        playstyle_obj.card_classes,
+        weights=playstyle_obj.card_class_ratios.values(),
+        k=n,
+    )
+    return sampled_card_classes
+
+
 class Deck:
     def __init__(
         self,
@@ -119,6 +128,7 @@ class Deck:
         keyword_distribution = calc_keyword_distribution(self.playstyle)
         card_type_distribution = calc_card_type_distribution(self.playstyle)
         card_color_distribution = calc_card_color_distribution(self.playstyle)
+        card_class_distribution = calc_card_class_distribution(self.playstyle)
 
         self.cards = [Card() for n in range(self.n_cards)]
 
@@ -133,6 +143,7 @@ class Deck:
             card.physical = physical_distribution[indices[i]]
             card.keywords = [keyword_distribution[indices[i]]]
             card.card_type = card_type_distribution[indices[i]]
+            card.card_class = card_class_distribution[indices[i]]
 
             card.calc_card_values()
 
