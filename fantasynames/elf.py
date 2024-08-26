@@ -13,9 +13,7 @@ class Elf(Language):
 
     @classmethod
     def _name1_female(cls) -> str:
-        name = cls._name1_male() + cls._name_from_lists(
-            [elf_data["name1_female_suffixes"]]
-        )
+        name = cls._name1_male() + cls._name_from_lists([elf_data["name1_female_suffixes"]])
         return name
 
     @classmethod

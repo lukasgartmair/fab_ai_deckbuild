@@ -21,7 +21,7 @@ from utils import n_chance, shift_list
 from ability import Ability
 from life_counter import LifeCounter
 import pygame
-from boost import Boost
+
 
 from lore import lore_dict
 from modifiers import Modifiers
@@ -38,18 +38,13 @@ class Enemy:
     playKey = None
 
     def __init__(self, play_key=None):
-        self.player_class = random.choice(
-            [p for p in list(PlayerClass) if p.name != "generic"]
-        )
+        self.player_class = random.choice([p for p in list(PlayerClass) if p.name != "generic"])
 
-        self.player_class = PlayerClass.mechanologist
 
         self.identity = FantasyIdentity(self.player_class)
         self.name = self.identity.name
         self.race = self.identity.race
-        self.image_path = (
-            "images/" + self.player_class.name + "/" + self.identity.image_number
-        )
+        self.image_path = "images/" + self.player_class.name + "/" + self.identity.image_number
 
         if n_chance(p=0.5):
             self.stance = Stance.defend
@@ -73,8 +68,7 @@ class Enemy:
         self.graveyard = []
         self.banished_zone = {}
         self.banished_zone["intimidated_cards"] = []
-        if self.player_class == PlayerClass.mechanologist:
-            self.banished_zone["boosted_cards"] = []
+
         self.arsenal = []
 
         self.weapons = get_weapons()
@@ -97,9 +91,7 @@ class Enemy:
 
         self.modifiers = Modifiers()
 
-        self.arcane_barrier_total = sum(
-            [e.arcane_barrier for e in self.equipment_suite.get_equipment_pieces()]
-        )
+        self.arcane_barrier_total = sum([e.arcane_barrier for e in self.equipment_suite.get_equipment_pieces()])
 
         self.ability = Ability()
 
@@ -116,7 +108,6 @@ class Enemy:
         self.survival_mode = False
         self.check_if_in_survival_mode()
 
-        self.boost = Boost()
 
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
@@ -132,7 +123,6 @@ class Enemy:
 
     def reset_play(self):
         self.floating_resources = 0
-        self.boost.turn_reset()
         self.reset_action_points()
         self.further_attack_possible = True
         self.further_defense_possible = True
@@ -185,7 +175,6 @@ class Enemy:
 
     def start_move(self):
         self.check_if_further_move_possible()
-        self.boost.move_reset()
 
     def finish_turn(self):
         self.reset_play()
@@ -232,9 +221,7 @@ class Enemy:
 
     def check_if_further_defense_possible(self):
         if (len(self.hand) == 0 and len(self.arsenal) == 0) or (
-            (len(self.hand) == 0)
-            and (len(self.arsenal) == 1)
-            and (self.arsenal[0].card_type != CardType.defensive_reaction)
+            (len(self.hand) == 0) and (len(self.arsenal) == 1) and (self.arsenal[0].card_type != CardType.defensive_reaction)
         ):
             self.further_defense_possible = False
 
@@ -302,9 +289,7 @@ class Enemy:
                         pitch_combinations[pi] = pitch_total
 
                     if current_card.cost > 0:
-                        cards_to_pitch = self.determine_pitch_combination(
-                            current_card.cost, pitch_combinations
-                        )
+                        cards_to_pitch = self.determine_pitch_combination(current_card.cost, pitch_combinations)
 
                         if len(cards_to_pitch) == 0:
                             virtual_hand = shift_list(virtual_hand_tmp)
@@ -342,65 +327,58 @@ class Enemy:
     def remove_card_from_hand(self, card):
         if card in self.hand:
             self.hand.remove(card)
-
-    def apply_mechanologist_boost_mechanic(self, card):
-        if Keyword.boost in card.keywords:
-            p = (len(self.hand) + len(self.arsenal)) / (
-                self.intellect + len(self.arsenal)
-            ) + 0.25
-            if n_chance(p):
-                banished_card = self.deck.draw_top_cards(n=1)
-                self.banished_zone["boosted_cards"].append(banished_card)
-                if banished_card.card_class == PlayerClass.mechanologist:
-                    print("Mechanoligist boost activated")
-                    self.boost.activation()
-                    self.get_action_points()
-                else:
-                    self.boost.fail()
-
-    def attack(self):
-        print("enemy attacking")
-        print(self.combat_chain)
+            
+    def check_if_attack(self):
+        
         if len(self.combat_chain) > 0:
             if self.combat_chain_iterator in self.combat_chain:
                 print(self.action_points)
                 if self.action_points > 0:
-                    c = self.combat_chain[self.combat_chain_iterator]["attack"]
-                    # print(c.name)
-                    # print("physical: {}".format(c.physical))
-                    # print("cost: {}".format(c.cost))
-                    # print("pitch")
-                    pitch = self.combat_chain[self.combat_chain_iterator]["pitch"]
-                    # if len(pitch) > 0:
-                    #     for p in pitch:
-                    #         print(str(p))
+                    return True
+        else:
+            return False
+        
+    def get_next_attacking_card(self):
+        c = self.combat_chain[self.combat_chain_iterator]["attack"]
+        self.played_cards.append(c)
+        return c
+    
+    def pitch_cards(self):
+        for p in self.combat_chain[self.combat_chain_iterator]["pitch"]:
+            self.pitch_card(p)
+            
+    def remove_played_cards(self):
+        for p in self.played_cards:
+            self.remove_card_from_hand(p)
+            if p in self.arsenal:
+                self.arsenal.remove(p)
+    
+    def handle_go_again(self, c):
+        # TODO for now combo also gives another action point
+        if (Keyword.go_again in c.keywords) or (Keyword.combo in c.keywords):
+            self.get_action_points()        
+            
+    def base_attack(self):
+        
+        c = self.get_next_attacking_card()
+    
+        self.pitch_cards()
+        self.remove_played_cards()
+        self.use_floating_resources(c.cost)
+        self.use_action_points()
+        self.handle_go_again(c)
+        
+        return c
+    
+    def attack(self):
+        if self.check_if_attack():
 
-                    for p in pitch:
-                        self.pitch_card(p)
+            c = self.base_attack()
+                
+            self.combat_chain_iterator += 1
 
-                    self.played_cards.append(c)
-
-                    for p in self.played_cards:
-                        self.remove_card_from_hand(p)
-                        if p in self.arsenal:
-                            self.arsenal.remove(p)
-
-                    self.use_floating_resources(c.cost)
-                    self.use_action_points()
-
-                    # TODO for now combo also gives another action point also mech boost - add mechanics
-                    if (Keyword.go_again in c.keywords) or (
-                        Keyword.combo in c.keywords
-                    ):
-                        self.get_action_points()
-
-                    if self.player_class == PlayerClass.mechanologist:
-                        self.apply_mechanologist_boost_mechanic(c)
-
-                    self.combat_chain_iterator += 1
-
-            else:
-                self.further_attack_possible = False
+        else:
+            self.further_attack_possible = False
 
     def pitch_card(self, c):
         self.pitched_cards.append(c)
@@ -442,9 +420,7 @@ class Enemy:
             # print(self.block.physical_block_cards)
             if len(self.block.physical_block_cards) > 0:
                 if self.modifiers.modifier_dict["dominate"] == True:
-                    self.block.physical_block_cards = self.block.physical_block_cards[
-                        :1
-                    ]
+                    self.block.physical_block_cards = self.block.physical_block_cards[:1]
 
                 # print("banished zone")
                 # print(self.banished_zone)
@@ -487,21 +463,19 @@ class Enemy:
         for k, v in pitch_combinations.items():
             number_of_cards_used_temp = len(k)
             diff_to_cost_temp = cost_to_pay - v
-            physical_cost_ratio_wasted_temp = np.sum(
-                [ki.physical for ki in k]
-            ) - np.sum([ki.cost for ki in k])
+            physical_cost_ratio_wasted_temp = np.sum([ki.physical for ki in k]) - np.sum([ki.cost for ki in k])
             defense_wasted_temp = np.sum([ki.defense for ki in k])
 
             if diff_to_cost_temp <= 0:
-                if (
-                    abs(diff_to_cost_temp) < diff_to_cost
-                    and number_of_cards_used_temp < number_of_cards_used
-                ):
+                if abs(diff_to_cost_temp) < diff_to_cost and number_of_cards_used_temp < number_of_cards_used:
                     diff_to_cost = diff_to_cost_temp
                     number_of_cards_used = number_of_cards_used_temp
                     best_pitch = k
 
         return best_pitch
+
+
+
 
 
 if __name__ == "__main__":

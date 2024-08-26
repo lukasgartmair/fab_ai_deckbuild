@@ -15,7 +15,9 @@ from statemachine.states import States, State
 from level_manager import LevelManager
 from attack import Attack
 from analyzer import GlobalAnalyzer
-
+import random
+from playstyle import PlayerClass
+from mechanologist import Mechanologist
 
 class WinCondition(Enum):
     enemy_died = 0
@@ -37,7 +39,17 @@ class GameEngine:
     state = None
 
     def __init__(self):
-        self.enemy = Enemy(play_key=pygame.K_SPACE)
+        
+        
+        self.enemy_class = random.choice([p for p in list(PlayerClass) if p.name != "generic" and p.name != "mechanologist"])
+    
+        # self.enemy_class = PlayerClass.mechanologist
+    
+    
+        if self.enemy_class == PlayerClass.mechanologist:
+            self.enemy = Mechanologist()
+        else:
+            self.enemy = Enemy()
         self.enemy_temp = None
         self.state_machine = GameStateMachine()
         self.level_manager = LevelManager(level=1)

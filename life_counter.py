@@ -29,9 +29,7 @@ class LifeCounter:
         block_total = enemy_block.calc_total_block()
         # print(block_total)
 
-        attack_total = add_two_with_possible_none_type(
-            player_attack.physical, player_attack.arcane
-        )
+        attack_total = add_two_with_possible_none_type(player_attack.physical, player_attack.arcane)
 
         # print(attack_total)
 

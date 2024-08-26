@@ -50,8 +50,7 @@ async def main_web():
             tb = traceback.format_exc()
             print(tb)
             Game.quit_everything()
-
-            await asyncio.sleep(0)
+        await asyncio.sleep(0)
 
 
 if __name__ == "__main__":

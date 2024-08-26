@@ -116,6 +116,9 @@ class Playstyle:
             CardColor.yellow: 33,
             CardColor.blue: 33,
         }
+        
+        self.card_classes = [PlayerClass.generic]
+        self.card_class_ratios = {"generic": 100}
 
         assert len(self.keywords) == len(self.keyword_ratios)
 

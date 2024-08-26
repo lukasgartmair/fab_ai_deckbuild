@@ -11,7 +11,7 @@ from scene_base import SceneBase
 from engine import GameStateMachine
 import scene_manager
 from enemy import Stance
-
+from playstyle import PlayerClass
 from game import Game
 
 
@@ -62,10 +62,7 @@ class GameScene(SceneBase):
                 if event.key == pygame.K_SPACE:
                     self.render()
 
-                    if (
-                        self.engine.state_machine.current_state
-                        == self.engine.state_machine.playing
-                    ):
+                    if self.engine.state_machine.current_state == self.engine.state_machine.playing:
                         if self.engine.enemy.stance == Stance.defend:
                             for inp_box in self.input_boxes:
                                 if inp_box.has_text():
@@ -87,10 +84,7 @@ class GameScene(SceneBase):
                         self.render()
 
                 if event.key == pygame.K_RETURN:
-                    if (
-                        self.engine.state_machine.current_state
-                        == self.engine.state_machine.playing
-                    ):
+                    if self.engine.state_machine.current_state == self.engine.state_machine.playing:
                         self.engine.enemy.finish_turn()
                         self.engine.finish_turn()
 
@@ -108,25 +102,15 @@ class GameScene(SceneBase):
                         self.render()
 
                         if self.engine.check_fatigue_condition() == True:
-                            self.switch_to_scene(
-                                scene_manager.get_end_scene(self.engine, self.renderer)
-                            )
+                            self.switch_to_scene(scene_manager.get_end_scene(self.engine, self.renderer))
                             self.is_active = False
 
     def update(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:
             self.engine.check_win_condition()
-            if (
-                self.engine.state_machine.current_state
-                == self.engine.state_machine.ended
-            ):
-                if (
-                    self.engine.state_machine.current_state
-                    == self.engine.state_machine.ended
-                ):
-                    self.switch_to_scene(
-                        scene_manager.get_end_scene(self.engine, self.renderer)
-                    )
+            if self.engine.state_machine.current_state == self.engine.state_machine.ended:
+                if self.engine.state_machine.current_state == self.engine.state_machine.ended:
+                    self.switch_to_scene(scene_manager.get_end_scene(self.engine, self.renderer))
                     self.is_active = False
 
     def render(self):
@@ -171,7 +155,9 @@ class GameScene(SceneBase):
             self.renderer.render_floating_resources()
 
             # MECHANOLOGIST STUFF
-            self.renderer.render_boost_counter()
-            self.renderer.render_boost()
+            
+            if self.engine.enemy.player_class == PlayerClass.mechanologist:
+                self.renderer.render_boost_counter()
+                self.renderer.render_boost()
 
             pygame.display.flip()

@@ -21,57 +21,40 @@ class GlobalAnalyzer:
             self.data[self.engine.level_manager.current_level] = {}
             self.data[self.engine.level_manager.current_level]["turn_data"] = {}
 
-        if (
-            self.engine.level_manager.turn_index
-            not in self.data[self.engine.level_manager.current_level]["turn_data"]
-        ):
-            self.data[self.engine.level_manager.current_level]["turn_data"][
-                self.engine.level_manager.turn_index
-            ] = {}
+        if self.engine.level_manager.turn_index not in self.data[self.engine.level_manager.current_level]["turn_data"]:
+            self.data[self.engine.level_manager.current_level]["turn_data"][self.engine.level_manager.turn_index] = {}
 
         if (
             self.engine.level_manager.move_index
-            not in self.data[self.engine.level_manager.current_level]["turn_data"][
-                self.engine.level_manager.turn_index
-            ]
+            not in self.data[self.engine.level_manager.current_level]["turn_data"][self.engine.level_manager.turn_index]
         ):
-            self.data[self.engine.level_manager.current_level]["turn_data"][
-                self.engine.level_manager.turn_index
-            ][self.engine.level_manager.move_index] = {}
+            self.data[self.engine.level_manager.current_level]["turn_data"][self.engine.level_manager.turn_index][
+                self.engine.level_manager.move_index
+            ] = {}
 
-        self.data[self.engine.level_manager.current_level]["turn_data"][
-            self.engine.level_manager.turn_index
-        ][self.engine.level_manager.move_index]["level_manager"] = copy.copy(
-            self.engine.level_manager
-        )
+        self.data[self.engine.level_manager.current_level]["turn_data"][self.engine.level_manager.turn_index][
+            self.engine.level_manager.move_index
+        ]["level_manager"] = copy.copy(self.engine.level_manager)
 
-        self.data[self.engine.level_manager.current_level]["turn_data"][
-            self.engine.level_manager.turn_index
-        ][self.engine.level_manager.move_index]["life_counter"] = copy.copy(
-            self.engine.enemy.life_counter
-        )
+        self.data[self.engine.level_manager.current_level]["turn_data"][self.engine.level_manager.turn_index][
+            self.engine.level_manager.move_index
+        ]["life_counter"] = copy.copy(self.engine.enemy.life_counter)
 
-        self.data[self.engine.level_manager.current_level]["turn_data"][
-            self.engine.level_manager.turn_index
-        ][self.engine.level_manager.move_index]["hand"] = copy.copy(
-            self.engine.enemy.hand
-        )
+        self.data[self.engine.level_manager.current_level]["turn_data"][self.engine.level_manager.turn_index][
+            self.engine.level_manager.move_index
+        ]["hand"] = copy.copy(self.engine.enemy.hand)
 
-        self.data[self.engine.level_manager.current_level]["turn_data"][
-            self.engine.level_manager.turn_index
-        ][self.engine.level_manager.move_index]["player_attack"] = copy.copy(
-            player_attack
-        )
+        self.data[self.engine.level_manager.current_level]["turn_data"][self.engine.level_manager.turn_index][
+            self.engine.level_manager.move_index
+        ]["player_attack"] = copy.copy(player_attack)
 
-        self.data[self.engine.level_manager.current_level]["turn_data"][
-            self.engine.level_manager.turn_index
-        ][self.engine.level_manager.move_index]["stance"] = copy.copy(
-            self.engine.enemy.stance.name
-        )
+        self.data[self.engine.level_manager.current_level]["turn_data"][self.engine.level_manager.turn_index][
+            self.engine.level_manager.move_index
+        ]["stance"] = copy.copy(self.engine.enemy.stance.name)
 
-        self.data[self.engine.level_manager.current_level]["turn_data"][
-            self.engine.level_manager.turn_index
-        ][self.engine.level_manager.move_index]["enemy"] = copy.copy(self.engine.enemy)
+        self.data[self.engine.level_manager.current_level]["turn_data"][self.engine.level_manager.turn_index][
+            self.engine.level_manager.move_index
+        ]["enemy"] = copy.copy(self.engine.enemy)
 
     def calculate_game_stats(self):
         for k_level, v_level in self.data.items():

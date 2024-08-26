@@ -35,16 +35,10 @@ class AnimationQueue:
             return self.event_queue_animations
 
     def update_animation_queue(self):
-        self.main_loop_animations = {
-            k: v for k, v in self.main_loop_animations.items() if v
-        }
-        self.event_queue_animations = {
-            k: v for k, v in self.event_queue_animations.items() if v
-        }
+        self.main_loop_animations = {k: v for k, v in self.main_loop_animations.items() if v}
+        self.event_queue_animations = {k: v for k, v in self.event_queue_animations.items() if v}
 
-    def get_all_animations_of_object(
-        self, animation_object, animation_queue_type=AnimationQueueType.MAIN
-    ):
+    def get_all_animations_of_object(self, animation_object, animation_queue_type=AnimationQueueType.MAIN):
         queue = self.get_queue(animation_queue_type)
         if id(animation_object) in queue.keys():
             return [a for a in queue[id(animation_object)]]
@@ -58,13 +52,9 @@ class AnimationQueue:
         queue = self.get_queue(animation_queue_type)
 
         if id(animation_object) in queue.keys():
-            return [
-                a for a in queue[id(animation_object)] if isinstance(a, animation_class)
-            ]
+            return [a for a in queue[id(animation_object)] if isinstance(a, animation_class)]
 
-    def add_to_animation_loop(
-        self, animation_object, animation, animation_queue_type=AnimationQueueType.MAIN
-    ):
+    def add_to_animation_loop(self, animation_object, animation, animation_queue_type=AnimationQueueType.MAIN):
         queue = self.get_queue(animation_queue_type)
 
         if id(animation_object) in queue.keys():
@@ -77,14 +67,10 @@ class AnimationQueue:
     def remove_from_all_queues(self, animation_object, animation_sequence):
         if id(animation_object) in list(self.main_loop_animations):
             if animation_sequence in self.main_loop_animations[id(animation_object)]:
-                self.main_loop_animations[id(animation_object)].remove(
-                    animation_sequence
-                )
+                self.main_loop_animations[id(animation_object)].remove(animation_sequence)
         elif id(animation_object) in list(self.event_queue_animations):
             if animation_sequence in self.event_queue_animations[id(animation_object)]:
-                self.event_queue_animations[id(animation_object)].remove(
-                    animation_sequence
-                )
+                self.event_queue_animations[id(animation_object)].remove(animation_sequence)
 
 
 class BaseAnimation:

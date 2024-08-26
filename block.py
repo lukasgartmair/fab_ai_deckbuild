@@ -28,9 +28,7 @@ class Block:
     def calc_total_block(self):
         # print("total_arcane_block")
         # print(self.arcane_block)
-        return add_two_with_possible_none_type(
-            self.calc_total_physical_block(), self.arcane_block
-        )
+        return add_two_with_possible_none_type(self.calc_total_physical_block(), self.arcane_block)
 
     def calc_total_physical_block(self):
         # print("total_physical_block")
@@ -56,9 +54,7 @@ class Block:
 
     def defend_physical(self, player_attack):
         self.defensive_cards = self.enemy.hand.copy() + [
-            d
-            for d in self.enemy.arsenal.copy()
-            if d.card_type == CardType.defensive_reaction
+            d for d in self.enemy.arsenal.copy() if d.card_type == CardType.defensive_reaction
         ]
 
         np.random.shuffle(self.defensive_cards)
@@ -87,9 +83,7 @@ class Block:
         ]
 
         # put defensive reactions in front
-        unused_cards = sorted(
-            unused_cards, key=lambda x: x.card_type.value, reverse=True
-        )
+        unused_cards = sorted(unused_cards, key=lambda x: x.card_type.value, reverse=True)
         return unused_cards
 
     def defend_arcane(self, player_attack):
@@ -109,16 +103,12 @@ class Block:
                     self.increase_arcane_block_balance(amount=player_attack.arcane)
                 else:
                     if len(unused_cards) > 0:
-                        unused_cards = sorted(
-                            unused_cards, key=lambda x: x.pitch, reverse=False
-                        )
+                        unused_cards = sorted(unused_cards, key=lambda x: x.pitch, reverse=False)
                         card = unused_cards[0]
                         pitch_value = card.pitch
 
                     elif len(self.enemy.hand) > 0:
-                        sorted_hand = sorted(
-                            self.enemy.hand, key=lambda x: x.pitch, reverse=False
-                        )
+                        sorted_hand = sorted(self.enemy.hand, key=lambda x: x.pitch, reverse=False)
 
                         card = sorted_hand[0]
                         pitch_value = card.pitch
@@ -134,16 +124,12 @@ class Block:
                     self.increase_arcane_block_balance(amount=player_attack.arcane)
                 else:
                     if len(unused_cards) > 0:
-                        unused_cards = sorted(
-                            unused_cards, key=lambda x: x.pitch, reverse=True
-                        )
+                        unused_cards = sorted(unused_cards, key=lambda x: x.pitch, reverse=True)
                         card = unused_cards[0]
                         pitch_value = card.pitch
 
                     elif len(self.enemy.hand) > 0:
-                        sorted_hand = sorted(
-                            self.enemy.hand, key=lambda x: x.pitch, reverse=True
-                        )
+                        sorted_hand = sorted(self.enemy.hand, key=lambda x: x.pitch, reverse=True)
 
                         card = sorted_hand[0]
                         pitch_value = card.pitch
@@ -178,9 +164,7 @@ class Block:
     def block_all_physical_damage(self, player_attack):
         if player_attack.physical is not None:
             combinations = self.get_combinations(self.enemy.hand)
-            self.physical_block_cards = self.determine_physical_defense_combination(
-                player_attack, combinations
-            )
+            self.physical_block_cards = self.determine_physical_defense_combination(player_attack, combinations)
 
     def more_elaborate_block_with_unused_cards(self, player_attack):
         if player_attack.physical is not None:
@@ -190,53 +174,28 @@ class Block:
                     print("attack not blocked at all")
                     self.physical_block_cards = []
                 case player_attack.physical if self.base_value <= player_attack.physical < self.base_value + 3:
-                    print(
-                        "attack blocked with {} cards".format(
-                            len(self.defensive_cards[:1])
-                        )
-                    )
+                    print("attack blocked with {} cards".format(len(self.defensive_cards[:1])))
 
                     if len(unused_cards) > 0:
                         self.physical_block_cards = unused_cards[:1]
                     else:
                         self.physical_block_cards = self.defensive_cards[:1]
                 case player_attack.physical if self.base_value + 3 <= player_attack.physical < self.base_value + 7:
-                    print(
-                        "attack blocked with {} cards".format(
-                            len(self.defensive_cards[:2])
-                        )
-                    )
+                    print("attack blocked with {} cards".format(len(self.defensive_cards[:2])))
                     if len(unused_cards) == 1:
-                        self.physical_block_cards = (
-                            unused_cards
-                            + [
-                                c for c in self.defensive_cards if c not in unused_cards
-                            ][:1]
-                        )
+                        self.physical_block_cards = unused_cards + [c for c in self.defensive_cards if c not in unused_cards][:1]
                     elif len(unused_cards) == 2:
                         self.physical_block_cards = unused_cards
                     else:
                         self.physical_block_cards = self.defensive_cards[:2]
                 case player_attack.physical if self.base_value + 7 <= player_attack.physical < self.base_value + 11:
-                    print(
-                        "attack blocked with {} cards".format(
-                            len(self.defensive_cards[:3])
-                        )
-                    )
+                    print("attack blocked with {} cards".format(len(self.defensive_cards[:3])))
                     if len(unused_cards) == 1:
-                        self.physical_block_cards = (
-                            unused_cards
-                            + [
-                                c for c in self.defensive_cards if c not in unused_cards
-                            ][:1]
-                        )
+                        self.physical_block_cards = unused_cards + [c for c in self.defensive_cards if c not in unused_cards][:1]
 
                     elif len(unused_cards) == 2:
                         self.physical_block_cards = (
-                            unused_cards[:2]
-                            + [
-                                c for c in self.defensive_cards if c not in unused_cards
-                            ][:1]
+                            unused_cards[:2] + [c for c in self.defensive_cards if c not in unused_cards][:1]
                         )
                     elif len(unused_cards) == 3:
                         self.physical_block_cards = unused_cards
@@ -244,9 +203,7 @@ class Block:
                         self.physical_block_cards = self.defensive_cards[:3]
 
                 case player_attack.physical if self.base_value + 11 <= player_attack.physical:
-                    print(
-                        "attack blocked with {} cards".format(len(self.defensive_cards))
-                    )
+                    print("attack blocked with {} cards".format(len(self.defensive_cards)))
                     self.physical_block_cards = self.defensive_cards[:4]
                 case _:
                     self.physical_block_cards = []
