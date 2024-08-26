@@ -33,6 +33,32 @@ class Stance(Enum):
     attack = 1
 
 
+class Boost:
+    def __init__(self):
+        self.activated = False
+        self.failed = False
+        self.counter = 0
+
+    def increase_counter(self):
+        self.counter += 1
+
+    def move_reset(self):
+        self.activated = False
+        self.failed = False
+
+    def turn_reset(self):
+        self.activated = False
+        self.failed = False
+        self.counter = 0
+
+    def fail(self):
+        self.failed = True
+
+    def activation(self):
+        self.activated = True
+        self.increase_counter()
+
+
 class Enemy:
     playKey = None
 
@@ -115,8 +141,7 @@ class Enemy:
         self.survival_mode = False
         self.check_if_in_survival_mode()
 
-        self.boost_activated = False
-        self.boost_counter = 0
+        self.boost = Boost()
 
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
@@ -132,6 +157,7 @@ class Enemy:
 
     def reset_play(self):
         self.floating_resources = 0
+        self.boost.turn_reset()
         self.reset_action_points()
         self.further_attack_possible = True
         self.further_defense_possible = True
@@ -180,8 +206,11 @@ class Enemy:
             # print(self.combat_chain)
 
     def finish_move(self):
-        self.boost_activated == False
-        self.boost_counter = 0
+        pass
+
+    def start_move(self):
+        self.check_if_further_move_possible()
+        self.boost.move_reset()
 
     def finish_turn(self):
         self.reset_play()
@@ -339,6 +368,18 @@ class Enemy:
         if card in self.hand:
             self.hand.remove(card)
 
+    def apply_mechanologist_boost_mechanic(self, card):
+        if Keyword.boost in card.keywords:
+            if len(self.deck.cards) >= 2:
+                banished_card = self.deck.draw_top_cards(n=1)
+                self.banished_zone["boosted_cards"].append(banished_card)
+                if banished_card.card_class == PlayerClass.mechanologist:
+                    print("Mechanoligist boost activated")
+                    self.boost.activation()
+                    self.get_action_points()
+                else:
+                    self.boost.fail()
+
     def attack(self):
         print("enemy attacking")
         print(self.combat_chain)
@@ -376,20 +417,7 @@ class Enemy:
                         self.get_action_points()
 
                     if self.player_class == PlayerClass.mechanologist:
-                        if Keyword.boost in c.keywords:
-                            if len(self.deck.cards) >= 1:
-                                banished_card = self.deck.draw_top_cards(n=1)
-                                self.banished_zone["boosted_cards"].append(
-                                    banished_card
-                                )
-                                if (
-                                    banished_card.card_class
-                                    == PlayerClass.mechanologist
-                                ):
-                                    print("Mechanoligist boost activated")
-                                    self.boost_activated = True
-                                    self.boost_counter += 1
-                                    self.get_action_points()
+                        self.apply_mechanologist_boost_mechanic(c)
 
                     self.combat_chain_iterator += 1
 

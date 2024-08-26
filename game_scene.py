@@ -170,6 +170,8 @@ class GameScene(SceneBase):
 
             self.renderer.render_floating_resources()
 
+            # MECHANOLOGIST STUFF
             self.renderer.render_boost_counter()
+            self.renderer.render_boost()
 
             pygame.display.flip()

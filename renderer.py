@@ -229,14 +229,16 @@ class Renderer:
             (enemy_message_x, enemy_message_y),
         )
 
-    def render_boost_activation(self):
+    def render_boost(self):
         message = ""
         if (
             self.engine.enemy.player_class == PlayerClass.mechanologist
             and self.engine.enemy.stance == Stance.attack
-            and self.engine.enemy.boost_activated == True
         ):
-            message = "'BOOOOOST mechanic activated!'"
+            if self.engine.enemy.boost.activated == True:
+                message = "'BOOOOOST mechanic activated!'"
+            elif self.engine.enemy.boost.failed == True:
+                message = "'boost FAILED!'"
 
         text = font.render(
             message,
@@ -245,7 +247,7 @@ class Renderer:
         )
         self.window.blit(
             text,
-            (enemy_message_x, enemy_message_y),
+            (enemy_message_x, grid.top_point(3)),
         )
 
     def render_deck(self):
@@ -344,7 +346,7 @@ class Renderer:
         # print(self.engine.enemy.boost_counter)
         if self.engine.enemy.player_class == PlayerClass.mechanologist:
             text = font.render(
-                str(self.engine.enemy.boost_counter) + " boost counter",
+                str(self.engine.enemy.boost.counter) + " boost counter",
                 True,
                 pygame.Color(color_palette.text_color),
             )

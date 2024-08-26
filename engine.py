@@ -48,7 +48,6 @@ class GameEngine:
         self.analyzer = GlobalAnalyzer(self)
 
     def finish_move(self, player_attack):
-        self.enemy.finish_move()
         self.analyzer.write_move_data(player_attack)
         self.level_manager.advandce_move()
 
@@ -74,7 +73,7 @@ class GameEngine:
             return True
 
     def play(self, player_attack=None):
-        self.enemy.check_if_further_move_possible()
+        self.enemy.start_move()
 
         if self.enemy.stance == Stance.defend:
             if self.enemy.further_defense_possible == False:
