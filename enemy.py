@@ -13,7 +13,7 @@ from pile import Pile
 from enum import Enum
 from playstyle import Keyword, PlayerClass, Talent, CardType, get_playstyle
 from equipment import EquipmentSuite
-from weapon import get_weapons
+from weapon import initialize_weapons
 import random
 from fantasynames.fantasy_identity import FantasyIdentity
 from block import Block
@@ -72,7 +72,7 @@ class Enemy:
 
         self.arsenal = []
 
-        self.weapons = get_weapons()
+        self.weapons = initialize_weapons(self.playstyle)
 
         self.equipment_suite = EquipmentSuite()
 

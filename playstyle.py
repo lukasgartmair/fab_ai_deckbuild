@@ -6,6 +6,7 @@ Created on Tue Jul 16 15:16:25 2024
 @author: lukasgartmair
 """
 from enum import Enum
+import numpy as np
 
 
 class CardColor(Enum):
@@ -122,6 +123,11 @@ class Playstyle:
         self.card_classes = [PlayerClass.generic]
         self.card_class_ratios = {"generic": 100}
 
+        self.n_weapons = np.random.randint(1, 3)
+        self.weapon_physical = np.random.randint(1, 5)
+        self.weapon_arcane = 0
+        self.go_again_chance = 0.5
+
         assert len(self.keywords) == len(self.keyword_ratios)
 
     def __str__(self):
@@ -131,17 +137,16 @@ class Playstyle:
 class NinjaBasic(Playstyle):
     def __init__(self):
         super().__init__()
-
         self.physical_parameters = {"mu": 4, "sigma": 3}
-        self.keywords = [Keyword.go_again, Keyword.combo]
-        self.keyword_ratios = {"go_again": 70, "combo": 30}
-
         self.card_type_ratios = {
             "non_attack_action": 35,
             "attack_action": 50,
             "attack_reaction": 5,
             "defensive_reaction": 10,
         }
+
+        self.keywords = [Keyword.go_again, Keyword.combo]
+        self.keyword_ratios = {"go_again": 70, "combo": 30}
 
         self.pitch_ratios = {
             CardColor.red: 60,
@@ -149,17 +154,16 @@ class NinjaBasic(Playstyle):
             CardColor.blue: 35,
         }
 
+        self.n_weapons = np.random.randint(1, 3)
+        self.weapon_physical = np.random.randint(1, 3)
+        self.weapon_arcane = 0
+        self.go_again_chance = 1
+
 
 class RangerBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.physical_parameters = {"mu": 7, "sigma": 4}
-        self.keywords = [
-            Keyword.go_again,
-            Keyword.no_keyword,
-        ]
-        self.keyword_ratios = {"go_again": 70, "no_keyword": 30}
-
         self.card_type_ratios = {
             "non_attack_action": 35,
             "attack_action": 50,
@@ -167,17 +171,35 @@ class RangerBasic(Playstyle):
             "defensive_reaction": 10,
         }
 
+        self.keywords = [
+            Keyword.go_again,
+            Keyword.no_keyword,
+        ]
+        self.keyword_ratios = {"go_again": 70, "no_keyword": 30}
+
         self.pitch_ratios = {
             CardColor.red: 60,
             CardColor.yellow: 15,
             CardColor.blue: 25,
         }
 
+        self.n_weapons = 1
+        self.weapon_physical = np.random.randint(1, 8)
+        self.weapon_arcane = 0
+        self.go_again_chance = 0
+
 
 class BruteBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.physical_parameters = {"mu": 6, "sigma": 1}
+        self.card_type_ratios = {
+            "non_attack_action": 5,
+            "attack_action": 60,
+            "attack_reaction": 35,
+            "defensive_reaction": 0,
+        }
+
         self.keywords = [
             Keyword.go_again,
             Keyword.beat_chest,
@@ -192,12 +214,6 @@ class BruteBasic(Playstyle):
             "intimidate": 25,
             "no_keyword": 10,
         }
-        self.card_type_ratios = {
-            "non_attack_action": 5,
-            "attack_action": 60,
-            "attack_reaction": 35,
-            "defensive_reaction": 0,
-        }
 
         self.pitch_ratios = {
             CardColor.red: 50,
@@ -205,17 +221,16 @@ class BruteBasic(Playstyle):
             CardColor.blue: 30,
         }
 
+        self.n_weapons = 1
+        self.weapon_physical = np.random.randint(1, 10)
+        self.weapon_arcane = 0
+        self.go_again_chance = 0
+
 
 class MechanologistBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.physical_parameters = {"mu": 4, "sigma": 4}
-        self.keywords = [Keyword.boost, Keyword.no_keyword]
-        self.keyword_ratios = {"boost": 80, "no_keyword": 20}
-
-        self.card_classes = [PlayerClass.generic, PlayerClass.mechanologist]
-        self.card_class_ratios = {"generic": 20, "mechanologist": 80}
-
         self.card_type_ratios = {
             "non_attack_action": 50,
             "attack_action": 40,
@@ -223,24 +238,28 @@ class MechanologistBasic(Playstyle):
             "defensive_reaction": 5,
         }
 
+        self.keywords = [Keyword.boost, Keyword.no_keyword]
+        self.keyword_ratios = {"boost": 80, "no_keyword": 20}
+
+        self.card_classes = [PlayerClass.generic, PlayerClass.mechanologist]
+        self.card_class_ratios = {"generic": 20, "mechanologist": 80}
+
         self.pitch_ratios = {
             CardColor.red: 35,
             CardColor.yellow: 15,
             CardColor.blue: 40,
         }
 
+        self.n_weapons = 1
+        self.weapon_physical = np.random.randint(1, 7)
+        self.weapon_arcane = 0
+        self.go_again_chance = 50
+
 
 class RunebladeBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.physical_parameters = {"mu": 6, "sigma": 2}
-        self.arcane_ratio = 0.5
-
-        self.arcane_parameters = {"mu": 2, "sigma": 3}
-
-        self.keywords = [Keyword.go_again, Keyword.blood_debt, Keyword.no_keyword]
-        self.keyword_ratios = {"go_again": 70, "blood_debt": 10, "no_keyword": 20}
-
         self.card_type_ratios = {
             "non_attack_action": 60,
             "attack_action": 30,
@@ -248,34 +267,56 @@ class RunebladeBasic(Playstyle):
             "defensive_reaction": 5,
         }
 
+        self.keywords = [Keyword.go_again, Keyword.blood_debt, Keyword.no_keyword]
+        self.keyword_ratios = {"go_again": 70, "blood_debt": 10, "no_keyword": 20}
+
+        self.arcane_ratio = 0.8
+        self.arcane_parameters = {"mu": 2, "sigma": 3}
+
         self.pitch_ratios = {
             CardColor.red: 50,
             CardColor.yellow: 10,
             CardColor.blue: 40,
         }
 
+        self.n_weapons = np.random.randint(1, 3)
+        self.weapon_physical = np.random.randint(1, 5)
+        self.weapon_arcane = np.random.randint(1, 5)
+        self.go_again_chance = 50
+
 
 class WizardBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.physical_parameters = {"mu": 3, "sigma": 3}
+        self.card_type_ratios = {
+            "non_attack_action": 60,
+            "attack_action": 30,
+            "attack_reaction": 5,
+            "defensive_reaction": 5,
+        }
+
         self.keywords = [Keyword.opt, Keyword.go_again, Keyword.no_keyword]
         self.keyword_ratios = {"opt": 50, "go_again": 30, "no_keyword": 20}
+
         self.arcane_ratio = 0.8
         self.arcane_parameters = {"mu": 2, "sigma": 1}
+
         self.pitch_ratios = {
             CardColor.red: 35,
             CardColor.yellow: 20,
             CardColor.blue: 45,
         }
+        self.n_weapons = np.random.randint(1, 3)
+        self.weapon_physical = np.random.randint(1, 5)
+        self.weapon_arcane = np.random.randint(1, 5)
+        self.go_again_chance = 50
 
 
 class WarriorBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.physical_parameters = {"mu": 3.5, "sigma": 2}
-        self.keywords = [Keyword.charge, Keyword.go_again, Keyword.no_keyword]
-        self.keyword_ratios = {"charge": 50, "go_again": 30, "no_keyword": 20}
         self.card_type_ratios = {
             "non_attack_action": 40,
             "attack_action": 40,
@@ -283,30 +324,43 @@ class WarriorBasic(Playstyle):
             "defensive_reaction": 5,
         }
 
+        self.keywords = [Keyword.charge, Keyword.go_again, Keyword.no_keyword]
+        self.keyword_ratios = {"charge": 50, "go_again": 30, "no_keyword": 20}
+
         self.pitch_ratios = {
             CardColor.red: 30,
             CardColor.yellow: 70,
             CardColor.blue: 0,
         }
+        self.n_weapons = np.random.randint(1, 3)
+        self.weapon_physical = np.random.randint(1, 5)
+        self.weapon_arcane = np.random.randint(1, 5)
+        self.go_again_chance = 50
 
 
 class GuardianBasic(Playstyle):
     def __init__(self):
         super().__init__()
         self.physical_parameters = {"mu": 7, "sigma": 2}
-        self.keywords = [Keyword.dominate, Keyword.no_keyword]
-        self.keyword_ratios = {"dominate": 50, "no_keyword": 50}
         self.card_type_ratios = {
             "non_attack_action": 5,
             "attack_action": 45,
             "attack_reaction": 25,
             "defensive_reaction": 25,
         }
+
+        self.keywords = [Keyword.dominate, Keyword.no_keyword]
+        self.keyword_ratios = {"dominate": 50, "no_keyword": 50}
+
         self.pitch_ratios = {
             CardColor.red: 0,
             CardColor.yellow: 50,
             CardColor.blue: 50,
         }
+        self.n_weapons = 1
+        self.weapon_physical = np.random.randint(1, 12)
+        self.weapon_arcane = 0
+        self.go_again_chance = 0
 
 
 class IllusionistBasic(Playstyle):
@@ -320,20 +374,7 @@ class IllusionistBasic(Playstyle):
             CardColor.blue: 50,
         }
 
-
-class Aggressive(Playstyle):
-    def __init__(self):
-        super().__init__()
-        self.physical_parameters = {"mu": 4, "sigma": 2}
-        self.keywords = [Keyword.go_again, Keyword.dominate, Keyword.no_keyword]
-        self.keyword_ratios = {
-            "go_again": 65,
-            "dominate": 15,
-            "no_keyword": 20,
-        }
-
-        self.pitch_ratios = {
-            CardColor.red: 50,
-            CardColor.yellow: 50,
-            CardColor.blue: 0,
-        }
+        self.n_weapons = 2
+        self.weapon_physical = np.random.randint(1, 5)
+        self.weapon_arcane = 0
+        self.go_again_chance = 0.7

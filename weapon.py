@@ -10,7 +10,7 @@ from enum import Enum
 import numpy as np
 import random
 import pygame
-from playstyle import CardType
+from playstyle import CardType, PlayerClass
 from wonderwords import RandomWord
 from randimage import get_random_image
 from settings import CARD_RESOLUTION
@@ -45,28 +45,29 @@ class HandOccupation(Enum):
     two_handed = 1
 
 
-def get_weapons():
-    hand_occupation = random.choice(list(HandOccupation))
-    if hand_occupation == HandOccupation.one_handed:
+def initialize_weapons(playstyle_obj):
+    if playstyle_obj.n_weapons == 1:
+        return [Weapon(playstyle_obj, HandOccupation.two_handed, weapon_id=0)]
+
+    elif playstyle_obj.n_weapons == 2:
         return [
-            Weapon(hand_occupation.one_handed, weapon_id=0),
-            Weapon(hand_occupation.one_handed, weapon_id=1),
+            Weapon(playstyle_obj, HandOccupation.one_handed, weapon_id=0),
+            Weapon(playstyle_obj, HandOccupation.one_handed, weapon_id=1),
         ]
-    else:
-        return [Weapon(hand_occupation.two_handed)]
 
 
 class Weapon(Card):
-    def __init__(self, hand_occupation, weapon_id=0):
+    def __init__(self, playstyle_obj, hand_occupation, weapon_id=0):
         super().__init__()
 
         self.weapon_id = weapon_id
 
         self.name = generate_rnd_name()
 
-        self.physical = np.random.randint(1, 3)
-        self.arcane = np.random.randint(0, 2)
-        if n_chance(p=0.5):
+        self.physical = playstyle_obj.weapon_physical
+        self.arcane = playstyle_obj.weapon_arcane
+
+        if n_chance(p=playstyle_obj.go_again_chance):
             self.keywords = [Keyword.go_again]
         else:
             self.keywords = [Keyword.no_keyword]
@@ -77,8 +78,10 @@ class Weapon(Card):
                 self.cost = 0
             case power if 2 <= power < 4:
                 self.cost = 1
-            case power if power > 4:
+            case power if 4 <= power < 7:
                 self.cost = 2
+            case power if 7 <= power:
+                self.cost = 3
 
         self.image = generate_rnd_image()
 
