@@ -34,8 +34,6 @@ class Stance(Enum):
     attack = 1
 
 
-
-
 class Enemy:
     playKey = None
 

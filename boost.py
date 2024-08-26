@@ -6,6 +6,7 @@ Created on Mon Aug 26 15:06:49 2024
 @author: lukasgartmair
 """
 
+
 class Boost:
     def __init__(self):
         self.activated = False
