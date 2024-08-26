@@ -361,7 +361,7 @@ class WarriorBasic(Playstyle):
         }
         self.n_weapons = np.random.randint(1, 3)
         self.weapon_physical = np.random.randint(1, 5)
-        self.weapon_arcane = np.random.randint(1, 5)
+        self.weapon_arcane = 0
         self.go_again_chance = 50
         self.weapon_type = WeaponType.sword
 
