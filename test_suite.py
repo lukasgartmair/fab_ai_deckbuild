@@ -23,11 +23,6 @@ n_iterations = 4
 class TestMethods(unittest.TestCase):
     def setUp(self):
         pass
-        # self.mod
-
-        #             self.modifiers.modifier_dict[check_box.name] = True
-        #         else:
-        #             self.modifiers.modifier_dict[check_box.name] = False
 
     def test_deck_draw_mechanisms(self):
         deck_size = 5

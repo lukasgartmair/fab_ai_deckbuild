@@ -7,12 +7,28 @@ Created on Tue Jul 16 15:16:25 2024
 """
 from enum import Enum
 import numpy as np
+import random
 
 
 class CardColor(Enum):
     red = 0
     yellow = 1
     blue = 2
+
+
+class WeaponType(Enum):
+    bow = 0
+    sword = 1
+    cub = 2
+    spear = 3
+    axe = 4
+    pistol = 5
+    dagger = 6
+    hammer = 8
+    staff = 10
+    scepter = 11
+    claw = 12
+    aura = 13
 
 
 class PlayerClass(Enum):
@@ -127,6 +143,7 @@ class Playstyle:
         self.weapon_physical = np.random.randint(1, 5)
         self.weapon_arcane = 0
         self.go_again_chance = 0.5
+        self.weapon_type = random.choice(list(WeaponType))
 
         assert len(self.keywords) == len(self.keyword_ratios)
 
@@ -158,6 +175,7 @@ class NinjaBasic(Playstyle):
         self.weapon_physical = np.random.randint(1, 3)
         self.weapon_arcane = 0
         self.go_again_chance = 1
+        self.weapon_type = random.choice([WeaponType.dagger, WeaponType.staff])
 
 
 class RangerBasic(Playstyle):
@@ -187,6 +205,7 @@ class RangerBasic(Playstyle):
         self.weapon_physical = np.random.randint(1, 8)
         self.weapon_arcane = 0
         self.go_again_chance = 0
+        self.weapon_type = WeaponType.bow
 
 
 class BruteBasic(Playstyle):
@@ -225,6 +244,9 @@ class BruteBasic(Playstyle):
         self.weapon_physical = np.random.randint(1, 10)
         self.weapon_arcane = 0
         self.go_again_chance = 0
+        self.weapon_type = random.choice(
+            [WeaponType.axe, WeaponType.cub, WeaponType.claw]
+        )
 
 
 class MechanologistBasic(Playstyle):
@@ -254,6 +276,7 @@ class MechanologistBasic(Playstyle):
         self.weapon_physical = np.random.randint(1, 7)
         self.weapon_arcane = 0
         self.go_again_chance = 50
+        self.weapon_type = WeaponType.pistol
 
 
 class RunebladeBasic(Playstyle):
@@ -283,6 +306,9 @@ class RunebladeBasic(Playstyle):
         self.weapon_physical = np.random.randint(1, 5)
         self.weapon_arcane = np.random.randint(1, 5)
         self.go_again_chance = 50
+        self.weapon_type = random.choice(
+            [WeaponType.sword, WeaponType.staff, WeaponType.scepter]
+        )
 
 
 class WizardBasic(Playstyle):
@@ -311,6 +337,7 @@ class WizardBasic(Playstyle):
         self.weapon_physical = np.random.randint(1, 5)
         self.weapon_arcane = np.random.randint(1, 5)
         self.go_again_chance = 50
+        self.weapon_type = random.choice([WeaponType.staff, WeaponType.scepter])
 
 
 class WarriorBasic(Playstyle):
@@ -336,6 +363,7 @@ class WarriorBasic(Playstyle):
         self.weapon_physical = np.random.randint(1, 5)
         self.weapon_arcane = np.random.randint(1, 5)
         self.go_again_chance = 50
+        self.weapon_type = WeaponType.sword
 
 
 class GuardianBasic(Playstyle):
@@ -361,6 +389,7 @@ class GuardianBasic(Playstyle):
         self.weapon_physical = np.random.randint(1, 12)
         self.weapon_arcane = 0
         self.go_again_chance = 0
+        self.weapon_type = random.choice([WeaponType.sword, WeaponType.hammer])
 
 
 class IllusionistBasic(Playstyle):
@@ -378,3 +407,6 @@ class IllusionistBasic(Playstyle):
         self.weapon_physical = np.random.randint(1, 5)
         self.weapon_arcane = 0
         self.go_again_chance = 0.7
+        self.weapon_type = random.choice(
+            [WeaponType.aura, WeaponType.staff, WeaponType.scepter]
+        )

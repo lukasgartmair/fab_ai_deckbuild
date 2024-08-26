@@ -10,7 +10,7 @@ from enum import Enum
 import numpy as np
 import random
 import pygame
-from playstyle import CardType, PlayerClass
+from playstyle import PlayerClass, CardType
 from wonderwords import RandomWord
 from randimage import get_random_image
 from settings import CARD_RESOLUTION
@@ -62,7 +62,11 @@ class Weapon(Card):
 
         self.weapon_id = weapon_id
 
+        self.weapon_type = playstyle_obj.weapon_type
+
         self.name = generate_rnd_name()
+
+        self.card_class = self.weapon_type
 
         self.physical = playstyle_obj.weapon_physical
         self.arcane = playstyle_obj.weapon_arcane
