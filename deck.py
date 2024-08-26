@@ -104,10 +104,13 @@ class Deck:
         player_class=PlayerClass.generic,
         playstyle=Playstyle(),
         deck_size=DECK_SIZE,
+        card_resolution=5,
     ):
         self.n_cards = deck_size
         self.cards = []
         self.stats = {}
+
+        self.card_resolution = card_resolution
 
         self.player_class = player_class
         self.playstyle = playstyle
@@ -146,7 +149,9 @@ class Deck:
         card_color_distribution = calc_card_color_distribution(self.playstyle)
         card_class_distribution = calc_card_class_distribution(self.playstyle)
 
-        self.cards = [Card() for n in range(self.n_cards)]
+        self.cards = [
+            Card(card_resolution=self.card_resolution) for n in range(self.n_cards)
+        ]
 
         for c in self.cards:
             if n_chance(p=0.4):

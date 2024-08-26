@@ -33,8 +33,7 @@ def generate_rnd_name():
     return "{} {}".format(sb_split[-1], sb_split[-2]).replace("s.", "")
 
 
-def generate_rnd_image():
-    size = CARD_RESOLUTION
+def generate_rnd_image(size):
     img_size = (size, size)
     img = get_random_image(img_size)
     img = 255 * img / img.max()
@@ -59,7 +58,7 @@ defensive_values = {
 
 
 class Card:
-    def __init__(self):
+    def __init__(self, card_resolution=5):
         self.card_id = next(id_iter)
         self.name = generate_rnd_name()
         self.card_type = None
@@ -71,7 +70,8 @@ class Card:
         self.pitch = 0
         self.color = CardColor.red
         self.keywords = []
-        self.image = generate_rnd_image()
+        self.card_resolution = card_resolution
+        self.image = generate_rnd_image(card_resolution)
 
     def __str__(self):
         return (
