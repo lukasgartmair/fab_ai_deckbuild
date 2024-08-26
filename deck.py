@@ -39,7 +39,9 @@ def calc_keyword_distribution(playstyle_obj, n=DECK_SIZE):
     # print(playstyle_obj.keywords)
     # print(playstyle_obj.keyword_ratios.values())
 
-    sampled_keywords = random.choices(playstyle_obj.keywords, weights=playstyle_obj.keyword_ratios.values(), k=n)
+    sampled_keywords = random.choices(
+        playstyle_obj.keywords, weights=playstyle_obj.keyword_ratios.values(), k=n
+    )
     return sampled_keywords
 
 
@@ -70,7 +72,9 @@ def create_arcane_cards(cards, arcane_ratio, n=DECK_SIZE):
 
 
 def calc_card_color_distribution(playstyle_obj, n=DECK_SIZE):
-    sampled_card_colors = random.choices(list(CardColor), weights=playstyle_obj.pitch_ratios.values(), k=n)
+    sampled_card_colors = random.choices(
+        list(CardColor), weights=playstyle_obj.pitch_ratios.values(), k=n
+    )
     return sampled_card_colors
 
 
@@ -154,8 +158,12 @@ class Deck:
         self.stats["card_types"] = [c.card_type.name for c in self.cards]
 
         self.stats["sn_reds"] = len([c for c in self.cards if c.color == CardColor.red])
-        self.stats["n_yellows"] = len([c for c in self.cards if c.color == CardColor.yellow])
-        self.stats["n_blues"] = len([c for c in self.cards if c.color == CardColor.blue])
+        self.stats["n_yellows"] = len(
+            [c for c in self.cards if c.color == CardColor.yellow]
+        )
+        self.stats["n_blues"] = len(
+            [c for c in self.cards if c.color == CardColor.blue]
+        )
 
         self.stats["physicals"] = [c.physical for c in self.cards]
         self.stats["defenses"] = [c.defense for c in self.cards]
@@ -167,21 +175,31 @@ class Deck:
         # fabrary deck stats
         self.stats["in_deck"] = len(self.cards)
         self.stats["non_blocking"] = len([c for c in self.cards if c.defense == 0])
-        self.stats["attack_actions"] = len([c for c in self.cards if c.card_type.name == "attack_action"])
-        self.stats["non_attack_actions"] = len([c for c in self.cards if c.card_type.name == "non_attack_action"])
+        self.stats["attack_actions"] = len(
+            [c for c in self.cards if c.card_type.name == "attack_action"]
+        )
+        self.stats["non_attack_actions"] = len(
+            [c for c in self.cards if c.card_type.name == "non_attack_action"]
+        )
 
         # averages
         self.stats["cost_avg"] = np.mean([c.cost for c in self.cards])
         self.stats["pitch_avg"] = np.mean([c.pitch for c in self.cards])
         # TODO is this physical avg only for attack action cards ir all cards?!
-        self.stats["physical_avg"] = np.mean([c.physical for c in self.cards if c.card_type.name == "attack_action"])
-        self.stats["defense_avg"] = np.mean([c.defense for c in self.cards if c.defense > 0])
+        self.stats["physical_avg"] = np.mean(
+            [c.physical for c in self.cards if c.card_type.name == "attack_action"]
+        )
+        self.stats["defense_avg"] = np.mean(
+            [c.defense for c in self.cards if c.defense > 0]
+        )
 
     def print_stats(self):
         print("Deck statistics")
         table = beautifultable.BeautifulTable()
         table.columns.header = ["totals", "value", "averages", "value"]
-        table.append_row(["in_deck", self.stats["in_deck"], "cost_avg", self.stats["cost_avg"]])
+        table.append_row(
+            ["in_deck", self.stats["in_deck"], "cost_avg", self.stats["cost_avg"]]
+        )
         table.append_row(
             [
                 "non_blocking",

@@ -29,7 +29,9 @@ def add_two_with_possible_none_type(a, b):
 
 
 def blit_text(surface, text, pos, font, color=color_palette.color5):
-    words = [word.split(" ") for word in text.splitlines()]  # 2D array where each row is a list of words.
+    words = [
+        word.split(" ") for word in text.splitlines()
+    ]  # 2D array where each row is a list of words.
     space = font.size(" ")[0]  # The width of a space.
     max_width, max_height = surface.get_size()
     x, y = pos

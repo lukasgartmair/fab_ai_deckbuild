@@ -74,13 +74,15 @@ class Card:
         self.image = generate_rnd_image()
 
     def __str__(self):
-        return "Card {} -'{}' with physical {} / defense {} / pitch {} / cost {}".format(
-            self.card_id,
-            self.name,
-            self.physical,
-            self.defense,
-            self.pitch,
-            self.cost,
+        return (
+            "Card {} -'{}' with physical {} / defense {} / pitch {} / cost {}".format(
+                self.card_id,
+                self.name,
+                self.physical,
+                self.defense,
+                self.pitch,
+                self.cost,
+            )
         )
 
     def calc_card_values(self):

@@ -67,7 +67,9 @@ class Renderer:
         self.engine = engine
 
         self.background = pygame.image.load("images/backgrounds/background.png")
-        self.background = pygame.transform.smoothscale(self.background, self.window.get_size())
+        self.background = pygame.transform.smoothscale(
+            self.background, self.window.get_size()
+        )
 
         self.check_box_dominate = CheckBox("dominate", y=250)
 
@@ -127,7 +129,10 @@ class Renderer:
         )
 
         text = font_card_title.render(
-            "# " + str(self.engine.level_manager.current_level) + " - " + str(self.engine.enemy.player_class.name).upper(),
+            "# "
+            + str(self.engine.level_manager.current_level)
+            + " - "
+            + str(self.engine.enemy.player_class.name).upper(),
             True,
             color,
         )
@@ -182,7 +187,11 @@ class Renderer:
         )
 
     def render_weapons(self):
-        weapons_to_render = [w for w in self.engine.enemy.weapons if w not in self.engine.enemy.played_cards]
+        weapons_to_render = [
+            w
+            for w in self.engine.enemy.weapons
+            if w not in self.engine.enemy.played_cards
+        ]
         for i, w in enumerate(weapons_to_render):
             if w.weapon_id == 0:
                 self.render_card(
@@ -199,9 +208,15 @@ class Renderer:
 
     def render_no_moves_left(self):
         message = ""
-        if self.engine.enemy.stance == Stance.attack and self.engine.enemy.further_attack_possible == False:
+        if (
+            self.engine.enemy.stance == Stance.attack
+            and self.engine.enemy.further_attack_possible == False
+        ):
             message = "'I wont't further attack you - Let me defend now!'"
-        elif self.engine.enemy.stance == Stance.defend and self.engine.enemy.further_defense_possible == False:
+        elif (
+            self.engine.enemy.stance == Stance.defend
+            and self.engine.enemy.further_defense_possible == False
+        ):
             message = "'You broke my defense - Hit me again or change my stance'"
 
         text = font.render(
@@ -216,7 +231,10 @@ class Renderer:
 
     def render_boost(self):
         message = ""
-        if self.engine.enemy.player_class == PlayerClass.mechanologist and self.engine.enemy.stance == Stance.attack:
+        if (
+            self.engine.enemy.player_class == PlayerClass.mechanologist
+            and self.engine.enemy.stance == Stance.attack
+        ):
             if self.engine.enemy.boost.activated == True:
                 message = "'BOOOOOST mechanic activated!'"
             elif self.engine.enemy.boost.failed == True:
@@ -382,9 +400,13 @@ class Renderer:
         )
 
         if current_card.color == CardColor.yellow:
-            text = font_card_title.render(str(current_card.name), True, pygame.Color(color_palette.black))
+            text = font_card_title.render(
+                str(current_card.name), True, pygame.Color(color_palette.black)
+            )
         else:
-            text = font_card_title.render(str(current_card.name), True, pygame.Color(color_palette.white))
+            text = font_card_title.render(
+                str(current_card.name), True, pygame.Color(color_palette.white)
+            )
 
         self.window.blit(text, (hor_pos, vert_pos))
 
@@ -456,7 +478,9 @@ class Renderer:
             ),
         )
 
-        text = font_card_title.render(str(current_card.card_type.name), True, pygame.Color(color_palette.black))
+        text = font_card_title.render(
+            str(current_card.card_type.name), True, pygame.Color(color_palette.black)
+        )
 
         self.window.blit(
             text,
@@ -467,7 +491,9 @@ class Renderer:
         )
 
         # POWER
-        text = font.render(str(current_card.physical), True, pygame.Color(color_palette.white))
+        text = font.render(
+            str(current_card.physical), True, pygame.Color(color_palette.white)
+        )
 
         self.window.blit(
             text,
@@ -494,7 +520,9 @@ class Renderer:
             )
 
         # DEFENSE
-        text = font.render(str(current_card.defense), True, pygame.Color(color_palette.black))
+        text = font.render(
+            str(current_card.defense), True, pygame.Color(color_palette.black)
+        )
 
         self.window.blit(
             text,
@@ -505,7 +533,9 @@ class Renderer:
         )
 
         # PITCH
-        text = font.render(str(current_card.pitch), True, card_colors[current_card.color.name])
+        text = font.render(
+            str(current_card.pitch), True, card_colors[current_card.color.name]
+        )
 
         self.window.blit(
             text,
@@ -516,7 +546,9 @@ class Renderer:
         )
 
         # COST
-        text = font.render(str(current_card.cost), True, pygame.Color(color_palette.color2))
+        text = font.render(
+            str(current_card.cost), True, pygame.Color(color_palette.color2)
+        )
         self.window.blit(
             text,
             (
@@ -558,7 +590,9 @@ class Renderer:
                 color = pygame.Color(color_palette.color2)
 
             text = font.render(
-                "{}".format(self.engine.enemy.name) + " is " + (self.engine.enemy.stance.name + "ing").upper(),
+                "{}".format(self.engine.enemy.name)
+                + " is "
+                + (self.engine.enemy.stance.name + "ing").upper(),
                 True,
                 color,
             )

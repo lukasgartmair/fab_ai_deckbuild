@@ -21,14 +21,23 @@ class TitleScene(SceneBase):
 
     def process_input(self, events):
         if self.skip:
-            self.switch_to_scene(scene_manager.get_game_scene(self.engine, self.renderer))
+            self.switch_to_scene(
+                scene_manager.get_game_scene(self.engine, self.renderer)
+            )
 
         for event in events:
             if event.type == pygame.QUIT:
                 Game.quit_everything(self)
-            if self.engine.state_machine.current_state == self.engine.state_machine.starting:
-                if event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or event.key == pygame.K_SPACE):
-                    self.switch_to_scene(scene_manager.get_game_scene(self.engine, self.renderer))
+            if (
+                self.engine.state_machine.current_state
+                == self.engine.state_machine.starting
+            ):
+                if event.type == pygame.KEYDOWN and (
+                    event.key == pygame.K_RETURN or event.key == pygame.K_SPACE
+                ):
+                    self.switch_to_scene(
+                        scene_manager.get_game_scene(self.engine, self.renderer)
+                    )
                     self.engine.state_machine.start_game()
                     self.is_active = False
 

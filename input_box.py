@@ -62,7 +62,9 @@ class InputBox:
         message = "{} DAMAGE value".format(self.box_type.upper())
         text = font2.render(message, True, (0, 0, 0))
         self.window.blit(text, (self.box.x, self.box.y - 30))
-        txt_surface = self.font.render(self.text, True, pygame.Color(color_palette.white))
+        txt_surface = self.font.render(
+            self.text, True, pygame.Color(color_palette.white)
+        )
         self.window.blit(txt_surface, (self.box.x + 5, self.box.y + 5))
         pygame.draw.rect(self.window, self.color, self.box, 2)
 

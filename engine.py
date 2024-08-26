@@ -19,6 +19,7 @@ import random
 from playstyle import PlayerClass
 from mechanologist import Mechanologist
 
+
 class WinCondition(Enum):
     enemy_died = 0
     enemy_fatigued = 1
@@ -39,13 +40,16 @@ class GameEngine:
     state = None
 
     def __init__(self):
-        
-        
-        self.enemy_class = random.choice([p for p in list(PlayerClass) if p.name != "generic" and p.name != "mechanologist"])
-    
+        self.enemy_class = random.choice(
+            [
+                p
+                for p in list(PlayerClass)
+                if p.name != "generic" and p.name != "mechanologist"
+            ]
+        )
+
         # self.enemy_class = PlayerClass.mechanologist
-    
-    
+
         if self.enemy_class == PlayerClass.mechanologist:
             self.enemy = Mechanologist()
         else:

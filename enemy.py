@@ -38,13 +38,16 @@ class Enemy:
     playKey = None
 
     def __init__(self, play_key=None):
-        self.player_class = random.choice([p for p in list(PlayerClass) if p.name != "generic"])
-
+        self.player_class = random.choice(
+            [p for p in list(PlayerClass) if p.name != "generic"]
+        )
 
         self.identity = FantasyIdentity(self.player_class)
         self.name = self.identity.name
         self.race = self.identity.race
-        self.image_path = "images/" + self.player_class.name + "/" + self.identity.image_number
+        self.image_path = (
+            "images/" + self.player_class.name + "/" + self.identity.image_number
+        )
 
         if n_chance(p=0.5):
             self.stance = Stance.defend
@@ -91,7 +94,9 @@ class Enemy:
 
         self.modifiers = Modifiers()
 
-        self.arcane_barrier_total = sum([e.arcane_barrier for e in self.equipment_suite.get_equipment_pieces()])
+        self.arcane_barrier_total = sum(
+            [e.arcane_barrier for e in self.equipment_suite.get_equipment_pieces()]
+        )
 
         self.ability = Ability()
 
@@ -107,7 +112,6 @@ class Enemy:
 
         self.survival_mode = False
         self.check_if_in_survival_mode()
-
 
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
@@ -221,7 +225,9 @@ class Enemy:
 
     def check_if_further_defense_possible(self):
         if (len(self.hand) == 0 and len(self.arsenal) == 0) or (
-            (len(self.hand) == 0) and (len(self.arsenal) == 1) and (self.arsenal[0].card_type != CardType.defensive_reaction)
+            (len(self.hand) == 0)
+            and (len(self.arsenal) == 1)
+            and (self.arsenal[0].card_type != CardType.defensive_reaction)
         ):
             self.further_defense_possible = False
 
@@ -289,7 +295,9 @@ class Enemy:
                         pitch_combinations[pi] = pitch_total
 
                     if current_card.cost > 0:
-                        cards_to_pitch = self.determine_pitch_combination(current_card.cost, pitch_combinations)
+                        cards_to_pitch = self.determine_pitch_combination(
+                            current_card.cost, pitch_combinations
+                        )
 
                         if len(cards_to_pitch) == 0:
                             virtual_hand = shift_list(virtual_hand_tmp)
@@ -327,9 +335,8 @@ class Enemy:
     def remove_card_from_hand(self, card):
         if card in self.hand:
             self.hand.remove(card)
-            
+
     def check_if_attack(self):
-        
         if len(self.combat_chain) > 0:
             if self.combat_chain_iterator in self.combat_chain:
                 print(self.action_points)
@@ -337,44 +344,42 @@ class Enemy:
                     return True
         else:
             return False
-        
+
     def get_next_attacking_card(self):
         c = self.combat_chain[self.combat_chain_iterator]["attack"]
         self.played_cards.append(c)
         return c
-    
+
     def pitch_cards(self):
         for p in self.combat_chain[self.combat_chain_iterator]["pitch"]:
             self.pitch_card(p)
-            
+
     def remove_played_cards(self):
         for p in self.played_cards:
             self.remove_card_from_hand(p)
             if p in self.arsenal:
                 self.arsenal.remove(p)
-    
+
     def handle_go_again(self, c):
         # TODO for now combo also gives another action point
         if (Keyword.go_again in c.keywords) or (Keyword.combo in c.keywords):
-            self.get_action_points()        
-            
+            self.get_action_points()
+
     def base_attack(self):
-        
         c = self.get_next_attacking_card()
-    
+
         self.pitch_cards()
         self.remove_played_cards()
         self.use_floating_resources(c.cost)
         self.use_action_points()
         self.handle_go_again(c)
-        
+
         return c
-    
+
     def attack(self):
         if self.check_if_attack():
-
             c = self.base_attack()
-                
+
             self.combat_chain_iterator += 1
 
         else:
@@ -420,7 +425,9 @@ class Enemy:
             # print(self.block.physical_block_cards)
             if len(self.block.physical_block_cards) > 0:
                 if self.modifiers.modifier_dict["dominate"] == True:
-                    self.block.physical_block_cards = self.block.physical_block_cards[:1]
+                    self.block.physical_block_cards = self.block.physical_block_cards[
+                        :1
+                    ]
 
                 # print("banished zone")
                 # print(self.banished_zone)
@@ -463,19 +470,21 @@ class Enemy:
         for k, v in pitch_combinations.items():
             number_of_cards_used_temp = len(k)
             diff_to_cost_temp = cost_to_pay - v
-            physical_cost_ratio_wasted_temp = np.sum([ki.physical for ki in k]) - np.sum([ki.cost for ki in k])
+            physical_cost_ratio_wasted_temp = np.sum(
+                [ki.physical for ki in k]
+            ) - np.sum([ki.cost for ki in k])
             defense_wasted_temp = np.sum([ki.defense for ki in k])
 
             if diff_to_cost_temp <= 0:
-                if abs(diff_to_cost_temp) < diff_to_cost and number_of_cards_used_temp < number_of_cards_used:
+                if (
+                    abs(diff_to_cost_temp) < diff_to_cost
+                    and number_of_cards_used_temp < number_of_cards_used
+                ):
                     diff_to_cost = diff_to_cost_temp
                     number_of_cards_used = number_of_cards_used_temp
                     best_pitch = k
 
         return best_pitch
-
-
-
 
 
 if __name__ == "__main__":
