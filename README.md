@@ -1,17 +1,16 @@
 Experimental Flesh and Blood enemy engine, that is able to sample random generated decks based on certain strategies and
 determine the "optimal" moves for each hand in order to provide a quasi-human enemy experience / a practice dummy whatever. 
 
-You need to install PYTHON for this to run, then install the dependencies with "pip install -r requirements.txt"
+You need to install PYTHON 3.x on your system for this to run, then install the dependencies with "pip install -r requirements.txt"
 
 Playing manual:
 
 1. Run the main.py file to start 
 
-2. With SPACE or RETURN skip the introduction screen
+2. With SPACE or RETURN enter the room
 
-3. The enemy starts defending, the player attacks first
-
-4. Enter your attack value in the box and press SPACE to get the blocking move of the enemy
+4. Enter your attack values in the boxes and press SPACE to get the blocking move of the enemy
+	Both boxes can contain values. I.e. you can attack with physical and arcane damage at the same time.
 
 5. If you choose to not attack any further or there are no more blocks possible, 
     press RETURN to change the enemy stance to attacking

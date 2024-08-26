@@ -291,7 +291,7 @@ class RunebladeBasic(Playstyle):
         }
 
         self.keywords = [Keyword.go_again, Keyword.blood_debt, Keyword.no_keyword]
-        self.keyword_ratios = {"go_again": 70, "blood_debt": 10, "no_keyword": 20}
+        self.keyword_ratios = {"go_again": 70, "blood_debt": 0, "no_keyword": 30}
 
         self.arcane_ratio = 0.8
         self.arcane_parameters = {"mu": 2, "sigma": 3}
