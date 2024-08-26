@@ -12,6 +12,8 @@ import numpy as np
 from enemy import Stance
 import random
 from modifiers import Modifiers
+from deck import Deck
+from card import Card
 
 n_runs = 1
 n_turns = 5
@@ -27,89 +29,134 @@ class TestMethods(unittest.TestCase):
         #         else:
         #             self.modifiers.modifier_dict[check_box.name] = False
 
-    def test_deckbuilding(self):
-        for i in range(100):
-            self.engine = GameEngine()
-            print(self.engine.enemy.player_class)
+    def test_deck_draw_mechanisms(self):
+        deck_size = 5
+        test_deck = Deck(deck_size=deck_size)
 
-    def test_test(self):
-        pass
+        ref_cards = test_deck.cards[-3:1]
 
-    def test_gameplay(self):
-        self.engine = GameEngine()
+        for i, tc in enumerate(test_deck.cards):
+            print(i)
+            print(tc.name)
 
-        for n in range(n_runs):
-            if n != 0:
-                self.engine.advance_level()
+        print()
+        test_card = Card()
+        print("test card name")
+        print(test_card.name)
 
-            if self.engine.state_machine.current_state == GameStateMachine.starting:
-                self.engine.state_machine.start_game()
+        test_deck.put_to_bottom(test_card)
+        print()
+        print("after insertion to bottom")
 
-            print(self.engine.level_manager.current_level)
+        for i, tc in enumerate(test_deck.cards):
+            print(i)
+            print(tc.name)
 
-            print(self.engine.state_machine.current_state)
-            while self.engine.state_machine.current_state == GameStateMachine.playing:
-                print("--------------------")
-                print("TURN")
-                print(self.engine.level_manager.turn_index)
+        self.assertEqual(test_deck.cards[0], test_card)
+        self.assertEqual(len(test_deck.cards), deck_size + 1)
+        print()
+        top_card = test_deck.draw_top_cards(n=1)
+        print(test_card.name)
+        print(top_card.name)
+        self.assertTrue(test_card.name != top_card.name)
+        self.assertEqual(test_deck.get_length(), deck_size)
 
-                if self.engine.enemy.stance == Stance.defend:
-                    for j in range(random.randint(1, n_iterations + 1)):
-                        print("MOVE")
-                        print(self.engine.level_manager.move_index)
+        print()
+        print("after drawing")
+        for i, tc in enumerate(test_deck.cards):
+            print(i)
+            print(tc.name)
 
-                        pyhsical = np.random.randint(0, 6)
-                        arcane = np.random.randint(0, 3)
-                        self.engine.attack.set_values(
-                            inp_box=None, physical=pyhsical, arcane=arcane
-                        )
-                        self.engine.play(self.engine.attack)
+        self.assertTrue(top_card not in test_deck.cards)
 
-                        self.engine.attack.reset()
+        top_cards_drawn = test_deck.draw_top_cards(n=2)
+        print()
+        for i, l in enumerate(ref_cards):
+            self.assertTrue(ref_cards[i] == top_cards_drawn[i])
 
-                        print("enemy life:")
-                        print(self.engine.enemy.life_counter.life)
-                        print()
+    # def test_deckbuilding(self):
+    #     for i in range(100):
+    #         self.engine = GameEngine()
+    #         print(self.engine.enemy.player_class)
 
-                        self.engine.check_win_condition()
-                        if (
-                            self.engine.state_machine.current_state
-                            == GameStateMachine.ended
-                        ):
-                            break
-                        else:
-                            continue  # only executed if the inner loop did NOT break
-                        break  # only executed if the inner loop DID break
+    # def test_test(self):
+    #     pass
 
-                    self.engine.enemy.finish_turn()
-                    self.engine.finish_turn()
+    # def test_gameplay(self):
+    #     self.engine = GameEngine()
 
-                elif self.engine.enemy.stance == Stance.attack:
-                    print("MOVE")
-                    print(self.engine.level_manager.move_index)
+    #     for n in range(n_runs):
+    #         if n != 0:
+    #             self.engine.advance_level()
 
-                    for j in range(n_iterations):
-                        if self.engine.enemy.further_attack_possible:
-                            self.engine.play()
+    #         if self.engine.state_machine.current_state == GameStateMachine.starting:
+    #             self.engine.state_machine.start_game()
 
-                            print("enemy life:")
-                            print(self.engine.enemy.life_counter.life)
+    #         print(self.engine.level_manager.current_level)
 
-                            self.engine.check_win_condition()
-                            if (
-                                self.engine.state_machine.current_state
-                                == GameStateMachine.ended
-                            ):
-                                break
+    #         print(self.engine.state_machine.current_state)
+    #         while self.engine.state_machine.current_state == GameStateMachine.playing:
+    #             print("--------------------")
+    #             print("TURN")
+    #             print(self.engine.level_manager.turn_index)
 
-                        else:
-                            continue  # only executed if the inner loop did NOT break
-                        break  # only executed if the inner loop DID break
+    #             if self.engine.enemy.stance == Stance.defend:
+    #                 for j in range(random.randint(1, n_iterations + 1)):
+    #                     print("MOVE")
+    #                     print(self.engine.level_manager.move_index)
 
-                    self.engine.enemy.finish_turn()
-                    self.engine.finish_turn()
+    #                     pyhsical = np.random.randint(0, 6)
+    #                     arcane = np.random.randint(0, 3)
+    #                     self.engine.attack.set_values(
+    #                         inp_box=None, physical=pyhsical, arcane=arcane
+    #                     )
+    #                     self.engine.play(self.engine.attack)
 
-        self.engine.analyzer.analyze_game_data()
+    #                     self.engine.attack.reset()
+
+    #                     print("enemy life:")
+    #                     print(self.engine.enemy.life_counter.life)
+    #                     print()
+
+    #                     self.engine.check_win_condition()
+    #                     if (
+    #                         self.engine.state_machine.current_state
+    #                         == GameStateMachine.ended
+    #                     ):
+    #                         break
+    #                     else:
+    #                         continue  # only executed if the inner loop did NOT break
+    #                     break  # only executed if the inner loop DID break
+
+    #                 self.engine.enemy.finish_turn()
+    #                 self.engine.finish_turn()
+
+    #             elif self.engine.enemy.stance == Stance.attack:
+    #                 print("MOVE")
+    #                 print(self.engine.level_manager.move_index)
+
+    #                 for j in range(n_iterations):
+    #                     if self.engine.enemy.further_attack_possible:
+    #                         self.engine.play()
+
+    #                         print("enemy life:")
+    #                         print(self.engine.enemy.life_counter.life)
+
+    #                         self.engine.check_win_condition()
+    #                         if (
+    #                             self.engine.state_machine.current_state
+    #                             == GameStateMachine.ended
+    #                         ):
+    #                             break
+
+    #                     else:
+    #                         continue  # only executed if the inner loop did NOT break
+    #                     break  # only executed if the inner loop DID break
+
+    #                 self.engine.enemy.finish_turn()
+    #                 self.engine.finish_turn()
+
+    #     self.engine.analyzer.analyze_game_data()
 
 
 if __name__ == "__main__":

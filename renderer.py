@@ -17,8 +17,10 @@ from colors import color_palette
 from card import CardColor
 from utils import blit_text
 import image
+from playstyle import PlayerClass
 import PygameUtils as pu
 import random
+
 from settings import (
     grid,
     grid_width,
@@ -48,6 +50,9 @@ from settings import (
 y_index = 0
 
 button_size = 25
+
+enemy_message_x = grid.left_point(1)
+enemy_message_y = grid.top_point(1)
 
 
 class Renderer:
@@ -221,15 +226,31 @@ class Renderer:
         )
         self.window.blit(
             text,
-            (
-                grid.left_point(1),
-                grid.top_point(1),
-            ),
+            (enemy_message_x, enemy_message_y),
+        )
+
+    def render_boost_activation(self):
+        message = ""
+        if (
+            self.engine.enemy.player_class == PlayerClass.mechanologist
+            and self.engine.enemy.stance == Stance.attack
+            and self.engine.enemy.boost_activated == True
+        ):
+            message = "'BOOOOOST mechanic activated!'"
+
+        text = font.render(
+            message,
+            True,
+            pygame.Color(color_palette.color3),
+        )
+        self.window.blit(
+            text,
+            (enemy_message_x, enemy_message_y),
         )
 
     def render_deck(self):
         text = font.render(
-            str(len(self.engine.enemy.deck)) + " deck",
+            str(self.engine.enemy.deck.get_length()) + " deck",
             True,
             pygame.Color(color_palette.text_color),
         )
@@ -318,6 +339,22 @@ class Renderer:
                 grid.top_point(y_index + 13),
             ),
         )
+
+    def render_boost_counter(self):
+        # print(self.engine.enemy.boost_counter)
+        if self.engine.enemy.player_class == PlayerClass.mechanologist:
+            text = font.render(
+                str(self.engine.enemy.boost_counter) + " boost counter",
+                True,
+                pygame.Color(color_palette.text_color),
+            )
+            self.window.blit(
+                text,
+                (
+                    right_edge,
+                    grid.top_point(y_index + 15),
+                ),
+            )
 
     def render_action_points(self):
         text = font.render(

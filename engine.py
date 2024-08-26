@@ -48,6 +48,7 @@ class GameEngine:
         self.analyzer = GlobalAnalyzer(self)
 
     def finish_move(self, player_attack):
+        self.enemy.finish_move()
         self.analyzer.write_move_data(player_attack)
         self.level_manager.advandce_move()
 
@@ -67,7 +68,7 @@ class GameEngine:
             self.state_machine.end_game()
 
     def check_fatigue_condition(self):
-        if len(self.enemy.hand) + len(self.enemy.deck) == 0:
+        if len(self.enemy.hand) + self.enemy.deck.get_length() == 0:
             self.win_condition = WinCondition.enemy_fatigued
             self.state_machine.end_game()
             return True

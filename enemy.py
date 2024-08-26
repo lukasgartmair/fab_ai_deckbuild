@@ -41,7 +41,7 @@ class Enemy:
             [p for p in list(PlayerClass) if p.name != "generic"]
         )
 
-        # self.player_class = PlayerClass.wizard
+        self.player_class = PlayerClass.mechanologist
 
         self.identity = FantasyIdentity(self.player_class)
         self.name = self.identity.name
@@ -66,11 +66,14 @@ class Enemy:
 
         self.playstyle = get_playstyle(self.player_class)
         self.original_deck = Deck(self.player_class, self.playstyle)
-        self.deck = self.original_deck.cards
+
+        self.deck = self.original_deck
 
         self.graveyard = []
         self.banished_zone = {}
         self.banished_zone["intimidated_cards"] = []
+        if self.player_class == PlayerClass.mechanologist:
+            self.banished_zone["boosted_cards"] = []
         self.arsenal = []
 
         self.weapons = get_weapons()
@@ -111,6 +114,9 @@ class Enemy:
 
         self.survival_mode = False
         self.check_if_in_survival_mode()
+
+        self.boost_activated = False
+        self.boost_counter = 0
 
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
@@ -173,14 +179,18 @@ class Enemy:
             # print("combat_chain")
             # print(self.combat_chain)
 
+    def finish_move(self):
+        self.boost_activated == False
+        self.boost_counter = 0
+
     def finish_turn(self):
         self.reset_play()
 
         for card in self.played_cards:
             self.graveyard.append(card)
 
-        for p in self.pitched_cards:
-            self.deck.append(p)
+        for pc in self.pitched_cards:
+            self.deck.put_to_bottom(pc)
 
         self.played_cards = []
         self.pitched_cards = []
@@ -226,17 +236,18 @@ class Enemy:
 
     def draw(self):
         print("enemy is drawing")
-        if len(self.deck) > 0:
+        if self.deck.get_length() > 0:
             n_cards_to_draw = self.intellect - len(self.hand)
             if n_cards_to_draw > 0:
-                if len(self.deck) < n_cards_to_draw:
-                    n_cards_to_draw = len(self.deck)
+                if self.deck.get_length() < n_cards_to_draw:
+                    n_cards_to_draw = self.deck.get_length()
 
-                drawn_cards = self.deck[:n_cards_to_draw].copy()
-                if len(drawn_cards) > 0:
-                    for dc in drawn_cards:
-                        self.hand.append(dc)
-                    self.deck = self.deck[n_cards_to_draw:]
+                drawn_cards = self.deck.draw_top_cards(n=n_cards_to_draw)
+
+                if type(drawn_cards) is list:
+                    self.hand += drawn_cards
+                else:
+                    self.hand.append(drawn_cards)
 
         else:
             print("can't draw anymore, deck fatigued")
@@ -359,12 +370,26 @@ class Enemy:
                     self.use_action_points()
 
                     # TODO for now combo also gives another action point also mech boost - add mechanics
-                    if (
-                        (Keyword.go_again in c.keywords)
-                        or (Keyword.combo in c.keywords)
-                        or (Keyword.boost in c.keywords)
+                    if (Keyword.go_again in c.keywords) or (
+                        Keyword.combo in c.keywords
                     ):
                         self.get_action_points()
+
+                    if self.player_class == PlayerClass.mechanologist:
+                        if Keyword.boost in c.keywords:
+                            if len(self.deck.cards) >= 1:
+                                banished_card = self.deck.draw_top_cards(n=1)
+                                self.banished_zone["boosted_cards"].append(
+                                    banished_card
+                                )
+                                if (
+                                    banished_card.card_class
+                                    == PlayerClass.mechanologist
+                                ):
+                                    print("Mechanoligist boost activated")
+                                    self.boost_activated = True
+                                    self.boost_counter += 1
+                                    self.get_action_points()
 
                     self.combat_chain_iterator += 1
 

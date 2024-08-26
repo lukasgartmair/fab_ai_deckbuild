@@ -79,8 +79,13 @@ def calc_card_color_distribution(playstyle_obj, n=DECK_SIZE):
 
 
 class Deck:
-    def __init__(self, player_class=PlayerClass.generic, playstyle=Playstyle()):
-        self.n_cards = DECK_SIZE
+    def __init__(
+        self,
+        player_class=PlayerClass.generic,
+        playstyle=Playstyle(),
+        deck_size=DECK_SIZE,
+    ):
+        self.n_cards = deck_size
         self.cards = []
         self.stats = {}
 
@@ -94,10 +99,18 @@ class Deck:
     def shuffle(self):
         np.random.shuffle(self.cards)
 
-    def deal(self):
-        return self.cards.pop()
+    def put_to_bottom(self, card):
+        self.cards.insert(0, card)
 
-    def length(self):
+    def draw_top_cards(self, n=1):
+        if n == 1:
+            return self.cards.pop()
+        else:
+            drawn_cards = self.cards[-n:].copy()
+            self.cards = self.cards[:-n]
+            return drawn_cards
+
+    def get_length(self):
         return len(self.cards)
 
     def build_deck(self):
