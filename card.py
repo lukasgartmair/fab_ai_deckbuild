@@ -92,15 +92,17 @@ class Card:
         self.pitch = pitch_values[self.color.name]
         self.defense = defensive_values[self.card_type.name]
 
-        self.cost = self.physical + self.defense + self.pitch - TARGET_VALUE
+        self.cost = (
+            self.physical + self.arcane + self.defense + self.pitch - TARGET_VALUE
+        )
         if self.cost < 0:
             self.cost = 0
         elif self.cost > 4:
             self.cost = MAX_CARD_COST
 
-    def adjust_arcane_physical(self):
-        if self.physical > 0 and self.card_type != CardType.defensive_reaction:
-            self.arcane = np.random.randint(1, 4)
-            self.physical -= self.arcane
-            if self.physical < 0:
-                self.physical = 0
+    # def adjust_arcane_physical(self):
+    #     if self.physical > 0 and self.card_type != CardType.defensive_reaction:
+    #         self.arcane = np.random.randint(1, 4)
+    #         self.physical -= self.arcane // 2
+    #         if self.physical < 0:
+    #             self.physical = 0

@@ -7,7 +7,7 @@ Created on Mon Aug 26 15:45:13 2024
 """
 
 from enemy import Enemy
-from boost import Boost
+from special_mechanics import Boost
 from playstyle import Keyword, PlayerClass
 from utils import n_chance
 
@@ -20,12 +20,18 @@ class Mechanologist(Enemy):
 
         self.banished_zone["boosted_cards"] = []
 
+    def determine_if_boost_makes_sense(self):
+        p = (len(self.hand) + len(self.arsenal)) / (
+            self.intellect + len(self.arsenal)
+        ) + 0.25
+        if n_chance(p):
+            return True
+        else:
+            return False
+
     def apply_boost_mechanic(self, card):
         if Keyword.boost in card.keywords:
-            p = (len(self.hand) + len(self.arsenal)) / (
-                self.intellect + len(self.arsenal)
-            ) + 0.25
-            if n_chance(p):
+            if self.determine_if_boost_makes_sense():
                 banished_card = self.deck.draw_top_cards(n=1)
                 self.banished_zone["boosted_cards"].append(banished_card)
                 if banished_card.card_class == PlayerClass.mechanologist:

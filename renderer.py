@@ -17,7 +17,7 @@ from colors import color_palette
 from card import CardColor
 from utils import blit_text
 import image
-from playstyle import PlayerClass
+from playstyle import PlayerClass, Talent
 import PygameUtils as pu
 import random
 
@@ -128,18 +128,33 @@ class Renderer:
             (grid.left_point(grid_width // 2 - 1), enemy_top_edge - 25),
         )
 
+        if self.engine.enemy.talent != Talent.no_talent:
+            text = font_card_title.render(
+                "# "
+                + str(self.engine.level_manager.current_level)
+                + " - "
+                + str(self.engine.enemy.talent.name).upper(),
+                True,
+                color,
+            )
+
+            self.window.blit(
+                text,
+                (
+                    grid.left_point(grid_width // 2 - 1),
+                    enemy_top_edge + card_height * 0.76,
+                ),
+            )
+
         text = font_card_title.render(
-            "# "
-            + str(self.engine.level_manager.current_level)
-            + " - "
-            + str(self.engine.enemy.player_class.name).upper(),
+            "     " + str(self.engine.enemy.player_class.name).upper(),
             True,
             color,
         )
 
         self.window.blit(
             text,
-            (grid.left_point(grid_width // 2 - 1), enemy_top_edge + card_height * 0.76),
+            (grid.left_point(grid_width // 2 - 1), enemy_top_edge + card_height * 0.84),
         )
 
     def render_enter_new_level(self):
@@ -274,7 +289,7 @@ class Renderer:
             text,
             (
                 grid.left_point(grid_width // 2 - 1),
-                grid.top_point(grid_height * 0.92),
+                grid.top_point(grid_height * 0.94),
             ),
         )
 

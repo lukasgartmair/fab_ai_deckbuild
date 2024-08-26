@@ -17,11 +17,11 @@ from utils import n_chance
 
 
 def calc_physical_distribution(playstyle_obj, n=DECK_SIZE):
-    mu, sigma = (
-        playstyle_obj.strategy_parameters["mu"],
-        playstyle_obj.strategy_parameters["sigma"],
+    s = np.random.normal(
+        playstyle_obj.physical_parameters["mu"],
+        playstyle_obj.physical_parameters["sigma"],
+        n,
     )
-    s = np.random.normal(mu, sigma, n)
     s = [np.round(si).astype(int) if si > 0 else 0 for si in s]
 
     plot = False
@@ -64,11 +64,22 @@ def calc_card_type_distribution(playstyle_obj, n=DECK_SIZE):
     return sampled_card_types
 
 
-def create_arcane_cards(cards, arcane_ratio, n=DECK_SIZE):
-    arcane_cards = random.choices(list(cards), k=int(n * arcane_ratio))
+def calc_arcane_distribution(playstyle_obj):
+    s = np.random.normal(
+        playstyle_obj.arcane_parameters["mu"],
+        playstyle_obj.arcane_parameters["sigma"],
+        int(playstyle_obj.arcane_ratio * DECK_SIZE),
+    )
+    s = [np.round(si).astype(int) if si > 0 else 0 for si in s]
 
-    for ac in arcane_cards:
-        ac.adjust_arcane_physical()
+    plot = False
+    if plot:
+        plt.hist(s, alpha=0.5, label=str(playstyle_obj))
+        plt.legend()
+        plt.xlabel("arcane")
+        plt.ylabel("#cards")
+
+    return s
 
 
 def calc_card_color_distribution(playstyle_obj, n=DECK_SIZE):
@@ -125,6 +136,11 @@ class Deck:
     def build_deck(self):
         physical_distribution = calc_physical_distribution(self.playstyle)
         physical_distribution = [1 if x == 0 else x for x in physical_distribution]
+
+        if self.playstyle.arcane_ratio > 0:
+            arcane_distribution = calc_arcane_distribution(self.playstyle)
+            arcane_distribution = [1 if x == 0 else x for x in arcane_distribution]
+
         keyword_distribution = calc_keyword_distribution(self.playstyle)
         card_type_distribution = calc_card_type_distribution(self.playstyle)
         card_color_distribution = calc_card_color_distribution(self.playstyle)
@@ -138,6 +154,13 @@ class Deck:
 
         indices = list(range(len(self.cards)))
         random.shuffle(indices)
+
+        if self.playstyle.arcane_ratio > 0:
+            arcane_indices = list(
+                range(int(len(self.cards) * self.playstyle.arcane_ratio))
+            )
+            random.shuffle(arcane_indices)
+
         for i, card in enumerate(self.cards):
             card.color = card_color_distribution[indices[i]]
             card.physical = physical_distribution[indices[i]]
@@ -145,10 +168,12 @@ class Deck:
             card.card_type = card_type_distribution[indices[i]]
             card.card_class = card_class_distribution[indices[i]]
 
-            card.calc_card_values()
+            if self.playstyle.arcane_ratio > 0:
+                if card.card_type != CardType.defensive_reaction:
+                    if len(arcane_distribution) > 0:
+                        card.arcane = arcane_distribution.pop()
 
-        if self.playstyle.arcane_ratio > 0:
-            create_arcane_cards(self.cards, self.playstyle.arcane_ratio)
+            card.calc_card_values()
 
         # print("deck contents:")
         # for i, c in enumerate(self.cards):

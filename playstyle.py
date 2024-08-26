@@ -56,14 +56,14 @@ def get_playstyle(player_class):
 
 
 class Talent(Enum):
-    light = 0
-    shadow = 1
-    draconic = 2
-    royal = 3
-    draconic_illusionist = 4
-    elemental_lightning = 5
-    elemental_ice = 6
-    elemental_earth = 7
+    no_talent = 0
+    light = 1
+    shadow = 2
+    draconic = 3
+    royal = 4
+    lightning = 6
+    ice = 7
+    earth = 8
 
 
 class Keyword(Enum):
@@ -96,7 +96,7 @@ class CardType(Enum):
 
 class Playstyle:
     def __init__(self):
-        self.strategy_parameters = {"mu": 4, "sigma": 3}
+        self.physical_parameters = {"mu": 4, "sigma": 3}
         self.card_type_ratios = {
             "non_attack_action": 15,
             "attack_action": 60,
@@ -110,6 +110,8 @@ class Playstyle:
         }
 
         self.arcane_ratio = 0
+        if self.arcane_ratio > 0:
+            self.arcane_parameters = {"mu": 2, "sigma": 2}
 
         self.pitch_ratios = {
             CardColor.red: 33,
@@ -130,7 +132,7 @@ class NinjaBasic(Playstyle):
     def __init__(self):
         super().__init__()
 
-        self.strategy_parameters = {"mu": 4, "sigma": 3}
+        self.physical_parameters = {"mu": 4, "sigma": 3}
         self.keywords = [Keyword.go_again, Keyword.combo]
         self.keyword_ratios = {"go_again": 70, "combo": 30}
 
@@ -151,7 +153,7 @@ class NinjaBasic(Playstyle):
 class RangerBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 7, "sigma": 4}
+        self.physical_parameters = {"mu": 7, "sigma": 4}
         self.keywords = [
             Keyword.go_again,
             Keyword.no_keyword,
@@ -175,7 +177,7 @@ class RangerBasic(Playstyle):
 class BruteBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 6, "sigma": 1}
+        self.physical_parameters = {"mu": 6, "sigma": 1}
         self.keywords = [
             Keyword.go_again,
             Keyword.beat_chest,
@@ -207,7 +209,7 @@ class BruteBasic(Playstyle):
 class MechanologistBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 4, "sigma": 4}
+        self.physical_parameters = {"mu": 4, "sigma": 4}
         self.keywords = [Keyword.boost, Keyword.no_keyword]
         self.keyword_ratios = {"boost": 80, "no_keyword": 20}
 
@@ -231,8 +233,10 @@ class MechanologistBasic(Playstyle):
 class RunebladeBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 6, "sigma": 2}
+        self.physical_parameters = {"mu": 6, "sigma": 2}
         self.arcane_ratio = 0.5
+
+        self.arcane_parameters = {"mu": 2, "sigma": 3}
 
         self.keywords = [Keyword.go_again, Keyword.blood_debt, Keyword.no_keyword]
         self.keyword_ratios = {"go_again": 70, "blood_debt": 10, "no_keyword": 20}
@@ -254,10 +258,11 @@ class RunebladeBasic(Playstyle):
 class WizardBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 3, "sigma": 3}
+        self.physical_parameters = {"mu": 3, "sigma": 3}
         self.keywords = [Keyword.opt, Keyword.go_again, Keyword.no_keyword]
         self.keyword_ratios = {"opt": 50, "go_again": 30, "no_keyword": 20}
         self.arcane_ratio = 0.8
+        self.arcane_parameters = {"mu": 2, "sigma": 1}
         self.pitch_ratios = {
             CardColor.red: 35,
             CardColor.yellow: 20,
@@ -268,7 +273,7 @@ class WizardBasic(Playstyle):
 class WarriorBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 3.5, "sigma": 2}
+        self.physical_parameters = {"mu": 3.5, "sigma": 2}
         self.keywords = [Keyword.charge, Keyword.go_again, Keyword.no_keyword]
         self.keyword_ratios = {"charge": 50, "go_again": 30, "no_keyword": 20}
         self.card_type_ratios = {
@@ -288,7 +293,7 @@ class WarriorBasic(Playstyle):
 class GuardianBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 7, "sigma": 2}
+        self.physical_parameters = {"mu": 7, "sigma": 2}
         self.keywords = [Keyword.dominate, Keyword.no_keyword]
         self.keyword_ratios = {"dominate": 50, "no_keyword": 50}
         self.card_type_ratios = {
@@ -307,7 +312,7 @@ class GuardianBasic(Playstyle):
 class IllusionistBasic(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 4, "sigma": 2}
+        self.physical_parameters = {"mu": 4, "sigma": 2}
 
         self.pitch_ratios = {
             CardColor.red: 25,
@@ -319,7 +324,7 @@ class IllusionistBasic(Playstyle):
 class Aggressive(Playstyle):
     def __init__(self):
         super().__init__()
-        self.strategy_parameters = {"mu": 4, "sigma": 2}
+        self.physical_parameters = {"mu": 4, "sigma": 2}
         self.keywords = [Keyword.go_again, Keyword.dominate, Keyword.no_keyword]
         self.keyword_ratios = {
             "go_again": 65,

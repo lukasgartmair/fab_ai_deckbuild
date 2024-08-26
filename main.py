@@ -20,7 +20,6 @@ random.seed(RND_SEED)
 
 logger = logging.getLogger("root")
 
-
 web = False
 
 

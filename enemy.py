@@ -11,7 +11,7 @@ import itertools
 from deck import Deck
 from pile import Pile
 from enum import Enum
-from playstyle import Keyword, PlayerClass, CardType, get_playstyle
+from playstyle import Keyword, PlayerClass, Talent, CardType, get_playstyle
 from equipment import EquipmentSuite
 from weapon import get_weapons
 import random
@@ -53,7 +53,7 @@ class Enemy:
             self.stance = Stance.attack
 
         self.intellect = 4
-        self.talents = []
+        self.talent = random.choice(list(Talent))
         self.starting_life = 20
         self.hand = []
         self.pile = Pile()
@@ -271,7 +271,7 @@ class Enemy:
             np.random.shuffle(virtual_hand)
 
         # play go agains first with a certain chance
-        if n_chance(p=0.50):
+        if n_chance(p=1):
             virtual_hand = self.order_hand_by_go_again(virtual_hand)
 
         virtual_hand_tmp = virtual_hand.copy()
