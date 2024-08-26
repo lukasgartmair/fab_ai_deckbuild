@@ -13,10 +13,8 @@ from utils import n_chance
 
 
 class Mechanologist(Enemy):
-    def __init__(self):
-        super().__init__()
-
-        self.player_class = PlayerClass.mechanologist
+    def __init__(self, player_class=PlayerClass.mechanologist):
+        super().__init__(player_class=PlayerClass.mechanologist)
 
         self.boost = Boost()
 

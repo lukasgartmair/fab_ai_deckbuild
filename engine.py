@@ -40,7 +40,7 @@ class GameEngine:
     state = None
 
     def __init__(self):
-        self.enemy_class = random.choice(
+        self.player_class = random.choice(
             [
                 p
                 for p in list(PlayerClass)
@@ -48,13 +48,13 @@ class GameEngine:
             ]
         )
 
-        # self.enemy_class = PlayerClass.mechanologist
+        # self.player_class = PlayerClass.mechanologist
 
-        if self.enemy_class == PlayerClass.mechanologist:
+        if self.player_class == PlayerClass.mechanologist:
             self.enemy = Mechanologist()
         else:
-            self.enemy = Enemy()
-        self.enemy_temp = None
+            self.enemy = Enemy(self.player_class)
+
         self.state_machine = GameStateMachine()
         self.level_manager = LevelManager(level=1)
         self.enemy.initialize_play()

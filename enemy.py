@@ -37,10 +37,8 @@ class Stance(Enum):
 class Enemy:
     playKey = None
 
-    def __init__(self, play_key=None):
-        self.player_class = random.choice(
-            [p for p in list(PlayerClass) if p.name != "generic"]
-        )
+    def __init__(self, player_class=PlayerClass.generic):
+        self.player_class = player_class
 
         self.identity = FantasyIdentity(self.player_class)
         self.name = self.identity.name
@@ -485,9 +483,3 @@ class Enemy:
                     best_pitch = k
 
         return best_pitch
-
-
-if __name__ == "__main__":
-    e = Enemy()
-    e.draw()
-    e.calc_combat_chain()
