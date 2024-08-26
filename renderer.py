@@ -77,8 +77,6 @@ class Renderer:
 
         self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
 
-        self.enemy_image = image.load_image(self.engine.enemy.image_path)
-
         self.button_up = pu.button(
             pygame.Color(color_palette.color2),
             grid.left_point(13),
@@ -117,7 +115,7 @@ class Renderer:
 
     def render_enemy(self, color=color_palette.white):
         self.window.blit(
-            self.enemy_image,
+            self.engine.enemy.image,
             (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
         ),
 

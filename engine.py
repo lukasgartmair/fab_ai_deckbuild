@@ -72,7 +72,21 @@ class GameEngine:
 
     def advance_level(self):
         self.win_condition = None
-        self.enemy = Enemy(play_key=pygame.K_SPACE)
+        self.player_class = random.choice(
+            [
+                p
+                for p in list(PlayerClass)
+                if p.name != "generic" and p.name != "mechanologist"
+            ]
+        )
+
+        # self.player_class = PlayerClass.wizard
+
+        if self.player_class == PlayerClass.mechanologist:
+            self.enemy = Mechanologist()
+        else:
+            self.enemy = Enemy(self.player_class)
+
         self.enemy.initialize_play()
         self.state_machine.restart_game()
         self.level_manager.advance_level()

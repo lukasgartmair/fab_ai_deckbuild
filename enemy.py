@@ -25,6 +25,7 @@ import pygame
 
 from lore import lore_dict
 from modifiers import Modifiers
+import image
 
 VALUE_MAX_PLACEHOLDER = 100
 
@@ -46,6 +47,7 @@ class Enemy:
         self.image_path = (
             "images/" + self.player_class.name + "/" + self.identity.image_number
         )
+        self.image = image.load_image(self.image_path)
 
         if n_chance(p=0.5):
             self.stance = Stance.defend
@@ -57,7 +59,7 @@ class Enemy:
         self.starting_life = 20
         self.hand = []
         self.pile = Pile()
-        self.play_key = None
+        self.play_key = pygame.K_SPACE
 
         self.soul = []
 
