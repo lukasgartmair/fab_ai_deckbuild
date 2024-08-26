@@ -21,6 +21,7 @@ from utils import n_chance, shift_list
 from ability import Ability
 from life_counter import LifeCounter
 import pygame
+from boost import Boost
 
 from lore import lore_dict
 from modifiers import Modifiers
@@ -33,30 +34,6 @@ class Stance(Enum):
     attack = 1
 
 
-class Boost:
-    def __init__(self):
-        self.activated = False
-        self.failed = False
-        self.counter = 0
-
-    def increase_counter(self):
-        self.counter += 1
-
-    def move_reset(self):
-        self.activated = False
-        self.failed = False
-
-    def turn_reset(self):
-        self.activated = False
-        self.failed = False
-        self.counter = 0
-
-    def fail(self):
-        self.failed = True
-
-    def activation(self):
-        self.activated = True
-        self.increase_counter()
 
 
 class Enemy:
