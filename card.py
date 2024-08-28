@@ -21,6 +21,7 @@ id_iter = itertools.count()
 
 TARGET_VALUE = 8
 MAX_ATTACK = 6
+MAX_PHYSICAL_ATTACK = 12
 MIN_ATTACK = 2
 
 MAX_CARD_COST = 4

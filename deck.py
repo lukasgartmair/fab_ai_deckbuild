@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from beautifultable import beautifultable
 from playstyle import PlayerClass, CardType, Playstyle
 from settings import DECK_SIZE
-from card import Card, CardColor
+from card import Card, CardColor, MAX_PHYSICAL_ATTACK
 from utils import n_chance
 
 
@@ -23,6 +23,7 @@ def calc_physical_distribution(playstyle_obj, n=DECK_SIZE):
         n,
     )
     s = [np.round(si).astype(int) if si > 0 else 0 for si in s]
+    s = [si if si >= MAX_PHYSICAL_ATTACK else si for si in s]
 
     plot = False
     if plot:

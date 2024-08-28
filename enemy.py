@@ -183,6 +183,12 @@ class Enemy:
             if card.card_type not in [CardType.weapon, CardType.equipment]:
                 self.graveyard.append(card)
 
+            elif card.card_type == CardType.equipment:
+                # TODO
+                card.destroy()
+                if card.destroyed == True:
+                    self.graveyard.append(card)
+
         for pc in self.pitched_cards:
             self.deck.put_to_bottom(pc)
 
@@ -353,7 +359,8 @@ class Enemy:
 
     def remove_played_cards(self):
         for p in self.played_cards:
-            self.remove_card_from_hand(p)
+            if p in self.hand:
+                self.remove_card_from_hand(p)
             if p in self.arsenal:
                 self.arsenal.remove(p)
 
@@ -411,13 +418,15 @@ class Enemy:
                 self.banished_zone["intimidated_cards"].append(random_banished_card)
                 self.hand.remove(random_banished_card)
 
-            if player_attack.arcane is not None:
-                self.block.defend_arcane(player_attack)
-
-            # print(player_attack.physical)
-
-            # self.block.preserve_good_chain()
-            self.block.defend_physical(player_attack)
+            # TODO arcane or physical first?
+            if n_chance(p=0.5):
+                if player_attack.arcane is not None:
+                    self.block.defend_arcane(player_attack)
+                self.block.defend_physical(player_attack)
+            else:
+                self.block.defend_physical(player_attack)
+                if player_attack.arcane is not None:
+                    self.block.defend_arcane(player_attack)
 
             # print(self.block.physical_block_cards)
             if len(self.block.physical_block_cards) > 0:

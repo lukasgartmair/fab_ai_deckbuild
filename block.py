@@ -21,7 +21,7 @@ class Block:
         self.defensive_cards = []
 
         self.physical_block_cards = []
-        
+
         self.arcane_block_cards = []
 
         self.physical_block = 0
@@ -65,18 +65,36 @@ class Block:
 
         np.random.shuffle(self.defensive_cards)
 
-        if self.enemy.survival_mode == False:
-            self.more_elaborate_block_with_unused_cards(player_attack)
-        elif self.enemy.survival_mode == True:
-            self.block_all_physical_damage(player_attack)
+        if player_attack.physical is not None:
+            if self.enemy.survival_mode == False:
+                match player_attack.physical:
+                    case player_attack.physical if player_attack.physical in [1, 2]:
+                        self.block_with_equipment_very_basic()
+                    case player_attack.physical if player_attack.physical > 2:
+                        self.more_elaborate_block_with_unused_cards(player_attack)
+                    case _:
+                        self.more_elaborate_block_with_unused_cards(player_attack)
 
-        self.calc_total_physical_block()
+            elif self.enemy.survival_mode == True:
+                self.block_all_physical_damage(player_attack)
+
+            self.calc_total_physical_block()
 
     def placeholder_block(self):
         if len(self.defensive_cards) > 0:
             return self.defensive_cards[0]
         else:
             return None
+
+    def block_with_equipment_very_basic(self):
+        if len(self.enemy.equipment_suite.get_possible_blocking_pieces_in_play()) > 0:
+            c = sorted(
+                self.enemy.equipment_suite.get_possible_blocking_pieces_in_play(),
+                key=lambda x: x.defense,
+                reverse=False,
+            )[0]
+            c.set_defending()
+            self.physical_block_cards.append(c)
 
     def get_cards_not_intended_to_be_used_in_combat_chain(self):
         unused_cards = [
@@ -101,7 +119,7 @@ class Block:
 
     #     available_arcane_barriers = [
     #         ep
-    #         for ep in self.enemy.equipment_suite.get_pieces()
+    #         for ep in self.enemy.equipment_suite.get_pieces_in_play()
     #         if ep.arcane_barrier > 0
     #     ]
 
@@ -114,7 +132,7 @@ class Block:
     #     diffs = [
     #         abs(player_attack.arcane - ab.arcane_barrier) for ab in available_arcane_barriers
     #     ]
-        
+
     #     min_index = diffs.index(min(diffs))
 
     #     self.arcane_block_cards
@@ -122,40 +140,12 @@ class Block:
     #     # TODO
     #     pass
 
-        match player_attack.arcane:
-            case player_attack.arcane if player_attack.arcane == 1 or 2:
-                print("defending one arcane attack")
-                if self.enemy.floating_resources > 0:
-                    self.enemy.use_floating_resources(player_attack.arcane)
-                    self.increase_arcane_block_balance(amount=player_attack.arcane)
-                else:
-                    if len(unused_cards) > 0:
-                        unused_cards = sorted(
-                            unused_cards, key=lambda x: x.pitch, reverse=False
-                        )
-                        card = unused_cards[0]
-                        pitch_value = card.pitch
-
-                    elif len(self.enemy.hand) > 0:
-                        sorted_hand = sorted(
-                            self.enemy.hand, key=lambda x: x.pitch, reverse=False
-                        )
-
-                        card = sorted_hand[0]
-                        pitch_value = card.pitch
-
-                    self.enemy.pitch_card(card)
-                    self.enemy.use_floating_resources(player_attack.arcane)
-                    self.increase_arcane_block_balance(amount=pitch_value)
-
     def defend_arcane(self, player_attack):
         print("DEFENDING ARCANE")
 
         unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
         # print(self.enemy.combat_chain)
         # print(unused_cards)
-
-        # TODO INCLUDE ABS FROM EQUIPMENT
 
         match player_attack.arcane:
             case player_attack.arcane if player_attack.arcane == 1 or 2:
@@ -306,5 +296,3 @@ class Block:
                     self.physical_block_cards = self.defensive_cards[:4]
                 case _:
                     self.physical_block_cards = []
-        else:
-            self.physical_block_cards = []

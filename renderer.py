@@ -200,24 +200,20 @@ class Renderer:
         )
 
     def render_weapons(self):
-        weapons_to_render = [
-            w
-            for w in self.engine.enemy.weapons
-            if w not in self.engine.enemy.played_cards
-        ]
-        for i, w in enumerate(weapons_to_render):
-            if w.weapon_id == 0:
-                self.render_card(
-                    w,
-                    x=grid.left_point(grid_width // 2 - 1) - card_width,
-                    y=grid.top_point(grid_height * 0.65),
-                )
-            else:
-                self.render_card(
-                    w,
-                    x=grid.left_point(grid_width // 2 - 1) + card_width,
-                    y=grid.top_point(grid_height * 0.65),
-                )
+        for i, w in enumerate(self.engine.enemy.weapons):
+            if w not in self.engine.enemy.played_cards:
+                if w.weapon_id == 0:
+                    self.render_card(
+                        w,
+                        x=grid.left_point(grid_width // 2 - 1) - card_width,
+                        y=grid.top_point(grid_height * 0.65),
+                    )
+                else:
+                    self.render_card(
+                        w,
+                        x=grid.left_point(grid_width // 2 - 1) + card_width,
+                        y=grid.top_point(grid_height * 0.65),
+                    )
 
     def render_no_moves_left(self):
         message = ""
@@ -356,8 +352,14 @@ class Renderer:
         )
 
     def render_equipment(self):
-        for i, eq in enumerate(self.engine.enemy.equipment_suite.get_pieces()):
-            self.render_card(eq, x=grid.left_point(i), y=grid.top_point(12 + i))
+        for i, eq in enumerate(self.engine.enemy.equipment_suite.get_pieces_in_play()):
+            if eq not in self.engine.enemy.played_cards:
+                self.render_card(
+                    eq,
+                    x=grid.left_point(eq.equipment_type.value)
+                    + eq.equipment_type.value * 2,
+                    y=grid.top_point(12),
+                )
 
     def render_boost_counter(self):
         # print(self.engine.enemy.boost_counter)
