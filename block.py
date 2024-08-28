@@ -21,6 +21,8 @@ class Block:
         self.defensive_cards = []
 
         self.physical_block_cards = []
+        
+        self.arcane_block_cards = []
 
         self.physical_block = 0
         self.arcane_block = 0
@@ -92,23 +94,33 @@ class Block:
         )
         return unused_cards
 
-    def defend_arcane_with_equipment(self, player_attack):
-        print("DEFENDING ARCANE")
+    # def defend_arcane_with_equipment(self, player_attack):
+    #     print("DEFENDING ARCANE")
 
-        unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
+    #     unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
 
-        available_arcane_barriers = [
-            ep
-            for ep in self.enemy.equipment_suite.get_pieces()
-            if ep.arcane_barrier > 0
-        ]
+    #     available_arcane_barriers = [
+    #         ep
+    #         for ep in self.enemy.equipment_suite.get_pieces()
+    #         if ep.arcane_barrier > 0
+    #     ]
 
-        diffs = [
-            player_attack.arcane - ab.arcane_barrier for ab in available_arcane_barriers
-        ]
+    #     match player_attack.arcane:
+    #         case player_attack.arcane if player_attack.arcane == 1:
+    #             matching_barriers = [a for a in available_arcane_barriers if a.arcane_barrier == 1]
+    #             if len(matching_barriers) > 0:
+    #                 self.arcane_block_cards.append()
 
-        # TODO
-        pass
+    #     diffs = [
+    #         abs(player_attack.arcane - ab.arcane_barrier) for ab in available_arcane_barriers
+    #     ]
+        
+    #     min_index = diffs.index(min(diffs))
+
+    #     self.arcane_block_cards
+
+    #     # TODO
+    #     pass
 
         match player_attack.arcane:
             case player_attack.arcane if player_attack.arcane == 1 or 2:
