@@ -18,6 +18,7 @@ from analyzer import GlobalAnalyzer
 import random
 from playstyle import PlayerClass
 from mechanologist import Mechanologist
+import sound
 
 
 class WinCondition(Enum):

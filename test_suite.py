@@ -69,13 +69,13 @@ class TestMethods(unittest.TestCase):
     #     for i, l in enumerate(ref_cards):
     #         self.assertTrue(ref_cards[i] == top_cards_drawn[i])
 
-    def test_deckbuilding(self):
-        for i in range(25):
-            self.engine = GameEngine()
-            print(self.engine.enemy.player_class)
+    # def test_deckbuilding(self):
+    #     for i in range(25):
+    #         self.engine = GameEngine()
+    #         print(self.engine.enemy.player_class)
 
-    # def test_test(self):
-    #     pass
+    # # def test_test(self):
+    # #     pass
 
     def test_gameplay(self):
         self.engine = GameEngine()

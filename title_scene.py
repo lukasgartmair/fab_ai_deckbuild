@@ -11,6 +11,7 @@ from scene_base import SceneBase
 import scene_manager
 from game import Game
 from colors import color_palette
+from sound import Sound
 
 
 class TitleScene(SceneBase):
@@ -18,6 +19,10 @@ class TitleScene(SceneBase):
         super().__init__(*kargs)
         # print("Title Scene")
         self.skip = False
+
+        self.game_sound = Sound()
+
+        self.game_sound.play_intro_music()
 
     def process_input(self, events):
         if self.skip:
@@ -35,6 +40,7 @@ class TitleScene(SceneBase):
                 if event.type == pygame.KEYDOWN and (
                     event.key == pygame.K_RETURN or event.key == pygame.K_SPACE
                 ):
+                    self.game_sound.stop_intro_music()
                     self.switch_to_scene(
                         scene_manager.get_game_scene(self.engine, self.renderer)
                     )

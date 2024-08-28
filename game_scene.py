@@ -13,6 +13,7 @@ import scene_manager
 from enemy import Stance
 from playstyle import PlayerClass
 from game import Game
+from sound import Sound
 
 
 class GameScene(SceneBase):
@@ -24,6 +25,8 @@ class GameScene(SceneBase):
             self.renderer.input_box_physical,
             self.renderer.input_box_arcane,
         ]
+
+        game_sound = Sound()
 
     def process_input(self, events):
         for event in events:
