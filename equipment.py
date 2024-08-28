@@ -45,6 +45,7 @@ class EquipmentPiece(Card):
     def set_defending(self):
         self.is_defending = True
 
+
 class EquipmentSuite:
     def __init__(self):
         self.head = EquipmentPiece(EquipmentType.head)
