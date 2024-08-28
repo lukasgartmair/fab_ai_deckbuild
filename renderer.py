@@ -12,7 +12,7 @@ from card import card_colors
 from check_box import CheckBox
 from enemy import Stance
 from input_box import InputBox
-from playstyle import Keyword
+from playstyle import Keyword, CardType
 from colors import color_palette
 from card import CardColor
 from utils import blit_text
@@ -355,6 +355,10 @@ class Renderer:
             ),
         )
 
+    def render_equipment(self):
+        for i, eq in enumerate(self.engine.enemy.equipment_suite.get_pieces()):
+            self.render_card(eq, x=grid.left_point(i), y=grid.top_point(12 + i))
+
     def render_boost_counter(self):
         # print(self.engine.enemy.boost_counter)
         if self.engine.enemy.player_class == PlayerClass.mechanologist:
@@ -386,8 +390,6 @@ class Renderer:
         )
 
     def render_card(self, current_card, i=0, x=None, y=None):
-        # offset_factor = 10*i if i != 0 else 0
-
         if y is None:
             vert_card_grid_point = grid.top_point(6)
             vert_pos = vert_card_grid_point
@@ -399,10 +401,18 @@ class Renderer:
             hor_pos = grid.left_point(hor_card_grid_point)
         else:
             hor_pos = x
-        current_card.image = pygame.transform.scale(
-            current_card.image,
-            (int(card_width * card_scale), int(card_height * card_scale)),
-        )
+
+        if current_card.card_type not in [CardType.equipment]:
+            current_card.image = pygame.transform.scale(
+                current_card.image,
+                (int(card_width * card_scale), int(card_height * card_scale)),
+            )
+        else:
+            current_card.image = pygame.transform.scale(
+                current_card.image,
+                (int(card_width * card_scale // 2), int(card_height * card_scale // 2)),
+            )
+
         self.window.blit(current_card.image, (hor_pos, vert_pos))
 
         # NAME
@@ -504,17 +514,18 @@ class Renderer:
         )
 
         # POWER
-        text = font.render(
-            str(current_card.physical), True, pygame.Color(color_palette.white)
-        )
+        if current_card.card_type not in [CardType.equipment]:
+            text = font.render(
+                str(current_card.physical), True, pygame.Color(color_palette.white)
+            )
 
-        self.window.blit(
-            text,
-            (
-                hor_pos,
-                vert_pos + card_height // 2 + rect_height * 4,
-            ),
-        )
+            self.window.blit(
+                text,
+                (
+                    hor_pos,
+                    vert_pos + card_height // 2 + rect_height * 4,
+                ),
+            )
 
         # ARCANE POWER
         if current_card.arcane > 0:
@@ -533,42 +544,61 @@ class Renderer:
             )
 
         # DEFENSE
-        text = font.render(
-            str(current_card.defense), True, pygame.Color(color_palette.black)
-        )
+        if current_card.card_type not in [CardType.weapon]:
+            text = font.render(
+                str(current_card.defense), True, pygame.Color(color_palette.black)
+            )
 
-        self.window.blit(
-            text,
-            (
-                hor_pos + card_width // 1.7,
-                vert_pos + card_height // 2 + rect_height * 4,
-            ),
-        )
+            self.window.blit(
+                text,
+                (
+                    hor_pos + card_width // 1.7,
+                    vert_pos + card_height // 2 + rect_height * 4,
+                ),
+            )
 
         # PITCH
-        text = font.render(
-            str(current_card.pitch), True, card_colors[current_card.color.name]
-        )
+        if current_card.card_type not in [CardType.weapon, CardType.equipment]:
+            text = font.render(
+                str(current_card.pitch), True, card_colors[current_card.color.name]
+            )
 
-        self.window.blit(
-            text,
-            (
-                hor_pos,
-                vert_pos - rect_height * 2,
-            ),
-        )
+            self.window.blit(
+                text,
+                (
+                    hor_pos,
+                    vert_pos - rect_height * 2,
+                ),
+            )
+        # ARCANE BARRIER
+        elif current_card.card_type in [CardType.equipment]:
+            if current_card.arcane_barrier > 0:
+                text = font_card_title.render(
+                    "Arcane Barrier " + str(current_card.arcane_barrier),
+                    True,
+                    color_palette.black,
+                )
+
+                self.window.blit(
+                    text,
+                    (
+                        hor_pos,
+                        vert_pos - rect_height * 2,
+                    ),
+                )
 
         # COST
-        text = font.render(
-            str(current_card.cost), True, pygame.Color(color_palette.color2)
-        )
-        self.window.blit(
-            text,
-            (
-                hor_pos + card_width // 1.7,
-                vert_pos - rect_height * 2,
-            ),
-        )
+        if current_card.card_type not in [CardType.equipment]:
+            text = font.render(
+                str(current_card.cost), True, pygame.Color(color_palette.color2)
+            )
+            self.window.blit(
+                text,
+                (
+                    hor_pos + card_width // 1.7,
+                    vert_pos - rect_height * 2,
+                ),
+            )
 
     def render_enemy_life_counter(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:

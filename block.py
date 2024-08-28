@@ -92,6 +92,50 @@ class Block:
         )
         return unused_cards
 
+    def defend_arcane_with_equipment(self, player_attack):
+        print("DEFENDING ARCANE")
+
+        unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
+
+        available_arcane_barriers = [
+            ep
+            for ep in self.enemy.equipment_suite.get_pieces()
+            if ep.arcane_barrier > 0
+        ]
+
+        diffs = [
+            player_attack.arcane - ab.arcane_barrier for ab in available_arcane_barriers
+        ]
+
+        # TODO
+        pass
+
+        match player_attack.arcane:
+            case player_attack.arcane if player_attack.arcane == 1 or 2:
+                print("defending one arcane attack")
+                if self.enemy.floating_resources > 0:
+                    self.enemy.use_floating_resources(player_attack.arcane)
+                    self.increase_arcane_block_balance(amount=player_attack.arcane)
+                else:
+                    if len(unused_cards) > 0:
+                        unused_cards = sorted(
+                            unused_cards, key=lambda x: x.pitch, reverse=False
+                        )
+                        card = unused_cards[0]
+                        pitch_value = card.pitch
+
+                    elif len(self.enemy.hand) > 0:
+                        sorted_hand = sorted(
+                            self.enemy.hand, key=lambda x: x.pitch, reverse=False
+                        )
+
+                        card = sorted_hand[0]
+                        pitch_value = card.pitch
+
+                    self.enemy.pitch_card(card)
+                    self.enemy.use_floating_resources(player_attack.arcane)
+                    self.increase_arcane_block_balance(amount=pitch_value)
+
     def defend_arcane(self, player_attack):
         print("DEFENDING ARCANE")
 

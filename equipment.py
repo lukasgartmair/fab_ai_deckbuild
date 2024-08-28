@@ -7,6 +7,11 @@ Created on Sun Aug  4 13:45:02 2024
 """
 
 from enum import Enum
+from card import Card
+from playstyle import CardType
+import random
+
+arcane_barriers = [0] * 3 + [1] * 2 + [2]
 
 
 class EquipmentType(Enum):
@@ -16,20 +21,21 @@ class EquipmentType(Enum):
     legs = 3
 
 
-class Keyword(Enum):
+class EquipmentKeyword(Enum):
     battleworn = 0
     blade_break = 1
     cloaked = 2
-    none = 3
 
 
-class EquipmentPiece:
+class EquipmentPiece(Card):
     def __init__(self, equipment_type):
+        super().__init__()
         self.equipment_type = equipment_type
-        self.defensive_value = 1
-        self.arcane_barrier = 2
-        self.keywords = []
+        self.arcane_barrier = random.choice(arcane_barriers)
+        self.keywords = [EquipmentKeyword.blade_break]
         self.destroyed = False
+        self.card_class = self.equipment_type
+        self.card_type = CardType.equipment
 
 
 class EquipmentSuite:
@@ -39,5 +45,5 @@ class EquipmentSuite:
         self.arms = EquipmentPiece(EquipmentType.arms)
         self.legs = EquipmentPiece(EquipmentType.legs)
 
-    def get_equipment_pieces(self):
+    def get_pieces(self):
         return [self.head, self.chest, self.arms, self.legs]

@@ -161,6 +161,8 @@ class GameScene(SceneBase):
 
             self.renderer.render_no_moves_left()
 
+            self.renderer.render_equipment()
+
             if self.engine.enemy.stance == Stance.defend:
                 for inp_box in self.input_boxes:
                     inp_box.render()

@@ -95,7 +95,7 @@ class Enemy:
         self.modifiers = Modifiers()
 
         self.arcane_barrier_total = sum(
-            [e.arcane_barrier for e in self.equipment_suite.get_equipment_pieces()]
+            [e.arcane_barrier for e in self.equipment_suite.get_pieces()]
         )
 
         self.ability = Ability()
