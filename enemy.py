@@ -94,10 +94,6 @@ class Enemy:
 
         self.modifiers = Modifiers()
 
-        self.arcane_barrier_total = sum(
-            [e.arcane_barrier for e in self.equipment_suite.get_pieces()]
-        )
-
         self.ability = Ability()
 
         self.life_counter = LifeCounter(self.starting_life)
@@ -184,7 +180,8 @@ class Enemy:
         self.reset_play()
 
         for card in self.played_cards:
-            self.graveyard.append(card)
+            if card.card_type not in [CardType.weapon, CardType.equipment]:
+                self.graveyard.append(card)
 
         for pc in self.pitched_cards:
             self.deck.put_to_bottom(pc)
