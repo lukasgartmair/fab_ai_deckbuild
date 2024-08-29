@@ -21,7 +21,7 @@ from utils import n_chance, shift_list
 from ability import Ability
 from life_counter import LifeCounter
 import pygame
-
+from sound import Sound
 
 from lore import lore_dict
 from modifiers import Modifiers
@@ -109,6 +109,8 @@ class Enemy:
         self.survival_mode = False
         self.check_if_in_survival_mode()
 
+        self.sound = Sound()
+
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
             self.survival_mode = True
@@ -158,6 +160,8 @@ class Enemy:
             self.calc_combat_chain()
             # print("combat_chain")
             # print(self.combat_chain)
+
+            self.sound.play_change_stance_to_attack()
 
         elif self.stance == Stance.attack:
             if self.arsenal_empty():
@@ -246,8 +250,8 @@ class Enemy:
 
                 if type(drawn_cards) is list:
                     self.hand += drawn_cards
-                else:
-                    self.hand.append(drawn_cards)
+
+                self.sound.play_draw_cards(n_cards=len(drawn_cards))
 
         else:
             print("can't draw anymore, deck fatigued")
@@ -378,6 +382,8 @@ class Enemy:
         self.use_action_points()
         self.handle_go_again(c)
 
+        self.sound.play_attack()
+
         return c
 
     def attack(self):
@@ -426,6 +432,7 @@ class Enemy:
             else:
                 self.block.defend_physical(player_attack)
                 if player_attack.arcane is not None:
+                    self.sound.play_flip_card()
                     self.block.defend_arcane(player_attack)
 
             # print(self.block.physical_block_cards)
@@ -437,6 +444,8 @@ class Enemy:
 
                 # print("banished zone")
                 # print(self.banished_zone)
+
+                self.sound.play_block()
 
                 for bc in self.block.physical_block_cards:
                     # print(bc)

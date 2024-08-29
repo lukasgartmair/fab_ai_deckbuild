@@ -26,7 +26,7 @@ class GameScene(SceneBase):
             self.renderer.input_box_arcane,
         ]
 
-        game_sound = Sound()
+        self.pygamegame_sound = Sound()
 
     def process_input(self, events):
         for event in events:

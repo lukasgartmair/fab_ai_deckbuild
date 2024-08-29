@@ -128,7 +128,7 @@ class Deck:
 
     def draw_top_cards(self, n=1):
         if n == 1:
-            return self.cards.pop()
+            return [self.cards.pop()]
         else:
             drawn_cards = self.cards[-n:].copy()
             self.cards = self.cards[:-n]
