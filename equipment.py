@@ -31,7 +31,7 @@ class EquipmentPiece(Card):
     def __init__(self, equipment_type):
         super().__init__()
         self.equipment_type = equipment_type
-        self.defense = random.randint(0, 3)
+        self.defense = random.randint(0, 2)
         self.arcane_barrier = random.choice(arcane_barriers)
         self.keywords = [EquipmentKeyword.blade_break]
         self.destroyed = False
@@ -39,11 +39,24 @@ class EquipmentPiece(Card):
         self.card_class = self.equipment_type
         self.card_type = CardType.equipment
 
+    def remove_defense(self, amount=1):
+        self.defense -= amount
+
     def destroy(self):
         self.destroyed = True
 
+    def check_destruction(self):
+        if self.defense == 0:
+            self.destroy()
+
     def set_defending(self):
         self.is_defending = True
+
+    def finish_defensive_turn(self):
+        self.remove_defense()
+        self.check_destruction()
+        if self.destroyed == False:
+            self.is_defending = False
 
 
 class EquipmentSuite:

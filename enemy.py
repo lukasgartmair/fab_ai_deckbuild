@@ -188,8 +188,7 @@ class Enemy:
                 self.graveyard.append(card)
 
             elif card.card_type == CardType.equipment:
-                # TODO
-                card.destroy()
+                card.finish_defensive_turn()
                 if card.destroyed == True:
                     self.graveyard.append(card)
 

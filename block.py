@@ -69,7 +69,17 @@ class Block:
             if self.enemy.survival_mode == False:
                 match player_attack.physical:
                     case player_attack.physical if player_attack.physical in [1, 2]:
-                        self.block_with_equipment_very_basic()
+                        if (
+                            player_attack.physical == 2
+                            and len(
+                                self.enemy.equipment_suite.get_possible_blocking_pieces_in_play()
+                            )
+                            == 0
+                        ):
+                            self.more_elaborate_block_with_unused_cards(player_attack)
+                        else:
+                            self.block_with_equipment_very_basic()
+
                     case player_attack.physical if player_attack.physical > 2:
                         self.more_elaborate_block_with_unused_cards(player_attack)
                     case _:
