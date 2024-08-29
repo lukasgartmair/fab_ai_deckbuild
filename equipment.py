@@ -7,9 +7,10 @@ Created on Sun Aug  4 13:45:02 2024
 """
 
 from enum import Enum
-from card import Card
+from card import Card, generate_rnd_image, img_to_surfarray
 from playstyle import CardType
 import random
+from settings import CARD_RESOLUTION
 
 arcane_barriers = [0] * 3 + [1] * 2 + [2]
 
@@ -24,20 +25,21 @@ class EquipmentType(Enum):
 class EquipmentKeyword(Enum):
     battleworn = 0
     blade_break = 1
-    cloaked = 2
+    # cloaked = 2
 
 
 class EquipmentPiece(Card):
     def __init__(self, equipment_type):
-        super().__init__()
+        super().__init__(card_resolution=CARD_RESOLUTION)
         self.equipment_type = equipment_type
         self.defense = random.randint(0, 2)
         self.arcane_barrier = random.choice(arcane_barriers)
-        self.keywords = [EquipmentKeyword.blade_break]
+        self.keywords = [random.choice(list(EquipmentKeyword))]
         self.destroyed = False
         self.is_defending = False
         self.card_class = self.equipment_type
         self.card_type = CardType.equipment
+        self.image = img_to_surfarray(generate_rnd_image(size=CARD_RESOLUTION))
 
     def remove_defense(self, amount=1):
         self.defense -= amount
@@ -53,10 +55,13 @@ class EquipmentPiece(Card):
         self.is_defending = True
 
     def finish_defensive_turn(self):
-        self.remove_defense()
-        self.check_destruction()
-        if self.destroyed == False:
-            self.is_defending = False
+        if EquipmentKeyword.blade_break in self.keywords:
+            self.destroy()
+        elif EquipmentKeyword.battleworn in self.keywords:
+            self.remove_defense()
+            self.check_destruction()
+            if self.destroyed == False:
+                self.is_defending = False
 
 
 class EquipmentSuite:

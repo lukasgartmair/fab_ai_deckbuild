@@ -11,9 +11,16 @@ import random
 import matplotlib.pyplot as plt
 from beautifultable import beautifultable
 from playstyle import PlayerClass, CardType, Playstyle
-from settings import DECK_SIZE
-from card import Card, CardColor, MAX_PHYSICAL_ATTACK
+from settings import DECK_SIZE, CARD_RESOLUTION
+from card import (
+    Card,
+    CardColor,
+    MAX_PHYSICAL_ATTACK,
+    generate_rnd_image,
+    img_to_surfarray,
+)
 from utils import n_chance
+from multiprocessing import Pool, cpu_count
 
 
 def calc_physical_distribution(playstyle_obj, n=DECK_SIZE):
@@ -99,6 +106,33 @@ def calc_card_class_distribution(playstyle_obj, n=DECK_SIZE):
     return sampled_card_classes
 
 
+def calc_card_images(n=DECK_SIZE):
+    results = []
+    for i in range(n):
+        results.append(generate_rnd_image(size=CARD_RESOLUTION))
+    return results
+
+
+# def calc_card_images_pool(n=DECK_SIZE):
+#     card_images = calc_card_images()
+#     return [img_to_surfarray(r) for r in card_images]
+
+
+def calc_card_images_pool(n=DECK_SIZE):
+    results = []
+    n_pools = cpu_count()
+    with Pool(n_pools) as p:
+        results = p.map(
+            calc_card_images, [np.ceil(DECK_SIZE / n_pools).astype(int)] * n_pools
+        )
+
+    r2 = []
+    for r in results:
+        for ri in r:
+            r2.append(img_to_surfarray(ri))
+    return r2[:DECK_SIZE]
+
+
 class Deck:
     def __init__(
         self,
@@ -119,6 +153,8 @@ class Deck:
         self.calc_stats()
 
         self.print_stats()
+
+        calc_card_images()
 
     def shuffle(self):
         np.random.shuffle(self.cards)
@@ -150,6 +186,8 @@ class Deck:
         card_color_distribution = calc_card_color_distribution(self.playstyle)
         card_class_distribution = calc_card_class_distribution(self.playstyle)
 
+        card_images = calc_card_images_pool()
+
         self.cards = [
             Card(card_resolution=self.card_resolution) for n in range(self.n_cards)
         ]
@@ -173,6 +211,7 @@ class Deck:
             card.keywords = [keyword_distribution[indices[i]]]
             card.card_type = card_type_distribution[indices[i]]
             card.card_class = card_class_distribution[indices[i]]
+            card.image = card_images[indices[i]]
 
             if self.playstyle.arcane_ratio > 0:
                 if card.card_type != CardType.defensive_reaction:

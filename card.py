@@ -38,6 +38,10 @@ def generate_rnd_image(size):
     img_size = (size, size)
     img = get_random_image(img_size)
     img = 255 * img / img.max()
+    return img
+
+
+def img_to_surfarray(img):
     return pygame.surfarray.make_surface(img)
 
 
@@ -72,7 +76,7 @@ class Card:
         self.color = CardColor.red
         self.keywords = []
         self.card_resolution = card_resolution
-        self.image = generate_rnd_image(card_resolution)
+        self.image = None
 
         self.x = None
         self.y = None

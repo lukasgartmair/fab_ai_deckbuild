@@ -16,7 +16,7 @@ from randimage import get_random_image
 from settings import CARD_RESOLUTION
 from playstyle import Keyword
 from utils import n_chance
-from card import Card, CardColor
+from card import Card, CardColor, generate_rnd_image, img_to_surfarray
 
 r = RandomWord()
 
@@ -30,14 +30,6 @@ def generate_rnd_name():
         ends_with="er",
     )
     return rnd_word
-
-
-def generate_rnd_image():
-    size = CARD_RESOLUTION
-    img_size = (size, size)
-    img = get_random_image(img_size)
-    img = 100 * img / img.max()
-    return pygame.surfarray.make_surface(img)
 
 
 class HandOccupation(Enum):
@@ -66,6 +58,8 @@ class Weapon(Card):
 
         self.name = generate_rnd_name()
 
+        self.image = img_to_surfarray(generate_rnd_image(size=CARD_RESOLUTION))
+
         self.card_class = self.weapon_type
 
         self.physical = playstyle_obj.weapon_physical
@@ -86,8 +80,6 @@ class Weapon(Card):
                 self.cost = 2
             case power if 7 <= power:
                 self.cost = 3
-
-        self.image = generate_rnd_image()
 
         self.color = CardColor.red
         self.card_type = CardType.weapon

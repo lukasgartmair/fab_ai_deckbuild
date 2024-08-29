@@ -66,7 +66,7 @@ class Renderer:
 
         self.engine = engine
 
-        self.background = pygame.image.load("images/backgrounds/background.png")
+        self.background = pygame.image.load("images/backgrounds/background4.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )
@@ -392,16 +392,10 @@ class Renderer:
         )
 
     def render_card_image(self, card):
-        if card.card_type not in [CardType.equipment]:
-            card.image = pygame.transform.scale(
-                card.image,
-                (int(card_width * card_scale), int(card_height * card_scale)),
-            )
-        else:
-            card.image = pygame.transform.scale(
-                card.image,
-                (int(card_width * card_scale // 2), int(card_height * card_scale // 2)),
-            )
+        card.image = pygame.transform.scale(
+            card.image,
+            (int(card_width * card_scale), int(card_height * card_scale)),
+        )
 
         self.window.blit(card.image, (card.x, card.y))
 
@@ -606,8 +600,8 @@ class Renderer:
 
         if card.card_type not in [CardType.weapon]:
             self.render_defense(card)
-
-        self.render_card_pitch(card)
+        if card.card_type not in [CardType.equipment]:
+            self.render_card_pitch(card)
 
         if card.card_type not in [CardType.weapon, CardType.equipment]:
             self.render_card_pitch(card)
