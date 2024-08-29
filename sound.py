@@ -26,24 +26,22 @@ def play_sound(path, loop=0):
 class Sound:
     def __init__(self):
         pygame.mixer.init()
-        pygame.mixer.music.set_volume(VOLUME)
 
-    # def play_background_music(self):
-    #     pygame.mixer.music.set_volume(VOLUME)
-    #     pygame.mixer.music.load("sounds/live_for_the_kill.mp3")
-    #     pygame.mixer.music.play(loops=-1)
+        self.intro_music = pygame.mixer.Sound("sounds/intro_music.mp3")
+
+        self.intro_music_channel = pygame.mixer.Channel(0)
+        self.intro_music_channel.set_volume(VOLUME)
 
     def play_intro_music(self):
-        pygame.mixer.music.set_volume(VOLUME)
-        pygame.mixer.music.load("sounds/intro_music.mp3")
-        pygame.mixer.music.play(loops=-1)
+        self.intro_music_channel.play(self.intro_music, loops=-1)
         # Demented Nightmare by Darren Curtis | https://www.darrencurtismusic.com/
         # Music promoted by https://www.chosic.com/free-music/all/
         # Creative Commons CC BY 3.0
         # https://creativecommons.org/licenses/by/3.0/
 
     def stop_intro_music(self):
-        pygame.mixer.stop()
+        print("stopping")
+        self.intro_music_channel.fadeout(3000)
 
     def draw_card(self):
         draw_card_path = "sounds/place_settlement.wav"

@@ -502,18 +502,15 @@ class Renderer:
         )
 
     def render_power(self, card):
-        if card.card_type not in [CardType.equipment]:
-            text = font.render(
-                str(card.physical), True, pygame.Color(color_palette.white)
-            )
+        text = font.render(str(card.physical), True, pygame.Color(color_palette.white))
 
-            self.window.blit(
-                text,
-                (
-                    card.x,
-                    card.y + card_height // 2 + rect_height * 4,
-                ),
-            )
+        self.window.blit(
+            text,
+            (
+                card.x,
+                card.y + card_height // 2 + rect_height * 4,
+            ),
+        )
 
     def render_arcane_power(self, card):
         if card.arcane > 0:
@@ -532,22 +529,34 @@ class Renderer:
             )
 
     def render_defense(self, card):
-        if card.card_type not in [CardType.weapon]:
-            text = font.render(
-                str(card.defense), True, pygame.Color(color_palette.black)
-            )
+        text = font.render(str(card.defense), True, pygame.Color(color_palette.black))
 
-            self.window.blit(
-                text,
-                (
-                    card.x + card_width // 1.7,
-                    card.y + card_height // 2 + rect_height * 4,
-                ),
-            )
+        self.window.blit(
+            text,
+            (
+                card.x + card_width // 1.7,
+                card.y + card_height // 2 + rect_height * 4,
+            ),
+        )
 
     def render_card_pitch(self, card):
-        if card.card_type not in [CardType.weapon, CardType.equipment]:
-            text = font.render(str(card.pitch), True, card_colors[card.color.name])
+        text = font.render(str(card.pitch), True, card_colors[card.color.name])
+
+        self.window.blit(
+            text,
+            (
+                card.x,
+                card.y - rect_height * 2,
+            ),
+        )
+
+    def render_arcane_barrier(self, card):
+        if card.arcane_barrier > 0:
+            text = font_card_title.render(
+                "Arcane Barrier " + str(card.arcane_barrier),
+                True,
+                color_palette.black,
+            )
 
             self.window.blit(
                 text,
@@ -557,33 +566,15 @@ class Renderer:
                 ),
             )
 
-    def render_arcane_barrier(self, card):
-        if card.card_type in [CardType.equipment]:
-            if card.arcane_barrier > 0:
-                text = font_card_title.render(
-                    "Arcane Barrier " + str(card.arcane_barrier),
-                    True,
-                    color_palette.black,
-                )
-
-                self.window.blit(
-                    text,
-                    (
-                        card.x,
-                        card.y - rect_height * 2,
-                    ),
-                )
-
     def render_cost(self, card):
-        if card.card_type not in [CardType.equipment]:
-            text = font.render(str(card.cost), True, pygame.Color(color_palette.color2))
-            self.window.blit(
-                text,
-                (
-                    card.x + card_width // 1.7,
-                    card.y - rect_height * 2,
-                ),
-            )
+        text = font.render(str(card.cost), True, pygame.Color(color_palette.color2))
+        self.window.blit(
+            text,
+            (
+                card.x + card_width // 1.7,
+                card.y - rect_height * 2,
+            ),
+        )
 
     def render_card(self, card, i=0, x=None, y=None):
         if y is None:
@@ -608,19 +599,24 @@ class Renderer:
 
         self.render_card_type(card)
 
-        self.render_power(card)
+        if card.card_type not in [CardType.equipment]:
+            self.render_power(card)
 
         self.render_arcane_power(card)
 
-        self.render_defense(card)
+        if card.card_type not in [CardType.weapon]:
+            self.render_defense(card)
 
         self.render_card_pitch(card)
 
-        self.render_card_pitch(card)
+        if card.card_type not in [CardType.weapon, CardType.equipment]:
+            self.render_card_pitch(card)
 
-        self.render_arcane_barrier(card)
+        if card.card_type in [CardType.equipment]:
+            self.render_arcane_barrier(card)
 
-        self.render_cost(card)
+        if card.card_type not in [CardType.equipment]:
+            self.render_cost(card)
 
     def render_enemy_life_counter(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:
