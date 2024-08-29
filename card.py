@@ -74,6 +74,9 @@ class Card:
         self.card_resolution = card_resolution
         self.image = generate_rnd_image(card_resolution)
 
+        self.x = None
+        self.y = None
+
     def __str__(self):
         return (
             "Card {} -'{}' with physical {} / defense {} / pitch {} / cost {}".format(

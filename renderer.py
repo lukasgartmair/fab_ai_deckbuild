@@ -391,66 +391,53 @@ class Renderer:
             ),
         )
 
-    def render_card(self, current_card, i=0, x=None, y=None):
-        if y is None:
-            vert_card_grid_point = grid.top_point(6)
-            vert_pos = vert_card_grid_point
-        else:
-            vert_pos = y
-
-        if x is None:
-            hor_card_grid_point = 1 + int(i) * 2.5
-            hor_pos = grid.left_point(hor_card_grid_point)
-        else:
-            hor_pos = x
-
-        if current_card.card_type not in [CardType.equipment]:
-            current_card.image = pygame.transform.scale(
-                current_card.image,
+    def render_card_image(self, card):
+        if card.card_type not in [CardType.equipment]:
+            card.image = pygame.transform.scale(
+                card.image,
                 (int(card_width * card_scale), int(card_height * card_scale)),
             )
         else:
-            current_card.image = pygame.transform.scale(
-                current_card.image,
+            card.image = pygame.transform.scale(
+                card.image,
                 (int(card_width * card_scale // 2), int(card_height * card_scale // 2)),
             )
 
-        self.window.blit(current_card.image, (hor_pos, vert_pos))
+        self.window.blit(card.image, (card.x, card.y))
 
-        # NAME
+    def render_card_name(self, card):
         self.rect = pygame.draw.rect(
             self.window,
-            card_colors[current_card.color.name],
-            (hor_pos, vert_pos, card_width * 0.75, 25),
+            card_colors[card.color.name],
+            (card.x, card.y, card_width * 0.75, 25),
         )
 
-        if current_card.color == CardColor.yellow:
+        if card.color == CardColor.yellow:
             text = font_card_title.render(
-                str(current_card.name), True, pygame.Color(color_palette.black)
+                str(card.name), True, pygame.Color(color_palette.black)
             )
         else:
             text = font_card_title.render(
-                str(current_card.name), True, pygame.Color(color_palette.white)
+                str(card.name), True, pygame.Color(color_palette.white)
             )
 
-        self.window.blit(text, (hor_pos, vert_pos))
+        self.window.blit(text, (card.x, card.y))
 
-        # CLASS
-        factor_keyword = 1.8
+    def render_card_class(self, card):
         self.rect = pygame.draw.rect(
             self.window,
             "blue",
             (
-                hor_pos,
-                vert_pos + card_height // 2 + rect_height,
+                card.x,
+                card.y + card_height // 2 + rect_height,
                 card_width * 0.75,
                 rect_height,
             ),
         )
 
-        if current_card.card_class.name != "generic":
+        if card.card_class.name != "generic":
             text = font_card_title.render(
-                str(current_card.card_class.name),
+                str(card.card_class.name),
                 True,
                 pygame.Color(color_palette.white),
             )
@@ -458,27 +445,26 @@ class Renderer:
             self.window.blit(
                 text,
                 (
-                    hor_pos,
-                    vert_pos + card_height // 2 + rect_height,
+                    card.x,
+                    card.y + card_height // 2 + rect_height,
                 ),
             )
 
-        # KEYWORDS
-
+    def render_card_keywords(self, card):
         self.rect = pygame.draw.rect(
             self.window,
             pygame.Color(color_palette.green),
             (
-                hor_pos,
-                vert_pos + card_height // 2 + rect_height * 2,
+                card.x,
+                card.y + card_height // 2 + rect_height * 2,
                 card_width * 0.75,
                 rect_height,
             ),
         )
 
-        if current_card.keywords[0] != Keyword.no_keyword:
+        if card.keywords[0] != Keyword.no_keyword:
             text = font_card_title.render(
-                str(current_card.keywords[0].name),
+                str(card.keywords[0].name),
                 True,
                 pygame.Color(color_palette.white),
             )
@@ -486,53 +472,53 @@ class Renderer:
             self.window.blit(
                 text,
                 (
-                    hor_pos,
-                    vert_pos + card_height // 2 + rect_height * 2,
+                    card.x,
+                    card.y + card_height // 2 + rect_height * 2,
                 ),
             )
 
-        # TYPE
+    def render_card_type(self, card):
         self.rect = pygame.draw.rect(
             self.window,
             pygame.Color(color_palette.white),
             (
-                hor_pos,
-                vert_pos + card_height // 2 + rect_height * 3,
+                card.x,
+                card.y + card_height // 2 + rect_height * 3,
                 card_width * 0.75,
                 rect_height,
             ),
         )
 
         text = font_card_title.render(
-            str(current_card.card_type.name), True, pygame.Color(color_palette.black)
+            str(card.card_type.name), True, pygame.Color(color_palette.black)
         )
 
         self.window.blit(
             text,
             (
-                hor_pos,
-                vert_pos + card_height // 2 + rect_height * 3,
+                card.x,
+                card.y + card_height // 2 + rect_height * 3,
             ),
         )
 
-        # POWER
-        if current_card.card_type not in [CardType.equipment]:
+    def render_power(self, card):
+        if card.card_type not in [CardType.equipment]:
             text = font.render(
-                str(current_card.physical), True, pygame.Color(color_palette.white)
+                str(card.physical), True, pygame.Color(color_palette.white)
             )
 
             self.window.blit(
                 text,
                 (
-                    hor_pos,
-                    vert_pos + card_height // 2 + rect_height * 4,
+                    card.x,
+                    card.y + card_height // 2 + rect_height * 4,
                 ),
             )
 
-        # ARCANE POWER
-        if current_card.arcane > 0:
+    def render_arcane_power(self, card):
+        if card.arcane > 0:
             text = font.render(
-                "+{}".format(str(current_card.arcane)),
+                "+{}".format(str(card.arcane)),
                 True,
                 pygame.Color(color_palette.green),
             )
@@ -540,43 +526,42 @@ class Renderer:
             self.window.blit(
                 text,
                 (
-                    hor_pos + arcane_offset,
-                    vert_pos + card_height // 2 + rect_height * 4,
+                    card.x + arcane_offset,
+                    card.y + card_height // 2 + rect_height * 4,
                 ),
             )
 
-        # DEFENSE
-        if current_card.card_type not in [CardType.weapon]:
+    def render_defense(self, card):
+        if card.card_type not in [CardType.weapon]:
             text = font.render(
-                str(current_card.defense), True, pygame.Color(color_palette.black)
+                str(card.defense), True, pygame.Color(color_palette.black)
             )
 
             self.window.blit(
                 text,
                 (
-                    hor_pos + card_width // 1.7,
-                    vert_pos + card_height // 2 + rect_height * 4,
+                    card.x + card_width // 1.7,
+                    card.y + card_height // 2 + rect_height * 4,
                 ),
             )
 
-        # PITCH
-        if current_card.card_type not in [CardType.weapon, CardType.equipment]:
-            text = font.render(
-                str(current_card.pitch), True, card_colors[current_card.color.name]
-            )
+    def render_card_pitch(self, card):
+        if card.card_type not in [CardType.weapon, CardType.equipment]:
+            text = font.render(str(card.pitch), True, card_colors[card.color.name])
 
             self.window.blit(
                 text,
                 (
-                    hor_pos,
-                    vert_pos - rect_height * 2,
+                    card.x,
+                    card.y - rect_height * 2,
                 ),
             )
-        # ARCANE BARRIER
-        elif current_card.card_type in [CardType.equipment]:
-            if current_card.arcane_barrier > 0:
+
+    def render_arcane_barrier(self, card):
+        if card.card_type in [CardType.equipment]:
+            if card.arcane_barrier > 0:
                 text = font_card_title.render(
-                    "Arcane Barrier " + str(current_card.arcane_barrier),
+                    "Arcane Barrier " + str(card.arcane_barrier),
                     True,
                     color_palette.black,
                 )
@@ -584,23 +569,58 @@ class Renderer:
                 self.window.blit(
                     text,
                     (
-                        hor_pos,
-                        vert_pos - rect_height * 2,
+                        card.x,
+                        card.y - rect_height * 2,
                     ),
                 )
 
-        # COST
-        if current_card.card_type not in [CardType.equipment]:
-            text = font.render(
-                str(current_card.cost), True, pygame.Color(color_palette.color2)
-            )
+    def render_cost(self, card):
+        if card.card_type not in [CardType.equipment]:
+            text = font.render(str(card.cost), True, pygame.Color(color_palette.color2))
             self.window.blit(
                 text,
                 (
-                    hor_pos + card_width // 1.7,
-                    vert_pos - rect_height * 2,
+                    card.x + card_width // 1.7,
+                    card.y - rect_height * 2,
                 ),
             )
+
+    def render_card(self, card, i=0, x=None, y=None):
+        if y is None:
+            vert_card_grid_point = grid.top_point(6)
+            card.y = vert_card_grid_point
+        else:
+            card.y = y
+
+        if x is None:
+            hor_card_grid_point = 1 + int(i) * 2.5
+            card.x = grid.left_point(hor_card_grid_point)
+        else:
+            card.x = x
+
+        self.render_card_image(card)
+
+        self.render_card_name(card)
+
+        self.render_card_class(card)
+
+        self.render_card_keywords(card)
+
+        self.render_card_type(card)
+
+        self.render_power(card)
+
+        self.render_arcane_power(card)
+
+        self.render_defense(card)
+
+        self.render_card_pitch(card)
+
+        self.render_card_pitch(card)
+
+        self.render_arcane_barrier(card)
+
+        self.render_cost(card)
 
     def render_enemy_life_counter(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:
@@ -621,8 +641,8 @@ class Renderer:
         )
 
     def render_enemy_play(self):
-        for i, current_card in enumerate(self.engine.enemy.played_cards):
-            self.render_card(current_card, i=i)
+        for i, card in enumerate(self.engine.enemy.played_cards):
+            self.render_card(card, i=i)
 
     def render_turn_text(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:
