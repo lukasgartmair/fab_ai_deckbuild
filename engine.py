@@ -116,8 +116,6 @@ class GameEngine:
         elif self.enemy.stance == Stance.attack:
             if self.enemy.further_attack_possible == False:
                 self.enemy.sound.play_not_possible()
-                print("no more attacks from the enemy this turn")
-                print("press enter to change the enemy stance to DEFEND")
 
             else:
                 self.enemy.attack()

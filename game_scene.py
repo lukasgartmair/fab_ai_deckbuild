@@ -136,49 +136,49 @@ class GameScene(SceneBase):
         if self.is_active:
             self.renderer.render_background()
 
-            self.renderer.render_enemy_play()
+            # self.renderer.render_enemy_play()
 
-            self.renderer.render_floating_resources()
+            # self.renderer.render_floating_resources()
 
-            self.renderer.render_enemy_life_counter()
+            # self.renderer.render_enemy_life_counter()
 
-            self.renderer.render_weapons()
+            # self.renderer.render_weapons()
 
             self.renderer.render_arsenal()
 
-            self.renderer.render_deck()
+            # self.renderer.render_deck()
 
             self.renderer.render_enemy()
 
-            self.renderer.render_hand()
+            # self.renderer.render_hand()
 
-            self.renderer.render_banished_zone()
+            # self.renderer.render_banished_zone()
 
             self.renderer.render_pitch()
 
-            self.renderer.render_graveyard()
+            # self.renderer.render_graveyard()
 
-            self.renderer.render_action_points()
+            # self.renderer.render_action_points()
 
-            self.renderer.render_turn_text()
+            # self.renderer.render_turn_text()
 
-            self.renderer.render_no_moves_left()
+            # self.renderer.render_no_moves_left()
 
-            self.renderer.render_equipment()
+            # self.renderer.render_equipment()
 
-            if self.engine.enemy.stance == Stance.defend:
-                for inp_box in self.input_boxes:
-                    inp_box.render()
+            # if self.engine.enemy.stance == Stance.defend:
+            #     for inp_box in self.input_boxes:
+            #         inp_box.render()
 
-                for check_box in self.renderer.check_boxes:
-                    check_box.cb.draw(self.renderer.window)
+            #     for check_box in self.renderer.check_boxes:
+            #         check_box.cb.draw(self.renderer.window)
 
-            self.renderer.render_floating_resources()
+            # self.renderer.render_floating_resources()
 
-            # MECHANOLOGIST STUFF
+            # # MECHANOLOGIST STUFF
 
-            if self.engine.enemy.player_class == PlayerClass.mechanologist:
-                self.renderer.render_boost_counter()
-                self.renderer.render_boost()
+            # if self.engine.enemy.player_class == PlayerClass.mechanologist:
+            #     self.renderer.render_boost_counter()
+            #     self.renderer.render_boost()
 
             pygame.display.flip()

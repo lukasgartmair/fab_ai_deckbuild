@@ -36,6 +36,12 @@ grid_height = 18
 
 grid = GridCalculator(width, height, grid_width, grid_height)
 
+grid_width_playmat = 18
+
+grid_height_playmat = 18
+
+playmat_grid = GridCalculator(width, height, grid_width_playmat, grid_height_playmat)
+
 
 right_edge = grid.left_point(grid_width * 0.8)
 enemy_top_edge = grid.top_point(grid_height * 0.65)
@@ -54,6 +60,9 @@ font_card_title = pygame.font.Font(font_style, font_size)
 font_size = 30
 font_lore = pygame.font.Font(font_style, font_size)
 
+font_size = 40
+font_playmat = pygame.font.Font(font_style, font_size)
+
 font_size = 70
 font_header2 = pygame.font.Font(font_style, font_size)
 
@@ -61,10 +70,10 @@ font_header2 = pygame.font.Font(font_style, font_size)
 font_size = 100
 font_header = pygame.font.Font(font_style, font_size)
 
-card_height = 332
-card_width = 238
-
 card_scale = 0.75
+
+card_height = 332 * card_scale
+card_width = 238 * card_scale
 
 
 rect_height = 25

@@ -66,7 +66,7 @@ class Renderer:
 
         self.engine = engine
 
-        self.background = pygame.image.load("images/backgrounds/background4.png")
+        self.background = pygame.image.load("images/backgrounds/background.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )

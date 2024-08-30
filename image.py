@@ -7,14 +7,14 @@ Created on Sun Aug 11 12:55:38 2024
 """
 
 import pygame
-from settings import card_height, card_scale
+from settings import card_width, card_height
 
 
 def load_image(img_path):
     img = pygame.image.load(img_path)
     img = pygame.transform.scale(
         img,
-        (int(card_height * 0.8 * card_scale), int(card_height * card_scale)),
+        (int(card_width), int(card_height)),
     )
 
     return img

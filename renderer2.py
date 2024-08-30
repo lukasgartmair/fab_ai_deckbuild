@@ -16,10 +16,9 @@ from playstyle import Keyword, CardType
 from colors import color_palette
 from card import CardColor
 from utils import blit_text
-import image
 from playstyle import PlayerClass, Talent
 import PygameUtils as pu
-import random
+from playmat import Playmat
 
 from settings import (
     grid,
@@ -45,10 +44,10 @@ from settings import (
     font_lore,
     font_header,
     font_header2,
+    font_playmat,
 )
 
 y_index = 0
-
 button_size = 25
 
 enemy_message_x = grid.left_point(1)
@@ -58,17 +57,23 @@ enemy_message_y = grid.top_point(1)
 class Renderer:
     def __init__(self, engine):
         self.window = pygame.display.set_mode(bounds)
+        self.engine = engine
+        self.playmat = Playmat()
 
         pygame.display.set_caption("There will be Flesh and Blood")
 
         self.input_box_physical = InputBox(self.window, y=170, box_type="physical")
         self.input_box_arcane = InputBox(self.window, y=250, box_type="arcane")
 
-        self.engine = engine
-
-        self.background = pygame.image.load("images/backgrounds/background.png")
+        self.background = pygame.image.load("images/backgrounds/background2.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
+        )
+
+        self.card_back = pygame.image.load("images/card_backs/card_back.png")
+        self.card_back = pygame.transform.scale(
+            self.card_back,
+            (int(card_width), int(card_height)),
         )
 
         self.check_box_dominate = CheckBox("dominate", y=250)
@@ -90,6 +95,36 @@ class Renderer:
             grid.top_point(0) + button_size + 5,
             button_size,
             button_size,
+        )
+
+    def render_text(self, text, x, y, font=font, color=color_palette.text_color):
+        text = font.render(
+            text,
+            True,
+            pygame.Color(color_palette.text_color),
+        )
+        self.window.blit(
+            text,
+            (x, y),
+        )
+
+    def render_playmat_card_spot(self, playmat_position_obj, text):
+        pygame.draw.rect(
+            self.window,
+            color_palette.white,
+            pygame.Rect(
+                playmat_position_obj.x,
+                playmat_position_obj.y,
+                card_width,
+                card_height,
+            ),
+            width=2,
+        )
+        self.render_text(
+            text,
+            playmat_position_obj.x + self.playmat.field_text_offset_x,
+            playmat_position_obj.y + self.playmat.field_text_offset_y,
+            font=font_playmat,
         )
 
     def render_background(self):
@@ -116,43 +151,32 @@ class Renderer:
     def render_enemy(self, color=color_palette.white):
         self.window.blit(
             self.engine.enemy.image,
-            (grid.left_point(grid_width // 2 - 1), enemy_top_edge),
+            (self.playmat.positions.enemy.x, self.playmat.positions.enemy.y),
         ),
 
-        text = font_card_title.render(str(self.engine.enemy.name), True, color)
-
-        self.window.blit(
-            text,
-            (grid.left_point(grid_width // 2 - 1), enemy_top_edge - 25),
+        self.render_text(
+            str(self.engine.enemy.name),
+            self.playmat.positions.enemy.x,
+            self.playmat.positions.enemy.y,
+            font=font_card_title,
         )
 
         if self.engine.enemy.talent != Talent.no_talent:
-            text = font_card_title.render(
+            self.render_text(
                 "# "
                 + str(self.engine.level_manager.current_level)
                 + " - "
                 + str(self.engine.enemy.talent.name).upper(),
-                True,
-                color,
+                self.playmat.positions.enemy.x + self.playmat.field_text_offset_x,
+                self.playmat.positions.enemy.y + card_height,
+                font=font_card_title,
             )
 
-            self.window.blit(
-                text,
-                (
-                    grid.left_point(grid_width // 2 - 1),
-                    enemy_top_edge + card_height * 0.76,
-                ),
-            )
-
-        text = font_card_title.render(
-            "     " + str(self.engine.enemy.player_class.name).upper(),
-            True,
-            color,
-        )
-
-        self.window.blit(
-            text,
-            (grid.left_point(grid_width // 2 - 1), enemy_top_edge + card_height * 0.84),
+        self.render_text(
+            str(self.engine.enemy.player_class.name).upper(),
+            self.playmat.positions.enemy.x + self.playmat.field_text_offset_x,
+            self.playmat.positions.enemy.y + card_height * 1.1,
+            font=font_card_title,
         )
 
     def render_enter_new_level(self):
@@ -274,18 +298,13 @@ class Renderer:
         )
 
     def render_arsenal(self):
-        text = font.render(
-            str(len(self.engine.enemy.arsenal)) + " arsenal",
-            True,
-            pygame.Color(color_palette.text_color),
-        )
-        self.window.blit(
-            text,
-            (
-                grid.left_point(grid_width // 2 - 1),
-                grid.top_point(grid_height * 0.94),
-            ),
-        )
+        if len(self.engine.enemy.arsenal) > 0:
+            self.window.blit(
+                self.card_back,
+                (self.playmat.positions.arsenal.x, self.playmat.positions.arsenal.y),
+            )
+        else:
+            self.render_playmat_card_spot(self.playmat.positions.arsenal, "Arsenal")
 
     def render_hand(self):
         text = font.render(
@@ -321,21 +340,14 @@ class Renderer:
     def render_pitch(self):
         if len(self.engine.enemy.pitched_cards) > 0:
             for i, pc in enumerate(self.engine.enemy.pitched_cards):
-                self.render_card(pc, x=right_edge)
+                self.render_card(
+                    pc,
+                    x=self.playmat.positions.pitch.x + i * 4,
+                    y=self.playmat.positions.pitch.y + i * 4,
+                )
 
-        text = font.render(
-            str(len(self.engine.enemy.pitched_cards)) + " pitch",
-            True,
-            pygame.Color(color_palette.white),
-        )
-        i = 5
-        self.window.blit(
-            text,
-            (
-                right_edge,
-                grid.top_point(y_index + 4),
-            ),
-        )
+        else:
+            self.render_playmat_card_spot(self.playmat.positions.pitch, "Pitch")
 
     def render_graveyard(self):
         text = font.render(
@@ -394,7 +406,7 @@ class Renderer:
     def render_card_image(self, card):
         card.image = pygame.transform.scale(
             card.image,
-            (int(card_width * card_scale), int(card_height * card_scale)),
+            (int(card_width), int(card_height)),
         )
 
         self.window.blit(card.image, (card.x, card.y))

@@ -8,7 +8,7 @@ Created on Sun Aug 11 08:41:26 2024
 
 import sys
 import pygame
-from renderer import Renderer
+from renderer2 import Renderer
 from engine import GameEngine
 from settings import FPS
 
