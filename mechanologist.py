@@ -32,14 +32,15 @@ class Mechanologist(Enemy):
     def apply_boost_mechanic(self, card):
         if Keyword.boost in card.keywords:
             if self.determine_if_boost_makes_sense():
-                banished_card = self.deck.draw_top_cards(n=1)
-                self.banished_zone["boosted_cards"].append(banished_card)
-                if banished_card.card_class == PlayerClass.mechanologist:
-                    print("Mechanoligist boost activated")
-                    self.boost.activation()
-                    self.get_action_points()
-                else:
-                    self.boost.fail()
+                if len(self.hand) > 0:
+                    banished_card = self.deck.draw_top_cards(n=1)[0]
+                    self.banished_zone["boosted_cards"].append(banished_card)
+                    if banished_card.card_class == PlayerClass.mechanologist:
+                        print("Mechanoligist boost activated")
+                        self.boost.activation()
+                        self.get_action_points()
+                    else:
+                        self.boost.fail()
 
     def start_move(self):
         super().start_move()

@@ -298,15 +298,8 @@ class Renderer:
             elif self.engine.enemy.boost.failed == True:
                 message = "'boost FAILED!'"
 
-        text = font.render(
-            message,
-            True,
-            pygame.Color(color_palette.color3),
-        )
-        self.window.blit(
-            text,
-            (enemy_message_x, grid.top_point(3)),
-        )
+        for i, m in enumerate(message.split(" ")):
+            self.render_text(m, grid.left_point(4), grid.top_point(13 + i))
 
     def render_deck(self):
         if self.engine.enemy.deck.get_length() > 0:
@@ -451,18 +444,12 @@ class Renderer:
     def render_boost_counter(self):
         # print(self.engine.enemy.boost_counter)
         if self.engine.enemy.player_class == PlayerClass.mechanologist:
-            text = font.render(
-                str(self.engine.enemy.boost.counter) + " boost counter",
-                True,
-                pygame.Color(color_palette.text_color),
-            )
-            self.window.blit(
-                text,
-                (
-                    right_edge,
-                    grid.top_point(y_index + 15),
-                ),
-            )
+            if self.engine.enemy.stance == Stance.attack:
+                self.render_text(
+                    str(self.engine.enemy.boost.counter) + " boost counter",
+                    grid.left_point(11),
+                    grid.top_point(13),
+                )
 
     def render_action_points(self):
         self.render_text(
@@ -517,7 +504,7 @@ class Renderer:
         index = 2
         self.rect = pygame.draw.rect(
             self.window,
-            pygame.Color(color_palette.green),
+            pygame.Color(color_palette.color1),
             (
                 card.x,
                 card.y + card_height / 2 + rect_height * index,

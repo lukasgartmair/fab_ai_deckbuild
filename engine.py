@@ -49,7 +49,7 @@ class GameEngine:
             ]
         )
 
-        # self.player_class = PlayerClass.wizard
+        self.player_class = PlayerClass.mechanologist
 
         if self.player_class == PlayerClass.mechanologist:
             self.enemy = Mechanologist()

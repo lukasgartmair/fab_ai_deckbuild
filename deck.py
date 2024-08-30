@@ -163,12 +163,15 @@ class Deck:
         self.cards.insert(0, card)
 
     def draw_top_cards(self, n=1):
-        if n == 1:
-            return [self.cards.pop()]
+        if len(self.cards) > 0:
+            if n == 1:
+                return [self.cards.pop()]
+            else:
+                drawn_cards = self.cards[-n:].copy()
+                self.cards = self.cards[:-n]
+                return drawn_cards
         else:
-            drawn_cards = self.cards[-n:].copy()
-            self.cards = self.cards[:-n]
-            return drawn_cards
+            return []
 
     def get_length(self):
         return len(self.cards)
