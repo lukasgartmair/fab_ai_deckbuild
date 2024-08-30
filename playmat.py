@@ -17,7 +17,8 @@ import types
 
 
 class Position:
-    def __init__(self, x, y):
+    def __init__(self, name, x, y):
+        self.name = name
         self.x = x
         self.y = y
 
@@ -29,15 +30,77 @@ class Playmat:
 
         self.positions = types.SimpleNamespace()
         self.positions.enemy = Position(
+            "Enemy",
             grid.left_point(grid_width_playmat // 2 - 1),
             grid.top_point(grid_height_playmat // 2 - 1),
         )
+        self.positions.weapon_0 = Position(
+            "Weapon 1",
+            grid.left_point(grid_width_playmat // 2 - 3),
+            grid.top_point(grid_height_playmat // 2 - 1),
+        )
+
+        self.positions.weapon_1 = Position(
+            "Weapon 2",
+            grid.left_point(grid_width_playmat // 2 + 1),
+            grid.top_point(grid_height_playmat // 2 - 1),
+        )
         self.positions.arsenal = Position(
+            "Arsenal",
             grid.left_point(grid_width_playmat // 2 - 1),
             grid.top_point(grid_height_playmat - 5),
         )
 
         self.positions.pitch = Position(
+            "Pitch",
             grid.left_point(grid_width_playmat // 2 + 4),
             grid.top_point(grid_height_playmat // 2 - 1),
+        )
+
+        self.positions.deck = Position(
+            "Deck",
+            grid.left_point(grid_width_playmat // 2 + 6),
+            grid.top_point(grid_height_playmat // 2 - 1),
+        )
+
+        self.positions.graveyard = Position(
+            "Graveyard",
+            grid.left_point(grid_width_playmat // 2 + 6),
+            grid.top_point(3),
+        )
+
+        self.positions.banished_zone = Position(
+            "Banished",
+            grid.left_point(grid_width_playmat // 2 + 6),
+            grid.top_point(grid_height_playmat - 5),
+        )
+
+        self.positions.combat_chain = Position(
+            "Combat Chain",
+            grid.left_point(4),
+            grid.top_point(2),
+        )
+
+        self.positions.head = Position(
+            "Head",
+            grid.left_point(1),
+            grid.top_point(3),
+        )
+
+        self.positions.chest = Position(
+            "Chest",
+            grid.left_point(1),
+            grid.top_point(grid_height_playmat // 2 - 1),
+        )
+
+        self.positions.arms = Position(
+            "Arms",
+            grid.left_point(3),
+            grid.top_point(grid_height_playmat // 2 - 1),
+        )
+
+        self.positions.legs = Position(
+            "Legs",
+            grid.left_point(1),
+            grid.top_point(grid_height_playmat - 5),
         )

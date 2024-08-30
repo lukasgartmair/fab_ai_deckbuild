@@ -18,7 +18,7 @@ class TitleScene(SceneBase):
     def __init__(self, *kargs):
         super().__init__(*kargs)
         # print("Title Scene")
-        self.skip = False
+        self.skip = True
 
         self.game_sound = Sound()
 
@@ -29,6 +29,8 @@ class TitleScene(SceneBase):
             self.switch_to_scene(
                 scene_manager.get_game_scene(self.engine, self.renderer)
             )
+            self.engine.state_machine.start_game()
+            self.is_active = False
 
         for event in events:
             if event.type == pygame.QUIT:

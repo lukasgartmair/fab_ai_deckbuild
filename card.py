@@ -13,7 +13,7 @@ import numpy as np
 from playstyle import PlayerClass
 from wonderwords import RandomSentence
 from randimage import get_random_image, show_array
-from settings import CARD_RESOLUTION
+from settings import CARD_RESOLUTION, card_width, card_height, card_scale
 from playstyle import CardType, CardColor
 from colors import color_palette
 
@@ -42,7 +42,10 @@ def generate_rnd_image(size):
 
 
 def img_to_surfarray(img):
-    return pygame.surfarray.make_surface(img)
+    return pygame.transform.scale(
+        pygame.surfarray.make_surface(img),
+        (int(card_width), int(card_height)),
+    )
 
 
 # card_colors = {"red": (255, 0, 0), "yellow": (255, 255, 0), "blue": (0, 0, 255)}

@@ -19,9 +19,10 @@ from utils import blit_text
 from playstyle import PlayerClass, Talent
 import PygameUtils as pu
 from playmat import Playmat
+from equipment import EquipmentType
 
 from settings import (
-    grid,
+    playmat_grid as grid,
     grid_width,
     grid_height,
     player_1_color,
@@ -49,9 +50,10 @@ from settings import (
 
 y_index = 0
 button_size = 25
-
+alpha = 0.7
 enemy_message_x = grid.left_point(1)
 enemy_message_y = grid.top_point(1)
+combat_chain_spacing = 10
 
 
 class Renderer:
@@ -108,7 +110,7 @@ class Renderer:
             (x, y),
         )
 
-    def render_playmat_card_spot(self, playmat_position_obj, text):
+    def render_playmat_card_spot(self, playmat_position_obj):
         pygame.draw.rect(
             self.window,
             color_palette.white,
@@ -121,7 +123,7 @@ class Renderer:
             width=2,
         )
         self.render_text(
-            text,
+            playmat_position_obj.name,
             playmat_position_obj.x + self.playmat.field_text_offset_x,
             playmat_position_obj.y + self.playmat.field_text_offset_y,
             font=font_playmat,
@@ -229,14 +231,14 @@ class Renderer:
                 if w.weapon_id == 0:
                     self.render_card(
                         w,
-                        x=grid.left_point(grid_width // 2 - 1) - card_width,
-                        y=grid.top_point(grid_height * 0.65),
+                        x=self.playmat.positions.weapon_0.x,
+                        y=self.playmat.positions.weapon_0.y,
                     )
                 else:
                     self.render_card(
                         w,
-                        x=grid.left_point(grid_width // 2 - 1) + card_width,
-                        y=grid.top_point(grid_height * 0.65),
+                        x=self.playmat.positions.weapon_1.x,
+                        y=self.playmat.positions.weapon_1.y,
                     )
 
     def render_no_moves_left(self):
@@ -284,18 +286,18 @@ class Renderer:
         )
 
     def render_deck(self):
-        text = font.render(
-            str(self.engine.enemy.deck.get_length()) + " deck",
-            True,
-            pygame.Color(color_palette.text_color),
-        )
-        self.window.blit(
-            text,
-            (
-                right_edge,
-                grid.top_point(y_index + 1),
-            ),
-        )
+        if self.engine.enemy.deck.get_length() > 0:
+            self.window.blit(
+                self.card_back,
+                (self.playmat.positions.deck.x, self.playmat.positions.deck.y),
+            )
+            self.render_text(
+                str(self.engine.enemy.deck.get_length()),
+                self.playmat.positions.deck.x,
+                self.playmat.positions.deck.y,
+            )
+        else:
+            self.render_playmat_card_spot(self.playmat.positions.deck)
 
     def render_arsenal(self):
         if len(self.engine.enemy.arsenal) > 0:
@@ -303,8 +305,14 @@ class Renderer:
                 self.card_back,
                 (self.playmat.positions.arsenal.x, self.playmat.positions.arsenal.y),
             )
+            self.render_text(
+                str(len(self.engine.enemy.arsenal)),
+                self.playmat.positions.arsenal.x,
+                self.playmat.positions.arsenal.y,
+            )
+
         else:
-            self.render_playmat_card_spot(self.playmat.positions.arsenal, "Arsenal")
+            self.render_playmat_card_spot(self.playmat.positions.arsenal)
 
     def render_hand(self):
         text = font.render(
@@ -324,18 +332,22 @@ class Renderer:
         n_banished_cards = 0
         for k, v in self.engine.enemy.banished_zone.items():
             n_banished_cards += len(v)
-        text = font.render(
-            str(n_banished_cards) + " banished",
-            True,
-            pygame.Color(color_palette.text_color),
-        )
-        self.window.blit(
-            text,
-            (
-                right_edge,
-                grid.top_point(y_index + 14),
-            ),
-        )
+
+        if n_banished_cards > 0:
+            self.window.blit(
+                self.card_back,
+                (
+                    self.playmat.positions.banished_zone.x,
+                    self.playmat.positions.banished_zone.y,
+                ),
+            )
+            self.render_text(
+                str(len(self.engine.enemy.banished_zone)),
+                self.playmat.positions.banished_zone.x,
+                self.playmat.positions.banished_zone.y,
+            )
+        else:
+            self.render_playmat_card_spot(self.playmat.positions.banished_zone)
 
     def render_pitch(self):
         if len(self.engine.enemy.pitched_cards) > 0:
@@ -345,33 +357,79 @@ class Renderer:
                     x=self.playmat.positions.pitch.x + i * 4,
                     y=self.playmat.positions.pitch.y + i * 4,
                 )
+            self.render_text(
+                str(len(self.engine.enemy.pitched_cards)),
+                self.playmat.positions.pitch.x,
+                self.playmat.positions.pitch.y + rect_height,
+            )
 
         else:
-            self.render_playmat_card_spot(self.playmat.positions.pitch, "Pitch")
+            self.render_playmat_card_spot(self.playmat.positions.pitch)
 
     def render_graveyard(self):
-        text = font.render(
-            str(len(self.engine.enemy.graveyard)) + " graveyard",
-            True,
-            pygame.Color(color_palette.text_color),
-        )
-        self.window.blit(
-            text,
-            (
-                right_edge,
-                grid.top_point(y_index + 13),
+        if len(self.engine.enemy.graveyard) > 0:
+            self.engine.enemy.graveyard[-1].x = self.playmat.positions.graveyard.x
+            self.engine.enemy.graveyard[-1].y = self.playmat.positions.graveyard.y
+            self.render_card_image(self.engine.enemy.graveyard[-1])
+            self.render_card_name(self.engine.enemy.graveyard[-1])
+            self.render_text(
+                str(len(self.engine.enemy.graveyard)),
+                self.playmat.positions.graveyard.x,
+                self.playmat.positions.graveyard.y + rect_height,
+            )
+
+        else:
+            self.render_playmat_card_spot(self.playmat.positions.arsenal)
+
+    def render_combat_chain(self):
+        playmat_position_obj = self.playmat.positions.combat_chain
+
+        pygame.draw.rect(
+            self.window,
+            color_palette.white,
+            pygame.Rect(
+                playmat_position_obj.x,
+                playmat_position_obj.y,
+                card_width * 6,
+                card_height,
             ),
+            width=2,
         )
 
-    def render_equipment(self):
-        for i, eq in enumerate(self.engine.enemy.equipment_suite.get_pieces_in_play()):
-            if eq not in self.engine.enemy.played_cards:
+        if len(self.engine.enemy.played_cards) > 0:
+            for i, card in enumerate(self.engine.enemy.played_cards):
                 self.render_card(
-                    eq,
-                    x=grid.left_point(eq.equipment_type.value)
-                    + eq.equipment_type.value * 2,
-                    y=grid.top_point(12),
+                    card,
+                    i=i,
+                    x=playmat_position_obj.x + grid.width_gap(0, 1) * 2 * i,
+                    y=playmat_position_obj.y,
                 )
+
+        else:
+            self.render_text(
+                playmat_position_obj.name,
+                playmat_position_obj.x + self.playmat.field_text_offset_x,
+                playmat_position_obj.y + self.playmat.field_text_offset_y,
+                font=font_playmat,
+            )
+
+    def render_equipment(self):
+        playmat_position_obj = None
+        for i, eq in enumerate(self.engine.enemy.equipment_suite.get_pieces_in_play()):
+            match eq.equipment_type:
+                case eq.equipment_type if eq.equipment_type == EquipmentType.head:
+                    playmat_position_obj = self.playmat.positions.head
+                case eq.equipment_type if eq.equipment_type == EquipmentType.chest:
+                    playmat_position_obj = self.playmat.positions.chest
+                case eq.equipment_type if eq.equipment_type == EquipmentType.arms:
+                    playmat_position_obj = self.playmat.positions.arms
+                case eq.equipment_type if eq.equipment_type == EquipmentType.legs:
+                    playmat_position_obj = self.playmat.positions.legs
+
+            if eq not in self.engine.enemy.played_cards:
+                self.render_card(eq, x=playmat_position_obj.x, y=playmat_position_obj.y)
+            else:
+                self.render_playmat_card_spot()
 
     def render_boost_counter(self):
         # print(self.engine.enemy.boost_counter)
@@ -404,18 +462,13 @@ class Renderer:
         )
 
     def render_card_image(self, card):
-        card.image = pygame.transform.scale(
-            card.image,
-            (int(card_width), int(card_height)),
-        )
-
         self.window.blit(card.image, (card.x, card.y))
 
     def render_card_name(self, card):
         self.rect = pygame.draw.rect(
             self.window,
             card_colors[card.color.name],
-            (card.x, card.y, card_width * 0.75, 25),
+            (card.x, card.y, card_width, 25),
         )
 
         if card.color == CardColor.yellow:
@@ -430,13 +483,14 @@ class Renderer:
         self.window.blit(text, (card.x, card.y))
 
     def render_card_class(self, card):
+        index = 2
         self.rect = pygame.draw.rect(
             self.window,
-            "blue",
+            color_palette.color3,
             (
                 card.x,
-                card.y + card_height // 2 + rect_height,
-                card_width * 0.75,
+                card.y + card_height // 2 + rect_height * index,
+                card_width,
                 rect_height,
             ),
         )
@@ -452,18 +506,19 @@ class Renderer:
                 text,
                 (
                     card.x,
-                    card.y + card_height // 2 + rect_height,
+                    card.y + card_height // 2 + rect_height * index,
                 ),
             )
 
     def render_card_keywords(self, card):
+        index = 3
         self.rect = pygame.draw.rect(
             self.window,
             pygame.Color(color_palette.green),
             (
                 card.x,
-                card.y + card_height // 2 + rect_height * 2,
-                card_width * 0.75,
+                card.y + card_height // 2 + rect_height * index,
+                card_width,
                 rect_height,
             ),
         )
@@ -479,18 +534,19 @@ class Renderer:
                 text,
                 (
                     card.x,
-                    card.y + card_height // 2 + rect_height * 2,
+                    card.y + card_height // 2 + rect_height * index,
                 ),
             )
 
     def render_card_type(self, card):
+        index = 4
         self.rect = pygame.draw.rect(
             self.window,
             pygame.Color(color_palette.white),
             (
                 card.x,
-                card.y + card_height // 2 + rect_height * 3,
-                card_width * 0.75,
+                card.y + card_height // 2 + rect_height * index,
+                card_width,
                 rect_height,
             ),
         )
@@ -503,7 +559,7 @@ class Renderer:
             text,
             (
                 card.x,
-                card.y + card_height // 2 + rect_height * 3,
+                card.y + card_height // 2 + rect_height * index,
             ),
         )
 
@@ -514,7 +570,7 @@ class Renderer:
             text,
             (
                 card.x,
-                card.y + card_height // 2 + rect_height * 4,
+                card.y + card_height,
             ),
         )
 
@@ -539,10 +595,7 @@ class Renderer:
 
         self.window.blit(
             text,
-            (
-                card.x + card_width // 1.7,
-                card.y + card_height // 2 + rect_height * 4,
-            ),
+            (card.x + card_width * 0.8, card.y + card_height),
         )
 
     def render_card_pitch(self, card):
@@ -577,7 +630,7 @@ class Renderer:
         self.window.blit(
             text,
             (
-                card.x + card_width // 1.7,
+                card.x + card_width * 0.8,
                 card.y - rect_height * 2,
             ),
         )
@@ -641,10 +694,6 @@ class Renderer:
                 grid.top_point(0),
             ),
         )
-
-    def render_enemy_play(self):
-        for i, card in enumerate(self.engine.enemy.played_cards):
-            self.render_card(card, i=i)
 
     def render_turn_text(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:

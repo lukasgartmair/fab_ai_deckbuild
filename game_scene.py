@@ -136,27 +136,27 @@ class GameScene(SceneBase):
         if self.is_active:
             self.renderer.render_background()
 
-            # self.renderer.render_enemy_play()
+            self.renderer.render_floating_resources()
 
-            # self.renderer.render_floating_resources()
+            self.renderer.render_enemy_life_counter()
 
-            # self.renderer.render_enemy_life_counter()
-
-            # self.renderer.render_weapons()
+            self.renderer.render_weapons()
 
             self.renderer.render_arsenal()
 
-            # self.renderer.render_deck()
+            self.renderer.render_deck()
 
             self.renderer.render_enemy()
 
             # self.renderer.render_hand()
 
-            # self.renderer.render_banished_zone()
+            self.renderer.render_combat_chain()
+
+            self.renderer.render_banished_zone()
 
             self.renderer.render_pitch()
 
-            # self.renderer.render_graveyard()
+            self.renderer.render_graveyard()
 
             # self.renderer.render_action_points()
 
@@ -164,7 +164,7 @@ class GameScene(SceneBase):
 
             # self.renderer.render_no_moves_left()
 
-            # self.renderer.render_equipment()
+            self.renderer.render_equipment()
 
             # if self.engine.enemy.stance == Stance.defend:
             #     for inp_box in self.input_boxes:

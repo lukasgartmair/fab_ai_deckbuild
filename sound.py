@@ -54,7 +54,8 @@ class Sound:
         self.card_effects_channel.set_volume(VOLUME)
 
     def play_intro_music(self):
-        self.music_channel.play(self.intro_music, loops=-1)
+        pass
+        # self.music_channel.play(self.intro_music, loops=-1)
         # Demented Nightmare by Darren Curtis | https://www.darrencurtismusic.com/
         # Music promoted by https://www.chosic.com/free-music/all/
         # Creative Commons CC BY 3.0
