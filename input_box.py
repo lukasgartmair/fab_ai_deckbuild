@@ -17,7 +17,7 @@ font2 = pygame.font.Font(font_style, font_size)
 
 
 class InputBox:
-    def __init__(self, window, y=170, box_type="physical"):
+    def __init__(self, window, x=0, y=0, box_type="physical"):
         self.window = window
         self.active = False
         self.box_type = box_type
@@ -25,11 +25,11 @@ class InputBox:
         self.color_active = pygame.Color(color_palette.white)
         self.color = self.color_inactive
         self.font = pygame.font.Font(None, 32)
-        self.x = 100
+        self.x = x
         self.y = y
         self.width = 140
         self.height = 32
-        self.box = pygame.Rect(self.x, y, self.width, self.height)
+        self.box = pygame.Rect(self.x, self.y, self.width, self.height)
         self.text = ""
 
     def send_input(self):

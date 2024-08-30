@@ -12,11 +12,11 @@ import pygame
 
 
 class CheckBox:
-    def __init__(self, name, y=180):
+    def __init__(self, name, x=0, y=0):
         self.name = name
         self.cb = pu.checkbox(
             pygame.Color(color_palette.text_color),
-            400,
+            x,
             y,
             25,
             25,

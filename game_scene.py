@@ -148,7 +148,7 @@ class GameScene(SceneBase):
 
             self.renderer.render_enemy()
 
-            # self.renderer.render_hand()
+            self.renderer.render_hand()
 
             self.renderer.render_combat_chain()
 
@@ -158,27 +158,27 @@ class GameScene(SceneBase):
 
             self.renderer.render_graveyard()
 
-            # self.renderer.render_action_points()
+            self.renderer.render_action_points()
 
-            # self.renderer.render_turn_text()
+            self.renderer.render_turn_text()
 
-            # self.renderer.render_no_moves_left()
+            self.renderer.render_no_moves_left()
 
             self.renderer.render_equipment()
 
-            # if self.engine.enemy.stance == Stance.defend:
-            #     for inp_box in self.input_boxes:
-            #         inp_box.render()
+            if self.engine.enemy.stance == Stance.defend:
+                for inp_box in self.input_boxes:
+                    inp_box.render()
 
-            #     for check_box in self.renderer.check_boxes:
-            #         check_box.cb.draw(self.renderer.window)
+                for check_box in self.renderer.check_boxes:
+                    check_box.cb.draw(self.renderer.window)
 
-            # self.renderer.render_floating_resources()
+            self.renderer.render_floating_resources()
 
-            # # MECHANOLOGIST STUFF
+            # MECHANOLOGIST STUFF
 
-            # if self.engine.enemy.player_class == PlayerClass.mechanologist:
-            #     self.renderer.render_boost_counter()
-            #     self.renderer.render_boost()
+            if self.engine.enemy.player_class == PlayerClass.mechanologist:
+                self.renderer.render_boost_counter()
+                self.renderer.render_boost()
 
             pygame.display.flip()

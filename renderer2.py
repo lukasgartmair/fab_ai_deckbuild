@@ -64,13 +64,20 @@ class Renderer:
 
         pygame.display.set_caption("There will be Flesh and Blood")
 
-        self.input_box_physical = InputBox(self.window, y=170, box_type="physical")
-        self.input_box_arcane = InputBox(self.window, y=250, box_type="arcane")
-
-        self.background = pygame.image.load("images/backgrounds/background2.png")
-        self.background = pygame.transform.smoothscale(
-            self.background, self.window.get_size()
+        self.input_box_physical = InputBox(
+            self.window,
+            x=self.playmat.positions.inputs.x,
+            y=self.playmat.positions.inputs.y,
+            box_type="physical",
         )
+        self.input_box_arcane = InputBox(
+            self.window,
+            x=self.playmat.positions.inputs.x,
+            y=self.playmat.positions.inputs.y + grid.height_gap(0, 1) * 1.5,
+            box_type="arcane",
+        )
+        self.background = None
+        self.load_background()
 
         self.card_back = pygame.image.load("images/card_backs/card_back.png")
         self.card_back = pygame.transform.scale(
@@ -78,9 +85,17 @@ class Renderer:
             (int(card_width), int(card_height)),
         )
 
-        self.check_box_dominate = CheckBox("dominate", y=250)
+        self.check_box_dominate = CheckBox(
+            "dominate",
+            x=self.playmat.positions.check_boxes.x,
+            y=self.playmat.positions.check_boxes.y,
+        )
 
-        self.check_box_intimidate = CheckBox("intimidate", y=170)
+        self.check_box_intimidate = CheckBox(
+            "intimidate",
+            x=self.playmat.positions.check_boxes.x,
+            y=self.playmat.positions.check_boxes.y + grid.height_gap(0, 1) * 1.5,
+        )
 
         self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
 
@@ -97,6 +112,12 @@ class Renderer:
             grid.top_point(0) + button_size + 5,
             button_size,
             button_size,
+        )
+
+    def load_background(self):
+        self.background = pygame.image.load("images/backgrounds/background.png")
+        self.background = pygame.transform.smoothscale(
+            self.background, self.window.get_size()
         )
 
     def render_text(self, text, x, y, font=font, color=color_palette.text_color):
@@ -137,17 +158,10 @@ class Renderer:
         self.window.blit(self.background_bw, (0, 0))
 
     def render_floating_resources(self):
-        text = font.render(
-            str(self.engine.enemy.floating_resources) + " floating",
-            True,
-            text_color,
-        )
-        self.window.blit(
-            text,
-            (
-                right_edge,
-                grid.top_point(y_index),
-            ),
+        self.render_text(
+            str(self.engine.enemy.floating_resources) + " res. floating",
+            grid.left_point(15),
+            grid.top_point(0),
         )
 
     def render_enemy(self, color=color_palette.white):
@@ -247,12 +261,12 @@ class Renderer:
             self.engine.enemy.stance == Stance.attack
             and self.engine.enemy.further_attack_possible == False
         ):
-            message = "'I wont't further attack you - Let me defend now!'"
+            message = "'I wont't further attack you!'"
         elif (
             self.engine.enemy.stance == Stance.defend
             and self.engine.enemy.further_defense_possible == False
         ):
-            message = "'You broke my defense - Hit me again or change my stance'"
+            message = "'You broke my defense!'"
 
         text = font.render(
             message,
@@ -315,17 +329,10 @@ class Renderer:
             self.render_playmat_card_spot(self.playmat.positions.arsenal)
 
     def render_hand(self):
-        text = font.render(
+        self.render_text(
             str(len(self.engine.enemy.hand)) + " hand",
-            True,
-            pygame.Color(color_palette.text_color),
-        )
-        self.window.blit(
-            text,
-            (
-                right_edge,
-                grid.top_point(y_index + 2),
-            ),
+            grid.left_point(15),
+            grid.top_point(2),
         )
 
     def render_banished_zone(self):
@@ -372,6 +379,7 @@ class Renderer:
             self.engine.enemy.graveyard[-1].y = self.playmat.positions.graveyard.y
             self.render_card_image(self.engine.enemy.graveyard[-1])
             self.render_card_name(self.engine.enemy.graveyard[-1])
+            self.render_card_type(self.engine.enemy.graveyard[-1])
             self.render_text(
                 str(len(self.engine.enemy.graveyard)),
                 self.playmat.positions.graveyard.x,
@@ -429,7 +437,7 @@ class Renderer:
             if eq not in self.engine.enemy.played_cards:
                 self.render_card(eq, x=playmat_position_obj.x, y=playmat_position_obj.y)
             else:
-                self.render_playmat_card_spot()
+                self.render_playmat_card_spot(playmat_position_obj)
 
     def render_boost_counter(self):
         # print(self.engine.enemy.boost_counter)
@@ -448,17 +456,10 @@ class Renderer:
             )
 
     def render_action_points(self):
-        text = font.render(
+        self.render_text(
             str(self.engine.enemy.action_points) + " action pts.",
-            True,
-            pygame.Color(color_palette.text_color),
-        )
-        self.window.blit(
-            text,
-            (
-                right_edge,
-                grid.top_point(y_index + 3),
-            ),
+            grid.left_point(15),
+            grid.top_point(1),
         )
 
     def render_card_image(self, card):
@@ -586,7 +587,7 @@ class Renderer:
                 text,
                 (
                     card.x + arcane_offset,
-                    card.y + card_height // 2 + rect_height * 4,
+                    card.y + card_height,
                 ),
             )
 
@@ -614,14 +615,14 @@ class Renderer:
             text = font_card_title.render(
                 "Arcane Barrier " + str(card.arcane_barrier),
                 True,
-                color_palette.black,
+                color_palette.white,
             )
 
             self.window.blit(
                 text,
                 (
                     card.x,
-                    card.y - rect_height * 2,
+                    card.y - rect_height,
                 ),
             )
 

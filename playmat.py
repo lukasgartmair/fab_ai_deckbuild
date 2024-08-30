@@ -104,3 +104,17 @@ class Playmat:
             grid.left_point(1),
             grid.top_point(grid_height_playmat - 5),
         )
+
+        self.positions.stance = Position(
+            "Stance",
+            grid.left_point(1),
+            grid.top_point(grid_height_playmat - 5),
+        )
+
+        self.positions.inputs = Position(
+            "Inputs", grid.left_point(4), grid.top_point(grid_height_playmat - 4)
+        )
+
+        self.positions.check_boxes = Position(
+            "Check Boxes", grid.left_point(11), grid.top_point(grid_height_playmat - 4)
+        )
