@@ -125,7 +125,7 @@ class Renderer:
         text = font.render(
             text,
             True,
-            pygame.Color(color_palette.text_color),
+            pygame.Color(color),
         )
         self.window.blit(
             text,
@@ -197,15 +197,10 @@ class Renderer:
         )
 
     def render_enter_new_level(self):
-        text = font_header2.render(
+        self.render_text(
             "This is room #" + str(self.engine.level_manager.current_level).upper(),
-            True,
-            pygame.Color(color_palette.white),
-        )
-
-        self.window.blit(
-            text,
-            (grid.left_point(7), grid.top_point(3)),
+            grid.left_point(5),
+            grid.top_point(3),
         )
 
     def render_enter_next_level(self):
@@ -236,7 +231,7 @@ class Renderer:
         blit_text(
             self.window,
             self.engine.enemy.lore,
-            (grid.left_point(5), grid.top_point(5)),
+            (grid.left_point(5), grid.top_point(4)),
             font_lore,
         )
 
@@ -362,8 +357,8 @@ class Renderer:
             for i, pc in enumerate(self.engine.enemy.pitched_cards):
                 self.render_card(
                     pc,
-                    x=self.playmat.positions.pitch.x + i * 4,
-                    y=self.playmat.positions.pitch.y + i * 4,
+                    x=self.playmat.positions.pitch.x + i * 7,
+                    y=self.playmat.positions.pitch.y + i * 7,
                 )
             self.render_text(
                 str(len(self.engine.enemy.pitched_cards)),
@@ -399,7 +394,7 @@ class Renderer:
             pygame.Rect(
                 playmat_position_obj.x,
                 playmat_position_obj.y,
-                card_width * 6,
+                card_width * 7,
                 card_height,
             ),
             width=2,
@@ -485,84 +480,66 @@ class Renderer:
         self.window.blit(text, (card.x, card.y))
 
     def render_card_class(self, card):
-        index = 2
+        index = 3
         self.rect = pygame.draw.rect(
             self.window,
             color_palette.color3,
             (
                 card.x,
-                card.y + card_height // 2 + rect_height * index,
+                card.y + card_height / 2 + rect_height * index,
                 card_width,
                 rect_height,
             ),
         )
 
         if card.card_class.name != "generic":
-            text = font_card_title.render(
+            self.render_text(
                 str(card.card_class.name),
-                True,
-                pygame.Color(color_palette.white),
-            )
-
-            self.window.blit(
-                text,
-                (
-                    card.x,
-                    card.y + card_height // 2 + rect_height * index,
-                ),
+                card.x,
+                card.y + card_height / 2 + rect_height * index,
+                font=font_card_title,
             )
 
     def render_card_keywords(self, card):
-        index = 3
+        index = 2
         self.rect = pygame.draw.rect(
             self.window,
             pygame.Color(color_palette.green),
             (
                 card.x,
-                card.y + card_height // 2 + rect_height * index,
+                card.y + card_height / 2 + rect_height * index,
                 card_width,
                 rect_height,
             ),
         )
 
         if card.keywords[0] != Keyword.no_keyword:
-            text = font_card_title.render(
+            self.render_text(
                 str(card.keywords[0].name),
-                True,
-                pygame.Color(color_palette.white),
-            )
-
-            self.window.blit(
-                text,
-                (
-                    card.x,
-                    card.y + card_height // 2 + rect_height * index,
-                ),
+                card.x,
+                card.y + card_height / 2 + rect_height * index,
+                font=font_card_title,
             )
 
     def render_card_type(self, card):
-        index = 4
+        index = 1
         self.rect = pygame.draw.rect(
             self.window,
             pygame.Color(color_palette.white),
             (
                 card.x,
-                card.y + card_height // 2 + rect_height * index,
+                card.y + card_height / 2 + rect_height * index,
                 card_width,
                 rect_height,
             ),
         )
 
-        text = font_card_title.render(
-            str(card.card_type.name), True, pygame.Color(color_palette.black)
-        )
-
-        self.window.blit(
-            text,
-            (
-                card.x,
-                card.y + card_height // 2 + rect_height * index,
-            ),
+        self.render_text(
+            str(card.card_type.name),
+            card.x,
+            card.y + card_height / 2 + rect_height * index,
+            font=font_card_title,
+            color=color_palette.black,
         )
 
     def render_power(self, card):
@@ -579,7 +556,7 @@ class Renderer:
     def render_arcane_power(self, card):
         if card.arcane > 0:
             text = font.render(
-                "+{}".format(str(card.arcane)),
+                "/{}".format(str(card.arcane)),
                 True,
                 pygame.Color(color_palette.green),
             )

@@ -11,8 +11,11 @@ from card import Card, generate_rnd_image, img_to_surfarray
 from playstyle import CardType
 import random
 from settings import CARD_RESOLUTION
+from wonderwords import RandomSentence
 
 arcane_barriers = [0] * 3 + [1] * 2 + [2]
+
+s = RandomSentence()
 
 
 class EquipmentType(Enum):
@@ -28,9 +31,14 @@ class EquipmentKeyword(Enum):
     # cloaked = 2
 
 
+def generate_rnd_name():
+    return " ".join(s.bare_bone_with_adjective().split()[1:-1])
+
+
 class EquipmentPiece(Card):
     def __init__(self, equipment_type):
         super().__init__(card_resolution=CARD_RESOLUTION)
+        self.name = generate_rnd_name()
         self.equipment_type = equipment_type
         self.defense = random.randint(0, 2)
         self.arcane_barrier = random.choice(arcane_barriers)

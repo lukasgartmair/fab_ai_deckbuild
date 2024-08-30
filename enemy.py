@@ -230,12 +230,15 @@ class Enemy:
             self.further_attack_possible = False
 
     def check_if_further_defense_possible(self):
-        if (len(self.hand) == 0 and len(self.arsenal) == 0) or (
-            (len(self.hand) == 0)
-            and (len(self.arsenal) == 1)
-            and (self.arsenal[0].card_type != CardType.defensive_reaction)
+        if (
+            len(self.hand) == 0
+            and len(self.equipment_suite.get_possible_blocking_pieces_in_play()) == 0
         ):
-            self.further_defense_possible = False
+            if len(self.arsenal) == 0:
+                self.further_defense_possible = False
+            elif len(self.arsenal) == 1:
+                if self.arsenal.card_type != CardType.defensive_reaction:
+                    self.further_defense_possible = False
 
     def draw(self):
         print("enemy is drawing")
@@ -433,16 +436,6 @@ class Enemy:
                 if player_attack.arcane is not None:
                     self.sound.play_flip_card()
                     self.block.defend_arcane(player_attack)
-
-            # print(self.block.physical_block_cards)
-            if len(self.block.physical_block_cards) > 0:
-                if self.modifiers.modifier_dict["dominate"] == True:
-                    self.block.physical_block_cards = self.block.physical_block_cards[
-                        :1
-                    ]
-
-                # print("banished zone")
-                # print(self.banished_zone)
 
                 self.sound.play_block()
 

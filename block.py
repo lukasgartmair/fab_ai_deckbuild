@@ -57,11 +57,18 @@ class Block:
         self.physical_block_cards = []
 
     def defend_physical(self, player_attack):
-        self.defensive_cards = self.enemy.hand.copy() + [
-            d
-            for d in self.enemy.arsenal.copy()
-            if d.card_type == CardType.defensive_reaction
-        ]
+        if self.enemy.modifiers.modifier_dict["dominate"] == True:
+            self.defensive_cards = self.enemy.hand.copy()[:1] + [
+                d
+                for d in self.enemy.arsenal.copy()
+                if d.card_type == CardType.defensive_reaction
+            ]
+        else:
+            self.defensive_cards = self.enemy.hand.copy() + [
+                d
+                for d in self.enemy.arsenal.copy()
+                if d.card_type == CardType.defensive_reaction
+            ]
 
         np.random.shuffle(self.defensive_cards)
 
@@ -69,6 +76,7 @@ class Block:
             if self.enemy.survival_mode == False:
                 match player_attack.physical:
                     case player_attack.physical if player_attack.physical in [1, 2]:
+                        print("here eq")
                         if (
                             player_attack.physical == 2
                             and len(
@@ -76,13 +84,28 @@ class Block:
                             )
                             == 0
                         ):
+                            print("here eq 1")
                             self.more_elaborate_block_with_unused_cards(player_attack)
                         else:
+                            print("here eq 2")
                             self.block_with_equipment_very_basic()
 
                     case player_attack.physical if player_attack.physical > 2:
-                        self.more_elaborate_block_with_unused_cards(player_attack)
+                        if len(self.enemy.hand) == 0 and len(self.arsenal) == 0:
+                            print("here")
+                            self.block_with_equipment_very_basic()
+                        elif (
+                            len(self.enemy.hand) == 0
+                            and (len(self.arsenal) == 1)
+                            and self.arsenal.card_type != CardType.defensive_reaction
+                        ):
+                            print("here2")
+                            self.block_with_equipment_very_basic()
+                        else:
+                            print("here3")
+                            self.more_elaborate_block_with_unused_cards(player_attack)
                     case _:
+                        print("here4")
                         self.more_elaborate_block_with_unused_cards(player_attack)
 
             elif self.enemy.survival_mode == True:

@@ -37,7 +37,7 @@ def generate_rnd_name():
 def generate_rnd_image(size):
     img_size = (size, size)
     img = get_random_image(img_size)
-    img = 255 * img / img.max()
+    img = 125 * img / img.max()
     return img
 
 

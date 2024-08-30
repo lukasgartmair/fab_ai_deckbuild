@@ -22,7 +22,7 @@ FPS = 3
 
 RND_SEED = random.randint(0, 100)
 
-CARD_RESOLUTION = 25
+CARD_RESOLUTION = 5
 
 DECK_SIZE = 60
 
@@ -70,7 +70,7 @@ font_header2 = pygame.font.Font(font_style, font_size)
 font_size = 100
 font_header = pygame.font.Font(font_style, font_size)
 
-card_scale = 0.75
+card_scale = 0.7
 
 card_height = 332 * card_scale
 card_width = 238 * card_scale
