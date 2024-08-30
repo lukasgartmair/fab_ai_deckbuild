@@ -54,6 +54,7 @@ alpha = 0.7
 enemy_message_x = grid.left_point(1)
 enemy_message_y = grid.top_point(1)
 combat_chain_spacing = 10
+hp_height_index = 0.5
 
 
 class Renderer:
@@ -102,14 +103,14 @@ class Renderer:
         self.button_up = pu.button(
             pygame.Color(color_palette.color2),
             grid.left_point(13),
-            grid.top_point(0),
+            grid.top_point(hp_height_index),
             button_size,
             button_size,
         )
         self.button_down = pu.button(
             pygame.Color(color_palette.color2),
             grid.left_point(13),
-            grid.top_point(0) + button_size + 5,
+            grid.top_point(hp_height_index) + button_size + 5,
             button_size,
             button_size,
         )
@@ -330,7 +331,7 @@ class Renderer:
 
     def render_hand(self):
         self.render_text(
-            str(len(self.engine.enemy.hand)) + " hand",
+            str(len(self.engine.enemy.hand)) + " in hand",
             grid.left_point(15),
             grid.top_point(2),
         )
@@ -683,17 +684,10 @@ class Renderer:
             self.button_up.draw(self.window)
             self.button_down.draw(self.window)
 
-        text = font.render(
+        self.render_text(
             "HP : " + str(self.engine.enemy.life_counter.life),
-            True,
-            pygame.Color(color_palette.white),
-        )
-        self.window.blit(
-            text,
-            (
-                grid.left_point(11),
-                grid.top_point(0),
-            ),
+            grid.left_point(11),
+            grid.top_point(hp_height_index),
         )
 
     def render_turn_text(self):
