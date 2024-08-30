@@ -66,7 +66,7 @@ class Renderer:
 
         self.engine = engine
 
-        self.background = pygame.image.load("images/backgrounds/background4.png")
+        self.background = pygame.image.load("images/backgrounds/background.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )
@@ -222,7 +222,6 @@ class Renderer:
             and self.engine.enemy.further_attack_possible == False
         ):
             message = "'I wont't further attack you - Let me defend now!'"
-
         elif (
             self.engine.enemy.stance == Stance.defend
             and self.engine.enemy.further_defense_possible == False
