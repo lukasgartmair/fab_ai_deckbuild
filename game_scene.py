@@ -150,8 +150,6 @@ class GameScene(SceneBase):
 
             self.renderer.render_hand()
 
-            self.renderer.render_combat_chain()
-
             self.renderer.render_banished_zone()
 
             self.renderer.render_pitch()
@@ -165,6 +163,8 @@ class GameScene(SceneBase):
             self.renderer.render_no_moves_left()
 
             self.renderer.render_equipment()
+
+            self.renderer.render_combat_chain()
 
             if self.engine.enemy.stance == Stance.defend:
                 for inp_box in self.input_boxes:

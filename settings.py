@@ -18,11 +18,11 @@ class DisplayMode:
 
 display_mode = DisplayMode.dark
 
-FPS = 3
+FPS = 5
 
 RND_SEED = random.randint(0, 100)
 
-CARD_RESOLUTION = 5
+CARD_RESOLUTION = 50
 
 DECK_SIZE = 60
 

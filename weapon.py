@@ -12,7 +12,6 @@ import random
 import pygame
 from playstyle import PlayerClass, CardType
 from wonderwords import RandomWord
-from randimage import get_random_image
 from settings import CARD_RESOLUTION
 from playstyle import Keyword
 from utils import n_chance

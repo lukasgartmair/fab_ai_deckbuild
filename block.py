@@ -91,13 +91,14 @@ class Block:
                             self.block_with_equipment_very_basic()
 
                     case player_attack.physical if player_attack.physical > 2:
-                        if len(self.enemy.hand) == 0 and len(self.arsenal) == 0:
+                        if len(self.enemy.hand) == 0 and len(self.enemy.arsenal) == 0:
                             print("here")
                             self.block_with_equipment_very_basic()
                         elif (
                             len(self.enemy.hand) == 0
-                            and (len(self.arsenal) == 1)
-                            and self.arsenal.card_type != CardType.defensive_reaction
+                            and (len(self.enemy.arsenal) == 1)
+                            and self.enemy.arsenal.card_type
+                            != CardType.defensive_reaction
                         ):
                             print("here2")
                             self.block_with_equipment_very_basic()
@@ -173,6 +174,11 @@ class Block:
     #     # TODO
     #     pass
 
+    def arcane_procedure(self, card, player_attack, pitch_value):
+        self.enemy.pitch_card(card)
+        self.enemy.use_floating_resources(player_attack.arcane)
+        self.increase_arcane_block_balance(amount=pitch_value)
+
     def defend_arcane(self, player_attack):
         print("DEFENDING ARCANE")
 
@@ -194,6 +200,8 @@ class Block:
                         card = unused_cards[0]
                         pitch_value = card.pitch
 
+                        self.arcane_procedure(card, player_attack, pitch_value)
+
                     elif len(self.enemy.hand) > 0:
                         sorted_hand = sorted(
                             self.enemy.hand, key=lambda x: x.pitch, reverse=False
@@ -202,9 +210,7 @@ class Block:
                         card = sorted_hand[0]
                         pitch_value = card.pitch
 
-                    self.enemy.pitch_card(card)
-                    self.enemy.use_floating_resources(player_attack.arcane)
-                    self.increase_arcane_block_balance(amount=pitch_value)
+                        self.arcane_procedure(card, player_attack, pitch_value)
 
             case player_attack.arcane if player_attack.arcane == 3 or 4:
                 print("defending one arcane attack")

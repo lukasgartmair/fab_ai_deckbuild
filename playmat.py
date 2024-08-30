@@ -35,13 +35,13 @@ class Playmat:
             grid.top_point(grid_height_playmat // 2 - 1),
         )
         self.positions.weapon_0 = Position(
-            "Weapon 1",
+            "Weapon",
             grid.left_point(grid_width_playmat // 2 - 3),
             grid.top_point(grid_height_playmat // 2 - 1),
         )
 
         self.positions.weapon_1 = Position(
-            "Weapon 2",
+            "Weapon",
             grid.left_point(grid_width_playmat // 2 + 1),
             grid.top_point(grid_height_playmat // 2 - 1),
         )
@@ -77,7 +77,7 @@ class Playmat:
 
         self.positions.combat_chain = Position(
             "Combat Chain",
-            grid.left_point(4),
+            grid.left_point(3),
             grid.top_point(2),
         )
 

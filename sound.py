@@ -46,9 +46,10 @@ class Sound:
         self.flip_card = pygame.mixer.Sound("sounds/flip_card_louder.wav")
         self.draw_card = pygame.mixer.Sound("sounds/draw_card_short.wav")
         self.attack = pygame.mixer.Sound("sounds/attack.wav")
-        self.block = pygame.mixer.Sound("sounds/block.wav")
+        self.block = pygame.mixer.Sound("sounds/block_short.wav")
         self.die = pygame.mixer.Sound("sounds/die.wav")
         self.slap = pygame.mixer.Sound("sounds/slap.wav")
+        self.pain = pygame.mixer.Sound("sounds/pain.wav")
 
         self.card_effects_channel = pygame.mixer.Channel(2)
         self.card_effects_channel.set_volume(VOLUME)
@@ -100,3 +101,7 @@ class Sound:
     def play_not_possible(self):
         self.card_effects_channel.play(self.slap)
         # Sound Effect from <a href="https://pixabay.com/sound-effects/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=90128">Pixabay</a>
+
+    def play_pain(self):
+        self.card_effects_channel.queue(self.pain)
+        # Sound Effect from <a href="https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=61964">Pixabay</a>

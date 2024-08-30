@@ -96,7 +96,9 @@ class Enemy:
 
         self.ability = Ability()
 
-        self.life_counter = LifeCounter(self.starting_life)
+        self.sound = Sound()
+
+        self.life_counter = LifeCounter(self.starting_life, self.sound)
 
         if self.player_class.name in lore_dict:
             self.lore = random.choice(lore_dict[self.player_class.name])
@@ -108,8 +110,6 @@ class Enemy:
 
         self.survival_mode = False
         self.check_if_in_survival_mode()
-
-        self.sound = Sound()
 
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
@@ -426,30 +426,31 @@ class Enemy:
                 self.banished_zone["intimidated_cards"].append(random_banished_card)
                 self.hand.remove(random_banished_card)
 
-            # TODO arcane or physical first?
-            if n_chance(p=0.5):
-                if player_attack.arcane is not None:
-                    self.block.defend_arcane(player_attack)
-                self.block.defend_physical(player_attack)
-            else:
-                self.block.defend_physical(player_attack)
-                if player_attack.arcane is not None:
-                    self.sound.play_flip_card()
-                    self.block.defend_arcane(player_attack)
+        # TODO arcane or physical first?
+        if n_chance(p=0.5):
+            if player_attack.arcane is not None:
+                self.block.defend_arcane(player_attack)
+            self.block.defend_physical(player_attack)
+        else:
+            self.block.defend_physical(player_attack)
+            if player_attack.arcane is not None:
+                self.sound.play_flip_card()
+                self.block.defend_arcane(player_attack)
 
-                self.sound.play_block()
+        for bc in self.block.physical_block_cards:
+            # print(bc)
+            self.played_cards.append(bc)
+            # print("enemy defends with")
+            # print(bc.name)
+            # print("defense: {}".format(bc.defense))
+            if bc in self.hand:
+                self.hand.remove(bc)
 
-                for bc in self.block.physical_block_cards:
-                    # print(bc)
-                    self.played_cards.append(bc)
-                    # print("enemy defends with")
-                    # print(bc.name)
-                    # print("defense: {}".format(bc.defense))
-                    if bc in self.hand:
-                        self.hand.remove(bc)
+            if bc in self.arsenal:
+                self.arsenal.remove(bc)
 
-                    if bc in self.arsenal:
-                        self.arsenal.remove(bc)
+        if len(self.block.physical_block_cards) > 0:
+            self.sound.play_block()
 
         self.life_counter.calculate_life(player_attack, self.block)
         self.block.reset()
