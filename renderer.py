@@ -23,25 +23,16 @@ from equipment import EquipmentType
 
 from settings import (
     playmat_grid as grid,
-    grid_width,
-    grid_height,
-    player_1_color,
-    player_2_color,
     bounds,
-    width_references,
     FPS,
-    height_references,
     card_height,
     card_width,
     card_scale,
     font_card_title,
     font,
     text_color,
-    text_offset_piles,
     arcane_offset,
     rect_height,
-    right_edge,
-    enemy_top_edge,
     font_lore,
     font_header,
     font_header2,
@@ -216,15 +207,12 @@ class Renderer:
         )
 
     def render_create_deck_message(self):
-        text = font_header2.render(
+        self.render_text(
             "Opening door to the next room...",
-            True,
-            pygame.Color(color_palette.white),
-        )
-
-        self.window.blit(
-            text,
-            (grid.left_point(6), grid.top_point(6)),
+            grid.left_point(6),
+            grid.top_point(6),
+            color=color_palette.white,
+            font=font_header2,
         )
 
     def render_lore(self):
@@ -277,15 +265,12 @@ class Renderer:
         ):
             message = "'You broke my defense!'"
 
-        text = font.render(
-            message,
-            True,
-            pygame.Color(color_palette.color3),
-        )
-        self.window.blit(
-            text,
-            (enemy_message_x, enemy_message_y),
-        )
+            self.render_text(
+                message,
+                enemy_message_x,
+                enemy_message_y,
+                color=color_palette.color3,
+            )
 
     def render_boost(self):
         message = ""
@@ -469,15 +454,21 @@ class Renderer:
         )
 
         if card.color == CardColor.yellow:
-            text = font_card_title.render(
-                str(card.name), True, pygame.Color(color_palette.black)
+            self.render_text(
+                str(card.name),
+                card.x,
+                card.y,
+                color=color_palette.black,
+                font=font_card_title,
             )
         else:
-            text = font_card_title.render(
-                str(card.name), True, pygame.Color(color_palette.white)
+            self.render_text(
+                str(card.name),
+                card.x,
+                card.y,
+                color=color_palette.white,
+                font=font_card_title,
             )
-
-        self.window.blit(text, (card.x, card.y))
 
     def render_card_class(self, card):
         index = 3
@@ -543,75 +534,51 @@ class Renderer:
         )
 
     def render_power(self, card):
-        text = font.render(str(card.physical), True, pygame.Color(color_palette.white))
-
-        self.window.blit(
-            text,
-            (
-                card.x,
-                card.y + card_height,
-            ),
+        self.render_text(
+            str(card.physical), card.x, card.y + card_height, color=color_palette.white
         )
 
     def render_arcane_power(self, card):
         if card.arcane > 0:
-            text = font.render(
+            self.render_text(
                 "/{}".format(str(card.arcane)),
-                True,
-                pygame.Color(color_palette.green),
-            )
-
-            self.window.blit(
-                text,
-                (
-                    card.x + arcane_offset,
-                    card.y + card_height,
-                ),
+                card.x + arcane_offset,
+                card.y + card_height,
+                color_palette.green,
             )
 
     def render_defense(self, card):
-        text = font.render(str(card.defense), True, pygame.Color(color_palette.black))
-
-        self.window.blit(
-            text,
-            (card.x + card_width * 0.8, card.y + card_height),
+        self.render_text(
+            str(card.defense),
+            card.x + card_width * 0.8,
+            card.y + card_height,
+            color=color_palette.black,
         )
 
     def render_card_pitch(self, card):
-        text = font.render(str(card.pitch), True, card_colors[card.color.name])
-
-        self.window.blit(
-            text,
-            (
-                card.x,
-                card.y - rect_height * 2,
-            ),
+        self.render_text(
+            str(card.pitch),
+            card.x,
+            card.y - rect_height * 2,
+            color=card_colors[card.color.name],
         )
 
     def render_arcane_barrier(self, card):
         if card.arcane_barrier > 0:
-            text = font_card_title.render(
+            self.render_text(
                 "Arcane Barrier " + str(card.arcane_barrier),
-                True,
-                color_palette.white,
-            )
-
-            self.window.blit(
-                text,
-                (
-                    card.x,
-                    card.y - rect_height,
-                ),
+                card.x,
+                card.y - rect_height,
+                color=color_palette.white,
+                font=font_card_title,
             )
 
     def render_cost(self, card):
-        text = font.render(str(card.cost), True, pygame.Color(color_palette.color2))
-        self.window.blit(
-            text,
-            (
-                card.x + card_width * 0.8,
-                card.y - rect_height * 2,
-            ),
+        self.render_text(
+            str(card.cost),
+            card.x + card_width * 0.8,
+            card.y - rect_height * 2,
+            color=color_palette.color2,
         )
 
     def render_card(self, card, i=0, x=None, y=None):
@@ -677,20 +644,14 @@ class Renderer:
             else:
                 color = pygame.Color(color_palette.color2)
 
-            text = font.render(
+            self.render_text(
                 "{}".format(self.engine.enemy.name)
                 + " is "
                 + (self.engine.enemy.stance.name + "ing").upper(),
-                True,
-                color,
-            )
-
-            self.window.blit(
-                text,
-                (
-                    grid.left_point(1),
-                    grid.top_point(0),
-                ),
+                grid.left_point(1),
+                grid.top_point(0),
+                font=font,
+                color=color,
             )
 
     def render_win(self):
@@ -698,13 +659,19 @@ class Renderer:
         self.bg = pygame.transform.smoothscale(self.bg, self.window.get_size())
         self.window.blit(self.bg, (0, 0))
 
-        message = "You won...but what..."
-        text = font.render(message, True, color_palette.color3)
-        self.window.blit(text, (grid.left_point(5), grid.top_point(5)))
+        self.render_text(
+            "You won...but what...",
+            grid.left_point(5),
+            grid.top_point(5),
+            color=color_palette.color3,
+        )
 
-        msg = "The " + self.engine.win_condition.name.replace("_", " ") + "..."
-        text = font.render(msg, True, color_palette.color3)
-        self.window.blit(text, (grid.left_point(8), grid.top_point(3)))
+        self.render_text(
+            "The " + self.engine.win_condition.name.replace("_", " ") + "...",
+            grid.left_point(8),
+            grid.top_point(3),
+            color=color_palette.color3,
+        )
 
         self.render_enemy_life_counter()
         self.render_enemy()
@@ -714,9 +681,12 @@ class Renderer:
         self.bg = pygame.transform.smoothscale(self.bg, self.window.get_size())
         self.window.blit(self.bg, (0, 0))
 
-        message = "Enter the abyss.."
-        text = font_header.render(message, True, color_palette.color3)
-        self.window.blit(text, (grid.left_point(1), grid.top_point(1)))
+        self.render_text(
+            "Enter the abyss..",
+            grid.left_point(1),
+            grid.top_point(1),
+            color=color_palette.color3,
+        )
 
     def update_display(self):
         pygame.display.flip()
