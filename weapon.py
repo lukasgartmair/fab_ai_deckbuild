@@ -13,9 +13,10 @@ import pygame
 from playstyle import PlayerClass, CardType
 from wonderwords import RandomWord
 from settings import CARD_RESOLUTION
-from playstyle import Keyword
+from playstyle import Keyword, WeaponType
 from utils import n_chance
 from card import Card, CardColor, generate_rnd_image, img_to_surfarray
+from sound import Sound
 
 r = RandomWord()
 
@@ -47,6 +48,16 @@ def initialize_weapons(playstyle_obj):
         ]
 
 
+def get_weapon_sound(weapon):
+    match weapon.weapon_type:
+        case weapon.weapon_type if weapon.weapon_type == WeaponType.pistol:
+            return Sound.sound_effect.pistol
+        case weapon.weapon_type if weapon.weapon_type == WeaponType.bow:
+            return Sound.sound_effect.bow
+        case _:
+            return Sound.sound_effect.attack
+
+
 class Weapon(Card):
     def __init__(self, playstyle_obj, hand_occupation, weapon_id=0):
         super().__init__()
@@ -54,6 +65,8 @@ class Weapon(Card):
         self.weapon_id = weapon_id
 
         self.weapon_type = playstyle_obj.weapon_type
+
+        self.sound = get_weapon_sound(self)
 
         self.name = generate_rnd_name()
 

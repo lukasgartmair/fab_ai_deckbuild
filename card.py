@@ -16,6 +16,7 @@ from randimage import get_random_image, show_array
 from settings import CARD_RESOLUTION, card_width, card_height, card_scale
 from playstyle import CardType, CardColor
 from colors import color_palette
+from sound import Sound
 
 id_iter = itertools.count()
 
@@ -96,6 +97,10 @@ class Card:
             )
         )
 
+    def initialize(self):
+        self.initialize_sound()
+        self.calc_card_values()
+
     def calc_card_values(self):
         # (physical (6) + Defense (3) + Pi
         # https://fab.cardsrealm.com/en-us/articles/guide-everything-about-value-and-turn-cycle-in-flesh-and-bloodtch (1)) - Cost (2) = 8
@@ -110,6 +115,16 @@ class Card:
             self.cost = 0
         elif self.cost > 4:
             self.cost = MAX_CARD_COST
+
+    def initialize_sound(self):
+        if self.card_type in [
+            CardType.attack_action,
+            CardType.non_attack_action,
+            CardType.attack_reaction,
+        ]:
+            self.sound = Sound.sound_effect.attack
+        else:
+            self.sound = None
 
     # def adjust_arcane_physical(self):
     #     if self.physical > 0 and self.card_type != CardType.defensive_reaction:

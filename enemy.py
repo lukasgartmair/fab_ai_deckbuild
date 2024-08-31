@@ -384,7 +384,7 @@ class Enemy:
         self.use_action_points()
         self.handle_go_again(c)
 
-        self.sound.play_attack()
+        self.sound.play_attack(c)
 
         return c
 

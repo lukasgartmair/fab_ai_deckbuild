@@ -213,6 +213,7 @@ class Deck:
             card.physical = physical_distribution[indices[i]]
             card.keywords = [keyword_distribution[indices[i]]]
             card.card_type = card_type_distribution[indices[i]]
+
             card.card_class = card_class_distribution[indices[i]]
             card.image = card_images[indices[i]]
 
@@ -221,7 +222,7 @@ class Deck:
                     if len(arcane_distribution) > 0:
                         card.arcane = arcane_distribution.pop()
 
-            card.calc_card_values()
+            card.initialize()
 
         # print("deck contents:")
         # for i, c in enumerate(self.cards):
