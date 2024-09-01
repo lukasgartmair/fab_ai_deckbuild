@@ -20,10 +20,19 @@ class Mechanologist(Enemy):
 
         self.banished_zone["boosted_cards"] = []
 
+    def reorder_hand(self, hand):
+        if n_chance(p=1):
+            hand = sorted(
+                hand, key=lambda x: (x.physical, x.card_type.value * -1), reverse=True
+            )
+            self.print_reordered_hand(hand)
+        return hand
+
     def determine_if_boost_makes_sense(self):
         p = (len(self.hand) + len(self.arsenal)) / (
             self.intellect + len(self.arsenal)
-        ) + 0.25
+        ) + 0.3
+        print(p)
         if n_chance(p):
             return True
         else:

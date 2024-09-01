@@ -44,11 +44,10 @@ class CombatChain:
             return False
 
     def end_reached(self):
-        # TODO greater trhan or greater than equal
-        if self.iterator > self.get_length():
-            return True
-        else:
+        if self.iterator_in_chain():
             return False
+        else:
+            return True
 
     def increase_iterator(self):
         self.iterator += 1
@@ -61,9 +60,8 @@ class CombatChain:
         return hand
 
     def print_reordered_hand(self, hand):
-        # print([h.physical for h in hand])
-        # print([h.card_type.name for h in hand])
-        pass
+        print([h.physical for h in hand])
+        print([h.card_type.name for h in hand])
 
     def apply_class_specific_sorting_preferences(self, virtual_hand):
         if n_chance(p=1):

@@ -175,6 +175,10 @@ class Enemy:
     def start_move(self):
         pass
 
+    # TODO AS COMBAT CHAIN is not inherited i need this here to overwrite - any better solution?
+    def reorder_hand(self, hand):
+        self.combat_chain.reorder_hand(hand)
+
     def finish_turn(self):
         self.reset_play()
 
@@ -211,10 +215,10 @@ class Enemy:
             self.has_moves_left = self.check_if_further_defense_possible()
 
     def check_if_further_attack_possible(self):
+        print(self.combat_chain.chain)
         if (
             self.combat_chain.is_empty()
             or self.combat_chain.end_reached()
-            or not self.combat_chain.iterator_in_chain()
             or self.action_points == 0
         ):
             # print("NO attack possible")
@@ -334,7 +338,7 @@ class Enemy:
         self.life_counter.calculate_life(player_attack, self.block)
         self.block.reset()
 
-    def class_specific_helper_1(self):
+    def class_specific_helper_1(self, card):
         pass
 
     def perform_attack(self):

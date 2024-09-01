@@ -50,7 +50,7 @@ class GameEngine:
             ]
         )
 
-        test_class = PlayerClass.mechanologist
+        test_class = PlayerClass.guardian
 
         self.player_class = test_class
         self.apply_player_class()
