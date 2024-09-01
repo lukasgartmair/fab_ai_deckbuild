@@ -21,11 +21,15 @@ class CombatChain:
 
     def reset(self):
         self.chain = {}
+        self.iterator = 0
 
     def iterator_in_chain(self):
-        print(self.iterator in self.chain.keys())
-        print("here")
-        return self.iterator in self.chain.keys()
+        # print(self.iterator)
+        # print(self.chain)
+        if self.iterator in self.chain:
+            return True
+        else:
+            return False
 
     def has_content(self):
         if self.get_length() > 0:
@@ -57,8 +61,9 @@ class CombatChain:
         return hand
 
     def print_reordered_hand(self, hand):
-        print([h.physical for h in hand])
-        print([h.card_type.name for h in hand])
+        # print([h.physical for h in hand])
+        # print([h.card_type.name for h in hand])
+        pass
 
     def apply_class_specific_sorting_preferences(self, virtual_hand):
         if n_chance(p=1):

@@ -78,9 +78,6 @@ class Enemy:
 
         self.equipment_suite = EquipmentSuite()
 
-        self.further_attack_possible = True
-        self.further_defense_possible = True
-
         self.floating_resources = 0
 
         self.pitched_cards = []
@@ -110,6 +107,8 @@ class Enemy:
         self.survival_mode = False
         self.check_if_in_survival_mode()
 
+        self.has_moves_left = True
+
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
             self.survival_mode = True
@@ -125,8 +124,7 @@ class Enemy:
     def reset_play(self):
         self.floating_resources = 0
         self.reset_action_points()
-        self.further_attack_possible = True
-        self.further_defense_possible = True
+        self.has_moves_left = True
 
     def reset_action_points(self):
         self.action_points = 1
@@ -175,7 +173,7 @@ class Enemy:
         pass
 
     def start_move(self):
-        self.check_if_further_move_possible()
+        pass
 
     def finish_turn(self):
         self.reset_play()
@@ -197,9 +195,6 @@ class Enemy:
 
         self.combat_chain.reset()
 
-        self.further_attack_possible = True
-        self.further_defense_possible = True
-
         if "intimidated_cards" in self.banished_zone:
             self.hand += self.banished_zone["intimidated_cards"]
 
@@ -211,22 +206,23 @@ class Enemy:
 
     def check_if_further_move_possible(self):
         if self.stance == Stance.attack:
-            self.check_if_further_attack_possible()
+            self.has_moves_left = self.check_if_further_attack_possible()
         elif self.stance == Stance.defend:
-            self.check_if_further_defense_possible()
+            self.has_moves_left = self.check_if_further_defense_possible()
 
     def check_if_further_attack_possible(self):
-        print(self.combat_chain.is_empty())
-        print(self.combat_chain.end_reached())
-        print(self.action_points == 0)
         if (
             self.combat_chain.is_empty()
             or self.combat_chain.end_reached()
+            or not self.combat_chain.iterator_in_chain()
             or self.action_points == 0
         ):
-            self.further_attack_possible = False
+            # print("NO attack possible")
+            return False
+
         else:
-            print("attack possible")
+            # print("attack possible")
+            return True
 
     def check_if_further_defense_possible(self):
         if (
@@ -234,10 +230,12 @@ class Enemy:
             and len(self.equipment_suite.get_possible_blocking_pieces_in_play()) == 0
         ):
             if len(self.arsenal) == 0:
-                self.further_defense_possible = False
+                return False
             elif len(self.arsenal) == 1:
                 if self.arsenal.card_type != CardType.defensive_reaction:
-                    self.further_defense_possible = False
+                    return True
+            else:
+                return True
 
     def draw(self):
         print("enemy is drawing")
@@ -268,15 +266,6 @@ class Enemy:
     def remove_card_from_hand(self, card):
         if card in self.hand:
             self.hand.remove(card)
-
-    def check_if_attack(self):
-        if self.combat_chain.has_content():
-            if self.combat_chain.iterator_in_chain():
-                print(self.action_points)
-                if self.action_points > 0:
-                    return True
-        else:
-            return False
 
     def pitch_cards(self):
         for p in self.combat_chain.chain[self.combat_chain.iterator]["pitch"]:
@@ -345,14 +334,16 @@ class Enemy:
         self.life_counter.calculate_life(player_attack, self.block)
         self.block.reset()
 
+    def class_specific_helper_1(self):
+        pass
+
     def perform_attack(self):
         self.combat_chain.calc_combat_chain()
 
         print(self.combat_chain)
-        if self.check_if_attack():
-            c = self.attack.base_attack()
 
-            self.combat_chain.increase_iterator()
+        c = self.attack.base_attack()
 
-        else:
-            self.further_attack_possible = False
+        self.class_specific_helper_1(c)
+
+        self.combat_chain.increase_iterator()

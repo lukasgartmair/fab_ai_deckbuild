@@ -256,12 +256,12 @@ class Renderer:
         message = ""
         if (
             self.engine.enemy.stance == Stance.attack
-            and self.engine.enemy.further_attack_possible == False
+            and self.engine.enemy.has_moves_left == False
         ):
             message = "'I wont't further attack you!'"
         elif (
             self.engine.enemy.stance == Stance.defend
-            and self.engine.enemy.further_defense_possible == False
+            and self.engine.enemy.has_moves_left == False
         ):
             message = "'You broke my defense!'"
 

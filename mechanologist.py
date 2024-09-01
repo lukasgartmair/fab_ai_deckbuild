@@ -51,13 +51,5 @@ class Mechanologist(Enemy):
         super().reset_play()
         self.boost.turn_reset()
 
-    def perform_attack(self):
-        if self.check_if_attack():
-            c = self.attack.base_attack()
-
-            self.apply_boost_mechanic(c)
-
-            self.combat_chain.increase_iterator()
-
-        else:
-            self.further_attack_possible = False
+    def class_specific_helper_1(self, card):
+        self.apply_boost_mechanic(card)

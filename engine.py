@@ -111,17 +111,16 @@ class GameEngine:
         self.enemy.start_move()
 
         if self.enemy.stance == Stance.defend:
-            if self.enemy.further_defense_possible == False:
+            if self.enemy.check_if_further_defense_possible() == True:
                 self.enemy.sound.play_not_possible()
 
             self.enemy.defend(player_attack)
             self.finish_move(player_attack)
 
         elif self.enemy.stance == Stance.attack:
-            if self.enemy.further_attack_possible == False:
-                print(self.enemy.combat_chain.chain)
+            if self.enemy.check_if_further_attack_possible() == True:
+                self.enemy.perform_attack()
+            else:
                 self.enemy.sound.play_not_possible()
 
-            else:
-                self.enemy.perform_attack()
             self.finish_move(player_attack)
