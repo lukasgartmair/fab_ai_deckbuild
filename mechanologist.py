@@ -30,6 +30,7 @@ class Mechanologist(Enemy):
             return False
 
     def apply_boost_mechanic(self, card):
+        print("bossting")
         if Keyword.boost in card.keywords:
             if self.determine_if_boost_makes_sense():
                 if len(self.hand) > 0:
@@ -50,13 +51,13 @@ class Mechanologist(Enemy):
         super().reset_play()
         self.boost.turn_reset()
 
-    def attack(self):
+    def perform_attack(self):
         if self.check_if_attack():
-            c = self.base_attack()
+            c = self.attack.base_attack()
 
             self.apply_boost_mechanic(c)
 
-            self.combat_chain_iterator += 1
+            self.combat_chain.increase_iterator()
 
         else:
             self.further_attack_possible = False

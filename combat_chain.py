@@ -22,6 +22,17 @@ class CombatChain:
     def reset(self):
         self.chain = {}
 
+    def iterator_in_chain(self):
+        print(self.iterator in self.chain.keys())
+        print("here")
+        return self.iterator in self.chain.keys()
+
+    def has_content(self):
+        if self.get_length() > 0:
+            return True
+        else:
+            return False
+
     def is_empty(self):
         if self.get_length() == 0:
             return True
@@ -30,7 +41,7 @@ class CombatChain:
 
     def end_reached(self):
         # TODO greater trhan or greater than equal
-        if self.iterator >= self.get_length():
+        if self.iterator > self.get_length():
             return True
         else:
             return False

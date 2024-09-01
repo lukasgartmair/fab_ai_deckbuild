@@ -170,8 +170,6 @@ class Enemy:
             self.check_if_in_survival_mode()
             self.draw()
             self.combat_chain.calc_combat_chain()
-            # print("combat_chain")
-            # print(self.combat_chain)
 
     def finish_move(self):
         pass
@@ -218,12 +216,17 @@ class Enemy:
             self.check_if_further_defense_possible()
 
     def check_if_further_attack_possible(self):
+        print(self.combat_chain.is_empty())
+        print(self.combat_chain.end_reached())
+        print(self.action_points == 0)
         if (
             self.combat_chain.is_empty()
             or self.combat_chain.end_reached()
             or self.action_points == 0
         ):
             self.further_attack_possible = False
+        else:
+            print("attack possible")
 
     def check_if_further_defense_possible(self):
         if (
@@ -267,8 +270,8 @@ class Enemy:
             self.hand.remove(card)
 
     def check_if_attack(self):
-        if not self.combat_chain.is_empty():
-            if self.combat_chain.iterator in self.combat_chain.chain:
+        if self.combat_chain.has_content():
+            if self.combat_chain.iterator_in_chain():
                 print(self.action_points)
                 if self.action_points > 0:
                     return True

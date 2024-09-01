@@ -50,16 +50,10 @@ class GameEngine:
             ]
         )
 
-        self.player_class = PlayerClass.guardian
+        test_class = PlayerClass.mechanologist
 
-        match self.player_class:
-            case self.player_class if self.player_class == PlayerClass.mechanologist:
-                self.enemy = Mechanologist()
-            case self.player_class if self.player_class == PlayerClass.guardian:
-                self.enemy = Guardian()
-
-            case _:
-                self.enemy = Enemy(self.player_class)
+        self.player_class = test_class
+        self.apply_player_class()
 
         self.state_machine = GameStateMachine()
         self.level_manager = LevelManager(level=1)
@@ -68,6 +62,16 @@ class GameEngine:
         self.player_attack = PlayerAttack()
 
         self.analyzer = GlobalAnalyzer(self)
+
+    def apply_player_class(self):
+        match self.player_class:
+            case self.player_class if self.player_class == PlayerClass.mechanologist:
+                self.enemy = Mechanologist()
+            case self.player_class if self.player_class == PlayerClass.guardian:
+                self.enemy = Guardian()
+
+            case _:
+                self.enemy = Enemy(self.player_class)
 
     def finish_move(self, player_attack):
         self.analyzer.write_move_data(player_attack)
@@ -86,12 +90,7 @@ class GameEngine:
             ]
         )
 
-        self.player_class = PlayerClass.mechanologist
-
-        if self.player_class == PlayerClass.mechanologist:
-            self.enemy = Mechanologist()
-        else:
-            self.enemy = Enemy(self.player_class)
+        self.apply_player_class()
 
         self.enemy.initialize_play()
         self.state_machine.restart_game()
