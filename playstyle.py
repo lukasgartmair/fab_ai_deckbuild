@@ -389,8 +389,8 @@ class GuardianBasic(Playstyle):
         self.n_weapons = 1
         self.weapon_physical = np.random.randint(1, 12)
         self.weapon_arcane = 0
-        self.go_again_chance = 0
-        self.weapon_type = random.choice([WeaponType.sword, WeaponType.hammer])
+        self.go_again_chance = 1
+        self.weapon_type = random.choice([WeaponType.axe, WeaponType.hammer])
 
 
 class IllusionistBasic(Playstyle):

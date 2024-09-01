@@ -258,80 +258,84 @@ class Enemy:
         else:
             print("can't draw anymore, deck fatigued")
 
-    def order_hand_by_physical_desc(self, hand):
-        hand = sorted(hand, key=lambda x: x.physical, reverse=True)
+    def reorder_hand(self, hand):
+        hand = sorted(
+            hand, key=lambda x: (x.physical * -1, x.keywords[0].value), reverse=False
+        )
+        self.print_reordered_hand(hand)
         return hand
 
-    def order_hand_by_go_again(self, hand):
-        hand = sorted(hand, key=lambda x: x.keywords[0].value, reverse=False)
-        return hand
+    def print_reordered_hand(self, hand):
+        print([h.physical for h in hand])
+        print([h.card_type.name for h in hand])
+
+    def apply_class_specific_sorting_preferences(self, virtual_hand):
+        if n_chance(p=1):
+            virtual_hand = self.reorder_hand(virtual_hand)
+        else:
+            np.random.shuffle(virtual_hand)
+        return virtual_hand
 
     def calc_combat_chain(self):
         combat_chain_index = 0
 
         not_pitchable_cards = self.arsenal + self.weapons
 
-        virtual_hand = self.hand.copy() + self.arsenal + self.weapons
+        virtual_hand = (
+            [
+                c for c in self.hand if c.card_type not in [CardType.defensive_reaction]
+            ].copy()
+            + self.arsenal
+            + self.weapons
+        )
 
         np.random.shuffle(virtual_hand)
 
-        # play strongest attacks first, but by a small chance not to be not too predictable -> shuffle, weakest first makes no sense at all
-        if n_chance(p=1):
-            virtual_hand = self.order_hand_by_physical_desc(virtual_hand)
-        else:
-            np.random.shuffle(virtual_hand)
-
-        # play go agains first with a certain chance
-        if n_chance(p=1):
-            virtual_hand = self.order_hand_by_go_again(virtual_hand)
+        virtual_hand = self.apply_class_specific_sorting_preferences(virtual_hand)
 
         virtual_hand_tmp = virtual_hand.copy()
         for i in range(len(virtual_hand)):
             if len(virtual_hand_tmp) > 0:
                 current_card = virtual_hand_tmp[0]
 
-                if current_card.card_type not in [CardType.defensive_reaction]:
-                    possible_cards_to_pitch = self.get_combinations(
-                        [v for v in virtual_hand_tmp if v not in not_pitchable_cards], 0
+                possible_cards_to_pitch = self.get_combinations(
+                    [v for v in virtual_hand_tmp if v not in not_pitchable_cards], 0
+                )
+
+                pitch_combinations = {}
+                for j, pi in enumerate(possible_cards_to_pitch):
+                    pitch_total = 0
+                    for p in pi:
+                        pitch_total += p.pitch
+
+                    pitch_combinations[pi] = pitch_total
+
+                if current_card.cost > 0:
+                    cards_to_pitch = self.determine_pitch_combination(
+                        current_card.cost, pitch_combinations
                     )
 
-                    pitch_combinations = {}
-                    for j, pi in enumerate(possible_cards_to_pitch):
-                        pitch_total = 0
-                        for p in pi:
-                            pitch_total += p.pitch
-
-                        pitch_combinations[pi] = pitch_total
-
-                    if current_card.cost > 0:
-                        cards_to_pitch = self.determine_pitch_combination(
-                            current_card.cost, pitch_combinations
-                        )
-
-                        if len(cards_to_pitch) == 0:
-                            virtual_hand = shift_list(virtual_hand_tmp)
-                            continue
-                        else:
-                            self.combat_chain[combat_chain_index] = {
-                                "attack": current_card,
-                                "pitch": cards_to_pitch,
-                            }
-                            combat_chain_index += 1
-
-                            virtual_hand_tmp.remove(current_card)
-                            for p in cards_to_pitch:
-                                virtual_hand_tmp.remove(p)
+                    if len(cards_to_pitch) == 0:
+                        virtual_hand = shift_list(virtual_hand_tmp)
+                        continue
                     else:
                         self.combat_chain[combat_chain_index] = {
                             "attack": current_card,
-                            "pitch": [],
+                            "pitch": cards_to_pitch,
                         }
                         combat_chain_index += 1
 
                         virtual_hand_tmp.remove(current_card)
-
+                        for p in cards_to_pitch:
+                            virtual_hand_tmp.remove(p)
                 else:
-                    break
+                    self.combat_chain[combat_chain_index] = {
+                        "attack": current_card,
+                        "pitch": [],
+                    }
+                    combat_chain_index += 1
+
+                    virtual_hand_tmp.remove(current_card)
 
     def pitch_floating_resources(self, amount):
         self.floating_resources += amount
@@ -389,6 +393,9 @@ class Enemy:
         return c
 
     def attack(self):
+        self.calc_combat_chain()
+
+        print(self.combat_chain)
         if self.check_if_attack():
             c = self.base_attack()
 

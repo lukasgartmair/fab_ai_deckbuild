@@ -51,9 +51,20 @@ def initialize_weapons(playstyle_obj):
 def get_weapon_sound(weapon):
     match weapon.weapon_type:
         case weapon.weapon_type if weapon.weapon_type == WeaponType.pistol:
-            return Sound.sound_effect.pistol
+            if weapon.weapon_id == 0:
+                return Sound.sound_effect.steampunk_pistol
+            elif weapon.weapon_id == 1:
+                return Sound.sound_effect.pistol
         case weapon.weapon_type if weapon.weapon_type == WeaponType.bow:
             return Sound.sound_effect.bow
+        case weapon.weapon_type if weapon.weapon_type == WeaponType.hammer:
+            return Sound.sound_effect.hammer
+        case weapon.weapon_type if weapon.weapon_type == WeaponType.dagger:
+            return Sound.sound_effect.dagger
+        case weapon.weapon_type if weapon.weapon_type == WeaponType.aura:
+            return Sound.sound_effect.aura
+        case weapon.weapon_type if weapon.weapon_type == WeaponType.axe:
+            return Sound.sound_effect.axe
         case _:
             return Sound.sound_effect.attack
 

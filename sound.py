@@ -81,7 +81,6 @@ class Sound:
         self.card_effects_channel.queue(self.sound_effect.die)
 
     def play_attack(self, card):
-        print(card.sound)
         if card.sound:
             self.card_effects_channel.play(card.sound)
 

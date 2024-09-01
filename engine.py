@@ -18,6 +18,7 @@ from analyzer import GlobalAnalyzer
 import random
 from playstyle import PlayerClass
 from mechanologist import Mechanologist
+from guardian import Guardian
 from sound import Sound
 
 
@@ -49,12 +50,16 @@ class GameEngine:
             ]
         )
 
-        self.player_class = PlayerClass.ranger
+        self.player_class = PlayerClass.guardian
 
-        if self.player_class == PlayerClass.mechanologist:
-            self.enemy = Mechanologist()
-        else:
-            self.enemy = Enemy(self.player_class)
+        match self.player_class:
+            case self.player_class if self.player_class == PlayerClass.mechanologist:
+                self.enemy = Mechanologist()
+            case self.player_class if self.player_class == PlayerClass.guardian:
+                self.enemy = Guardian()
+
+            case _:
+                self.enemy = Enemy(self.player_class)
 
         self.state_machine = GameStateMachine()
         self.level_manager = LevelManager(level=1)
@@ -115,6 +120,7 @@ class GameEngine:
 
         elif self.enemy.stance == Stance.attack:
             if self.enemy.further_attack_possible == False:
+                print(self.enemy.combat_chain)
                 self.enemy.sound.play_not_possible()
 
             else:
