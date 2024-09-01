@@ -378,8 +378,10 @@ class GuardianBasic(Playstyle):
             "defensive_reaction": 25,
         }
 
-        self.keywords = [Keyword.dominate, Keyword.no_keyword]
-        self.keyword_ratios = {"dominate": 50, "no_keyword": 50}
+        # self.keywords = [Keyword.dominate, Keyword.no_keyword]
+        # self.keyword_ratios = {"dominate": 50, "no_keyword": 50}
+        self.keywords = [Keyword.go_again, Keyword.combo]
+        self.keyword_ratios = {"go_again": 100, "combo": 0}
 
         self.pitch_ratios = {
             CardColor.red: 0,
@@ -389,7 +391,7 @@ class GuardianBasic(Playstyle):
         self.n_weapons = 1
         self.weapon_physical = np.random.randint(7, 12)
         self.weapon_arcane = 0
-        self.go_again_chance = 0.2
+        self.go_again_chance = 1
         self.weapon_type = random.choice([WeaponType.axe, WeaponType.hammer])
 
 

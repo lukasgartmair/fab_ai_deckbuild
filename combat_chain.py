@@ -87,6 +87,8 @@ class CombatChain:
 
         np.random.shuffle(playable_cards)
 
+        virtual_hand = self.enemy.hand.copy()
+
         playable_cards = self.apply_class_specific_sorting_preferences(playable_cards)
 
         playable_cards_tmp = playable_cards.copy()
@@ -94,28 +96,28 @@ class CombatChain:
             if len(playable_cards_tmp) > 0:
                 current_card = playable_cards_tmp[0]
 
-                pitchable_cards = [
-                    c
-                    for c in self.enemy.hand
-                    if c != current_card and c not in pitch_bans
-                ]
-                possible_combinations = self.enemy.pitch.get_combinations(
-                    [v for v in pitchable_cards]
-                )
-                pitch_combinations = {}
-                for j, pi in enumerate(possible_combinations):
-                    pitch_total = 0
-                    if len(pi) > 0:
-                        pitch_total = sum([c.pitch for c in pi])
-                        pitch_combinations[pi] = pitch_total
-
                 if current_card.cost > 0:
+                    pitchable_cards = [
+                        c
+                        for c in virtual_hand
+                        if c != current_card and c not in pitch_bans
+                    ]
+                    possible_combinations = self.enemy.pitch.get_combinations(
+                        [v for v in pitchable_cards]
+                    )
+                    pitch_combinations = {}
+                    for j, pi in enumerate(possible_combinations):
+                        pitch_total = 0
+                        if len(pi) > 0:
+                            pitch_total = sum([c.pitch for c in pi])
+                            pitch_combinations[pi] = pitch_total
+
                     cards_to_pitch = self.enemy.pitch.determine_pitch_combination(
                         current_card.cost, pitch_combinations
                     )
 
                     if len(cards_to_pitch) == 0:
-                        playable_cards = shift_list(playable_cards_tmp)
+                        playable_cards_tmp = shift_list(playable_cards_tmp)
                         continue
                     else:
                         self.chain[index] = {
@@ -124,10 +126,9 @@ class CombatChain:
                         }
                         index += 1
 
-                        playable_cards_tmp.remove(current_card)
-                        for p in cards_to_pitch:
-                            if p in playable_cards_tmp:
-                                playable_cards_tmp.remove(p)
+                    for p in cards_to_pitch:
+                        playable_cards_tmp = [p for p in playable_cards_tmp if p != p]
+                        virtual_hand = [v for v in virtual_hand if v != p]
                 else:
                     self.chain[index] = {
                         "attack": current_card,
@@ -135,4 +136,6 @@ class CombatChain:
                     }
                     index += 1
 
-                    playable_cards_tmp.remove(current_card)
+                playable_cards_tmp = [
+                    p for p in playable_cards_tmp if p != current_card
+                ]
