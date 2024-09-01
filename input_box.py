@@ -7,7 +7,6 @@ Created on Sun Jul 21 19:48:35 2024
 """
 
 import pygame
-from attack import Attack
 from colors import color_palette
 
 pygame.font.init()

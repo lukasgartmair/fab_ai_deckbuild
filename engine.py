@@ -13,7 +13,7 @@ from enemy import Enemy, Stance
 from statemachine import StateMachine
 from statemachine.states import States, State
 from level_manager import LevelManager
-from attack import Attack
+from player_attack import PlayerAttack
 from analyzer import GlobalAnalyzer
 import random
 from playstyle import PlayerClass
@@ -65,7 +65,7 @@ class GameEngine:
         self.level_manager = LevelManager(level=1)
         self.enemy.initialize_play()
         self.win_condition = None
-        self.attack = Attack()
+        self.player_attack = PlayerAttack()
 
         self.analyzer = GlobalAnalyzer(self)
 
@@ -124,5 +124,5 @@ class GameEngine:
                 self.enemy.sound.play_not_possible()
 
             else:
-                self.enemy.attack()
+                self.enemy.perform_attack()
             self.finish_move(player_attack)

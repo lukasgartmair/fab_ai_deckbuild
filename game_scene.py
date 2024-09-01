@@ -72,13 +72,13 @@ class GameScene(SceneBase):
                         if self.engine.enemy.stance == Stance.defend:
                             for inp_box in self.input_boxes:
                                 if inp_box.has_text():
-                                    self.engine.attack.set_values(inp_box)
+                                    self.engine.player_attack.set_values(inp_box)
 
-                            self.engine.play(self.engine.attack)
+                            self.engine.play(self.engine.player_attack)
 
                             for inp_box in self.input_boxes:
                                 inp_box.reset()
-                                self.engine.attack.reset()
+                                self.engine.player_attack.reset()
                             for check_box in self.renderer.check_boxes:
                                 check_box.reset()
 
@@ -99,12 +99,12 @@ class GameScene(SceneBase):
 
                         for inp_box in self.input_boxes:
                             inp_box.reset()
-                            self.engine.attack.reset()
+                            self.engine.player_attack.reset()
 
                         for check_box in self.renderer.check_boxes:
                             check_box.reset()
 
-                        self.engine.attack.reset()
+                        self.engine.player_attack.reset()
 
                         self.engine.enemy.modifiers.reset()
 
