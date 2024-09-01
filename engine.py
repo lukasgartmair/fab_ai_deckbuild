@@ -86,7 +86,7 @@ class GameEngine:
             ]
         )
 
-        # self.player_class = PlayerClass.wizard
+        self.player_class = PlayerClass.mechanologist
 
         if self.player_class == PlayerClass.mechanologist:
             self.enemy = Mechanologist()
@@ -120,7 +120,7 @@ class GameEngine:
 
         elif self.enemy.stance == Stance.attack:
             if self.enemy.further_attack_possible == False:
-                print(self.enemy.combat_chain)
+                print(self.enemy.combat_chain.chain)
                 self.enemy.sound.play_not_possible()
 
             else:

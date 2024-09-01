@@ -24,6 +24,7 @@ import pygame
 from sound import Sound
 from attack import Attack
 from pitch import Pitch
+from combat_chain import CombatChain
 from lore import lore_dict
 from modifiers import Modifiers
 import image
@@ -85,14 +86,9 @@ class Enemy:
         self.pitched_cards = []
         self.played_cards = []
 
-        self.combat_chain_iterator = 0
-
-        self.combat_chain = {}
-
+        self.combat_chain = CombatChain(self)
         self.block = Block(self)
-
         self.attack = Attack(self)
-
         self.pitch = Pitch(self)
 
         self.modifiers = Modifiers()
@@ -123,7 +119,7 @@ class Enemy:
     def initialize_play(self):
         self.draw()
         if self.stance == Stance.attack:
-            self.attack.calc_combat_chain()
+            self.combat_chain.calc_combat_chain()
         self.reset_play()
 
     def reset_play(self):
@@ -160,7 +156,7 @@ class Enemy:
     def change_stance(self):
         if self.stance == Stance.defend:
             self.stance = Stance.attack
-            self.attack.calc_combat_chain()
+            self.combat_chain.calc_combat_chain()
             # print("combat_chain")
             # print(self.combat_chain)
 
@@ -173,7 +169,7 @@ class Enemy:
             self.stance = Stance.defend
             self.check_if_in_survival_mode()
             self.draw()
-            self.attack.calc_combat_chain()
+            self.combat_chain.calc_combat_chain()
             # print("combat_chain")
             # print(self.combat_chain)
 
@@ -201,9 +197,7 @@ class Enemy:
         self.played_cards = []
         self.pitched_cards = []
 
-        self.combat_chain = {}
-
-        self.combat_chain_iterator = 0
+        self.combat_chain.reset()
 
         self.further_attack_possible = True
         self.further_defense_possible = True
@@ -225,9 +219,8 @@ class Enemy:
 
     def check_if_further_attack_possible(self):
         if (
-            len(self.combat_chain) == 0
-            or self.combat_chain_iterator > len(self.combat_chain)
-            or (len(self.hand) == 0 and len(self.arsenal) == 0)
+            self.combat_chain.is_empty()
+            or self.combat_chain.end_reached()
             or self.action_points == 0
         ):
             self.further_attack_possible = False
@@ -274,8 +267,8 @@ class Enemy:
             self.hand.remove(card)
 
     def check_if_attack(self):
-        if len(self.combat_chain) > 0:
-            if self.combat_chain_iterator in self.combat_chain:
+        if not self.combat_chain.is_empty():
+            if self.combat_chain.iterator in self.combat_chain.chain:
                 print(self.action_points)
                 if self.action_points > 0:
                     return True
@@ -283,7 +276,7 @@ class Enemy:
             return False
 
     def pitch_cards(self):
-        for p in self.combat_chain[self.combat_chain_iterator]["pitch"]:
+        for p in self.combat_chain.chain[self.combat_chain.iterator]["pitch"]:
             self.pitch_card(p)
 
     def remove_played_cards(self):
@@ -312,7 +305,7 @@ class Enemy:
             print(c.name)
 
     def defend(self, player_attack):
-        self.attack.calc_combat_chain()
+        self.combat_chain.calc_combat_chain()
         if len(self.hand) > 0:
             if self.modifiers.modifier_dict["intimidate"] == True:
                 random_banished_card = random.choice(self.hand)
@@ -350,13 +343,13 @@ class Enemy:
         self.block.reset()
 
     def perform_attack(self):
-        self.attack.calc_combat_chain()
+        self.combat_chain.calc_combat_chain()
 
         print(self.combat_chain)
         if self.check_if_attack():
             c = self.attack.base_attack()
 
-            self.combat_chain_iterator += 1
+            self.combat_chain.increase_iterator()
 
         else:
             self.further_attack_possible = False
