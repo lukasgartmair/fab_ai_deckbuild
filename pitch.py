@@ -15,18 +15,17 @@ class Pitch:
     def __init__(self, enemy):
         self.enemy = enemy
 
-    def get_combinations(self, array, current_index):
+    def get_combinations(self, array):
         combinations = []
         array_copy = array.copy()
-        # print(array_copy)
         if len(array_copy) >= 2:
-            array_copy.pop(current_index)
-            for i in range(self.enemy.intellect):
-                if i != current_index:
-                    combos = itertools.combinations(array_copy, i)
-                    for c in combos:
-                        combinations.append(c)
+            for i in range(len(array) + 1):
+                combos = itertools.combinations(array_copy, i)
+                for c in combos:
+                    combinations.append(c)
 
+        combinations = [c[0] for c in combinations if len(c) > 0]
+        print(combinations)
         return combinations
 
     def determine_pitch_combination(self, cost_to_pay, pitch_combinations):

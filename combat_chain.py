@@ -94,8 +94,12 @@ class CombatChain:
             if len(virtual_hand_tmp) > 0:
                 current_card = virtual_hand_tmp[0]
 
+                print("pitches in hand")
+                print([c.pitch for c in virtual_hand_tmp])
+                print()
+                pitchable_cards = [c for c in virtual_hand_tmp if c != current_card]
                 possible_cards_to_pitch = self.enemy.pitch.get_combinations(
-                    [v for v in virtual_hand_tmp if v not in not_pitchable_cards], 0
+                    [v for v in pitchable_cards if v not in not_pitchable_cards]
                 )
 
                 pitch_combinations = {}

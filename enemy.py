@@ -344,7 +344,7 @@ class Enemy:
     def perform_attack(self):
         self.combat_chain.calc_combat_chain()
 
-        print(self.combat_chain)
+        print(self.combat_chain.chain)
 
         c = self.attack.base_attack()
 
