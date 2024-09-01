@@ -173,7 +173,7 @@ class Enemy:
         pass
 
     def start_move(self):
-        pass
+        self.combat_chain.calc_combat_chain()
 
     # TODO AS COMBAT CHAIN is not inherited i need this here to overwrite - any better solution?
     def reorder_hand(self, hand):

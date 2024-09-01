@@ -63,19 +63,19 @@ class CombatChain:
         print([h.physical for h in hand])
         print([h.card_type.name for h in hand])
 
-    def apply_class_specific_sorting_preferences(self, virtual_hand):
+    def apply_class_specific_sorting_preferences(self, playable_cards):
         if n_chance(p=1):
-            virtual_hand = self.reorder_hand(virtual_hand)
+            playable_cards = self.reorder_hand(playable_cards)
         else:
-            np.random.shuffle(virtual_hand)
-        return virtual_hand
+            np.random.shuffle(playable_cards)
+        return playable_cards
 
     def calc_combat_chain(self):
         index = 0
 
-        not_pitchable_cards = self.enemy.arsenal + self.enemy.weapons
+        pitch_bans = self.enemy.arsenal + self.enemy.weapons
 
-        virtual_hand = (
+        playable_cards = (
             [
                 c
                 for c in self.enemy.hand
@@ -85,30 +85,29 @@ class CombatChain:
             + self.enemy.weapons
         )
 
-        np.random.shuffle(virtual_hand)
+        np.random.shuffle(playable_cards)
 
-        virtual_hand = self.apply_class_specific_sorting_preferences(virtual_hand)
+        playable_cards = self.apply_class_specific_sorting_preferences(playable_cards)
 
-        virtual_hand_tmp = virtual_hand.copy()
-        for i in range(len(virtual_hand)):
-            if len(virtual_hand_tmp) > 0:
-                current_card = virtual_hand_tmp[0]
+        playable_cards_tmp = playable_cards.copy()
+        for i in range(len(playable_cards)):
+            if len(playable_cards_tmp) > 0:
+                current_card = playable_cards_tmp[0]
 
-                print("pitches in hand")
-                print([c.pitch for c in virtual_hand_tmp])
-                print()
-                pitchable_cards = [c for c in virtual_hand_tmp if c != current_card]
-                possible_cards_to_pitch = self.enemy.pitch.get_combinations(
-                    [v for v in pitchable_cards if v not in not_pitchable_cards]
+                pitchable_cards = [
+                    c
+                    for c in self.enemy.hand
+                    if c != current_card and c not in pitch_bans
+                ]
+                possible_combinations = self.enemy.pitch.get_combinations(
+                    [v for v in pitchable_cards]
                 )
-
                 pitch_combinations = {}
-                for j, pi in enumerate(possible_cards_to_pitch):
+                for j, pi in enumerate(possible_combinations):
                     pitch_total = 0
-                    for p in pi:
-                        pitch_total += p.pitch
-
-                    pitch_combinations[pi] = pitch_total
+                    if len(pi) > 0:
+                        pitch_total = sum([c.pitch for c in pi])
+                        pitch_combinations[pi] = pitch_total
 
                 if current_card.cost > 0:
                     cards_to_pitch = self.enemy.pitch.determine_pitch_combination(
@@ -116,7 +115,7 @@ class CombatChain:
                     )
 
                     if len(cards_to_pitch) == 0:
-                        virtual_hand = shift_list(virtual_hand_tmp)
+                        playable_cards = shift_list(playable_cards_tmp)
                         continue
                     else:
                         self.chain[index] = {
@@ -125,9 +124,10 @@ class CombatChain:
                         }
                         index += 1
 
-                        virtual_hand_tmp.remove(current_card)
+                        playable_cards_tmp.remove(current_card)
                         for p in cards_to_pitch:
-                            virtual_hand_tmp.remove(p)
+                            if p in playable_cards_tmp:
+                                playable_cards_tmp.remove(p)
                 else:
                     self.chain[index] = {
                         "attack": current_card,
@@ -135,4 +135,4 @@ class CombatChain:
                     }
                     index += 1
 
-                    virtual_hand_tmp.remove(current_card)
+                    playable_cards_tmp.remove(current_card)

@@ -23,9 +23,6 @@ class Pitch:
                 combos = itertools.combinations(array_copy, i)
                 for c in combos:
                     combinations.append(c)
-
-        combinations = [c[0] for c in combinations if len(c) > 0]
-        print(combinations)
         return combinations
 
     def determine_pitch_combination(self, cost_to_pay, pitch_combinations):
