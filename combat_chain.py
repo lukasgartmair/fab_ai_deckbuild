@@ -45,6 +45,13 @@ class CombatChain:
         else:
             return False
 
+    def is_last_link(self, card):
+        for k, v in self.chain.items():
+            if card == v["attack"]:
+                if k == len(self.chain):
+                    return True
+        return False
+
     def is_empty(self):
         if self.get_length() == 0:
             return True
@@ -166,7 +173,9 @@ class CombatChain:
                             virtual_hand = [
                                 vh
                                 for vh in virtual_hand
-                                if vh != p and vh != current_card
+                                if vh != p
+                                and vh != current_card
+                                and vh not in cards_to_pitch
                             ]
 
                     else:

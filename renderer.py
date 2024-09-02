@@ -46,6 +46,7 @@ enemy_message_x = grid.left_point(1)
 enemy_message_y = grid.top_point(1)
 combat_chain_spacing = 10
 hp_height_index = 0.5
+arcane_offset = arcane_offset
 
 
 class Renderer:
@@ -566,15 +567,41 @@ class Renderer:
         )
 
     def render_power(self, card):
-        self.render_text(
-            str(card.physical), card.x, card.y + card_height, color=color_palette.white
-        )
+        text = ""
+        color = color_palette.white
+        if card.card_type in [
+            CardType.attack_action,
+            CardType.attack_reaction,
+            CardType.weapon,
+        ]:
+            text = str(card.physical)
+            color = color = color_palette.white
+
+        elif card.card_type in [CardType.non_attack_action]:
+            if self.engine.enemy.combat_chain.is_last_link(card):
+                text = "-" + str(card.physical)
+            else:
+                text = "+" + str(card.physical)
+
+        self.render_text(text, card.x, card.y + card_height, color=color)
 
     def render_arcane_power(self, card):
         if card.arcane > 0:
+            if card.physical > 9 and card.card_type == CardType.non_attack_action:
+                offset = arcane_offset + 55
+            elif card.physical > 9:
+                offset = arcane_offset + 20
+            elif card.card_type == CardType.non_attack_action:
+                offset = arcane_offset + 35
+
+            elif card.physical > 9 and card.card_type == CardType.non_attack_action:
+                offset = arcane_offset + 20
+            else:
+                offset = arcane_offset
+
             self.render_text(
                 "/{}".format(str(card.arcane)),
-                card.x + arcane_offset,
+                card.x + offset,
                 card.y + card_height,
                 color=color_palette.green,
             )

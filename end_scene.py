@@ -34,12 +34,13 @@ class EndScene(SceneBase):
                     == self.engine.state_machine.ended
                 ):
                     self.renderer.render_create_deck_message()
+                    self.engine.advance_level()
+
                     pygame.display.flip()
                     self.switch_to_scene(
                         scene_manager.get_title_scene(self.engine, self.renderer)
                     )
                     self.is_active = False
-                    self.engine.advance_level()
 
     def update(self):
         pass

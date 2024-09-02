@@ -50,7 +50,7 @@ class GameEngine:
             ]
         )
 
-        test_class = PlayerClass.ninja
+        test_class = PlayerClass.runeblade
 
         self.player_class = test_class
         self.apply_player_class()
