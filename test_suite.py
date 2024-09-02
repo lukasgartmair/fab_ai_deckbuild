@@ -44,55 +44,58 @@ class TestMethods(unittest.TestCase):
 
         self.assertEqual(len(combinations), 0)
 
-    # def test_deck_draw_mechanics(self):
-    #     deck_size = 5
-    #     test_deck = Deck(deck_size=deck_size)
+    def test_deck_draw_mechanics(self):
+        deck_size = 5
+        test_deck = Deck(deck_size=deck_size)
 
-    #     ref_cards = test_deck.cards[-3:1]
+        ref_cards = test_deck.cards[-3:1]
 
-    #     for i, tc in enumerate(test_deck.cards):
-    #         print(i)
-    #         print(tc.name)
+        for i, tc in enumerate(test_deck.cards):
+            pass
+            # print(i)
+            # print(tc.name)
 
-    #     print()
-    #     test_card = Card()
-    #     print("test card name")
-    #     print(test_card.name)
+        # print()
+        test_card = Card()
+        # print("test card name")
+        # print(test_card.name)
 
-    #     test_deck.put_to_bottom(test_card)
-    #     print()
-    #     print("after insertion to bottom")
+        test_deck.put_to_bottom(test_card)
+        # print()
+        # print("after insertion to bottom")
 
-    #     for i, tc in enumerate(test_deck.cards):
-    #         print(i)
-    #         print(tc.name)
+        for i, tc in enumerate(test_deck.cards):
+            pass
+            # print(i)
+            # print(tc.name)
 
-    #     self.assertEqual(test_deck.cards[0], test_card)
-    #     self.assertEqual(len(test_deck.cards), deck_size + 1)
-    #     print()
-    #     top_card = test_deck.draw_top_cards(n=1)
-    #     print(test_card.name)
-    #     print(top_card.name)
-    #     self.assertTrue(test_card.name != top_card.name)
-    #     self.assertEqual(test_deck.get_length(), deck_size)
+        self.assertEqual(test_deck.cards[0], test_card)
+        self.assertEqual(len(test_deck.cards), deck_size + 1)
+        # print()
+        top_card = test_deck.draw_top_cards(n=1)[0]
+        # print(test_card.name)
+        # print(top_card.name)
+        self.assertTrue(test_card.name != top_card.name)
+        self.assertEqual(test_deck.get_length(), deck_size)
 
-    #     print()
-    #     print("after drawing")
-    #     for i, tc in enumerate(test_deck.cards):
-    #         print(i)
-    #         print(tc.name)
+        # print()
+        # print("after drawing")
+        for i, tc in enumerate(test_deck.cards):
+            pass
+            # print(i)
+            # print(tc.name)
 
-    #     self.assertTrue(top_card not in test_deck.cards)
+        self.assertTrue(top_card not in test_deck.cards)
 
-    #     top_cards_drawn = test_deck.draw_top_cards(n=2)
-    #     print()
-    #     for i, l in enumerate(ref_cards):
-    #         self.assertTrue(ref_cards[i] == top_cards_drawn[i])
+        top_cards_drawn = test_deck.draw_top_cards(n=2)
+        # print()
+        for i, l in enumerate(ref_cards):
+            self.assertTrue(ref_cards[i] == top_cards_drawn[i])
 
     # def test_deckbuilding(self):
     #     for i in range(25):
     #         self.engine = GameEngine()
-    #         print(self.engine.enemy.player_class)
+    #         #print(self.engine.enemy.player_class)
 
     # # def test_test(self):
     # #     pass
@@ -107,18 +110,18 @@ class TestMethods(unittest.TestCase):
     #         if self.engine.state_machine.current_state == GameStateMachine.starting:
     #             self.engine.state_machine.start_game()
 
-    #         print(self.engine.level_manager.current_level)
+    #         #print(self.engine.level_manager.current_level)
 
-    #         print(self.engine.state_machine.current_state)
+    #         #print(self.engine.state_machine.current_state)
     #         while self.engine.state_machine.current_state == GameStateMachine.playing:
-    #             print("--------------------")
-    #             print("TURN")
-    #             print(self.engine.level_manager.turn_index)
+    #             #print("--------------------")
+    #             #print("TURN")
+    #             #print(self.engine.level_manager.turn_index)
 
     #             if self.engine.enemy.stance == Stance.defend:
     #                 for j in range(random.randint(1, n_iterations + 1)):
-    #                     print("MOVE")
-    #                     print(self.engine.level_manager.move_index)
+    #                     #print("MOVE")
+    #                     #print(self.engine.level_manager.move_index)
 
     #                     pyhsical = np.random.randint(0, 6)
     #                     arcane = np.random.randint(0, 3)
@@ -129,9 +132,9 @@ class TestMethods(unittest.TestCase):
 
     #                     self.engine.attack.reset()
 
-    #                     print("enemy life:")
-    #                     print(self.engine.enemy.life_counter.life)
-    #                     print()
+    #                     #print("enemy life:")
+    #                     #print(self.engine.enemy.life_counter.life)
+    #                     #print()
 
     #                     self.engine.check_win_condition()
     #                     if (
@@ -147,15 +150,15 @@ class TestMethods(unittest.TestCase):
     #                 self.engine.finish_turn()
 
     #             elif self.engine.enemy.stance == Stance.attack:
-    #                 print("MOVE")
-    #                 print(self.engine.level_manager.move_index)
+    #                 #print("MOVE")
+    #                 #print(self.engine.level_manager.move_index)
 
     #                 for j in range(n_iterations):
     #                     if self.engine.enemy.further_attack_possible:
     #                         self.engine.play()
 
-    #                         print("enemy life:")
-    #                         print(self.engine.enemy.life_counter.life)
+    #                         #print("enemy life:")
+    #                         #print(self.engine.enemy.life_counter.life)
 
     #                         self.engine.check_win_condition()
     #                         if (
