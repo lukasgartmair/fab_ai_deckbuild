@@ -216,7 +216,7 @@ class Enemy:
             if len(self.arsenal) == 0:
                 return False
             elif len(self.arsenal) == 1:
-                if self.arsenal.card_type != CardType.defensive_reaction:
+                if self.arsenal[0].card_type != CardType.defensive_reaction:
                     return True
             else:
                 return True

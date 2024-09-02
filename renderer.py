@@ -65,7 +65,8 @@ class Renderer:
         self.input_box_arcane = InputBox(
             self.window,
             x=self.playmat.positions.inputs.x,
-            y=self.playmat.positions.inputs.y + grid.height_gap(0, 1) * 1.5,
+            y=self.playmat.positions.inputs.y
+            + self.playmat.get_vertical_spacing() * 1.5,
             box_type="arcane",
         )
 
@@ -92,7 +93,8 @@ class Renderer:
         self.check_box_intimidate = CheckBox(
             "intimidate",
             x=self.playmat.positions.check_boxes.x,
-            y=self.playmat.positions.check_boxes.y + grid.height_gap(0, 1) * 1.5,
+            y=self.playmat.positions.check_boxes.y
+            + self.playmat.get_vertical_spacing() * 1.5,
         )
 
         self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
@@ -260,25 +262,26 @@ class Renderer:
                 self.render_playmat_card_spot(playmat_object)
 
     def render_no_moves_left(self):
-        print("is_rendering")
-        print(self.engine.enemy.has_moves_left == False)
         message = ""
         if (
             self.engine.enemy.stance == Stance.attack
             and self.engine.enemy.check_if_further_attack_possible() == False
+            and self.engine.enemy.combat_chain.is_empty() == False
         ):
-            message = "'I wont't further attack you!'"
+            message = ["'I wont't further...", "attack you!'"]
         elif (
             self.engine.enemy.stance == Stance.defend
             and self.engine.enemy.check_if_further_defense_possible() == False
         ):
-            message = "'You broke my defense!'"
+            message = ["'You broke...", "my defense!'"]
 
+        for i, m in enumerate(message):
             self.render_text(
-                message,
-                enemy_message_x,
-                enemy_message_y,
-                color=color_palette.color3,
+                m,
+                self.playmat.positions.enemy_message.x,
+                self.playmat.positions.enemy_message.y
+                + self.playmat.get_vertical_spacing() * i,
+                color=color_palette.black,
             )
 
     def render_boost(self):
@@ -325,10 +328,19 @@ class Renderer:
             self.render_playmat_card_spot(self.playmat.positions.arsenal)
 
     def render_hand(self):
+        if (
+            self.engine.enemy.stance == Stance.attack
+            and not self.engine.enemy.combat_chain.is_empty()
+            and self.engine.enemy.combat_chain.end_reached()
+        ):
+            color = color_palette.color3
+        else:
+            color = color_palette.text_color
         self.render_text(
             str(len(self.engine.enemy.hand)) + " in hand",
             grid.left_point(15),
             grid.top_point(2),
+            color=color,
         )
 
     def render_banished_zone(self):
@@ -405,7 +417,8 @@ class Renderer:
                 self.render_card(
                     card,
                     i=i,
-                    x=playmat_position_obj.x + grid.width_gap(0, 1) * 2 * i,
+                    x=playmat_position_obj.x
+                    + self.playmat.get_horizontal_spacing() * 2 * i,
                     y=playmat_position_obj.y,
                 )
 
@@ -563,7 +576,7 @@ class Renderer:
                 "/{}".format(str(card.arcane)),
                 card.x + arcane_offset,
                 card.y + card_height,
-                color_palette.green,
+                color=color_palette.green,
             )
 
     def render_defense(self, card):

@@ -36,7 +36,6 @@ class CustomTimer:
 
 class Sound:
     pygame.mixer.init()
-
     sound_effect = SoundEffect()
 
     def __init__(self):
@@ -95,3 +94,8 @@ class Sound:
 
     def play_pistol_shot(self):
         self.card_effects_channel.play(self.sound_effect.pistol_shot)
+
+
+class TestSound(Sound):
+    def __init__(self):
+        super().__init__()

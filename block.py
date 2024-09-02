@@ -97,7 +97,7 @@ class Block:
                         elif (
                             len(self.enemy.hand) == 0
                             and (len(self.enemy.arsenal) == 1)
-                            and self.enemy.arsenal.card_type
+                            and self.enemy.arsenal[0].card_type
                             != CardType.defensive_reaction
                         ):
                             print("here2")
@@ -190,7 +190,7 @@ class Block:
         match player_attack.arcane:
             case player_attack.arcane if player_attack.arcane == 1 or 2:
                 print("defending one arcane attack")
-                if self.enemy.floating_resources > 0:
+                if self.enemy.resource_manager.floating_resources > 0:
                     self.enemy.resource_manager.use_floating_resources(
                         player_attack.arcane
                     )

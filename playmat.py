@@ -29,6 +29,7 @@ class Playmat:
         self.field_text_offset_y = card_height / 2.5
 
         self.positions = types.SimpleNamespace()
+
         self.positions.enemy = Position(
             "Enemy",
             grid.left_point(grid_width_playmat // 2 - 1),
@@ -118,3 +119,13 @@ class Playmat:
         self.positions.check_boxes = Position(
             "Check Boxes", grid.left_point(11), grid.top_point(grid_height_playmat - 4)
         )
+
+        self.positions.enemy_message = Position(
+            "Inputs", grid.left_point(4), grid.top_point(grid_height_playmat - 4)
+        )
+
+    def get_horizontal_spacing(self):
+        return grid.width_gap(0, 1)
+
+    def get_vertical_spacing(self):
+        return grid.height_gap(0, 1)

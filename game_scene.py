@@ -30,6 +30,8 @@ class GameScene(SceneBase):
 
             for inp_box in self.renderer.input_boxes:
                 inp_box.check_activation(event)
+                if inp_box.active == True:
+                    self.render_inputs()
 
             if event.type == pygame.MOUSEBUTTONUP:
                 if self.renderer.button_up.isOver(pygame.mouse.get_pos()):
@@ -52,6 +54,8 @@ class GameScene(SceneBase):
                     self.engine.enemy.modifiers.modifier_dict[check_box.name] = False
 
             if event.type == pygame.KEYDOWN:
+                self.render_inputs()
+
                 for inp_box in self.renderer.input_boxes:
                     inp_box.update(event=event)
                     if event.key == pygame.K_BACKSPACE:
@@ -126,6 +130,14 @@ class GameScene(SceneBase):
                     )
                     self.is_active = False
 
+    def render_inputs(self):
+        if self.engine.enemy.stance == Stance.defend:
+            for inp_box in self.renderer.input_boxes:
+                inp_box.render()
+
+            for check_box in self.renderer.check_boxes:
+                check_box.cb.draw(self.renderer.window)
+
     def render(self):
         if self.is_active:
             self.renderer.render_background()
@@ -160,14 +172,9 @@ class GameScene(SceneBase):
 
             self.renderer.render_combat_chain()
 
-            if self.engine.enemy.stance == Stance.defend:
-                for inp_box in self.renderer.input_boxes:
-                    inp_box.render()
-
-                for check_box in self.renderer.check_boxes:
-                    check_box.cb.draw(self.renderer.window)
-
             self.renderer.render_floating_resources()
+
+            self.render_inputs()
 
             # MECHANOLOGIST STUFF
 
