@@ -8,11 +8,14 @@ Created on Sun Sep  1 18:23:09 2024
 from playstyle import CardType
 import numpy as np
 from utils import shift_list, n_chance
+import pitch
 
 
 class CombatChain:
-    def __init__(self, enemy):
-        self.enemy = enemy
+    def __init__(self, hand, arsenal, weapons):
+        self.hand = hand
+        self.arsenal = arsenal
+        self.weapons = weapons
         self.chain = {}
         self.iterator = 0
 
@@ -73,21 +76,19 @@ class CombatChain:
     def calc_combat_chain(self):
         index = 0
 
-        pitch_bans = self.enemy.arsenal + self.enemy.weapons
+        pitch_bans = self.arsenal + self.weapons
 
         playable_cards = (
             [
-                c
-                for c in self.enemy.hand
-                if c.card_type not in [CardType.defensive_reaction]
+                c for c in self.hand if c.card_type not in [CardType.defensive_reaction]
             ].copy()
-            + self.enemy.arsenal
-            + self.enemy.weapons
+            + self.arsenal
+            + self.weapons
         )
 
         np.random.shuffle(playable_cards)
 
-        virtual_hand = self.enemy.hand.copy()
+        virtual_hand = self.hand.copy()
 
         playable_cards = self.apply_class_specific_sorting_preferences(playable_cards)
 
@@ -102,7 +103,7 @@ class CombatChain:
                         for c in virtual_hand
                         if c != current_card and c not in pitch_bans
                     ]
-                    possible_combinations = self.enemy.pitch.get_combinations(
+                    possible_combinations = pitch.get_combinations(
                         [v for v in pitchable_cards]
                     )
                     pitch_combinations = {}
@@ -112,7 +113,7 @@ class CombatChain:
                             pitch_total = sum([c.pitch for c in pi])
                             pitch_combinations[pi] = pitch_total
 
-                    cards_to_pitch = self.enemy.pitch.determine_pitch_combination(
+                    cards_to_pitch = pitch.determine_pitch_combination(
                         current_card.cost, pitch_combinations
                     )
 

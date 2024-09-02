@@ -23,7 +23,6 @@ from life_counter import LifeCounter
 import pygame
 from sound import Sound
 from attack import Attack
-from pitch import Pitch
 from combat_chain import CombatChain
 from lore import lore_dict
 from modifiers import Modifiers
@@ -83,11 +82,9 @@ class Enemy:
         self.pitched_cards = []
         self.played_cards = []
 
-        self.combat_chain = CombatChain(self)
+        self.combat_chain = CombatChain(self.hand, self.arsenal, self.weapons)
         self.block = Block(self)
         self.attack = Attack(self)
-        self.pitch = Pitch(self)
-
         self.modifiers = Modifiers()
 
         self.ability = Ability()

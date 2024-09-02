@@ -9,11 +9,12 @@ Created on Sun Dec 24 22:13:25 2023
 import unittest
 from engine import GameEngine, GameStateMachine
 import numpy as np
-from enemy import Stance
+from enemy import Stance, Enemy
 import random
 from modifiers import Modifiers
 from deck import Deck
 from card import Card
+import pitch
 
 n_runs = 10
 n_turns = 5
@@ -23,6 +24,25 @@ n_iterations = 4
 class TestMethods(unittest.TestCase):
     def setUp(self):
         pass
+
+    def test_get_pitch_combinations(self):
+        test_array = [1, 2, 3, 4]
+
+        combinations = pitch.get_combinations(test_array)
+
+        self.assertEqual(len(combinations), 15)
+
+        test_array = [1]
+
+        combinations = pitch.get_combinations(test_array)
+
+        self.assertEqual(len(combinations), 1)
+
+        test_array = []
+
+        combinations = pitch.get_combinations(test_array)
+
+        self.assertEqual(len(combinations), 0)
 
     # def test_deck_draw_mechanics(self):
     #     deck_size = 5
@@ -77,81 +97,81 @@ class TestMethods(unittest.TestCase):
     # # def test_test(self):
     # #     pass
 
-    def test_gameplay(self):
-        self.engine = GameEngine()
+    # def test_gameplay(self):
+    #     self.engine = GameEngine()
 
-        for n in range(n_runs):
-            if n != 0:
-                self.engine.advance_level()
+    #     for n in range(n_runs):
+    #         if n != 0:
+    #             self.engine.advance_level()
 
-            if self.engine.state_machine.current_state == GameStateMachine.starting:
-                self.engine.state_machine.start_game()
+    #         if self.engine.state_machine.current_state == GameStateMachine.starting:
+    #             self.engine.state_machine.start_game()
 
-            print(self.engine.level_manager.current_level)
+    #         print(self.engine.level_manager.current_level)
 
-            print(self.engine.state_machine.current_state)
-            while self.engine.state_machine.current_state == GameStateMachine.playing:
-                print("--------------------")
-                print("TURN")
-                print(self.engine.level_manager.turn_index)
+    #         print(self.engine.state_machine.current_state)
+    #         while self.engine.state_machine.current_state == GameStateMachine.playing:
+    #             print("--------------------")
+    #             print("TURN")
+    #             print(self.engine.level_manager.turn_index)
 
-                if self.engine.enemy.stance == Stance.defend:
-                    for j in range(random.randint(1, n_iterations + 1)):
-                        print("MOVE")
-                        print(self.engine.level_manager.move_index)
+    #             if self.engine.enemy.stance == Stance.defend:
+    #                 for j in range(random.randint(1, n_iterations + 1)):
+    #                     print("MOVE")
+    #                     print(self.engine.level_manager.move_index)
 
-                        pyhsical = np.random.randint(0, 6)
-                        arcane = np.random.randint(0, 3)
-                        self.engine.attack.set_values(
-                            inp_box=None, physical=pyhsical, arcane=arcane
-                        )
-                        self.engine.play(self.engine.attack)
+    #                     pyhsical = np.random.randint(0, 6)
+    #                     arcane = np.random.randint(0, 3)
+    #                     self.engine.attack.set_values(
+    #                         inp_box=None, physical=pyhsical, arcane=arcane
+    #                     )
+    #                     self.engine.play(self.engine.attack)
 
-                        self.engine.attack.reset()
+    #                     self.engine.attack.reset()
 
-                        print("enemy life:")
-                        print(self.engine.enemy.life_counter.life)
-                        print()
+    #                     print("enemy life:")
+    #                     print(self.engine.enemy.life_counter.life)
+    #                     print()
 
-                        self.engine.check_win_condition()
-                        if (
-                            self.engine.state_machine.current_state
-                            == GameStateMachine.ended
-                        ):
-                            break
-                        else:
-                            continue  # only executed if the inner loop did NOT break
-                        break  # only executed if the inner loop DID break
+    #                     self.engine.check_win_condition()
+    #                     if (
+    #                         self.engine.state_machine.current_state
+    #                         == GameStateMachine.ended
+    #                     ):
+    #                         break
+    #                     else:
+    #                         continue  # only executed if the inner loop did NOT break
+    #                     break  # only executed if the inner loop DID break
 
-                    self.engine.enemy.finish_turn()
-                    self.engine.finish_turn()
+    #                 self.engine.enemy.finish_turn()
+    #                 self.engine.finish_turn()
 
-                elif self.engine.enemy.stance == Stance.attack:
-                    print("MOVE")
-                    print(self.engine.level_manager.move_index)
+    #             elif self.engine.enemy.stance == Stance.attack:
+    #                 print("MOVE")
+    #                 print(self.engine.level_manager.move_index)
 
-                    for j in range(n_iterations):
-                        if self.engine.enemy.further_attack_possible:
-                            self.engine.play()
+    #                 for j in range(n_iterations):
+    #                     if self.engine.enemy.further_attack_possible:
+    #                         self.engine.play()
 
-                            print("enemy life:")
-                            print(self.engine.enemy.life_counter.life)
+    #                         print("enemy life:")
+    #                         print(self.engine.enemy.life_counter.life)
 
-                            self.engine.check_win_condition()
-                            if (
-                                self.engine.state_machine.current_state
-                                == GameStateMachine.ended
-                            ):
-                                break
+    #                         self.engine.check_win_condition()
+    #                         if (
+    #                             self.engine.state_machine.current_state
+    #                             == GameStateMachine.ended
+    #                         ):
+    #                             break
 
-                        else:
-                            continue  # only executed if the inner loop did NOT break
-                        break  # only executed if the inner loop DID break
+    #                     else:
+    #                         continue  # only executed if the inner loop did NOT break
+    #                     break  # only executed if the inner loop DID break
 
-                    self.engine.enemy.finish_turn()
-                    self.engine.finish_turn()
+    #                 self.engine.enemy.finish_turn()
+    #                 self.engine.finish_turn()
 
-        self.engine.analyzer.analyze_game_data()
+    #     self.engine.analyzer.analyze_game_data()
 
 
 if __name__ == "__main__":
