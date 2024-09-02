@@ -643,9 +643,8 @@ class Renderer:
             self.render_cost(card)
 
     def render_enemy_life_counter(self):
-        if self.engine.state_machine.current_state == self.engine.state_machine.playing:
-            self.button_up.draw(self.window)
-            self.button_down.draw(self.window)
+        self.button_up.draw(self.window)
+        self.button_down.draw(self.window)
 
         self.render_text(
             "HP : " + str(self.engine.enemy.life_counter.life),
@@ -654,24 +653,23 @@ class Renderer:
         )
 
     def render_turn_text(self):
-        if self.engine.state_machine.current_state == self.engine.state_machine.playing:
-            color = None
+        color = None
 
-            if self.engine.enemy.stance == Stance.defend:
-                color = pygame.Color(color_palette.white)
+        if self.engine.enemy.stance == Stance.defend:
+            color = pygame.Color(color_palette.white)
 
-            else:
-                color = pygame.Color(color_palette.color2)
+        else:
+            color = pygame.Color(color_palette.color2)
 
-            self.render_text(
-                "{}".format(self.engine.enemy.name)
-                + " is "
-                + (self.engine.enemy.stance.name + "ing").upper(),
-                grid.left_point(1),
-                grid.top_point(0),
-                font=font,
-                color=color,
-            )
+        self.render_text(
+            "{}".format(self.engine.enemy.name)
+            + " is "
+            + (self.engine.enemy.stance.name + "ing").upper(),
+            grid.left_point(1),
+            grid.top_point(0),
+            font=font,
+            color=color,
+        )
 
     def render_win(self):
         self.bg = pygame.image.load("images/backgrounds/background3.png")
