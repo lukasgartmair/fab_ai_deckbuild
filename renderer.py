@@ -68,6 +68,12 @@ class Renderer:
             y=self.playmat.positions.inputs.y + grid.height_gap(0, 1) * 1.5,
             box_type="arcane",
         )
+
+        self.input_boxes = [
+            self.input_box_physical,
+            self.input_box_arcane,
+        ]
+
         self.background = None
         self.load_background()
 
@@ -254,15 +260,17 @@ class Renderer:
                 self.render_playmat_card_spot(playmat_object)
 
     def render_no_moves_left(self):
+        print("is_rendering")
+        print(self.engine.enemy.has_moves_left == False)
         message = ""
         if (
             self.engine.enemy.stance == Stance.attack
-            and self.engine.enemy.has_moves_left == False
+            and self.engine.enemy.check_if_further_attack_possible() == False
         ):
             message = "'I wont't further attack you!'"
         elif (
             self.engine.enemy.stance == Stance.defend
-            and self.engine.enemy.has_moves_left == False
+            and self.engine.enemy.check_if_further_defense_possible() == False
         ):
             message = "'You broke my defense!'"
 
@@ -438,10 +446,15 @@ class Renderer:
                 )
 
     def render_action_points(self):
+        if self.engine.enemy.action_point_manager.has_action_points_left():
+            color = color_palette.text_color
+        else:
+            color = color_palette.color3
         self.render_text(
             str(self.engine.enemy.action_point_manager.action_points) + " action pts.",
             grid.left_point(15),
             grid.top_point(1),
+            color=color,
         )
 
     def render_card_image(self, card):

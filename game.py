@@ -37,7 +37,6 @@ class Game:
 
             active_scene.process_input(events)
             active_scene.update()
-            active_scene.render()
 
             active_scene = active_scene.next
 

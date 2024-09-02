@@ -21,11 +21,6 @@ class GameScene(SceneBase):
         super().__init__(*kargs)
         # print("Game Scene")
 
-        self.input_boxes = [
-            self.renderer.input_box_physical,
-            self.renderer.input_box_arcane,
-        ]
-
         self.pygamegame_sound = Sound()
 
     def process_input(self, events):
@@ -33,7 +28,7 @@ class GameScene(SceneBase):
             if event.type == pygame.QUIT:
                 Game.quit_everything(self)
 
-            for inp_box in self.input_boxes:
+            for inp_box in self.renderer.input_boxes:
                 inp_box.check_activation(event)
 
             if event.type == pygame.MOUSEBUTTONUP:
@@ -57,26 +52,25 @@ class GameScene(SceneBase):
                     self.engine.enemy.modifiers.modifier_dict[check_box.name] = False
 
             if event.type == pygame.KEYDOWN:
-                for inp_box in self.input_boxes:
+                for inp_box in self.renderer.input_boxes:
                     inp_box.update(event=event)
                     if event.key == pygame.K_BACKSPACE:
                         self.render()
 
                 if event.key == pygame.K_SPACE:
                     self.render()
-
                     if (
                         self.engine.state_machine.current_state
                         == self.engine.state_machine.playing
                     ):
                         if self.engine.enemy.stance == Stance.defend:
-                            for inp_box in self.input_boxes:
+                            for inp_box in self.renderer.input_boxes:
                                 if inp_box.has_text():
                                     self.engine.player_attack.set_values(inp_box)
 
                             self.engine.play(self.engine.player_attack)
 
-                            for inp_box in self.input_boxes:
+                            for inp_box in self.renderer.input_boxes:
                                 inp_box.reset()
                                 self.engine.player_attack.reset()
                             for check_box in self.renderer.check_boxes:
@@ -97,7 +91,7 @@ class GameScene(SceneBase):
                         self.engine.enemy.finish_turn()
                         self.engine.finish_turn()
 
-                        for inp_box in self.input_boxes:
+                        for inp_box in self.renderer.input_boxes:
                             inp_box.reset()
                             self.engine.player_attack.reset()
 
@@ -136,6 +130,8 @@ class GameScene(SceneBase):
         if self.is_active:
             self.renderer.render_background()
 
+            self.renderer.render_turn_text()
+
             self.renderer.render_floating_resources()
 
             self.renderer.render_enemy_life_counter()
@@ -158,8 +154,6 @@ class GameScene(SceneBase):
 
             self.renderer.render_action_points()
 
-            self.renderer.render_turn_text()
-
             self.renderer.render_no_moves_left()
 
             self.renderer.render_equipment()
@@ -167,7 +161,7 @@ class GameScene(SceneBase):
             self.renderer.render_combat_chain()
 
             if self.engine.enemy.stance == Stance.defend:
-                for inp_box in self.input_boxes:
+                for inp_box in self.renderer.input_boxes:
                     inp_box.render()
 
                 for check_box in self.renderer.check_boxes:

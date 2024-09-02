@@ -22,7 +22,6 @@ from ability import Ability
 from life_counter import LifeCounter
 import pygame
 from sound import Sound
-from attack import Attack
 from combat_chain import CombatChain
 from lore import lore_dict
 from modifiers import Modifiers
@@ -90,7 +89,6 @@ class Enemy:
             self.hand, self.action_point_manager, self.arsenal, self.weapons
         )
         self.block = Block(self)
-        self.attack = Attack(self)
         self.modifiers = Modifiers()
 
         self.ability = Ability()
@@ -196,18 +194,12 @@ class Enemy:
 
         self.change_stance()
 
-    def check_if_further_move_possible(self):
-        if self.stance == Stance.attack:
-            self.has_moves_left = self.check_if_further_attack_possible()
-        elif self.stance == Stance.defend:
-            self.has_moves_left = self.check_if_further_defense_possible()
-
     def check_if_further_attack_possible(self):
         self.combat_chain.print_combat_chain()
         if (
             self.combat_chain.is_empty()
             or self.combat_chain.end_reached()
-            or self.action_point_manager.action_points == 0
+            or self.action_point_manager.has_action_points_left() == False
         ):
             # print("NO attack possible")
             return False
@@ -321,12 +313,27 @@ class Enemy:
         self.life_counter.calculate_life(player_attack, self.block)
         self.block.reset()
 
+    def base_attack(self):
+        c = self.combat_chain.get_next_attacking_card()
+        self.played_cards.append(c)
+
+        self.pitch_cards()
+        self.remove_played_cards()
+        self.resource_manager.use_floating_resources(c.cost)
+        self.action_point_manager.use_action_points()
+        self.action_point_manager.handle_go_again(c)
+
+        self.sound.play_attack(c)
+
+        return c
+
     def class_specific_helper_1(self, card):
         pass
 
     def perform_attack(self):
-        c = self.attack.base_attack()
+        if self.check_if_further_attack_possible() == True:
+            c = self.base_attack()
 
-        self.class_specific_helper_1(c)
+            self.class_specific_helper_1(c)
 
-        self.combat_chain.increase_iterator()
+            self.combat_chain.increase_iterator()

@@ -111,7 +111,6 @@ class GameEngine:
         self.enemy.start_move()
 
         print("NEXT MOVE")
-        print(self.enemy.has_moves_left)
 
         if self.enemy.stance == Stance.defend:
             if self.enemy.check_if_further_defense_possible() == True:

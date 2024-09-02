@@ -10,8 +10,8 @@ from playstyle import Keyword
 
 
 class ActionPointManager:
-    def __init__(self):
-        self.action_points = 0
+    def __init__(self, action_points=1):
+        self.action_points = 1
 
     def reset_action_points(self):
         self.action_points = 1
@@ -29,3 +29,6 @@ class ActionPointManager:
     def handle_go_again(self, c):
         if Keyword.go_again in c.keywords:
             self.obtain_action_points()
+
+    def has_action_points_left(self):
+        return True if self.action_points > 0 else False

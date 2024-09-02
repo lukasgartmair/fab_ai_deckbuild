@@ -18,6 +18,8 @@ class SceneBase:
         self.renderer = renderer
         self.is_active = True
 
+        self.render()
+
         # for k, v in self.sprite_groups.items():
         #     setattr(self, k, v)
 

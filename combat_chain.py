@@ -5,10 +5,11 @@ Created on Sun Sep  1 18:23:09 2024
 
 @author: lukasgartmair
 """
-from playstyle import CardType
+from playstyle import CardType, Keyword
 import numpy as np
 from utils import shift_list, n_chance
 import pitch
+from action_point_manager import ActionPointManager
 
 
 class CombatChain:
@@ -102,6 +103,10 @@ class CombatChain:
             print("current_iterator")
             print(self.iterator)
 
+    def get_next_attacking_card(self):
+        c = self.chain[self.iterator]["attack"]
+        return c
+
     def calc_combat_chain(self):
         self.clear_chain()
 
@@ -115,59 +120,66 @@ class CombatChain:
 
         virtual_hand = self.hand.copy()
 
-        virtual_action_points = self.action_point_manager.action_points
+        virtual_action_point_manager = ActionPointManager(
+            action_points=self.action_point_manager.action_points
+        )
 
         playable_cards_tmp = playable_cards.copy()
 
         for i in range(len(playable_cards)):
             if len(playable_cards_tmp) > 0:
-                current_card = playable_cards_tmp[0]
+                if virtual_action_point_manager.has_action_points_left():
+                    current_card = playable_cards_tmp[0]
 
-                if current_card.cost > 0:
-                    pitchable_cards = [
-                        c
-                        for c in virtual_hand
-                        if (c != current_card and c not in pitch_bans)
-                    ]
-                    possible_combinations = pitch.get_combinations(pitchable_cards)
+                    if current_card.cost > 0:
+                        pitchable_cards = [
+                            c
+                            for c in virtual_hand
+                            if (c != current_card and c not in pitch_bans)
+                        ]
+                        possible_combinations = pitch.get_combinations(pitchable_cards)
 
-                    pitch_combinations = {}
-                    for j, pi in enumerate(possible_combinations):
-                        pitch_total = 0
-                        pitch_total = sum([c.pitch for c in pi])
-                        pitch_combinations[pi] = pitch_total
+                        pitch_combinations = {}
+                        for j, pi in enumerate(possible_combinations):
+                            pitch_total = 0
+                            pitch_total = sum([c.pitch for c in pi])
+                            pitch_combinations[pi] = pitch_total
 
-                    cards_to_pitch = pitch.determine_pitch_combination(
-                        current_card.cost, pitch_combinations
-                    )
+                        cards_to_pitch = pitch.determine_pitch_combination(
+                            current_card.cost, pitch_combinations
+                        )
 
-                    if len(cards_to_pitch) == 0:
-                        playable_cards_tmp = shift_list(playable_cards_tmp)
-                        continue
+                        if len(cards_to_pitch) == 0:
+                            playable_cards_tmp = shift_list(playable_cards_tmp)
+                            continue
+                        else:
+                            self.chain[index] = {
+                                "attack": current_card,
+                                "pitch": cards_to_pitch,
+                            }
+
+                            for p in cards_to_pitch:
+                                playable_cards_tmp = [
+                                    pc for pc in playable_cards_tmp if pc != p
+                                ]
+
+                            virtual_hand = [
+                                vh
+                                for vh in virtual_hand
+                                if vh != p and vh != current_card
+                            ]
+
                     else:
                         self.chain[index] = {
                             "attack": current_card,
-                            "pitch": cards_to_pitch,
+                            "pitch": [],
                         }
 
-                        for p in cards_to_pitch:
-                            playable_cards_tmp = [
-                                pc for pc in playable_cards_tmp if pc != p
-                            ]
+                    index += 1
 
-                        virtual_hand = [
-                            vh for vh in virtual_hand if vh != p and vh != current_card
+                    if current_card.once_per_turn == False:
+                        playable_cards_tmp = [
+                            pc for pc in playable_cards_tmp if pc != current_card
                         ]
 
-                else:
-                    self.chain[index] = {
-                        "attack": current_card,
-                        "pitch": [],
-                    }
-
-                index += 1
-
-                if current_card.once_per_turn == False:
-                    playable_cards_tmp = [
-                        pc for pc in playable_cards_tmp if pc != current_card
-                    ]
+                    virtual_action_point_manager.handle_go_again(current_card)
