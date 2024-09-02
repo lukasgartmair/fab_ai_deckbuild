@@ -73,26 +73,29 @@ class CombatChain:
             np.random.shuffle(playable_cards)
         return playable_cards
 
+    def get_pitch_bans(self):
+        return self.arsenal + self.weapons
+
+    def get_playable_cards(self):
+        return [
+            c
+            for c in self.hand.copy() + self.arsenal + self.weapons
+            if c.card_type not in [CardType.defensive_reaction]
+        ]
+
     def calc_combat_chain(self):
         index = 0
 
-        pitch_bans = self.arsenal + self.weapons
+        pitch_bans = self.get_pitch_bans()
 
-        playable_cards = (
-            [
-                c for c in self.hand if c.card_type not in [CardType.defensive_reaction]
-            ].copy()
-            + self.arsenal
-            + self.weapons
-        )
-
-        np.random.shuffle(playable_cards)
-
-        virtual_hand = self.hand.copy()
+        playable_cards = self.get_playable_cards()
 
         playable_cards = self.apply_class_specific_sorting_preferences(playable_cards)
 
+        virtual_hand = self.hand.copy()
+
         playable_cards_tmp = playable_cards.copy()
+
         for i in range(len(playable_cards)):
             if len(playable_cards_tmp) > 0:
                 current_card = playable_cards_tmp[0]
@@ -101,17 +104,15 @@ class CombatChain:
                     pitchable_cards = [
                         c
                         for c in virtual_hand
-                        if c != current_card and c not in pitch_bans
+                        if (c != current_card and c not in pitch_bans)
                     ]
-                    possible_combinations = pitch.get_combinations(
-                        [v for v in pitchable_cards]
-                    )
+                    possible_combinations = pitch.get_combinations(pitchable_cards)
+
                     pitch_combinations = {}
                     for j, pi in enumerate(possible_combinations):
                         pitch_total = 0
-                        if len(pi) > 0:
-                            pitch_total = sum([c.pitch for c in pi])
-                            pitch_combinations[pi] = pitch_total
+                        pitch_total = sum([c.pitch for c in pi])
+                        pitch_combinations[pi] = pitch_total
 
                     cards_to_pitch = pitch.determine_pitch_combination(
                         current_card.cost, pitch_combinations
@@ -128,8 +129,10 @@ class CombatChain:
                         index += 1
 
                     for p in cards_to_pitch:
-                        playable_cards_tmp = [p for p in playable_cards_tmp if p != p]
-                        virtual_hand = [v for v in virtual_hand if v != p]
+                        playable_cards_tmp = [
+                            pc for pc in playable_cards_tmp if pc != p
+                        ]
+                        virtual_hand = [vh for vh in virtual_hand if vh != p]
                 else:
                     self.chain[index] = {
                         "attack": current_card,
