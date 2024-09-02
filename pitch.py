@@ -26,8 +26,6 @@ def determine_pitch_combination(cost_to_pay, pitch_combinations):
     diff_to_cost = cost_to_pay
     best_pitch = []
     for k, v in pitch_combinations.items():
-        print("here")
-        print(k)
         number_of_cards_used_temp = len(k)
         diff_to_cost_temp = cost_to_pay - v
 

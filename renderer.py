@@ -151,7 +151,8 @@ class Renderer:
 
     def render_floating_resources(self):
         self.render_text(
-            str(self.engine.enemy.floating_resources) + " res. floating",
+            str(self.engine.enemy.resource_manager.floating_resources)
+            + " res. floating",
             grid.left_point(15),
             grid.top_point(0),
         )
@@ -438,7 +439,7 @@ class Renderer:
 
     def render_action_points(self):
         self.render_text(
-            str(self.engine.enemy.action_points) + " action pts.",
+            str(self.engine.enemy.action_point_manager.action_points) + " action pts.",
             grid.left_point(15),
             grid.top_point(1),
         )
@@ -525,8 +526,13 @@ class Renderer:
             ),
         )
 
+        if card.once_per_turn:
+            text = card.card_type.name + "-once per turn"
+        else:
+            text = card.card_type.name
+
         self.render_text(
-            str(card.card_type.name),
+            text,
             card.x,
             card.y + card_height / 2 + rect_height * index,
             font=font_card_title,

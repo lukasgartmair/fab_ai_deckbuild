@@ -82,6 +82,8 @@ class Card:
         self.card_resolution = card_resolution
         self.image = None
 
+        self.once_per_turn = False
+
         self.x = None
         self.y = None
 

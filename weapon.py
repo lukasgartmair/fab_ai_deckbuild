@@ -86,6 +86,10 @@ class Weapon(Card):
         self.card_class = self.weapon_type
 
         self.once_per_turn = False
+        if n_chance(p=1):
+            self.once_per_turn = False
+
+        self.played_this_turn = False
 
         self.physical = playstyle_obj.weapon_physical
         self.arcane = playstyle_obj.weapon_arcane

@@ -110,6 +110,9 @@ class GameEngine:
     def play(self, player_attack=None):
         self.enemy.start_move()
 
+        print("NEXT MOVE")
+        print(self.enemy.has_moves_left)
+
         if self.enemy.stance == Stance.defend:
             if self.enemy.check_if_further_defense_possible() == True:
                 self.enemy.sound.play_not_possible()

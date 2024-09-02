@@ -177,7 +177,7 @@ class Block:
 
     def arcane_procedure(self, card, player_attack, pitch_value):
         self.enemy.pitch_card(card)
-        self.enemy.use_floating_resources(player_attack.arcane)
+        self.enemy.resource_manager.use_floating_resources(player_attack.arcane)
         self.increase_arcane_block_balance(amount=pitch_value)
 
     def defend_arcane(self, player_attack):
@@ -191,7 +191,9 @@ class Block:
             case player_attack.arcane if player_attack.arcane == 1 or 2:
                 print("defending one arcane attack")
                 if self.enemy.floating_resources > 0:
-                    self.enemy.use_floating_resources(player_attack.arcane)
+                    self.enemy.resource_manager.use_floating_resources(
+                        player_attack.arcane
+                    )
                     self.increase_arcane_block_balance(amount=player_attack.arcane)
                 else:
                     if len(unused_cards) > 0:
@@ -215,8 +217,10 @@ class Block:
 
             case player_attack.arcane if player_attack.arcane == 3 or 4:
                 print("defending one arcane attack")
-                if self.enemy.floating_resources > 0:
-                    self.enemy.use_floating_resources(player_attack.arcane)
+                if self.enemy.resource_manager.floating_resources > 0:
+                    self.enemy.resource_manager.use_floating_resources(
+                        player_attack.arcane
+                    )
                     self.increase_arcane_block_balance(amount=player_attack.arcane)
                 else:
                     if len(unused_cards) > 0:
@@ -235,7 +239,9 @@ class Block:
                         pitch_value = card.pitch
 
                     self.enemy.pitch_card(card)
-                    self.enemy.use_floating_resources(player_attack.arcane)
+                    self.enemy.resource_manager.use_floating_resources(
+                        player_attack.arcane
+                    )
                     self.increase_arcane_block_balance(amount=pitch_value)
 
     def get_combinations(self, array, r=0):

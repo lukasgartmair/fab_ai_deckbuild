@@ -21,9 +21,9 @@ class Attack:
 
         self.enemy.pitch_cards()
         self.enemy.remove_played_cards()
-        self.enemy.use_floating_resources(c.cost)
-        self.enemy.use_action_points()
-        self.enemy.handle_go_again(c)
+        self.enemy.resource_manager.use_floating_resources(c.cost)
+        self.enemy.action_point_manager.use_action_points()
+        self.enemy.action_point_manager.handle_go_again(c)
 
         self.enemy.sound.play_attack(c)
 

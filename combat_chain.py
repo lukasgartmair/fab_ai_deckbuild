@@ -12,10 +12,11 @@ import pitch
 
 
 class CombatChain:
-    def __init__(self, hand, arsenal, weapons):
+    def __init__(self, hand, action_point_manager, arsenal, weapons):
         self.hand = hand
         self.arsenal = arsenal
         self.weapons = weapons
+        self.action_point_manager = action_point_manager
         self.chain = {}
         self.iterator = 0
 
@@ -25,6 +26,9 @@ class CombatChain:
     def reset(self):
         self.chain = {}
         self.iterator = 0
+
+    def clear_chain(self):
+        self.chain = {}
 
     def iterator_in_chain(self):
         # print(self.iterator)
@@ -83,7 +87,24 @@ class CombatChain:
             if c.card_type not in [CardType.defensive_reaction]
         ]
 
+    def print_combat_chain(self):
+        print("COMBAT CHAIN")
+        print("------------")
+        for k, v in self.chain.items():
+            print()
+            print(k)
+            print("attack")
+            print(v["attack"].name)
+            print("pitch")
+            for vi in v["pitch"]:
+                print(vi.name)
+
+            print("current_iterator")
+            print(self.iterator)
+
     def calc_combat_chain(self):
+        self.clear_chain()
+
         index = 0
 
         pitch_bans = self.get_pitch_bans()
@@ -93,6 +114,8 @@ class CombatChain:
         playable_cards = self.apply_class_specific_sorting_preferences(playable_cards)
 
         virtual_hand = self.hand.copy()
+
+        virtual_action_points = self.action_point_manager.action_points
 
         playable_cards_tmp = playable_cards.copy()
 
@@ -126,20 +149,25 @@ class CombatChain:
                             "attack": current_card,
                             "pitch": cards_to_pitch,
                         }
-                        index += 1
 
-                    for p in cards_to_pitch:
-                        playable_cards_tmp = [
-                            pc for pc in playable_cards_tmp if pc != p
+                        for p in cards_to_pitch:
+                            playable_cards_tmp = [
+                                pc for pc in playable_cards_tmp if pc != p
+                            ]
+
+                        virtual_hand = [
+                            vh for vh in virtual_hand if vh != p and vh != current_card
                         ]
-                        virtual_hand = [vh for vh in virtual_hand if vh != p]
+
                 else:
                     self.chain[index] = {
                         "attack": current_card,
                         "pitch": [],
                     }
-                    index += 1
 
-                playable_cards_tmp = [
-                    p for p in playable_cards_tmp if p != current_card
-                ]
+                index += 1
+
+                if current_card.once_per_turn == False:
+                    playable_cards_tmp = [
+                        pc for pc in playable_cards_tmp if pc != current_card
+                    ]

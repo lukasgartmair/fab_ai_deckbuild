@@ -27,6 +27,8 @@ from combat_chain import CombatChain
 from lore import lore_dict
 from modifiers import Modifiers
 import image
+from action_point_manager import ActionPointManager
+from resource_manager import ResourceManager
 
 
 class Stance(Enum):
@@ -77,12 +79,16 @@ class Enemy:
 
         self.equipment_suite = EquipmentSuite()
 
-        self.floating_resources = 0
+        self.resource_manager = ResourceManager()
 
         self.pitched_cards = []
         self.played_cards = []
 
-        self.combat_chain = CombatChain(self.hand, self.arsenal, self.weapons)
+        self.action_point_manager = ActionPointManager()
+
+        self.combat_chain = CombatChain(
+            self.hand, self.action_point_manager, self.arsenal, self.weapons
+        )
         self.block = Block(self)
         self.attack = Attack(self)
         self.modifiers = Modifiers()
@@ -99,8 +105,6 @@ class Enemy:
             self.lore = ""
         self.lore = self.lore.replace("{}", self.name)
 
-        self.action_points = 0
-
         self.survival_mode = False
         self.check_if_in_survival_mode()
 
@@ -114,27 +118,14 @@ class Enemy:
 
     def initialize_play(self):
         self.draw()
-        if self.stance == Stance.attack:
-            self.combat_chain.calc_combat_chain()
+        # if self.stance == Stance.attack:
+        #     self.combat_chain.calc_combat_chain()
         self.reset_play()
 
     def reset_play(self):
-        self.floating_resources = 0
-        self.reset_action_points()
+        self.resource_manager.reset()
+        self.action_point_manager.reset_action_points()
         self.has_moves_left = True
-
-    def reset_action_points(self):
-        self.action_points = 1
-
-    def get_action_points(self, amount=1):
-        self.action_points += amount
-
-    def use_action_points(self, amount=1):
-        if self.action_points >= amount:
-            self.action_points -= amount
-            return True
-        else:
-            return False
 
     def arsenal_empty(self):
         if len(self.arsenal) == 0:
@@ -151,7 +142,7 @@ class Enemy:
     def change_stance(self):
         if self.stance == Stance.defend:
             self.stance = Stance.attack
-            self.combat_chain.calc_combat_chain()
+            # self.combat_chain.calc_combat_chain()
             # print("combat_chain")
             # print(self.combat_chain)
 
@@ -164,7 +155,7 @@ class Enemy:
             self.stance = Stance.defend
             self.check_if_in_survival_mode()
             self.draw()
-            self.combat_chain.calc_combat_chain()
+            # self.combat_chain.calc_combat_chain()
 
     def finish_move(self):
         pass
@@ -212,11 +203,11 @@ class Enemy:
             self.has_moves_left = self.check_if_further_defense_possible()
 
     def check_if_further_attack_possible(self):
-        print(self.combat_chain.chain)
+        self.combat_chain.print_combat_chain()
         if (
             self.combat_chain.is_empty()
             or self.combat_chain.end_reached()
-            or self.action_points == 0
+            or self.action_point_manager.action_points == 0
         ):
             # print("NO attack possible")
             return False
@@ -256,21 +247,20 @@ class Enemy:
         else:
             print("can't draw anymore, deck fatigued")
 
-    def pitch_floating_resources(self, amount):
-        self.floating_resources += amount
-
-    def use_floating_resources(self, amount):
-        self.floating_resources -= amount
-        if self.floating_resources < 0:
-            self.floating_resources = 0
-
     def remove_card_from_hand(self, card):
         if card in self.hand:
             self.hand.remove(card)
 
     def pitch_cards(self):
+        print("-----------------")
+        print("hand")
+        for h in self.hand:
+            print(h.name)
+        print("pitch")
         for p in self.combat_chain.chain[self.combat_chain.iterator]["pitch"]:
+            print(p.name)
             self.pitch_card(p)
+        print()
 
     def remove_played_cards(self):
         for p in self.played_cards:
@@ -279,13 +269,9 @@ class Enemy:
             if p in self.arsenal:
                 self.arsenal.remove(p)
 
-    def handle_go_again(self, c):
-        if Keyword.go_again in c.keywords:
-            self.get_action_points()
-
     def pitch_card(self, c):
         self.pitched_cards.append(c)
-        self.pitch_floating_resources(c.pitch)
+        self.resource_manager.pitch_floating_resources(c.pitch)
         self.hand.remove(c)
 
     def print_cards(self):
@@ -298,7 +284,7 @@ class Enemy:
             print(c.name)
 
     def defend(self, player_attack):
-        self.combat_chain.calc_combat_chain()
+        # self.combat_chain.calc_combat_chain()
         if len(self.hand) > 0:
             if self.modifiers.modifier_dict["intimidate"] == True:
                 random_banished_card = random.choice(self.hand)
@@ -339,10 +325,6 @@ class Enemy:
         pass
 
     def perform_attack(self):
-        self.combat_chain.calc_combat_chain()
-
-        print(self.combat_chain.chain)
-
         c = self.attack.base_attack()
 
         self.class_specific_helper_1(c)
