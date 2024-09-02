@@ -192,3 +192,14 @@ class CombatChain:
                         ]
 
                     virtual_action_point_manager.handle_go_again(current_card)
+
+        self.rearrange_chain()
+
+    def rearrange_chain(self):
+        if any(
+            [
+                True if v["attack"].card_type == CardType.non_attack_action else False
+                for v in self.chain.values()
+            ]
+        ):
+            print("here")

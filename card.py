@@ -113,8 +113,14 @@ class Card:
         self.cost = (
             self.physical + self.arcane + self.defense + self.pitch - TARGET_VALUE
         )
+
+        # TODO
+        if self.card_type == CardType.non_attack_action:
+            self.cost = self.cost - 2
+
         if self.cost < 0:
             self.cost = 0
+
         elif self.cost > 4:
             self.cost = MAX_CARD_COST
 
