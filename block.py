@@ -66,7 +66,7 @@ class Block:
         else:
             self.defensive_cards = self.enemy.hand.copy() + [
                 d
-                for d in self.enemy.arsenal.copy()
+                for d in self.enemy.arsenal.get_arsenal().copy()
                 if d.card_type == CardType.defensive_reaction
             ]
 
