@@ -48,6 +48,9 @@ class CombatChain:
     def update_card_lists(self):
         self.pitch_bans = self.get_pitch_bans()
 
+        for card in self.weapons + self.arsenal + self.hand:
+            card.used_in_combat_chain_this_turn = False
+
         self.playable_cards = self.get_playable_cards()
 
     def clear_chain(self):
@@ -100,6 +103,7 @@ class CombatChain:
             c
             for c in self.hand.copy() + self.arsenal + self.weapons
             if c.card_type not in [CardType.defensive_reaction]
+            and c.used_in_combat_chain_this_turn == False
         ]
 
     def print_combat_chain(self):
@@ -145,6 +149,7 @@ class CombatChain:
             "play": self.current_card,
             "pitch": pitch,
         }
+        self.current_card.used_in_combat_chain_this_turn = True
 
     def calc_damage_output(self):
         return sum([v["play"].physical + v["play"].arcane for v in self.chain.values()])

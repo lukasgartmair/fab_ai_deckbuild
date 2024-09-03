@@ -510,9 +510,15 @@ class Renderer:
             ),
         )
 
+        text = ""
+        if card.once_per_turn == True:
+            text = card.card_class.name + " - once per turn"
+        else:
+            text = str(card.card_class.name)
+
         if card.card_class.name != "generic":
             self.render_text(
-                str(card.card_class.name),
+                text,
                 card.x,
                 card.y + card_height / 2 + rect_height * index,
                 font=font_card_title,
@@ -552,10 +558,7 @@ class Renderer:
             ),
         )
 
-        if card.once_per_turn:
-            text = card.card_type.name + "-once per turn"
-        else:
-            text = card.card_type.name
+        text = card.card_type.name
 
         self.render_text(
             text,

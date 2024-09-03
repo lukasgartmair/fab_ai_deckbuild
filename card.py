@@ -83,6 +83,7 @@ class Card:
         self.image = None
 
         self.once_per_turn = False
+        self.used_in_combat_chain_this_turn = False
 
         self.x = None
         self.y = None
