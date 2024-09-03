@@ -10,7 +10,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from beautifultable import beautifultable
-from playstyle import PlayerClass, CardType, Playstyle
+from playstyle import PlayerClass, CardType, Playstyle, Keyword
 from settings import DECK_SIZE, CARD_RESOLUTION
 from card import (
     Card,
@@ -173,6 +173,12 @@ class Deck:
         else:
             return []
 
+    def draw_top_card(self):
+        if len(self.cards) > 0:
+            return self.cards.pop()
+        else:
+            return None
+
     def get_length(self):
         return len(self.cards)
 
@@ -212,7 +218,11 @@ class Deck:
             card.color = card_color_distribution[indices[i]]
             card.physical = physical_distribution[indices[i]]
             card.keywords = [keyword_distribution[indices[i]]]
+
             card.card_type = card_type_distribution[indices[i]]
+
+            if card.card_type == CardType.non_attack_action:
+                card.keywords = [Keyword.go_again]
 
             card.card_class = card_class_distribution[indices[i]]
             card.image = card_images[indices[i]]

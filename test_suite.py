@@ -84,7 +84,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(test_deck.cards[0], test_card)
         self.assertEqual(len(test_deck.cards), deck_size + 1)
         # print()
-        top_card = test_deck.draw_top_cards(n=1)[0]
+        top_card = test_deck.draw_top_card()
         # print(test_card.name)
         # print(top_card.name)
         self.assertTrue(test_card.name != top_card.name)

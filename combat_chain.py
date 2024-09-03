@@ -200,9 +200,12 @@ class CombatChain:
         else:
             return False
 
-    def get_next_card(self):
+    def get_current_card(self):
         if len(self.playable_cards) > 0:
             return self.playable_cards.pop()
+
+    def get_next_play(self):
+        pass
 
     def calc_pitch_totals(self, possible_pitch_combinations):
         pitch_totals = {}
@@ -221,6 +224,18 @@ class CombatChain:
             == CardType.non_attack_action
         ):
             return False
+
+        if all(
+            [
+                True
+                if v["play"].card_type
+                in [CardType.non_attack_action, CardType.attack_reaction]
+                else False
+                for v in self.chain.values()
+            ]
+        ):
+            return False
+
         else:
             return True
 
@@ -230,7 +245,7 @@ class CombatChain:
         index = 0
         for i in range(initial_length):
             if self.has_another_link():
-                self.current_card = self.get_next_card()
+                self.current_card = self.get_current_card()
 
                 cards_to_pitch = []
 

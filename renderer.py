@@ -263,27 +263,7 @@ class Renderer:
                 self.render_playmat_card_spot(playmat_object)
 
     def render_no_moves_left(self):
-        message = ""
-        if self.engine.enemy.stance == Stance.attack and (
-            self.engine.enemy.check_if_further_attack_possible() == False
-            or self.engine.enemy.combat_chain.is_empty() == True
-            or self.engine.enemy.combat_chain.end_reached() == True
-        ):
-            message = ["'I wont't further...", "attack you!'"]
-        elif (
-            self.engine.enemy.stance == Stance.defend
-            and self.engine.enemy.check_if_further_defense_possible() == False
-        ):
-            message = ["'You broke...", "my defense!'"]
-
-        for i, m in enumerate(message):
-            self.render_text(
-                m,
-                self.playmat.positions.enemy_message.x,
-                self.playmat.positions.enemy_message.y
-                + self.playmat.get_vertical_spacing() * i,
-                color=color_palette.black,
-            )
+        pass
 
     def render_boost(self):
         message = ""
@@ -333,7 +313,7 @@ class Renderer:
             self.engine.enemy.stance == Stance.attack
             and (
                 self.engine.enemy.combat_chain.is_empty()
-                and self.engine.level_manager.move_index > 0
+                and self.engine.level_manager.move_index == 0
             )
             or (
                 len(self.engine.enemy.hand) == 0 and len(self.engine.enemy.arsenal) == 0
@@ -585,11 +565,12 @@ class Renderer:
             text = str(card.physical)
             color = color = color_palette.white
 
-        elif card.card_type in [CardType.non_attack_action]:
-            if self.engine.enemy.combat_chain.is_last_link(card):
-                text = "-" + str(card.physical)
-            else:
-                text = "+" + str(card.physical)
+        # TODO hack for now dont render the plus if last link
+        elif card.card_type in [CardType.non_attack_action, CardType.attack_reaction]:
+            # if self.engine.enemy.combat_chain.is_last_link(card):
+            #     text = str(card.physical)
+            # else:
+            text = "+" + str(card.physical)
 
         self.render_text(text, card.x, card.y + card_height, color=color)
 
