@@ -242,15 +242,15 @@ class Renderer:
                 if w.weapon_id == 0:
                     self.render_card(
                         w,
-                        x=self.playmat.positions.weapon_0.x,
-                        y=self.playmat.positions.weapon_0.y,
+                        self.playmat.positions.weapon_0.x,
+                        self.playmat.positions.weapon_0.y,
                     )
 
                 elif w.weapon_id == 1:
                     self.render_card(
                         w,
-                        x=self.playmat.positions.weapon_1.x,
-                        y=self.playmat.positions.weapon_1.y,
+                        self.playmat.positions.weapon_1.x,
+                        self.playmat.positions.weapon_1.y,
                     )
             else:
                 playmat_object = None
@@ -295,10 +295,28 @@ class Renderer:
 
     def render_arsenal(self):
         if self.engine.enemy.arsenal.is_empty() == False:
-            self.window.blit(
-                self.card_back,
-                (self.playmat.positions.arsenal.x, self.playmat.positions.arsenal.y),
-            )
+            print("HERE")
+            print(self.engine.enemy.arsenal.state_machine.current_state)
+            if (
+                self.engine.enemy.arsenal.state_machine.current_state
+                == self.engine.enemy.arsenal.state_machine.face_down
+            ):
+                self.window.blit(
+                    self.card_back,
+                    (
+                        self.playmat.positions.arsenal.x,
+                        self.playmat.positions.arsenal.y,
+                    ),
+                )
+            elif (
+                self.engine.enemy.arsenal.state_machine.current_state
+                == self.engine.enemy.arsenal.state_machine.face_up
+            ):
+                self.render_card(
+                    self.engine.enemy.arsenal.get_arsenaled_card(),
+                    self.playmat.positions.arsenal.x,
+                    self.playmat.positions.arsenal.y,
+                )
             self.render_text(
                 str(self.engine.enemy.arsenal.get_length()),
                 self.playmat.positions.arsenal.x,
@@ -356,8 +374,8 @@ class Renderer:
             for i, pc in enumerate(self.engine.enemy.pitched_cards):
                 self.render_card(
                     pc,
-                    x=self.playmat.positions.pitch.x + i * 7,
-                    y=self.playmat.positions.pitch.y + i * 7,
+                    self.playmat.positions.pitch.x + i * 7,
+                    self.playmat.positions.pitch.y + i * 7,
                 )
             self.render_text(
                 str(len(self.engine.enemy.pitched_cards)),
@@ -403,10 +421,10 @@ class Renderer:
             for i, card in enumerate(self.engine.enemy.played_cards):
                 self.render_card(
                     card,
-                    i=i,
-                    x=playmat_position_obj.x
+                    playmat_position_obj.x
                     + self.playmat.get_horizontal_spacing() * 2 * i,
-                    y=playmat_position_obj.y,
+                    playmat_position_obj.y,
+                    i=i,
                 )
 
         else:
@@ -431,7 +449,7 @@ class Renderer:
                     playmat_position_obj = self.playmat.positions.legs
 
             if eq not in self.engine.enemy.played_cards:
-                self.render_card(eq, x=playmat_position_obj.x, y=playmat_position_obj.y)
+                self.render_card(eq, playmat_position_obj.x, playmat_position_obj.y)
             else:
                 self.render_playmat_card_spot(playmat_position_obj)
 
@@ -641,7 +659,7 @@ class Renderer:
             color=color_palette.color2,
         )
 
-    def render_card(self, card, i=0, x=None, y=None):
+    def render_card(self, card, x=None, y=None, i=0):
         if y is None:
             vert_card_grid_point = grid.top_point(6)
             card.y = vert_card_grid_point
