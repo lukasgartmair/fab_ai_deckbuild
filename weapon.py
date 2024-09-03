@@ -86,7 +86,7 @@ class Weapon(Card):
         self.card_class = self.weapon_type
 
         self.once_per_turn = False
-        if n_chance(p=1):
+        if n_chance(p=0.5):
             self.once_per_turn = True
 
         self.physical = playstyle_obj.weapon_physical
