@@ -218,7 +218,7 @@ class CombatChain:
         return pitch.determine_pitch_combination(self.current_card.cost, pitch_totals)
 
     def assure_consistency(self):
-        if len(self.chain) == 0:
+        if self.is_empty():
             return False
         if (
             self.chain[len(self.chain) - 1]["play"].card_type

@@ -103,7 +103,7 @@ class GameEngine:
             self.state_machine.end_game()
 
     def check_fatigue_condition(self):
-        if len(self.enemy.hand) + self.enemy.deck.get_length() == 0:
+        if len(self.enemy.hand) + self.enemy.deck.is_empty():
             self.win_condition = WinCondition.enemy_fatigued
             self.state_machine.end_game()
             return True

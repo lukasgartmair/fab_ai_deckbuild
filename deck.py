@@ -169,6 +169,9 @@ class Deck:
 
         calc_card_images()
 
+    def is_empty(self):
+        return True if self.get_length() == 0 else False
+
     def shuffle(self):
         np.random.shuffle(self.cards)
 
