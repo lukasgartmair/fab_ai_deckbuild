@@ -9,6 +9,7 @@ Created on Mon Aug  5 20:17:47 2024
 import numpy as np
 import pygame
 from colors import color_palette
+import itertools
 
 
 def n_chance(p=0.85):
@@ -16,6 +17,17 @@ def n_chance(p=0.85):
         return True
     else:
         return False
+
+
+def get_combinations(array):
+    combinations = []
+    array_copy = array.copy()
+    if len(array_copy) > 0:
+        for i in range(len(array) + 1):
+            combos = itertools.combinations(array_copy, i)
+            for c in combos:
+                combinations.append(c)
+    return combinations[1:]
 
 
 def shift_list(a):

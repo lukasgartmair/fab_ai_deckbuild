@@ -49,10 +49,11 @@ class Enemy:
         )
         self.image = image.load_image(self.image_path)
 
-        if n_chance(p=0.5):
-            self.stance = Stance.defend
-        else:
-            self.stance = Stance.attack
+        # if n_chance(p=0.5):
+        #     self.stance = Stance.defend
+        # else:
+        #     self.stance = Stance.attack
+        self.stance = Stance.attack
 
         self.intellect = 4
         self.talent = random.choice(list(Talent))

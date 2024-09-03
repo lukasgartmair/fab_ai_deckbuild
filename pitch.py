@@ -5,20 +5,9 @@ Created on Sun Sep  1 13:56:46 2024
 
 @author: lukasgartmair
 """
-import itertools
+
 
 VALUE_MAX_PLACEHOLDER = 100
-
-
-def get_combinations(array):
-    combinations = []
-    array_copy = array.copy()
-    if len(array_copy) > 0:
-        for i in range(len(array) + 1):
-            combos = itertools.combinations(array_copy, i)
-            for c in combos:
-                combinations.append(c)
-    return combinations[1:]
 
 
 def determine_pitch_combination(cost_to_pay, pitch_combinations):

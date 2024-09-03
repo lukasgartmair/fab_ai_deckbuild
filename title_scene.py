@@ -18,7 +18,7 @@ class TitleScene(SceneBase):
     def __init__(self, *kargs):
         super().__init__(*kargs)
         # print("Title Scene")
-        self.skip = False
+        self.skip = True
 
         self.game_sound = Sound()
 
