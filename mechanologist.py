@@ -20,14 +20,6 @@ class Mechanologist(Enemy):
 
         self.banished_zone["boosted_cards"] = []
 
-    def reorder_hand(self, hand):
-        if n_chance(p=1):
-            hand = sorted(
-                hand, key=lambda x: (x.physical, x.card_type.value * -1), reverse=True
-            )
-            self.print_reordered_hand(hand)
-        return hand
-
     def determine_if_boost_makes_sense(self):
         p = (len(self.hand) + len(self.arsenal)) / (
             self.intellect + len(self.arsenal)
@@ -48,7 +40,7 @@ class Mechanologist(Enemy):
                     if banished_card.card_class == PlayerClass.mechanologist:
                         print("Mechanoligist boost activated")
                         self.boost.activation()
-                        self.get_action_points()
+                        self.action_point_manager.obtain_action_points()
                     else:
                         self.boost.fail()
 

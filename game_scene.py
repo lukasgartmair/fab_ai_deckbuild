@@ -92,7 +92,6 @@ class GameScene(SceneBase):
                         self.engine.state_machine.current_state
                         == self.engine.state_machine.playing
                     ):
-                        self.engine.enemy.finish_turn()
                         self.engine.finish_turn()
 
                         for inp_box in self.renderer.input_boxes:

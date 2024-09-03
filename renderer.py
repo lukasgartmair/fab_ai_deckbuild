@@ -331,7 +331,13 @@ class Renderer:
     def render_hand(self):
         if (
             self.engine.enemy.stance == Stance.attack
-            and self.engine.enemy.combat_chain.is_empty()
+            and (
+                self.engine.enemy.combat_chain.is_empty()
+                and self.engine.level_manager.move_index > 0
+            )
+            or (
+                len(self.engine.enemy.hand) == 0 and len(self.engine.enemy.arsenal) == 0
+            )
         ):
             color = color_palette.color3
         else:

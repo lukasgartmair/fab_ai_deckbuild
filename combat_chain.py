@@ -25,6 +25,7 @@ class CombatChain:
 
         self.playable_cards = []
         self.pitch_bans = []
+        self.turn_bans = []
 
         self.valid_combinations = []
 
@@ -35,7 +36,7 @@ class CombatChain:
     def get_length(self):
         return len(self.chain)
 
-    def reset(self):
+    def move_reset(self):
         self.chain = {}
         self.current_card = None
         self.iterator = 0
@@ -45,12 +46,12 @@ class CombatChain:
         self.valid_combinations = []
         self.update_card_lists()
 
+    def turn_reset(self):
+        self.move_reset()
+        self.turn_bans = []
+
     def update_card_lists(self):
         self.pitch_bans = self.get_pitch_bans()
-
-        for card in self.weapons + self.arsenal + self.hand:
-            card.used_in_combat_chain_this_turn = False
-
         self.playable_cards = self.get_playable_cards()
 
     def clear_chain(self):
@@ -103,7 +104,6 @@ class CombatChain:
             c
             for c in self.hand.copy() + self.arsenal + self.weapons
             if c.card_type not in [CardType.defensive_reaction]
-            and c.used_in_combat_chain_this_turn == False
         ]
 
     def print_combat_chain(self):
@@ -126,8 +126,14 @@ class CombatChain:
         return c
 
     def update_playable_cards(self, cards_to_pitch):
+        for s in self.turn_bans:
+            print("HERRE")
+            print(s.name)
+
         self.playable_cards = [
-            pc for pc in self.playable_cards if pc not in cards_to_pitch
+            pc
+            for pc in self.playable_cards
+            if (pc not in cards_to_pitch and pc not in self.turn_bans)
         ]
 
     def update_hand(self, cards_to_pitch):
@@ -149,7 +155,8 @@ class CombatChain:
             "play": self.current_card,
             "pitch": pitch,
         }
-        self.current_card.used_in_combat_chain_this_turn = True
+        if self.current_card.once_per_turn == True:
+            self.turn_bans.append(self.current_card)
 
     def calc_damage_output(self):
         return sum([v["play"].physical + v["play"].arcane for v in self.chain.values()])
@@ -167,13 +174,8 @@ class CombatChain:
 
     def get_valid_chains(self, playable_cards):
         combinations = get_combinations(playable_cards)
-        print("len(combinations)")
-        print(len(combinations))
 
         valid_combinations = self.apply_chain_restriction(combinations)
-
-        print("len(valid_combinations)")
-        print(len(valid_combinations))
 
         self.valid_combinations = valid_combinations
 
@@ -262,7 +264,7 @@ class CombatChain:
                 index += 1
 
     def update_combat_chain(self):
-        self.reset()
+        self.move_reset()
 
         self.get_valid_chains(self.playable_cards)
 
@@ -277,9 +279,9 @@ class CombatChain:
                 calculated_chains.append(virtual_combat_chain)
 
         if len(calculated_chains) > 0:
-            print([c.calc_damage_output() for c in calculated_chains])
+            # print([c.calc_damage_output() for c in calculated_chains])
 
-            print(calculated_chains)
+            # print(calculated_chains)
             lengths = [len(c.chain) for c in calculated_chains]
             damage_outputs = [c.calc_damage_output() for c in calculated_chains]
             best_chain_index = damage_outputs.index(max(damage_outputs))

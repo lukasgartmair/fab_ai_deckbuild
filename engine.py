@@ -50,7 +50,7 @@ class GameEngine:
             ]
         )
 
-        test_class = PlayerClass.ninja
+        test_class = PlayerClass.mechanologist
 
         self.player_class = test_class
         self.apply_player_class()
@@ -78,6 +78,7 @@ class GameEngine:
         self.level_manager.advandce_move()
 
     def finish_turn(self):
+        self.enemy.finish_turn()
         self.level_manager.advandce_turn()
 
     def advance_level(self):
@@ -108,6 +109,9 @@ class GameEngine:
             return True
 
     def play(self, player_attack=None):
+        if self.level_manager.move_index == 1:
+            self.enemy.start_turn()
+
         self.enemy.start_move()
 
         print("NEXT MOVE")

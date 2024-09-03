@@ -110,8 +110,6 @@ class Enemy:
         self.survival_mode = False
         self.check_if_in_survival_mode()
 
-        self.has_moves_left = True
-
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
             self.survival_mode = True
@@ -123,9 +121,9 @@ class Enemy:
         self.reset_play()
 
     def reset_play(self):
+        self.combat_chain.turn_reset()
         self.resource_manager.reset()
         self.action_point_manager.reset_action_points()
-        self.has_moves_left = True
 
     def arsenal_empty(self):
         if len(self.arsenal) == 0:
@@ -153,15 +151,15 @@ class Enemy:
             self.check_if_in_survival_mode()
             self.draw()
 
+    def start_move(self):
+        # self.combat_chain.update_combat_chain()
+        pass
+
     def finish_move(self):
         pass
 
-    def start_move(self):
+    def start_turn(self):
         self.combat_chain.update_combat_chain()
-
-    # TODO AS COMBAT CHAIN is not inherited i need this here to overwrite - any better solution?
-    def reorder_hand(self, hand):
-        self.combat_chain.reorder_hand(hand)
 
     def finish_turn(self):
         self.reset_play()
@@ -180,8 +178,6 @@ class Enemy:
 
         self.played_cards = []
         self.pitched_cards = []
-
-        self.combat_chain.reset()
 
         if "intimidated_cards" in self.banished_zone:
             self.hand += self.banished_zone["intimidated_cards"]
