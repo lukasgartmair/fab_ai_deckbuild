@@ -60,7 +60,7 @@ class Block:
         if self.enemy.modifiers.modifier_dict["dominate"] == True:
             self.defensive_cards = self.enemy.hand.copy()[:1] + [
                 d
-                for d in self.enemy.arsenal.copy()
+                for d in self.enemy.arsenal.get_arsenal().copy()
                 if d.card_type == CardType.defensive_reaction
             ]
         else:
@@ -91,13 +91,13 @@ class Block:
                             self.block_with_equipment_very_basic()
 
                     case player_attack.physical if player_attack.physical > 2:
-                        if len(self.enemy.hand) == 0 and len(self.enemy.arsenal) == 0:
+                        if len(self.enemy.hand) == 0 and self.enemy.arsenal.is_empty():
                             print("here")
                             self.block_with_equipment_very_basic()
                         elif (
                             len(self.enemy.hand) == 0
-                            and (len(self.enemy.arsenal) == 1)
-                            and self.enemy.arsenal[0].card_type
+                            and (self.enemy.arsenal.is_empty() == False)
+                            and self.enemy.arsenal.get_arsenaled_card.card_type
                             != CardType.defensive_reaction
                         ):
                             print("here2")

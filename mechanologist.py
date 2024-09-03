@@ -21,8 +21,8 @@ class Mechanologist(Enemy):
         self.banished_zone["boosted_cards"] = []
 
     def determine_if_boost_makes_sense(self):
-        p = (len(self.hand) + len(self.arsenal)) / (
-            self.intellect + len(self.arsenal)
+        p = (len(self.hand) + self.arsenal.get_length()) / (
+            self.intellect + self.arsenal.get_length()
         ) + 0.3
         print(p)
         if n_chance(p):

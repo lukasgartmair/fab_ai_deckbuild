@@ -294,13 +294,13 @@ class Renderer:
             self.render_playmat_card_spot(self.playmat.positions.deck)
 
     def render_arsenal(self):
-        if len(self.engine.enemy.arsenal) > 0:
+        if self.engine.enemy.arsenal.is_empty() == False:
             self.window.blit(
                 self.card_back,
                 (self.playmat.positions.arsenal.x, self.playmat.positions.arsenal.y),
             )
             self.render_text(
-                str(len(self.engine.enemy.arsenal)),
+                str(self.engine.enemy.arsenal.get_length()),
                 self.playmat.positions.arsenal.x,
                 self.playmat.positions.arsenal.y,
             )
@@ -316,7 +316,8 @@ class Renderer:
                 and self.engine.level_manager.move_index == 0
             )
             or (
-                len(self.engine.enemy.hand) == 0 and len(self.engine.enemy.arsenal) == 0
+                len(self.engine.enemy.hand) == 0
+                and self.engine.enemy.arsenal.is_empty()
             )
         ):
             color = color_palette.color3

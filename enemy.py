@@ -28,6 +28,7 @@ from modifiers import Modifiers
 import image
 from action_point_manager import ActionPointManager
 from resource_manager import ResourceManager
+from arsenal import Arsenal
 
 
 class Stance(Enum):
@@ -73,7 +74,7 @@ class Enemy:
         self.banished_zone = {}
         self.banished_zone["intimidated_cards"] = []
 
-        self.arsenal = []
+        self.arsenal = Arsenal()
 
         self.weapons = initialize_weapons(self.playstyle)
 
@@ -125,16 +126,10 @@ class Enemy:
         self.resource_manager.reset()
         self.action_point_manager.reset_action_points()
 
-    def arsenal_empty(self):
-        if len(self.arsenal) == 0:
-            return True
-        else:
-            return False
-
     def fill_arsenal(self):
         if len(self.hand) > 0:
             c = self.hand[0]
-            self.arsenal.append(c)
+            self.arsenal.fill(c)
             self.hand.remove(c)
 
     def change_stance(self):
@@ -144,7 +139,7 @@ class Enemy:
             self.sound.play_change_stance_to_attack()
 
         elif self.stance == Stance.attack:
-            if self.arsenal_empty():
+            if self.arsenal.is_empty():
                 self.fill_arsenal()
 
             self.stance = Stance.defend
@@ -207,9 +202,9 @@ class Enemy:
             len(self.hand) == 0
             and len(self.equipment_suite.get_possible_blocking_pieces_in_play()) == 0
         ):
-            if len(self.arsenal) == 0:
+            if self.arsenal.is_empty():
                 return False
-            elif len(self.arsenal) == 1:
+            elif self.arsenal.is_empty() == False:
                 if self.arsenal[0].card_type != CardType.defensive_reaction:
                     return True
             else:
@@ -252,8 +247,8 @@ class Enemy:
         for p in self.played_cards:
             if p in self.hand:
                 self.remove_card_from_hand(p)
-            if p in self.arsenal:
-                self.arsenal.remove(p)
+            if self.arsenal.is_in_arsenal(p):
+                self.arsenal.remove_card(p)
 
     def pitch_card(self, c):
         self.pitched_cards.append(c)
@@ -266,7 +261,7 @@ class Enemy:
             print(c.name)
 
         print("ARSENAL")
-        for c in self.arsenal:
+        for c in self.arsenal.arsenal:
             print(c.name)
 
     def defend(self, player_attack):
@@ -298,8 +293,8 @@ class Enemy:
             if bc in self.hand:
                 self.hand.remove(bc)
 
-            if bc in self.arsenal:
-                self.arsenal.remove(bc)
+            if bc in self.arsenal.arsenal:
+                self.arsenal.remove_card(bc)
 
         if len(self.block.physical_block_cards) > 0:
             self.sound.play_block()

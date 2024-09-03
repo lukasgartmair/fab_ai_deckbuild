@@ -7,11 +7,9 @@ Created on Mon Nov 13 10:19:33 2023
 """
 
 from enum import Enum
-import pygame
-from deck import Deck
 from enemy import Enemy, Stance
 from statemachine import StateMachine
-from statemachine.states import States, State
+from statemachine.states import State
 from level_manager import LevelManager
 from player_attack import PlayerAttack
 from analyzer import GlobalAnalyzer
@@ -19,7 +17,6 @@ import random
 from playstyle import PlayerClass
 from mechanologist import Mechanologist
 from guardian import Guardian
-from sound import Sound
 from ranger import Ranger
 
 

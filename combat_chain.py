@@ -9,12 +9,17 @@ from playstyle import CardType
 import numpy as np
 from utils import n_chance, get_combinations
 import pitch
+from arsenal import Arsenal
 from action_point_manager import ActionPointManager
 
 
 class CombatChain:
     def __init__(
-        self, hand, action_point_manager=ActionPointManager(), arsenal=[], weapons=[]
+        self,
+        hand,
+        action_point_manager=ActionPointManager(),
+        arsenal=Arsenal(),
+        weapons=[],
     ):
         self.hand = hand
         self.arsenal = arsenal
@@ -97,12 +102,12 @@ class CombatChain:
         self.iterator += 1
 
     def get_pitch_bans(self):
-        return self.arsenal + self.weapons
+        return self.arsenal.get_arsenal() + self.weapons
 
     def get_playable_cards(self):
         return [
             c
-            for c in self.hand.copy() + self.arsenal + self.weapons
+            for c in self.hand.copy() + self.arsenal.get_arsenal() + self.weapons
             if c.card_type not in [CardType.defensive_reaction]
         ]
 
