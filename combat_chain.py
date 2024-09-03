@@ -5,7 +5,7 @@ Created on Sun Sep  1 18:23:09 2024
 
 @author: lukasgartmair
 """
-from playstyle import CardType, Keyword
+from playstyle import CardType
 import numpy as np
 from utils import shift_list, n_chance
 import pitch
@@ -47,7 +47,7 @@ class CombatChain:
 
     def is_last_link(self, card):
         for k, v in self.chain.items():
-            if card == v["attack"]:
+            if card == v["play"]:
                 if k == len(self.chain):
                     return True
         return False
@@ -101,8 +101,8 @@ class CombatChain:
         for k, v in self.chain.items():
             print()
             print(k)
-            print("attack")
-            print(v["attack"].name)
+            print("play")
+            print(v["play"].name)
             print("pitch")
             for vi in v["pitch"]:
                 print(vi.name)
@@ -111,8 +111,34 @@ class CombatChain:
             print(self.iterator)
 
     def get_next_attacking_card(self):
-        c = self.chain[self.iterator]["attack"]
+        c = self.chain[self.iterator]["play"]
         return c
+
+    def rearrange_chain(self):
+        if any(
+            [
+                True if v["play"].card_type == CardType.non_attack_action else False
+                for v in self.chain.values()
+            ]
+        ):
+            print("here")
+
+    def update_playable_cards(self, playable_cards_tmp, cards_to_pitch):
+        for p in cards_to_pitch:
+            playable_cards_tmp = [pc for pc in playable_cards_tmp if pc != p]
+        return playable_cards_tmp
+
+    def update_virtual_hand(self, current_card, virtual_hand, cards_to_pitch):
+        virtual_hand = [
+            vh for vh in virtual_hand if vh != current_card and vh not in cards_to_pitch
+        ]
+        return virtual_hand
+
+    def set_play(self, index, card, pitch=[]):
+        self.chain[index] = {
+            "play": card,
+            "pitch": pitch,
+        }
 
     def calc_combat_chain(self):
         self.clear_chain()
@@ -137,6 +163,7 @@ class CombatChain:
             if len(playable_cards_tmp) > 0:
                 if virtual_action_point_manager.has_action_points_left():
                     current_card = playable_cards_tmp[0]
+                    cards_to_pitch = []
 
                     if current_card.cost > 0:
                         pitchable_cards = [
@@ -160,46 +187,22 @@ class CombatChain:
                             playable_cards_tmp = shift_list(playable_cards_tmp)
                             continue
                         else:
-                            self.chain[index] = {
-                                "attack": current_card,
-                                "pitch": cards_to_pitch,
-                            }
+                            self.set_play(index, current_card, pitch=cards_to_pitch)
 
-                            for p in cards_to_pitch:
-                                playable_cards_tmp = [
-                                    pc for pc in playable_cards_tmp if pc != p
-                                ]
+                            # playable_cards = self.update_playable_cards(playable_cards_tmp, cards_to_pitch)
 
-                            virtual_hand = [
-                                vh
-                                for vh in virtual_hand
-                                if vh != p
-                                and vh != current_card
-                                and vh not in cards_to_pitch
-                            ]
+                            virtual_hand = self.update_virtual_hand(
+                                current_card, virtual_hand, cards_to_pitch
+                            )
 
                     else:
-                        self.chain[index] = {
-                            "attack": current_card,
-                            "pitch": [],
-                        }
+                        self.set_play(index, current_card)
 
                     index += 1
 
                     if current_card.once_per_turn == False:
-                        playable_cards_tmp = [
-                            pc for pc in playable_cards_tmp if pc != current_card
-                        ]
+                        playable_cards = self.update_playable_cards(
+                            playable_cards_tmp, cards_to_pitch
+                        )
 
                     virtual_action_point_manager.handle_go_again(current_card)
-
-        self.rearrange_chain()
-
-    def rearrange_chain(self):
-        if any(
-            [
-                True if v["attack"].card_type == CardType.non_attack_action else False
-                for v in self.chain.values()
-            ]
-        ):
-            print("here")
