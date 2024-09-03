@@ -87,7 +87,10 @@ class Enemy:
         self.action_point_manager = ActionPointManager()
 
         self.combat_chain = CombatChain(
-            self.hand, self.action_point_manager, self.arsenal, self.weapons
+            self.hand,
+            action_point_manager=self.action_point_manager,
+            arsenal=self.arsenal,
+            weapons=self.weapons,
         )
         self.block = Block(self)
         self.modifiers = Modifiers()
@@ -117,8 +120,6 @@ class Enemy:
 
     def initialize_play(self):
         self.draw()
-        # if self.stance == Stance.attack:
-        #     self.combat_chain.calc_combat_chain()
         self.reset_play()
 
     def reset_play(self):
@@ -141,9 +142,6 @@ class Enemy:
     def change_stance(self):
         if self.stance == Stance.defend:
             self.stance = Stance.attack
-            # self.combat_chain.calc_combat_chain()
-            # print("combat_chain")
-            # print(self.combat_chain)
 
             self.sound.play_change_stance_to_attack()
 
@@ -154,13 +152,12 @@ class Enemy:
             self.stance = Stance.defend
             self.check_if_in_survival_mode()
             self.draw()
-            # self.combat_chain.calc_combat_chain()
 
     def finish_move(self):
         pass
 
     def start_move(self):
-        self.combat_chain.calc_combat_chain()
+        self.combat_chain.update_combat_chain()
 
     # TODO AS COMBAT CHAIN is not inherited i need this here to overwrite - any better solution?
     def reorder_hand(self, hand):
@@ -277,7 +274,7 @@ class Enemy:
             print(c.name)
 
     def defend(self, player_attack):
-        # self.combat_chain.calc_combat_chain()
+        self.combat_chain.update_combat_chain()
         if len(self.hand) > 0:
             if self.modifiers.modifier_dict["intimidate"] == True:
                 random_banished_card = random.choice(self.hand)

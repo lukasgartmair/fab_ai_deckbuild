@@ -102,13 +102,13 @@ class Weapon(Card):
         power = self.physical + self.arcane
         match power:
             case power if power < 2:
-                self.cost = 0
-            case power if 2 <= power < 4:
                 self.cost = 1
-            case power if 4 <= power < 7:
+            case power if 2 <= power < 4:
                 self.cost = 2
-            case power if 7 <= power:
+            case power if 4 <= power < 7:
                 self.cost = 3
+            case power if 7 <= power:
+                self.cost = 4
 
         self.color = CardColor.red
         self.card_type = CardType.weapon

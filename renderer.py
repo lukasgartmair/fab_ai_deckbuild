@@ -264,10 +264,10 @@ class Renderer:
 
     def render_no_moves_left(self):
         message = ""
-        if (
-            self.engine.enemy.stance == Stance.attack
-            and self.engine.enemy.check_if_further_attack_possible() == False
-            and self.engine.enemy.combat_chain.is_empty() == False
+        if self.engine.enemy.stance == Stance.attack and (
+            self.engine.enemy.check_if_further_attack_possible() == False
+            or self.engine.enemy.combat_chain.is_empty() == True
+            or self.engine.enemy.combat_chain.end_reached() == True
         ):
             message = ["'I wont't further...", "attack you!'"]
         elif (
@@ -329,10 +329,9 @@ class Renderer:
             self.render_playmat_card_spot(self.playmat.positions.arsenal)
 
     def render_hand(self):
-        if (
-            self.engine.enemy.stance == Stance.attack
-            and not self.engine.enemy.combat_chain.is_empty()
-            and self.engine.enemy.combat_chain.end_reached()
+        if self.engine.enemy.stance == Stance.attack and (
+            self.engine.enemy.combat_chain.end_reached()
+            or self.engine.enemy.combat_chain.is_empty()
         ):
             color = color_palette.color3
         else:
