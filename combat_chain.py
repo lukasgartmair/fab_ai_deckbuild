@@ -96,33 +96,23 @@ class CombatChain:
         ]
 
     def print_combat_chain(self):
-        pass
-        # print("COMBAT CHAIN")
-        # print("------------")
-        # for k, v in self.chain.items():
-        #     print()
-        #     print(k)
-        #     print("play")
-        #     print(v["play"].name)
-        #     print("pitch")
-        #     for vi in v["pitch"]:
-        #         print(vi.name)
+        print("COMBAT CHAIN")
+        print("------------")
+        for k, v in self.chain.items():
+            print()
+            print(k)
+            print("play")
+            print(v["play"].name)
+            print("pitch")
+            for vi in v["pitch"]:
+                print(vi.name)
 
-        #     print("current_iterator")
-        #     print(self.iterator)
+            print("current_iterator")
+            print(self.iterator)
 
     def get_next_attacking_card(self):
         c = self.chain[self.iterator]["play"]
         return c
-
-    def rearrange_chain(self):
-        if any(
-            [
-                True if v["play"].card_type == CardType.non_attack_action else False
-                for v in self.chain.values()
-            ]
-        ):
-            print("here")
 
     def update_playable_cards(self, playable_cards_tmp, cards_to_pitch):
         for p in cards_to_pitch:
@@ -216,7 +206,6 @@ class CombatChain:
                             )
 
                             if len(cards_to_pitch) == 0:
-                                calculated_chains.append(virtual_combat_chain)
                                 break
 
                             else:
@@ -255,7 +244,7 @@ class CombatChain:
         print([c.calc_damage_output() for c in calculated_chains])
 
         print(calculated_chains)
-        damage_outputs = [c.calc_damage_output() for c in calculated_chains]
+        lengths = [len(c.chain) for c in calculated_chains]
         damage_outputs = [c.calc_damage_output() for c in calculated_chains]
         best_chain_index = damage_outputs.index(max(damage_outputs))
 
