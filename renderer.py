@@ -329,9 +329,9 @@ class Renderer:
             self.render_playmat_card_spot(self.playmat.positions.arsenal)
 
     def render_hand(self):
-        if self.engine.enemy.stance == Stance.attack and (
-            self.engine.enemy.combat_chain.end_reached()
-            or self.engine.enemy.combat_chain.is_empty()
+        if (
+            self.engine.enemy.stance == Stance.attack
+            and self.engine.enemy.combat_chain.is_empty()
         ):
             color = color_palette.color3
         else:

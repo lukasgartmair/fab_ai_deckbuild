@@ -319,7 +319,7 @@ class Enemy:
         self.remove_played_cards()
         self.resource_manager.use_floating_resources(c.cost)
         self.action_point_manager.use_action_points()
-        self.action_point_manager.handle_go_again(c)
+        self.action_point_manager.handle_keywords(c)
 
         self.sound.play_attack(c)
 
@@ -335,3 +335,6 @@ class Enemy:
             self.class_specific_helper_1(c)
 
             self.combat_chain.increase_iterator()
+
+            if c.card_type == CardType.non_attack_action:
+                self.perform_attack()

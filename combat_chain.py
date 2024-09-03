@@ -61,6 +61,9 @@ class CombatChain:
         else:
             return False
 
+    def started(self):
+        return True if self.iterator > 0 else False
+
     def has_content(self):
         if self.get_length() > 0:
             return True
@@ -151,6 +154,10 @@ class CombatChain:
         for combo in combinations:
             if [p.card_type for p in combo][-1] == CardType.non_attack_action:
                 valid_combinations.remove(combo)
+
+            elif [p.card_type for p in combo][-1] == CardType.non_attack_action:
+                valid_combinations.remove(combo)
+
         return valid_combinations
 
     def get_valid_chains(self, playable_cards):
@@ -241,7 +248,9 @@ class CombatChain:
                 self.update_hand(cards_to_pitch)
                 self.update_playable_cards(cards_to_pitch)
 
-                self.action_point_manager.handle_go_again(self.current_card)
+                self.action_point_manager.handle_keywords(
+                    self.current_card, combat_chain=self
+                )
                 if self.action_point_manager.has_action_points_left() == False:
                     return
 

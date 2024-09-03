@@ -26,9 +26,24 @@ class ActionPointManager:
         else:
             return False
 
-    def handle_go_again(self, c):
-        if Keyword.go_again in c.keywords:
+    def handle_go_again(self, card):
+        if Keyword.go_again in card.keywords:
             self.obtain_action_points()
+
+    def handle_combo(self, card, combat_chain):
+        if Keyword.combo in card.keywords:
+            if combat_chain.iterator > 0:
+                if (
+                    Keyword.combo
+                    in combat_chain.chain[combat_chain.iterator - 1]["play"].keywords
+                ):
+                    print("combo activated")
+                    self.obtain_action_points()
+
+    def handle_keywords(self, card, combat_chain=None):
+        self.handle_go_again(card)
+        # if combat_chain is not None:
+        #     self.handle_combo(card, combat_chain)
 
     def has_action_points_left(self):
         return True if self.action_points > 0 else False
