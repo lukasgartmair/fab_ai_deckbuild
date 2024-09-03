@@ -20,6 +20,7 @@ from playstyle import PlayerClass
 from mechanologist import Mechanologist
 from guardian import Guardian
 from sound import Sound
+from ranger import Ranger
 
 
 class WinCondition(Enum):
@@ -50,9 +51,9 @@ class GameEngine:
             ]
         )
 
-        test_class = PlayerClass.mechanologist
+        # test_class = PlayerClass.mechanologist
 
-        self.player_class = test_class
+        # self.player_class = test_class
         self.apply_player_class()
 
         self.state_machine = GameStateMachine()
@@ -69,6 +70,8 @@ class GameEngine:
                 self.enemy = Mechanologist()
             case self.player_class if self.player_class == PlayerClass.guardian:
                 self.enemy = Guardian()
+            case self.player_class if self.player_class == PlayerClass.ranger:
+                self.enemy = Ranger()
 
             case _:
                 self.enemy = Enemy(self.player_class)

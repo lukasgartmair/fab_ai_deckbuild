@@ -112,6 +112,10 @@ class CardType(Enum):
     equipment = 5
 
 
+class CardTypeSpecification(Enum):
+    arrow_attack = 0
+
+
 class Playstyle:
     def __init__(self):
         self.physical_parameters = {"mu": 4, "sigma": 3}

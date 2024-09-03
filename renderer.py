@@ -523,13 +523,24 @@ class Renderer:
             ),
         )
 
-        if card.keywords[0] != Keyword.no_keyword:
-            self.render_text(
-                str(card.keywords[0].name),
-                card.x,
-                card.y + card_height / 2 + rect_height * index,
-                font=font_card_title,
-            )
+        text = ""
+        xy = card.x
+        index = 0
+        for i, kws in enumerate(card.keywords):
+            if kws != Keyword.no_keyword:
+                xy = card.x + 30 * index
+                index += 1
+
+            if kws != Keyword.no_keyword:
+                self.render_text(
+                    str(kws.name),
+                    xy,
+                    card.y + card_height / 2 + rect_height * index,
+                    font=font_card_title,
+                )
+
+                if len(card.keywords) > 1 and i == len(card.keywords) + 1:
+                    text += "/"
 
     def render_card_type(self, card):
         index = 1
