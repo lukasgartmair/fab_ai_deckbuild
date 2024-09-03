@@ -10,7 +10,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from beautifultable import beautifultable
-from playstyle import PlayerClass, CardType, Playstyle, Keyword
+from playstyle import PlayerClass, CardType, Playstyle, Keyword, SecondaryKeyword
 from settings import DECK_SIZE, CARD_RESOLUTION
 from card import (
     Card,
@@ -49,6 +49,19 @@ def calc_keyword_distribution(playstyle_obj, n=DECK_SIZE):
 
     sampled_keywords = random.choices(
         playstyle_obj.keywords, weights=playstyle_obj.keyword_ratios.values(), k=n
+    )
+    return sampled_keywords
+
+
+def calc_secondary_keyword_distribution(playstyle_obj, n=DECK_SIZE):
+    # print(type(playstyle_obj).__name__)
+    # print(playstyle_obj.keywords)
+    # print(playstyle_obj.keyword_ratios.values())
+
+    sampled_keywords = random.choices(
+        playstyle_obj.secondary_keywords,
+        weights=playstyle_obj.secondary_keyword_ratios.values(),
+        k=n,
     )
     return sampled_keywords
 
@@ -191,6 +204,7 @@ class Deck:
             arcane_distribution = [1 if x == 0 else x for x in arcane_distribution]
 
         keyword_distribution = calc_keyword_distribution(self.playstyle)
+        secondary_keyword_distribution = calc_keyword_distribution(self.playstyle)
         card_type_distribution = calc_card_type_distribution(self.playstyle)
         card_color_distribution = calc_card_color_distribution(self.playstyle)
         card_class_distribution = calc_card_class_distribution(self.playstyle)
@@ -215,17 +229,19 @@ class Deck:
             random.shuffle(arcane_indices)
 
         for i, card in enumerate(self.cards):
-            card.color = card_color_distribution[indices[i]]
-            card.physical = physical_distribution[indices[i]]
+            card.color = card_color_distribution.pop()
+            card.physical = physical_distribution.pop()
 
-            card.keywords = [keyword_distribution[indices[i]]]
-            #           card.keywords.append(keyword_distribution[random.randint(0,len(keyword_distribution)-1)])
-            card.card_type = card_type_distribution[indices[i]]
+            card.keywords = [keyword_distribution.pop()]
+            card.card_type = card_type_distribution.pop()
 
             if card.card_type == CardType.non_attack_action:
                 card.keywords = [Keyword.go_again]
 
-            card.keywords.append(Keyword.dominate)
+            if secondary_keyword_distribution[-1] not in card.keywords:
+                card.keywords.append(secondary_keyword_distribution.pop())
+
+            card.keywords.sort(key=lambda x: x.value, reverse=False)
 
             card.card_class = card_class_distribution[indices[i]]
             card.image = card_images[indices[i]]

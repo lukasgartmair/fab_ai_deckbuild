@@ -103,6 +103,18 @@ class Keyword(Enum):
     no_keyword = 3
 
 
+class SecondaryKeyword(Enum):
+    dominate = 0
+    intimidate = 1
+    blood_debt = 2
+    beat_chest = 3
+    boost = 4
+    charge = 5
+    opt = 6
+    reload = 7
+    no_keyword = 8
+
+
 class CardType(Enum):
     non_attack_action = 0
     attack_action = 1
@@ -129,6 +141,12 @@ class Playstyle:
         self.keyword_ratios = {
             "go_again": 60,
             "no_keyword": 40,
+        }
+
+        self.secondary_keywords = [Keyword.dominate, Keyword.no_keyword]
+        self.secondary_keyword_ratios = {
+            "dominate": 30,
+            "no_keyword": 70,
         }
 
         self.arcane_ratio = 0

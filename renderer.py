@@ -525,22 +525,22 @@ class Renderer:
 
         text = ""
         xy = card.x
-        index = 0
-        for i, kws in enumerate(card.keywords):
-            if kws != Keyword.no_keyword:
-                xy = card.x + 30 * index
-                index += 1
+        kwds = [c for c in card.keywords if c != Keyword.no_keyword]
+        for i, kws in enumerate(kwds):
+            if i > 0:
+                xy = xy + 45 * index
 
-            if kws != Keyword.no_keyword:
-                self.render_text(
-                    str(kws.name),
-                    xy,
-                    card.y + card_height / 2 + rect_height * index,
-                    font=font_card_title,
-                )
+            if i == 0 and len(kwds) == 2:
+                text = kws.name + "/"
+            else:
+                text = kws.name
 
-                if len(card.keywords) > 1 and i == len(card.keywords) + 1:
-                    text += "/"
+            self.render_text(
+                text,
+                xy,
+                card.y + card_height / 2 + rect_height * index,
+                font=font_card_title,
+            )
 
     def render_card_type(self, card):
         index = 1
@@ -683,8 +683,9 @@ class Renderer:
             self.render_cost(card)
 
     def render_enemy_life_counter(self):
-        self.button_up.draw(self.window)
-        self.button_down.draw(self.window)
+        if self.engine.state_machine.current_state == self.engine.state_machine.playing:
+            self.button_up.draw(self.window)
+            self.button_down.draw(self.window)
 
         self.render_text(
             "HP : " + str(self.engine.enemy.life_counter.life),

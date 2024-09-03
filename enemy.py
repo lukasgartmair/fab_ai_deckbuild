@@ -328,6 +328,7 @@ class Enemy:
         if self.check_if_further_attack_possible() == True:
             c = self.base_attack()
 
+            # TODO find a cleaner implementation for this in te action point manager
             self.class_specific_helper_1(c)
 
             self.combat_chain.increase_iterator()

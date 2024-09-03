@@ -31,7 +31,7 @@ class Mechanologist(Enemy):
             return False
 
     def apply_boost_mechanic(self, card):
-        print("bossting")
+        print("boosting")
         if Keyword.boost in card.keywords:
             if self.determine_if_boost_makes_sense():
                 if len(self.hand) > 0:

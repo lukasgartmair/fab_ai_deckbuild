@@ -126,10 +126,6 @@ class CombatChain:
         return c
 
     def update_playable_cards(self, cards_to_pitch):
-        for s in self.turn_bans:
-            print("HERRE")
-            print(s.name)
-
         self.playable_cards = [
             pc
             for pc in self.playable_cards

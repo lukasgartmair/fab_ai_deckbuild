@@ -40,8 +40,15 @@ class ActionPointManager:
                     print("combo activated")
                     self.obtain_action_points()
 
+    def handle_boost(self, card):
+        if Keyword.boost in card.keywords:
+            return True
+        else:
+            return False
+
     def handle_keywords(self, card, combat_chain=None):
         self.handle_go_again(card)
+        self.handle_boost(card)
         # if combat_chain is not None:
         #     self.handle_combo(card, combat_chain)
 
