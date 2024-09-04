@@ -48,9 +48,9 @@ class GameEngine:
             ]
         )
 
-        # test_class = PlayerClass.mechanologist
+        test_class = PlayerClass.illusionist
 
-        # self.player_class = test_class
+        self.player_class = test_class
         self.apply_player_class()
 
         self.state_machine = GameStateMachine()

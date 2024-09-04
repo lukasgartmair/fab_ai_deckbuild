@@ -86,3 +86,6 @@ class InputBox:
                         pygame.K_9,
                     ]:
                         self.text += event.unicode
+
+                        if len(self.text) > 2:
+                            self.text = self.text[:2]

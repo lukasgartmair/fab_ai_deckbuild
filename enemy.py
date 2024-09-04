@@ -58,7 +58,7 @@ class Enemy:
 
         self.intellect = 4
         self.talent = random.choice(list(Talent))
-        self.starting_life = 20
+        self.starting_life = random.randint(20, 41)
         self.hand = []
         self.pile = Pile()
         self.play_key = pygame.K_SPACE

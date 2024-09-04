@@ -207,7 +207,9 @@ class Deck:
             arcane_distribution = [1 if x == 0 else x for x in arcane_distribution]
 
         keyword_distribution = calc_keyword_distribution(self.playstyle)
-        secondary_keyword_distribution = calc_secondary_keyword_distribution(self.playstyle)
+        secondary_keyword_distribution = calc_secondary_keyword_distribution(
+            self.playstyle
+        )
         card_type_distribution = calc_card_type_distribution(self.playstyle)
         card_color_distribution = calc_card_color_distribution(self.playstyle)
         card_class_distribution = calc_card_class_distribution(self.playstyle)

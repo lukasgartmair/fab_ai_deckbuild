@@ -116,7 +116,7 @@ class Renderer:
         )
 
     def load_background(self):
-        self.background = pygame.image.load("images/backgrounds/background.png")
+        self.background = pygame.image.load("images/backgrounds/background_dark.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )
@@ -317,13 +317,14 @@ class Renderer:
                     self.playmat.positions.arsenal.x,
                     self.playmat.positions.arsenal.y,
                 )
+
             self.render_text(
                 str(self.engine.enemy.arsenal.get_length()),
                 self.playmat.positions.arsenal.x,
                 self.playmat.positions.arsenal.y,
             )
 
-        else:
+        elif self.engine.enemy.arsenal.is_empty() == True:
             self.render_playmat_card_spot(self.playmat.positions.arsenal)
 
     def render_hand(self):
