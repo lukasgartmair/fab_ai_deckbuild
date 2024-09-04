@@ -303,14 +303,15 @@ class Enemy:
         self.block.reset()
 
     def base_attack(self):
-        c = self.combat_chain.get_next_attacking_card()
-        self.played_cards.append(c)
+        self.combat_chain.print_combat_chain()
+        for c in self.combat_chain.get_next_link().play:
+            self.played_cards.append(c)
 
-        self.pitch_cards()
-        self.remove_played_cards()
-        self.resource_manager.use_floating_resources(c.cost)
-        self.action_point_manager.use_action_points()
-        self.action_point_manager.handle_keywords(c)
+            self.pitch_cards()
+            self.remove_played_cards()
+            self.resource_manager.use_floating_resources(c.cost)
+            self.action_point_manager.use_action_points()
+            self.action_point_manager.handle_keywords(c)
 
         self.sound.play_attack(c)
 

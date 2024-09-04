@@ -295,8 +295,6 @@ class Renderer:
 
     def render_arsenal(self):
         if self.engine.enemy.arsenal.is_empty() == False:
-            print("HERE")
-            print(self.engine.enemy.arsenal.state_machine.current_state)
             if (
                 self.engine.enemy.arsenal.state_machine.current_state
                 == self.engine.enemy.arsenal.state_machine.face_down
@@ -435,6 +433,22 @@ class Renderer:
                 playmat_position_obj.y + self.playmat.field_text_offset_y,
                 font=font_playmat,
             )
+
+    def render_end_of_chain_link(self):
+        playmat_position_obj = self.playmat.positions.combat_chain
+        pygame.draw.rect(
+            self.window,
+            color_palette.black,
+            pygame.Rect(
+                playmat_position_obj.x
+                + self.playmat.get_horizontal_spacing()
+                + card_width // 2,
+                playmat_position_obj.y - 25,
+                5,
+                card_height + 50,
+            ),
+            width=0,
+        )
 
     def render_equipment(self):
         playmat_position_obj = None

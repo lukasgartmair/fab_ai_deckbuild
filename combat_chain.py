@@ -14,7 +14,7 @@ from action_point_manager import ActionPointManager
 
 
 class ChainLink:
-    def __init__(self, play=None, reaction=None, pitch=None):
+    def __init__(self, play=[], reaction=[], pitch=[]):
         self.play = play
         self.reaction = reaction
         self.pitch = pitch
@@ -85,7 +85,7 @@ class CombatChain:
 
     def is_last_link(self, card):
         for key, link in self.chain.items():
-            if card == link.play:
+            if card in link.play:
                 if key == self.get_length():
                     return True
         return False
@@ -122,17 +122,17 @@ class CombatChain:
             print()
             print(key)
             print("play")
-            print(link.play.name)
+            for p in link.play:
+                print(p.name)
             print("pitch")
-            for pitch in link.pitch:
-                print(pitch.name)
+            for p in link.pitch:
+                print(p.name)
 
             print("current_iterator")
             print(self.iterator)
 
-    def get_next_attacking_card(self):
-        c = self.chain[self.iterator].play
-        return c
+    def get_next_link(self):
+        return self.chain[self.iterator]
 
     def update_playable_cards(self, cards_to_pitch):
         self.playable_cards = [
@@ -156,12 +156,18 @@ class CombatChain:
         ]
 
     def set_play(self, index, pitch=[]):
-        self.chain[index] = ChainLink(play=self.current_card, pitch=pitch)
+        self.chain[index] = ChainLink(play=[self.current_card], pitch=pitch)
         if self.current_card.once_per_turn == True:
             self.turn_bans.append(self.current_card)
 
     def calc_damage_output(self):
-        return sum([v.play.physical + v.play.arcane for v in self.chain.values()])
+        return sum(
+            [
+                sum([c.physical for c in link.play])
+                + sum([c.arcane for c in link.play])
+                for link in self.chain.values()
+            ]
+        )
 
     def apply_chain_restriction(self, combinations):
         valid_combinations = combinations
@@ -169,7 +175,7 @@ class CombatChain:
             if [p.card_type for p in combo][-1] == CardType.non_attack_action:
                 valid_combinations.remove(combo)
 
-            elif [p.card_type for p in combo][-1] == CardType.non_attack_action:
+            if [p.card_type for p in combo][0] == CardType.attack_reaction:
                 valid_combinations.remove(combo)
 
         return valid_combinations
@@ -206,9 +212,6 @@ class CombatChain:
         if len(self.playable_cards) > 0:
             return self.playable_cards.pop()
 
-    def get_next_play(self):
-        pass
-
     def calc_pitch_totals(self, possible_pitch_combinations):
         pitch_totals = {}
         for j, pi in enumerate(possible_pitch_combinations):
@@ -219,24 +222,25 @@ class CombatChain:
         return pitch.determine_pitch_combination(self.current_card.cost, pitch_totals)
 
     def assure_consistency(self):
-        if self.is_empty():
-            return False
-        if self.chain[len(self.chain) - 1].play.card_type == CardType.non_attack_action:
-            return False
+        # if self.is_empty():
+        #     return False
+        # if self.chain[len(self.chain) - 1].play.card_type == CardType.non_attack_action:
+        #     return False
 
-        if all(
-            [
-                True
-                if link.play.card_type
-                in [CardType.non_attack_action, CardType.attack_reaction]
-                else False
-                for link in self.chain.values()
-            ]
-        ):
-            return False
+        # if all(
+        #     [
+        #         True
+        #         if link.play.card_type
+        #         in [CardType.non_attack_action, CardType.attack_reaction]
+        #         else False
+        #         for link in self.chain.values()
+        #     ]
+        # ):
+        #     return False
 
-        else:
-            return True
+        # else:
+        #     return True
+        return True
 
     def calc_combat_chain(self):
         initial_length = len(self.playable_cards)

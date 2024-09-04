@@ -184,6 +184,12 @@ class NinjaBasic(Playstyle):
             "attack_reaction": 5,
             "defensive_reaction": 10,
         }
+        self.card_type_ratios = {
+            "non_attack_action": 0,
+            "attack_action": 50,
+            "attack_reaction": 50,
+            "defensive_reaction": 0,
+        }
 
         self.keywords = [Keyword.go_again, Keyword.combo]
         self.keyword_ratios = {"go_again": 70, "combo": 30}

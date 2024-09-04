@@ -48,7 +48,7 @@ class GameEngine:
             ]
         )
 
-        test_class = PlayerClass.illusionist
+        test_class = PlayerClass.ninja
 
         self.player_class = test_class
         self.apply_player_class()
