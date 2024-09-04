@@ -238,7 +238,7 @@ class Enemy:
         for h in self.hand:
             print(h.name)
         print("pitch")
-        for p in self.combat_chain.chain[self.combat_chain.iterator]["pitch"]:
+        for p in self.combat_chain.chain[self.combat_chain.iterator].pitch:
             print(p.name)
             self.pitch_card(p)
         print()

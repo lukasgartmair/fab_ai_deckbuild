@@ -13,6 +13,13 @@ from arsenal import Arsenal
 from action_point_manager import ActionPointManager
 
 
+class ChainLink:
+    def __init__(self, play=None, reaction=None, pitch=None):
+        self.play = play
+        self.reaction = reaction
+        self.pitch = pitch
+
+
 class CombatChain:
     def __init__(
         self,
@@ -42,10 +49,9 @@ class CombatChain:
         return len(self.chain)
 
     def move_reset(self):
-        self.chain = {}
+        self.clear_chain()
         self.current_card = None
         self.iterator = 0
-        self.chain = {}
         self.playable_cards = []
         self.pitch_bans = []
         self.valid_combinations = []
@@ -63,8 +69,6 @@ class CombatChain:
         self.chain = {}
 
     def iterator_in_chain(self):
-        # print(self.iterator)
-        # print(self.chain)
         if self.iterator in self.chain:
             return True
         else:
@@ -80,9 +84,9 @@ class CombatChain:
             return False
 
     def is_last_link(self, card):
-        for k, v in self.chain.items():
-            if card == v["play"]:
-                if k == len(self.chain):
+        for key, link in self.chain.items():
+            if card == link.play:
+                if key == self.get_length():
                     return True
         return False
 
@@ -114,20 +118,20 @@ class CombatChain:
     def print_combat_chain(self):
         print("COMBAT CHAIN")
         print("------------")
-        for k, v in self.chain.items():
+        for key, link in self.chain.items():
             print()
-            print(k)
+            print(key)
             print("play")
-            print(v["play"].name)
+            print(link.play.name)
             print("pitch")
-            for vi in v["pitch"]:
-                print(vi.name)
+            for pitch in link.pitch:
+                print(pitch.name)
 
             print("current_iterator")
             print(self.iterator)
 
     def get_next_attacking_card(self):
-        c = self.chain[self.iterator]["play"]
+        c = self.chain[self.iterator].play
         return c
 
     def update_playable_cards(self, cards_to_pitch):
@@ -152,15 +156,12 @@ class CombatChain:
         ]
 
     def set_play(self, index, pitch=[]):
-        self.chain[index] = {
-            "play": self.current_card,
-            "pitch": pitch,
-        }
+        self.chain[index] = ChainLink(play=self.current_card, pitch=pitch)
         if self.current_card.once_per_turn == True:
             self.turn_bans.append(self.current_card)
 
     def calc_damage_output(self):
-        return sum([v["play"].physical + v["play"].arcane for v in self.chain.values()])
+        return sum([v.play.physical + v.play.arcane for v in self.chain.values()])
 
     def apply_chain_restriction(self, combinations):
         valid_combinations = combinations
@@ -220,19 +221,16 @@ class CombatChain:
     def assure_consistency(self):
         if self.is_empty():
             return False
-        if (
-            self.chain[len(self.chain) - 1]["play"].card_type
-            == CardType.non_attack_action
-        ):
+        if self.chain[len(self.chain) - 1].play.card_type == CardType.non_attack_action:
             return False
 
         if all(
             [
                 True
-                if v["play"].card_type
+                if link.play.card_type
                 in [CardType.non_attack_action, CardType.attack_reaction]
                 else False
-                for v in self.chain.values()
+                for link in self.chain.values()
             ]
         ):
             return False

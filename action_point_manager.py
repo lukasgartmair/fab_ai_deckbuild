@@ -35,7 +35,7 @@ class ActionPointManager:
             if combat_chain.iterator > 0:
                 if (
                     Keyword.combo
-                    in combat_chain.chain[combat_chain.iterator - 1]["play"].keywords
+                    in combat_chain.chain[combat_chain.iterator - 1].play.keywords
                 ):
                     print("combo activated")
                     self.obtain_action_points()

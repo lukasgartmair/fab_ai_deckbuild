@@ -116,7 +116,7 @@ class Renderer:
         )
 
     def load_background(self):
-        self.background = pygame.image.load("images/backgrounds/background_dark.png")
+        self.background = pygame.image.load("images/backgrounds/background.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )

@@ -135,9 +135,8 @@ class Block:
             c
             for c in self.defensive_cards
             if (
-                c not in [cp["play"] for cp in self.enemy.combat_chain.chain.values()]
-                and c
-                not in [cp["pitch"] for cp in self.enemy.combat_chain.chain.values()]
+                c not in [cp.play for cp in self.enemy.combat_chain.chain.values()]
+                and c not in [cp.pitch for cp in self.enemy.combat_chain.chain.values()]
             )
         ]
 
