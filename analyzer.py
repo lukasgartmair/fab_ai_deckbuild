@@ -66,7 +66,7 @@ class GlobalAnalyzer:
         self.data[self.engine.level_manager.current_level]["turn_data"][
             self.engine.level_manager.turn_index
         ][self.engine.level_manager.move_index]["stance"] = copy.copy(
-            self.engine.enemy.stance.name
+            self.engine.enemy.stance_state_machine.stance.name
         )
 
         self.data[self.engine.level_manager.current_level]["turn_data"][

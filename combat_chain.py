@@ -283,43 +283,37 @@ class CombatChain:
         initial_list = combination.copy()
 
         virtual_chain_link = ChainLink()
-        dummy_combat_chain = self.create_virtual_combat_chain()
 
         index = 0
         for card in initial_list:
-            if card in dummy_combat_chain.playable_cards:
-                dummy_combat_chain.current_card = card
+            if card in self.playable_cards:
+                self.current_card = card
 
                 if card.cost > 0:
-                    cards_to_pitch = dummy_combat_chain.get_cards_to_pitch(
-                        dummy_combat_chain.current_card
-                    )
+                    cards_to_pitch = self.get_cards_to_pitch(self.current_card)
                     if len(cards_to_pitch) == 0:
                         break
                     else:
                         virtual_chain_link.set_play(
-                            index, dummy_combat_chain.current_card, cards_to_pitch
+                            index, self.current_card, cards_to_pitch
                         )
-                        dummy_combat_chain.remove_pitch_from_card_lists(cards_to_pitch)
+                        self.remove_pitch_from_card_lists(cards_to_pitch)
                         is_viable = True
-                        dummy_combat_chain.action_point_manager.use_action_points()
+                        self.action_point_manager.use_action_points()
                 else:
-                    virtual_chain_link.set_play(index, dummy_combat_chain.current_card)
+                    virtual_chain_link.set_play(index, self.current_card)
                     is_viable = True
-                    dummy_combat_chain.action_point_manager.use_action_points()
+                    self.action_point_manager.use_action_points()
 
-                dummy_combat_chain.action_point_manager.handle_keywords(
-                    dummy_combat_chain.current_card, combat_chain=dummy_combat_chain
+                self.action_point_manager.handle_keywords(
+                    self.current_card, combat_chain=self
                 )
 
-                dummy_combat_chain.remove_current_card_from_lists()
+                self.remove_current_card_from_lists()
 
-                print(dummy_combat_chain.action_point_manager.has_action_points_left())
+                print(self.action_point_manager.has_action_points_left())
 
-                if (
-                    dummy_combat_chain.action_point_manager.has_action_points_left()
-                    == False
-                ):
+                if self.action_point_manager.has_action_points_left() == False:
                     break
 
                 index += 1
@@ -327,31 +321,31 @@ class CombatChain:
             else:
                 is_viable = False
 
-        return is_viable, dummy_combat_chain, virtual_chain_link
+        return is_viable, virtual_chain_link
 
     def calc_chain_link(self, combination):
+        dummy_combat_chain = self.create_virtual_combat_chain()
         (
             link_is_viable,
-            dummy_combat_chain,
             virtual_chain_link,
-        ) = self.calc_if_chain_link_is_viable(combination)
+        ) = dummy_combat_chain.calc_if_chain_link_is_viable(combination)
 
         if link_is_viable == True:
             self = dummy_combat_chain
 
-        return virtual_chain_link
+        return link_is_viable, virtual_chain_link
 
     def calc_combat_chain(self):
         random.shuffle(self.valid_combinations)
         for j, vc in enumerate(self.valid_combinations):
-            virtual_chain_link = self.calc_chain_link(vc)
+            link_is_viable, virtual_chain_link = self.calc_chain_link(vc)
 
-            if virtual_chain_link is not None:
-                if virtual_chain_link.is_empty() == False:
-                    self.add_link(virtual_chain_link)
+            if link_is_viable == True:
+                self.add_link(virtual_chain_link)
 
-                    if self.action_point_manager.has_action_points_left() == False:
-                        break
+                print(self.action_point_manager.has_action_points_left())
+                if self.action_point_manager.has_action_points_left() == False:
+                    break
 
     def calc_combat_chains(self, n=1):
         calculated_chains = []
@@ -369,10 +363,10 @@ class CombatChain:
     def update_combat_chain(self):
         self.move_reset()
 
-        calculated_chains = self.calc_combat_chains(n=20)
+        calculated_chains = self.calc_combat_chains(n=1)
 
-        print("here")
-        print(len(calculated_chains))
+        # print("here")
+        # print(len(calculated_chains))
         for c in calculated_chains:
             if c.get_length() > 0:
                 print(c.get_length())

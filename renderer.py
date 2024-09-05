@@ -21,6 +21,7 @@ import PygameUtils as pu
 from playmat import Playmat
 from equipment import EquipmentType
 import image
+from stance import StanceStateMachine
 
 from settings import (
     playmat_grid as grid,
@@ -270,7 +271,8 @@ class Renderer:
         message = ""
         if (
             self.engine.enemy.player_class == PlayerClass.mechanologist
-            and self.engine.enemy.stance == Stance.attack
+            and self.engine.enemy.stance_state_machine.current_state
+            in [StanceStateMachine.attack, StanceStateMachine.attack_reaction]
         ):
             if self.engine.enemy.boost.activated == True:
                 message = "'BOOOOOST mechanic activated!'"
@@ -328,7 +330,8 @@ class Renderer:
 
     def render_hand(self):
         if (
-            self.engine.enemy.stance == Stance.attack
+            self.engine.enemy.stance_state_machine.current_state
+            in [StanceStateMachine.attack, StanceStateMachine.attack_reaction]
             and (
                 self.engine.enemy.combat_chain.is_empty()
                 and self.engine.level_manager.move_index == 0
@@ -472,7 +475,10 @@ class Renderer:
     def render_boost_counter(self):
         # print(self.engine.enemy.boost_counter)
         if self.engine.enemy.player_class == PlayerClass.mechanologist:
-            if self.engine.enemy.stance == Stance.attack:
+            if self.engine.enemy.stance_state_machine.current_state in [
+                StanceStateMachine.attack,
+                StanceStateMachine.attack_reaction,
+            ]:
                 self.render_text(
                     str(self.engine.enemy.boost.counter) + " boost counter",
                     grid.left_point(11),
@@ -731,16 +737,22 @@ class Renderer:
     def render_turn_text(self):
         color = None
 
-        if self.engine.enemy.stance == Stance.defend:
+        if self.engine.enemy.stance_state_machine.current_state in [
+            StanceStateMachine.defensive_reaction,
+            StanceStateMachine.defense,
+        ]:
             color = pygame.Color(color_palette.white)
 
         else:
             color = pygame.Color(color_palette.color2)
-
+        text = (
+            (self.engine.enemy.stance_state_machine.current_state.name).replace(
+                "_", " "
+            )
+            + " STEP"
+        ).upper()
         self.render_text(
-            "{}".format(self.engine.enemy.name)
-            + " is "
-            + (self.engine.enemy.stance.name + "ing").upper(),
+            text,
             grid.left_point(1),
             grid.top_point(0),
             font=font,

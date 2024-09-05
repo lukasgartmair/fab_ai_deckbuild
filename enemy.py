@@ -29,11 +29,7 @@ import image
 from action_point_manager import ActionPointManager
 from resource_manager import ResourceManager
 from arsenal import Arsenal
-
-
-class Stance(Enum):
-    defend = 0
-    attack = 1
+from stance import StanceStateMachine, Stance
 
 
 class Enemy:
@@ -52,7 +48,7 @@ class Enemy:
         #     self.stance = Stance.defend
         # else:
         #     self.stance = Stance.attack
-        self.stance = Stance.attack
+        self.stance_state_machine = StanceStateMachine()
 
         self.intellect = 4
         self.talent = random.choice(list(Talent))
@@ -130,19 +126,11 @@ class Enemy:
             self.arsenal.fill(c)
             self.hand.remove(c)
 
-    def change_stance(self):
-        if self.stance == Stance.defend:
-            self.stance = Stance.attack
-
-            self.sound.play_change_stance_to_attack()
-
-        elif self.stance == Stance.attack:
-            if self.arsenal.is_empty():
-                self.fill_arsenal()
-
-            self.stance = Stance.defend
-            self.check_if_in_survival_mode()
-            self.draw()
+    def switch_to_defense(self):
+        if self.arsenal.is_empty():
+            self.fill_arsenal()
+        self.check_if_in_survival_mode()
+        self.draw()
 
     def start_move(self):
         # self.combat_chain.update_combat_chain()
@@ -179,10 +167,20 @@ class Enemy:
 
         self.block.reset()
 
-        self.change_stance()
+        self.stance_state_machine.change_stance()
+
+        if self.stance_state_machine.stance == StanceStateMachine.defense:
+            self.switch_to_defense()
+
+    def check_if_further_attack_reaction_possible(self):
+        if any(
+            [True for c in self.hand if c.card_type == CardType.attack_reaction]
+            + [self.arsenal.is_attack_reaction()]
+        ):
+            return True
 
     def check_if_further_attack_possible(self):
-        self.combat_chain.print_combat_chain()
+        # self.combat_chain.print_combat_chain()
         if (
             self.combat_chain.is_empty()
             or self.combat_chain.end_reached()
@@ -193,6 +191,13 @@ class Enemy:
 
         else:
             # print("attack possible")
+            return True
+
+    def check_if_further_defensive_reaction_possible(self):
+        if any(
+            [True for c in self.hand if c.card_type == CardType.defensive_reaction]
+            + [self.arsenal.is_defensive_reaction()]
+        ):
             return True
 
     def check_if_further_defense_possible(self):
@@ -301,10 +306,16 @@ class Enemy:
         self.life_counter.calculate_life(player_attack, self.block)
         self.block.reset()
 
+    def perform_defensive_reaction(self):
+        print("defensive_reaction")
+
+    def perform_attack_reaction(self):
+        print("attack reaction")
+
     def base_attack(self):
         chain_link = self.combat_chain.get_next_link()
 
-        self.combat_chain.print_combat_chain()
+        # self.combat_chain.print_combat_chain()
         for k, c in chain_link.play.items():
             self.played_cards.append(c)
             self.pitch_cards()

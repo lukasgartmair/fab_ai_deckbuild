@@ -18,6 +18,7 @@ from playstyle import PlayerClass
 from mechanologist import Mechanologist
 from guardian import Guardian
 from ranger import Ranger
+from stance import StanceStateMachine
 
 
 class WinCondition(Enum):
@@ -33,27 +34,6 @@ class GameStateMachine(StateMachine):
     start_game = starting.to(playing)
     end_game = playing.to(ended)
     restart_game = ended.to(starting)
-
-
-class PlayStateMachine(StateMachine):
-    attack_step = State("attack_step", initial=True)
-    defense_step = State("defsense_step")
-    attack_reaction_step = State("attack_reaction_step")
-    defense_reaction_step = State("defense_reaction_step")
-
-    def __init__(self, stance):
-        self.stance = stance
-
-        if self.stance == Stance.defend:
-            self.defsense_step.initial = True
-            self.attack_step.initial = False
-
-        super(PlayStateMachine, self).__init__()
-
-    switch_to_attack = defense_reaction_step.to(attack_step)
-    switch_to_attack_reaction = attack_step.to(attack_reaction_step)
-    switch_to_defense = attack_reaction_step.to(defense_step)
-    switch_to_defensive_reaction = defense_step.to(defense_reaction_step)
 
 
 class GameEngine:
@@ -75,8 +55,6 @@ class GameEngine:
         self.apply_player_class()
 
         self.state_machine = GameStateMachine()
-
-        self.play_state_machine = PlayStateMachine(self.enemy.stance)
 
         self.level_manager = LevelManager(level=1)
         self.enemy.initialize_play()
@@ -140,38 +118,32 @@ class GameEngine:
 
         print("NEXT MOVE")
 
-        # if self.enemy.stance == Stance.defend:
-        #     if self.play_state_machine.current_state == PlayStateMachine.defense_step:
-        #         if self.enemy.check_if_further_defense_possible() == True:
-        #             self.enemy.sound.play_not_possible()
-        #         self.enemy.defend(player_attack)
-        #         self.finish_move(player_attack)
-        #     elif (
-        #         self.play_state_machine.current_state
-        #         == PlayStateMachine.defense_reaction_step
-        #     ):
-        #         if self.enemy.check_if_further_defense_possible() == True:
-        #             self.enemy.sound.play_not_possible()
-        #         self.enemy.defend(player_attack)
-        #         self.finish_move(player_attack)
-
-        # elif self.enemy.stance == Stance.attack:
-        #     if self.enemy.check_if_further_attack_possible() == True:
-        #         self.enemy.perform_attack()
-        #     else:
-        #         self.enemy.sound.play_not_possible()
-
-        if self.enemy.stance == Stance.defend:
-            if self.enemy.check_if_further_defense_possible() == True:
+        if self.enemy.stance_state_machine.current_state == StanceStateMachine.defense:
+            if self.enemy.check_if_further_defense_possible() == False:
                 self.enemy.sound.play_not_possible()
-
             self.enemy.defend(player_attack)
             self.finish_move(player_attack)
-
-        elif self.enemy.stance == Stance.attack:
-            if self.enemy.check_if_further_attack_possible() == True:
-                self.enemy.perform_attack()
+        elif (
+            self.enemy.stance_state_machine.current_state
+            == StanceStateMachine.defensive_reaction
+        ):
+            if self.enemy.check_if_further_defensive_reaction_possible() == False:
+                self.enemy.perform_defensive_reaction(player_attack)
             else:
                 self.enemy.sound.play_not_possible()
 
             self.finish_move(player_attack)
+
+        elif self.enemy.stance_state_machine.current_state == StanceStateMachine.attack:
+            if self.enemy.check_if_further_attack_possible() == True:
+                self.enemy.perform_attack()
+            else:
+                self.enemy.sound.play_not_possible()
+        elif (
+            self.enemy.stance_state_machine.current_state
+            == StanceStateMachine.attack_reaction
+        ):
+            if self.enemy.check_if_further_attack_reaction_possible() == True:
+                self.enemy.perform_attack()
+            else:
+                self.enemy.sound.play_not_possible()

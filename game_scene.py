@@ -14,6 +14,7 @@ from enemy import Stance
 from playstyle import PlayerClass
 from game import Game
 from sound import Sound
+from stance import StanceStateMachine
 
 
 class GameScene(SceneBase):
@@ -67,7 +68,10 @@ class GameScene(SceneBase):
                         self.engine.state_machine.current_state
                         == self.engine.state_machine.playing
                     ):
-                        if self.engine.enemy.stance == Stance.defend:
+                        if self.engine.enemy.stance_state_machine.current_state in [
+                            StanceStateMachine.defensive_reaction,
+                            StanceStateMachine.defense,
+                        ]:
                             for inp_box in self.renderer.input_boxes:
                                 if inp_box.has_text():
                                     self.engine.player_attack.set_values(inp_box)
@@ -130,7 +134,10 @@ class GameScene(SceneBase):
                     self.is_active = False
 
     def render_inputs(self):
-        if self.engine.enemy.stance == Stance.defend:
+        if self.engine.enemy.stance_state_machine.current_state in [
+            StanceStateMachine.defensive_reaction,
+            StanceStateMachine.defense,
+        ]:
             for inp_box in self.renderer.input_boxes:
                 inp_box.render()
 
