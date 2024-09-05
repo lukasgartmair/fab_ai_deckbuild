@@ -6,13 +6,19 @@ Created on Sun Sep  1 18:23:09 2024
 @author: lukasgartmair
 """
 from playstyle import CardType
-import numpy as np
-from utils import n_chance, get_combinations
+from utils import get_combinations
 import pitch
 from arsenal import Arsenal
 from action_point_manager import ActionPointManager
 import random
 import copy
+from enum import Enum
+
+
+class LinkType(Enum):
+    attack = 0
+    attack_reaction = 1
+
 
 attack_action_succession = [[1], [0, 1], [0, 0, 1], [0, 0, 0, 1]]
 weapon_succession = [[xj * 4 for xj in xi] for xi in attack_action_succession]
@@ -21,9 +27,9 @@ valid_card_type_successions = attack_action_succession + weapon_succession
 
 
 class ChainLink:
-    def __init__(self, play={}, reaction={}, pitch={}):
+    def __init__(self, play={}, pitch={}, link_type=LinkType.attack):
         self.play = play
-        self.reaction = reaction
+        self.link_type = link_type
         self.pitch = pitch
 
     def is_empty(self):
@@ -32,9 +38,6 @@ class ChainLink:
     def set_play(self, index, play, pitch=[]):
         self.play[index] = play
         self.pitch[index] = pitch
-
-    def set_reaction(self, index, reaction):
-        self.reaction[index] = reaction
 
 
 class CombatChain:
@@ -201,12 +204,11 @@ class CombatChain:
         )
 
     def apply_chain_restriction(self, combinations):
-        valid_combinations = combinations
-        for combo in combinations:
-            if [c.card_type.value for c in combo] not in valid_card_type_successions:
-                valid_combinations.remove(combo)
-
-        return valid_combinations
+        return [
+            combo
+            for combo in combinations
+            if [c.card_type.value for c in combo] in valid_card_type_successions
+        ]
 
     def get_valid_combinations(self, playable_cards):
         combinations = get_combinations(playable_cards)
@@ -282,6 +284,11 @@ class CombatChain:
         is_viable = False
         initial_list = combination.copy()
 
+        print("here")
+        print([c.card_type.value for c in combination])
+        print([c.card_type.value for c in combination] in valid_card_type_successions)
+        print()
+
         virtual_chain_link = ChainLink()
 
         index = 0
@@ -325,6 +332,7 @@ class CombatChain:
 
     def calc_chain_link(self, combination):
         dummy_combat_chain = self.create_virtual_combat_chain()
+
         (
             link_is_viable,
             virtual_chain_link,

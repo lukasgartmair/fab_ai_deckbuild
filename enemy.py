@@ -172,6 +172,9 @@ class Enemy:
         if self.stance_state_machine.stance == StanceStateMachine.defense:
             self.switch_to_defense()
 
+        if self.stance_state_machine.stance == StanceStateMachine.attack:
+            self.combat_chain.update_combat_chain()
+
     def check_if_further_attack_reaction_possible(self):
         if any(
             [True for c in self.hand if c.card_type == CardType.attack_reaction]

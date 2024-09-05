@@ -51,13 +51,16 @@ class TestMethods(unittest.TestCase):
         self.assertTrue(len(test_combat_chain.valid_combinations) > 0)
 
         test_combo = test_combat_chain.valid_combinations[0]
-        test_chain_link = test_combat_chain.calc_chain_link(test_combo)
+        is_viable, test_chain_link = test_combat_chain.calc_chain_link(test_combo)
+        print("test link")
         print(test_chain_link)
+        print(is_viable)
 
         test_combat_chain.print_combat_chain()
 
         test_combat_chain.add_link(test_chain_link)
         self.assertTrue(test_combat_chain.is_empty() == False)
+        print(test_combat_chain.chain)
         self.assertTrue(test_combat_chain.chain[0].play == test_chain_link.play)
 
         test_combat_chain = CombatChain(test_hand)
