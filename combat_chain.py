@@ -320,10 +320,10 @@ class CombatChain:
 
                 print(self.action_point_manager.has_action_points_left())
 
+                index += 1
+
                 if self.action_point_manager.has_action_points_left() == False:
                     break
-
-                index += 1
 
             else:
                 is_viable = False
@@ -331,7 +331,7 @@ class CombatChain:
         return is_viable, virtual_chain_link
 
     def calc_chain_link(self, combination):
-        dummy_combat_chain = self.create_virtual_combat_chain()
+        dummy_combat_chain = copy.copy(self)
 
         (
             link_is_viable,
