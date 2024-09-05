@@ -140,20 +140,33 @@ class GameEngine:
 
         print("NEXT MOVE")
 
+        # if self.enemy.stance == Stance.defend:
+        #     if self.play_state_machine.current_state == PlayStateMachine.defense_step:
+        #         if self.enemy.check_if_further_defense_possible() == True:
+        #             self.enemy.sound.play_not_possible()
+        #         self.enemy.defend(player_attack)
+        #         self.finish_move(player_attack)
+        #     elif (
+        #         self.play_state_machine.current_state
+        #         == PlayStateMachine.defense_reaction_step
+        #     ):
+        #         if self.enemy.check_if_further_defense_possible() == True:
+        #             self.enemy.sound.play_not_possible()
+        #         self.enemy.defend(player_attack)
+        #         self.finish_move(player_attack)
+
+        # elif self.enemy.stance == Stance.attack:
+        #     if self.enemy.check_if_further_attack_possible() == True:
+        #         self.enemy.perform_attack()
+        #     else:
+        #         self.enemy.sound.play_not_possible()
+
         if self.enemy.stance == Stance.defend:
-            if self.play_state_machine.current_state == PlayStateMachine.defense_step:
-                if self.enemy.check_if_further_defense_possible() == True:
-                    self.enemy.sound.play_not_possible()
-                self.enemy.defend(player_attack)
-                self.finish_move(player_attack)
-            elif (
-                self.play_state_machine.current_state
-                == PlayStateMachine.defense_reaction_step
-            ):
-                if self.enemy.check_if_further_defense_possible() == True:
-                    self.enemy.sound.play_not_possible()
-                self.enemy.defend(player_attack)
-                self.finish_move(player_attack)
+            if self.enemy.check_if_further_defense_possible() == True:
+                self.enemy.sound.play_not_possible()
+
+            self.enemy.defend(player_attack)
+            self.finish_move(player_attack)
 
         elif self.enemy.stance == Stance.attack:
             if self.enemy.check_if_further_attack_possible() == True:

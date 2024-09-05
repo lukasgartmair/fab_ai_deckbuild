@@ -31,8 +31,8 @@ class TestMethods(unittest.TestCase):
     def test_combat_chain(self):
         n_hand = 4
         test_hand = Deck(deck_size=n_hand).cards
-        for t in test_hand:
-            t.card_type = CardType.attack_action
+        # for t in test_hand:
+        #     t.card_type = CardType.attack_action
 
         test_combat_chain = CombatChain(test_hand)
         self.assertTrue(len(test_combat_chain.valid_combinations) > 0)
@@ -52,6 +52,9 @@ class TestMethods(unittest.TestCase):
 
         test_combo = test_combat_chain.valid_combinations[0]
         test_chain_link = test_combat_chain.calc_chain_link(test_combo)
+        print(test_chain_link)
+
+        test_combat_chain.print_combat_chain()
 
         test_combat_chain.add_link(test_chain_link)
         self.assertTrue(test_combat_chain.is_empty() == False)
