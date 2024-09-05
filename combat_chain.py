@@ -63,7 +63,7 @@ class CombatChain:
 
     def update_card_lists(self):
         self.pitch_bans = self.get_pitch_bans()
-        self.playable_cards = self.get_playable_cards()
+        self.playable_cards = self.get_attack_step_cards()
 
     def clear_chain(self):
         self.chain = {}
@@ -108,11 +108,18 @@ class CombatChain:
     def get_pitch_bans(self):
         return self.arsenal.get_arsenal() + self.weapons
 
-    def get_playable_cards(self):
+    def get_attack_step_cards(self):
         return [
             c
             for c in self.hand.copy() + self.arsenal.get_arsenal() + self.weapons
-            if c.card_type not in [CardType.defensive_reaction]
+            if c.card_type in [CardType.attack_action, CardType.non_attack_action]
+        ]
+
+    def get_reaction_step_cards(self):
+        return [
+            c
+            for c in self.hand.copy() + self.arsenal.get_arsenal() + self.weapons
+            if c.card_type == CardType.attack_reaction
         ]
 
     def print_combat_chain(self):

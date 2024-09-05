@@ -45,10 +45,8 @@ class Enemy:
         self.identity = FantasyIdentity(self.player_class)
         self.name = self.identity.name
         self.race = self.identity.race
-        self.image_path = (
-            "images/" + self.player_class.name + "/" + self.identity.image_number
-        )
-        self.image = image.load_image(self.image_path)
+        self.image_path = self.player_class.name + "/" + self.identity.image_number
+        self.image = image.get_image(self.image_path)
 
         # if n_chance(p=0.5):
         #     self.stance = Stance.defend

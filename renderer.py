@@ -20,6 +20,7 @@ from playstyle import PlayerClass, Talent
 import PygameUtils as pu
 from playmat import Playmat
 from equipment import EquipmentType
+import image
 
 from settings import (
     playmat_grid as grid,
@@ -79,7 +80,7 @@ class Renderer:
         self.background = None
         self.load_background()
 
-        self.card_back = pygame.image.load("images/card_backs/card_back.png")
+        self.card_back = image.get_image("/card_backs/card_back.png")
         self.card_back = pygame.transform.scale(
             self.card_back,
             (int(card_width), int(card_height)),
@@ -116,7 +117,7 @@ class Renderer:
         )
 
     def load_background(self):
-        self.background = pygame.image.load("images/backgrounds/background.png")
+        self.background = image.get_image("backgrounds/background.png")
         self.background = pygame.transform.smoothscale(
             self.background, self.window.get_size()
         )
@@ -155,7 +156,7 @@ class Renderer:
         self.window.blit(self.background, (0, 0))
 
     def render_end_background(self):
-        self.background_bw = pygame.image.load("images/backgrounds/background_bw.png")
+        self.background_bw = image.get_image("backgrounds/background_bw.png")
         self.window.blit(self.background_bw, (0, 0))
 
     def render_floating_resources(self):
@@ -747,7 +748,7 @@ class Renderer:
         )
 
     def render_win(self):
-        self.bg = pygame.image.load("images/backgrounds/background3.png")
+        self.bg = image.get_image("backgrounds/background3.png")
         self.bg = pygame.transform.smoothscale(self.bg, self.window.get_size())
         self.window.blit(self.bg, (0, 0))
 
@@ -769,7 +770,7 @@ class Renderer:
         self.render_enemy()
 
     def render_start_screen(self):
-        self.bg = pygame.image.load("images/backgrounds/background2.png")
+        self.bg = image.get_image("backgrounds/background2.png")
         self.bg = pygame.transform.smoothscale(self.bg, self.window.get_size())
         self.window.blit(self.bg, (0, 0))
 
