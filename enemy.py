@@ -252,7 +252,7 @@ class Enemy:
     def pitch_card(self, c):
         self.pitched_cards.append(c)
         self.resource_manager.pitch_floating_resources(c.pitch)
-        self.hand.remove(c)
+        # self.hand.remove(c)
 
     def print_cards(self):
         print("HAND")

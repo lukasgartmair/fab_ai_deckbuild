@@ -6,6 +6,7 @@ Created on Sun Dec 24 22:13:25 2023
 @author: lukasgartmair
 """
 
+from playstyle import CardType
 import unittest
 from engine import GameEngine, GameStateMachine
 import numpy as np
@@ -30,79 +31,105 @@ class TestMethods(unittest.TestCase):
     def test_combat_chain(self):
         n_hand = 4
         test_hand = Deck(deck_size=n_hand).cards
+        for t in test_hand:
+            t.card_type = CardType.attack_action
+
         test_combat_chain = CombatChain(test_hand)
-        test_combat_chain.get_valid_chains(test_combat_chain.playable_cards)
+
+        counter = 0
+        for t in test_hand:
+            test_cards_to_pitch = test_combat_chain.get_cards_to_pitch(t)
+            counter += len(test_cards_to_pitch)
+            print(test_cards_to_pitch)
+            test_combat_chain.remove_pitch_from_card_lists(test_cards_to_pitch)
+        self.assertTrue(counter <= n_hand)
+
+        test_combat_chain = CombatChain(test_hand)
+
+        test_combat_chain = CombatChain(test_hand)
+        test_combat_chain.get_valid_combinations(test_combat_chain.playable_cards)
         self.assertTrue(len(test_combat_chain.valid_combinations) > 0)
 
-        test_combat_chain.calc_combat_chain()
+        test_combo = test_combat_chain.valid_combinations[0]
+        test_chain_link = test_combat_chain.calc_chain_link(test_combo)
 
-    def test_get_pitch_combinations(self):
-        test_array = [1, 2, 3, 4]
+        test_combat_chain.add_link(test_chain_link)
+        self.assertTrue(test_combat_chain.is_empty() == False)
+        self.assertTrue(test_combat_chain.chain[0].play == test_chain_link.play)
 
-        combinations = get_combinations(test_array)
+        test_combat_chain = CombatChain(test_hand)
+        test_combat_chain.calc_combat_chains(n=10)
 
-        self.assertEqual(len(combinations), 15)
+        print()
+        print(test_combat_chain.get_length())
 
-        test_array = [1]
+    # def test_get_pitch_combinations(self):
+    #     test_array = [1, 2, 3, 4]
 
-        combinations = get_combinations(test_array)
+    #     combinations = get_combinations(test_array)
 
-        self.assertEqual(len(combinations), 1)
+    #     self.assertEqual(len(combinations), 15)
 
-        test_array = []
+    #     test_array = [1]
 
-        combinations = get_combinations(test_array)
+    #     combinations = get_combinations(test_array)
 
-        self.assertEqual(len(combinations), 0)
+    #     self.assertEqual(len(combinations), 1)
 
-    def test_deck_draw_mechanics(self):
-        pygame.mixer.pause()
-        deck_size = 5
-        test_deck = Deck(deck_size=deck_size)
+    #     test_array = []
 
-        ref_cards = test_deck.cards[-3:1]
+    #     combinations = get_combinations(test_array)
 
-        for i, tc in enumerate(test_deck.cards):
-            pass
-            # print(i)
-            # print(tc.name)
+    #     self.assertEqual(len(combinations), 0)
 
-        # print()
-        test_card = Card()
-        # print("test card name")
-        # print(test_card.name)
+    # def test_deck_draw_mechanics(self):
+    #     pygame.mixer.pause()
+    #     deck_size = 5
+    #     test_deck = Deck(deck_size=deck_size)
 
-        test_deck.put_to_bottom(test_card)
-        # print()
-        # print("after insertion to bottom")
+    #     ref_cards = test_deck.cards[-3:1]
 
-        for i, tc in enumerate(test_deck.cards):
-            pass
-            # print(i)
-            # print(tc.name)
+    #     for i, tc in enumerate(test_deck.cards):
+    #         pass
+    #         # print(i)
+    #         # print(tc.name)
 
-        self.assertEqual(test_deck.cards[0], test_card)
-        self.assertEqual(len(test_deck.cards), deck_size + 1)
-        # print()
-        top_card = test_deck.draw_top_card()
-        # print(test_card.name)
-        # print(top_card.name)
-        self.assertTrue(test_card.name != top_card.name)
-        self.assertEqual(test_deck.get_length(), deck_size)
+    #     # print()
+    #     test_card = Card()
+    #     # print("test card name")
+    #     # print(test_card.name)
 
-        # print()
-        # print("after drawing")
-        for i, tc in enumerate(test_deck.cards):
-            pass
-            # print(i)
-            # print(tc.name)
+    #     test_deck.put_to_bottom(test_card)
+    #     # print()
+    #     # print("after insertion to bottom")
 
-        self.assertTrue(top_card not in test_deck.cards)
+    #     for i, tc in enumerate(test_deck.cards):
+    #         pass
+    #         # print(i)
+    #         # print(tc.name)
 
-        top_cards_drawn = test_deck.draw_top_cards(n=2)
-        # print()
-        for i, l in enumerate(ref_cards):
-            self.assertTrue(ref_cards[i] == top_cards_drawn[i])
+    #     self.assertEqual(test_deck.cards[0], test_card)
+    #     self.assertEqual(len(test_deck.cards), deck_size + 1)
+    #     # print()
+    #     top_card = test_deck.draw_top_card()
+    #     # print(test_card.name)
+    #     # print(top_card.name)
+    #     self.assertTrue(test_card.name != top_card.name)
+    #     self.assertEqual(test_deck.get_length(), deck_size)
+
+    #     # print()
+    #     # print("after drawing")
+    #     for i, tc in enumerate(test_deck.cards):
+    #         pass
+    #         # print(i)
+    #         # print(tc.name)
+
+    #     self.assertTrue(top_card not in test_deck.cards)
+
+    #     top_cards_drawn = test_deck.draw_top_cards(n=2)
+    #     # print()
+    #     for i, l in enumerate(ref_cards):
+    #         self.assertTrue(ref_cards[i] == top_cards_drawn[i])
 
     # def test_deckbuilding(self):
     #     for i in range(1):

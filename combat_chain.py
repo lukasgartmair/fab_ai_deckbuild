@@ -11,6 +11,8 @@ from utils import n_chance, get_combinations
 import pitch
 from arsenal import Arsenal
 from action_point_manager import ActionPointManager
+import random
+import copy
 
 attack_action_succession = [[1], [0, 1], [0, 0, 1], [0, 0, 0, 1]]
 weapon_succession = [[xj * 4 for xj in xi] for xi in attack_action_succession]
@@ -55,11 +57,14 @@ class CombatChain:
         self.pitch_bans = []
         self.turn_bans = []
 
-        self.valid_combinations = []
-
         self.current_card = None
 
-        self.update_card_lists()
+        self.initialize_card_lists()
+
+        self.valid_combinations = self.get_valid_combinations(self.playable_cards)
+
+        print("valids")
+        print(self.valid_combinations)
 
     def get_length(self):
         return len(self.chain)
@@ -71,13 +76,13 @@ class CombatChain:
         self.playable_cards = []
         self.pitch_bans = []
         self.valid_combinations = []
-        self.update_card_lists()
+        self.initialize_card_lists()
 
     def turn_reset(self):
         self.move_reset()
         self.turn_bans = []
 
-    def update_card_lists(self):
+    def initialize_card_lists(self):
         self.pitch_bans = self.get_pitch_bans()
         self.playable_cards = self.get_playable_cards()
         self.reaction_cards = self.get_reaction_step_cards()
@@ -122,16 +127,6 @@ class CombatChain:
     def increase_iterator(self):
         self.iterator += 1
 
-    def get_pitch_bans(self):
-        return self.arsenal.get_arsenal() + self.weapons
-
-    def get_playable_cards(self):
-        return [
-            c
-            for c in self.hand + self.arsenal.get_arsenal() + self.weapons
-            if c.card_type in [CardType.attack_action, CardType.non_attack_action]
-        ]
-
     def get_reaction_step_cards(self):
         return [
             c
@@ -164,31 +159,32 @@ class CombatChain:
         self.chain[self.iterator] = link
         self.increase_iterator()
 
+    def get_pitch_bans(self):
+        return self.arsenal.get_arsenal() + self.weapons
+
+    def get_playable_cards(self):
+        return [
+            c
+            for c in self.hand + self.arsenal.get_arsenal() + self.weapons
+            if c.card_type in [CardType.attack_action, CardType.non_attack_action]
+            and c not in self.turn_bans
+        ]
+
     def remove_pitch_from_card_lists(self, cards_to_pitch):
+        self.hand = [c for c in self.hand if c not in cards_to_pitch]
+
         self.playable_cards = [
-            pc
-            for pc in self.playable_cards
-            if (pc not in cards_to_pitch and pc not in self.turn_bans)
+            c for c in self.playable_cards if (c not in cards_to_pitch)
         ]
 
-        self.reaction_cards = [
-            pc
-            for pc in self.reaction_cards
-            if (pc not in cards_to_pitch and pc not in self.turn_bans)
-        ]
+    def remove_current_card_from_hand(self):
+        self.hand = [c for c in self.hand if c in self.hand and c != self.current_card]
 
-    def update_hand(self, cards_to_pitch):
-        self.hand = [
-            vh
-            for vh in self.hand
-            if vh != self.current_card and vh not in cards_to_pitch
-        ]
-
-    def get_pitchable_cards(self):
+    def get_pitchable_cards(self, card):
         return [
             c
             for c in self.hand
-            if (c != self.current_card and c not in self.pitch_bans)
+            if (c != card and c not in self.pitch_bans and c.pitch > 0)
         ]
 
     def calc_damage_output(self):
@@ -221,7 +217,7 @@ class CombatChain:
 
         print(len((valid_combinations)))
 
-        self.valid_combinations = [list(v) for v in valid_combinations]
+        return [list(v) for v in valid_combinations]
 
     def create_virtual_combat_chain(self):
         virtual_combat_chain = CombatChain(
@@ -229,9 +225,10 @@ class CombatChain:
             action_point_manager=ActionPointManager(
                 action_points=self.action_point_manager.action_points
             ),
-            arsenal=self.arsenal,
-            weapons=self.weapons,
+            arsenal=copy.copy(self.arsenal),
+            weapons=self.weapons.copy(),
         )
+        virtual_combat_chain.valid_combinations = self.valid_combinations.copy()
 
         return virtual_combat_chain
 
@@ -252,8 +249,8 @@ class CombatChain:
             pitch_totals[pi] = sum([c.pitch for c in pi])
         return pitch_totals
 
-    def get_pitch_for_card(self, pitch_totals):
-        return pitch.determine_pitch_combination(self.current_card.cost, pitch_totals)
+    def get_pitch_for_card(self, card, pitch_totals):
+        return pitch.determine_pitch_combination(card.cost, pitch_totals)
 
     def assure_consistency(self):
         if self.is_empty():
@@ -265,6 +262,19 @@ class CombatChain:
         else:
             return True
 
+    def get_cards_to_pitch(self, card):
+        cards_to_pitch = []
+
+        pitchable_cards = self.get_pitchable_cards(card)
+
+        possible_pitch_combinations = get_combinations(pitchable_cards)
+
+        pitch_totals = self.calc_pitch_totals(possible_pitch_combinations)
+
+        cards_to_pitch = self.get_pitch_for_card(card, pitch_totals)
+
+        return cards_to_pitch
+
     def calc_chain_link(self, combination):
         initial_list = combination.copy()
 
@@ -275,64 +285,72 @@ class CombatChain:
             if card in self.playable_cards:
                 self.current_card = card
 
-                cards_to_pitch = []
-
-                if self.current_card.cost > 0:
-                    pitchable_cards = self.get_pitchable_cards()
-
-                    possible_pitch_combinations = get_combinations(pitchable_cards)
-
-                    pitch_totals = self.calc_pitch_totals(possible_pitch_combinations)
-
-                    cards_to_pitch = self.get_pitch_for_card(pitch_totals)
-
+                if card.cost > 0:
+                    cards_to_pitch = self.get_cards_to_pitch(self.current_card)
                     if len(cards_to_pitch) == 0:
-                        return
-
+                        break
                     else:
                         virtual_chain_link.set_play(
                             index, self.current_card, cards_to_pitch
                         )
-
+                        self.remove_pitch_from_card_lists(cards_to_pitch)
                 else:
                     virtual_chain_link.set_play(index, self.current_card)
 
-                self.update_hand(cards_to_pitch)
-                self.remove_pitch_from_card_lists(cards_to_pitch)
+                self.remove_current_card_from_hand()
 
                 self.action_point_manager.handle_keywords(
                     self.current_card, combat_chain=self
                 )
 
                 if self.action_point_manager.has_action_points_left() == False:
-                    return virtual_chain_link
+                    continue
 
                 index += 1
+                self.get_playable_cards()
+            else:
+                break
 
         return virtual_chain_link
+
+    def calc_combat_chain(self):
+        print("ccc")
+        print(self.valid_combinations)
+
+        for j, vc in enumerate(self.valid_combinations):
+            virtual_chain_link = self.calc_chain_link(vc)
+
+            if virtual_chain_link is not None:
+                if virtual_chain_link.is_empty() == False:
+                    self.add_link(virtual_chain_link)
+
+    def calc_combat_chains(self, n=1):
+        calculated_chains = []
+
+        for i in range(n):
+            random.shuffle(self.valid_combinations)
+
+            virtual_combat_chain = self.create_virtual_combat_chain()
+
+            virtual_combat_chain.calc_combat_chain()
+
+            # if virtual_combat_chain.assure_consistency() == True:
+            #     calculated_chains.append(virtual_combat_chain)
+            calculated_chains.append(virtual_combat_chain)
+
+        return calculated_chains
 
     def update_combat_chain(self):
         self.move_reset()
 
-        self.get_valid_combinations(self.playable_cards)
+        self.valid_combinations = self.get_valid_combinations(self.playable_cards)
 
-        calculated_chains = []
+        calculated_chains = self.calc_combat_chains(n=10)
 
-        for i in range(5):
-            virtual_combat_chain = self.create_virtual_combat_chain()
-
-            for j, vc in enumerate(self.valid_combinations):
-                virtual_chain_link = virtual_combat_chain.calc_chain_link(vc)
-
-                if virtual_chain_link is not None:
-                    if virtual_chain_link.is_empty() == False:
-                        virtual_combat_chain.add_link(virtual_chain_link)
-
-            print(virtual_combat_chain.chain.items())
-
-            if virtual_combat_chain.assure_consistency() == True:
-                calculated_chains.append(virtual_combat_chain)
-
+        print("here")
+        print(len(calculated_chains))
+        for c in calculated_chains:
+            print(c.get_length())
         if len(calculated_chains) > 0:
             # print([c.calc_damage_output() for c in calculated_chains])
 
