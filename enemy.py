@@ -236,9 +236,10 @@ class Enemy:
         for h in self.hand:
             print(h.name)
         print("pitch")
-        for p in self.combat_chain.chain[self.combat_chain.iterator].pitch:
-            print(p.name)
-            self.pitch_card(p)
+        for k, p in self.combat_chain.chain[self.combat_chain.iterator].pitch.items():
+            for v in p:
+                print(v.name)
+                self.pitch_card(v)
         print()
 
     def remove_played_cards(self):
@@ -301,10 +302,11 @@ class Enemy:
         self.block.reset()
 
     def base_attack(self):
-        self.combat_chain.print_combat_chain()
-        for c in self.combat_chain.get_next_link().play:
-            self.played_cards.append(c)
+        chain_link = self.combat_chain.get_next_link()
 
+        self.combat_chain.print_combat_chain()
+        for k, c in chain_link.play.items():
+            self.played_cards.append(c)
             self.pitch_cards()
             self.remove_played_cards()
             self.resource_manager.use_floating_resources(c.cost)
@@ -326,6 +328,3 @@ class Enemy:
             self.class_specific_helper_1(c)
 
             self.combat_chain.increase_iterator()
-
-            if c.card_type == CardType.non_attack_action:
-                self.perform_attack()

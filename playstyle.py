@@ -185,9 +185,9 @@ class NinjaBasic(Playstyle):
             "defensive_reaction": 10,
         }
         self.card_type_ratios = {
-            "non_attack_action": 0,
+            "non_attack_action": 50,
             "attack_action": 50,
-            "attack_reaction": 50,
+            "attack_reaction": 0,
             "defensive_reaction": 0,
         }
 
