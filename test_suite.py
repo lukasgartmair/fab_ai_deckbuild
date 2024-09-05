@@ -35,12 +35,12 @@ class TestMethods(unittest.TestCase):
             t.card_type = CardType.attack_action
 
         test_combat_chain = CombatChain(test_hand)
+        self.assertTrue(len(test_combat_chain.valid_combinations) > 0)
 
         counter = 0
         for t in test_hand:
             test_cards_to_pitch = test_combat_chain.get_cards_to_pitch(t)
             counter += len(test_cards_to_pitch)
-            print(test_cards_to_pitch)
             test_combat_chain.remove_pitch_from_card_lists(test_cards_to_pitch)
         self.assertTrue(counter <= n_hand)
 
@@ -58,7 +58,11 @@ class TestMethods(unittest.TestCase):
         self.assertTrue(test_combat_chain.chain[0].play == test_chain_link.play)
 
         test_combat_chain = CombatChain(test_hand)
-        test_combat_chain.calc_combat_chains(n=10)
+        test_combat_chain.calc_combat_chains(n=1)
+
+        test_combat_chain.update_combat_chain()
+
+        print(test_combat_chain.chain)
 
         print()
         print(test_combat_chain.get_length())

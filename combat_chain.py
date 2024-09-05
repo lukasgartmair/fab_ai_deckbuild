@@ -63,9 +63,6 @@ class CombatChain:
 
         self.valid_combinations = self.get_valid_combinations(self.playable_cards)
 
-        print("valids")
-        print(self.valid_combinations)
-
     def get_length(self):
         return len(self.chain)
 
@@ -314,9 +311,6 @@ class CombatChain:
         return virtual_chain_link
 
     def calc_combat_chain(self):
-        print("ccc")
-        print(self.valid_combinations)
-
         for j, vc in enumerate(self.valid_combinations):
             virtual_chain_link = self.calc_chain_link(vc)
 
