@@ -6,7 +6,7 @@ Created on Sun Sep  1 18:23:09 2024
 @author: lukasgartmair
 """
 from playstyle import CardType
-from utils import get_combinations
+from utils import get_permutations
 import pitch
 from arsenal import Arsenal
 from action_point_manager import ActionPointManager
@@ -20,8 +20,8 @@ class LinkType(Enum):
     attack_reaction = 1
 
 
-attack_action_succession = [[1], [0, 1], [0, 0, 1], [0, 0, 0, 1]]
-weapon_succession = [[xj * 4 for xj in xi] for xi in attack_action_succession]
+attack_action_succession = [[1], [2, 1], [2, 2, 1], [2, 2, 2, 1]]
+weapon_succession = [[4], [2, 4], [2, 2, 4], [2, 2, 2, 4]]
 
 valid_card_type_successions = attack_action_succession + weapon_succession
 

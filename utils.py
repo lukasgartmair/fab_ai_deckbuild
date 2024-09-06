@@ -19,15 +19,15 @@ def n_chance(p=0.85):
         return False
 
 
-def get_combinations(array):
-    combinations = []
+def get_permutations(array):
+    permutations = []
     array_copy = array.copy()
     if len(array_copy) > 0:
         for i in range(len(array) + 1):
-            combos = itertools.combinations(array_copy, i)
+            combos = itertools.permutations(array_copy, r=i)
             for c in combos:
-                combinations.append(c)
-    return combinations[1:]
+                permutations.append(c)
+    return permutations[1:]
 
 
 def shift_list(a):

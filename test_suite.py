@@ -15,9 +15,10 @@ import random
 from modifiers import Modifiers
 from deck import Deck
 from card import Card
-from utils import get_combinations
+from utils import get_permutations
 import pygame
 from combat_chain import CombatChain
+from combat_chain_new_implementation import ChainLink, CombatChain
 
 n_runs = 10
 n_turns = 5
@@ -28,50 +29,83 @@ class TestMethods(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_combat_chain(self):
+    def test_combat_chain_new(self):
+        test_chain_link = ChainLink()
+        self.assertTrue(test_chain_link.is_empty() == True)
+
         n_hand = 4
         test_hand = Deck(deck_size=n_hand).cards
-        # for t in test_hand:
-        #     t.card_type = CardType.attack_action
-
-        test_combat_chain = CombatChain(test_hand)
-        self.assertTrue(len(test_combat_chain.valid_combinations) > 0)
-
-        counter = 0
         for t in test_hand:
-            test_cards_to_pitch = test_combat_chain.get_cards_to_pitch(t)
-            counter += len(test_cards_to_pitch)
-            test_combat_chain.remove_pitch_from_card_lists(test_cards_to_pitch)
-        self.assertTrue(counter <= n_hand)
+            t.card_type = CardType.attack_action
 
-        test_combat_chain = CombatChain(test_hand)
+        combinations = get_permutations(test_hand)
+        print(len(combinations))
+        self.assertTrue(len(combinations) == 64)
 
-        test_combat_chain = CombatChain(test_hand)
-        test_combat_chain.get_valid_combinations(test_combat_chain.playable_cards)
-        self.assertTrue(len(test_combat_chain.valid_combinations) > 0)
+        test_combat_chain = CombatChain()
 
-        test_combo = test_combat_chain.valid_combinations[0]
-        is_viable, test_chain_link = test_combat_chain.calc_chain_link(test_combo)
-        print("test link")
-        print(test_chain_link)
-        print(is_viable)
+        valid_combinations = test_combat_chain.apply_succesion_restrictions(test_hand)
 
-        test_combat_chain.print_combat_chain()
+        print(len(valid_combinations))
 
-        test_combat_chain.add_link(test_chain_link)
-        self.assertTrue(test_combat_chain.is_empty() == False)
-        print(test_combat_chain.chain)
-        self.assertTrue(test_combat_chain.chain[0].play == test_chain_link.play)
+        self.assertTrue(len(valid_combinations) == 4)
 
-        test_combat_chain = CombatChain(test_hand)
-        test_combat_chain.calc_combat_chains(n=1)
+        test_hand[-1].card_type = CardType.attack_reaction
 
-        test_combat_chain.update_combat_chain()
+        valid_combinations = test_combat_chain.apply_succesion_restrictions(test_hand)
+        print(valid_combinations)
+        self.assertTrue(len(valid_combinations) == 6)
 
-        print(test_combat_chain.chain)
+        # test_hand[-2].card_type = CardType.attack_reaction
 
-        print()
-        print(test_combat_chain.get_length())
+        # valid_combinations = test_combat_chain.apply_succesion_restrictions(test_hand)
+
+        # self.assertTrue(len(valid_combinations) == 3)
+
+    # def test_combat_chain(self):
+    #     n_hand = 4
+    #     test_hand = Deck(deck_size=n_hand).cards
+    #     # for t in test_hand:
+    #     #     t.card_type = CardType.attack_action
+
+    #     test_combat_chain = CombatChain(test_hand)
+    #     self.assertTrue(len(test_combat_chain.valid_combinations) > 0)
+
+    #     counter = 0
+    #     for t in test_hand:
+    #         test_cards_to_pitch = test_combat_chain.get_cards_to_pitch(t)
+    #         counter += len(test_cards_to_pitch)
+    #         test_combat_chain.remove_pitch_from_card_lists(test_cards_to_pitch)
+    #     self.assertTrue(counter <= n_hand)
+
+    #     test_combat_chain = CombatChain(test_hand)
+
+    #     test_combat_chain = CombatChain(test_hand)
+    #     test_combat_chain.get_valid_combinations(test_combat_chain.playable_cards)
+    #     self.assertTrue(len(test_combat_chain.valid_combinations) > 0)
+
+    #     test_combo = test_combat_chain.valid_combinations[0]
+    #     is_viable, test_chain_link = test_combat_chain.calc_chain_link(test_combo)
+    #     print("test link")
+    #     print(test_chain_link)
+    #     print(is_viable)
+
+    #     test_combat_chain.print_combat_chain()
+
+    #     test_combat_chain.add_link(test_chain_link)
+    #     self.assertTrue(test_combat_chain.is_empty() == False)
+    #     print(test_combat_chain.chain)
+    #     self.assertTrue(test_combat_chain.chain[0].play == test_chain_link.play)
+
+    #     test_combat_chain = CombatChain(test_hand)
+    #     test_combat_chain.calc_combat_chains(n=1)
+
+    #     test_combat_chain.update_combat_chain()
+
+    #     print(test_combat_chain.chain)
+
+    #     print()
+    #     print(test_combat_chain.get_length())
 
     # def test_get_pitch_combinations(self):
     #     test_array = [1, 2, 3, 4]
