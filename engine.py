@@ -79,6 +79,22 @@ class GameEngine:
         self.analyzer.write_move_data(player_attack)
         self.level_manager.advandce_move()
 
+    def trigger_stance_switch(self):
+        self.enemy.stance_state_machine.change_stance()
+
+        print("CURRENT STRATE")
+        print(self.enemy.stance_state_machine.current_state)
+
+        match self.enemy.stance_state_machine.current_state:
+            case self.enemy.stance_state_machine.current_state if self.enemy.stance_state_machine.current_state == self.enemy.stance_state_machine.defense:
+                self.finish_turn()
+
+            case self.enemy.stance_state_machine.current_state if self.enemy.stance_state_machine.current_state == self.enemy.stance_state_machine.attack:
+                self.enemy.switch_to_offense()
+
+            case _:
+                pass
+
     def finish_turn(self):
         self.enemy.finish_turn()
         self.level_manager.advandce_turn()
@@ -118,32 +134,31 @@ class GameEngine:
 
         print("NEXT MOVE")
 
-        if self.enemy.stance_state_machine.current_state == StanceStateMachine.defense:
-            if self.enemy.check_if_further_defense_possible() == False:
-                self.enemy.sound.play_not_possible()
-            self.enemy.defend(player_attack)
-            self.finish_move(player_attack)
-        elif (
-            self.enemy.stance_state_machine.current_state
-            == StanceStateMachine.defensive_reaction
-        ):
-            if self.enemy.check_if_further_defensive_reaction_possible() == False:
-                self.enemy.perform_defensive_reaction(player_attack)
-            else:
-                self.enemy.sound.play_not_possible()
+        current_state = self.enemy.stance_state_machine.current_state
+        match current_state:
+            case current_state if current_state == self.enemy.stance_state_machine.defense:
+                if self.enemy.check_if_further_defense_possible() == False:
+                    self.enemy.sound.play_not_possible()
+                self.enemy.defend(player_attack)
+                self.finish_move(player_attack)
+            case current_state if current_state == self.enemy.stance_state_machine.defensive_reaction:
+                if self.enemy.check_if_further_defensive_reaction_possible() == False:
+                    self.enemy.perform_defensive_reaction(player_attack)
+                else:
+                    self.enemy.sound.play_not_possible()
 
-            self.finish_move(player_attack)
+                self.finish_move(player_attack)
 
-        elif self.enemy.stance_state_machine.current_state == StanceStateMachine.attack:
-            if self.enemy.check_if_further_attack_possible() == True:
-                self.enemy.perform_attack()
-            else:
-                self.enemy.sound.play_not_possible()
-        elif (
-            self.enemy.stance_state_machine.current_state
-            == StanceStateMachine.attack_reaction
-        ):
-            if self.enemy.check_if_further_attack_reaction_possible() == True:
-                self.enemy.perform_attack()
-            else:
-                self.enemy.sound.play_not_possible()
+            case current_state if current_state == self.enemy.stance_state_machine.attack:
+                if self.enemy.check_if_further_attack_possible() == True:
+                    self.enemy.perform_attack()
+                else:
+                    self.enemy.sound.play_not_possible()
+
+            case current_state if current_state == self.enemy.stance_state_machine.attack_reaction:
+                if self.enemy.check_if_further_attack_reaction_possible() == True:
+                    self.enemy.perform_attack()
+                else:
+                    self.enemy.sound.play_not_possible()
+
+        self.level_manager.move_index += 1

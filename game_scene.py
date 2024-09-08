@@ -96,7 +96,7 @@ class GameScene(SceneBase):
                         self.engine.state_machine.current_state
                         == self.engine.state_machine.playing
                     ):
-                        self.engine.finish_turn()
+                        self.engine.trigger_stance_switch()
 
                         for inp_box in self.renderer.input_boxes:
                             inp_box.reset()

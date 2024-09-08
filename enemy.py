@@ -131,14 +131,18 @@ class Enemy:
         self.check_if_in_survival_mode()
         self.draw()
 
+    def switch_to_offense(self):
+        self.played_cards = []
+        self.pitched_cards = []
+
     def start_move(self):
-        # self.combat_chain.update_combat_chain()
-        pass
+        self.combat_chain.update_combat_chain()
 
     def finish_move(self):
         pass
 
     def start_turn(self):
+        print("started turn")
         self.combat_chain.update_combat_chain()
 
     def finish_turn(self):
@@ -166,13 +170,8 @@ class Enemy:
 
         self.block.reset()
 
-        self.stance_state_machine.change_stance()
-
-        if self.stance_state_machine.stance == StanceStateMachine.defense:
-            self.switch_to_defense()
-
-        if self.stance_state_machine.stance == StanceStateMachine.attack:
-            self.combat_chain.update_combat_chain()
+        print("DEFENSE RECOGNIZED")
+        self.switch_to_defense()
 
     def check_if_further_attack_reaction_possible(self):
         if any(
@@ -237,29 +236,26 @@ class Enemy:
         if card in self.hand:
             self.hand.remove(card)
 
-    def pitch_cards(self):
+    def print_cards(self, c):
         print("-----------------")
         print("hand")
         for h in self.hand:
             print(h.name)
         print("pitch")
-        for k, p in self.combat_chain.chain[self.combat_chain.iterator].pitch.items():
-            for v in p:
-                print(v.name)
-                self.pitch_card(v)
+        for p in self.pitch_cards:
+            print(p.name)
         print()
 
     def remove_played_cards(self):
         for p in self.played_cards:
-            if p in self.hand:
-                self.remove_card_from_hand(p)
+            self.remove_card_from_hand(p)
             if self.arsenal.is_in_arsenal(p):
                 self.arsenal.remove_card(p)
 
     def pitch_card(self, c):
         self.pitched_cards.append(c)
         self.resource_manager.pitch_floating_resources(c.pitch)
-        # self.hand.remove(c)
+        self.hand.remove(c)
 
     def print_cards(self):
         print("HAND")
@@ -317,16 +313,20 @@ class Enemy:
     def base_attack(self):
         chain_link = self.combat_chain.get_next_link()
 
-        # self.combat_chain.print_combat_chain()
-        for k, c in chain_link.play.items():
-            self.played_cards.append(c)
-            self.pitch_cards()
-            self.remove_played_cards()
-            self.resource_manager.use_floating_resources(c.cost)
-            self.action_point_manager.use_action_points()
-            self.action_point_manager.handle_keywords(c)
+        for k, c in chain_link.steps.items():
+            self.played_cards.append(c.play)
+            self.resource_manager.use_floating_resources(c.play.cost)
+            self.action_point_manager.handle_keywords(c.play)
 
-        self.sound.play_attack(c)
+            self.sound.play_attack(c.play)
+
+            for p in c.pitch:
+                self.pitch_card(p)
+
+            self.action_point_manager.use_action_points()
+
+            self.print_cards()
+            self.remove_played_cards()
 
         return c
 

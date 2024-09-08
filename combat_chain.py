@@ -27,18 +27,36 @@ weapon_succession = [[4], [2, 4], [2, 2, 4], [2, 2, 2, 4]]
 valid_card_type_successions = attack_action_succession + weapon_succession
 
 
-class ChainLink:
-    def __init__(self, play={}, pitch={}, link_type=LinkType.attack):
+class ChainLinkStep:
+    def __init__(self, index, play=None, pitch=[]):
+        self.index = index
         self.play = play
-        self.link_type = link_type
         self.pitch = pitch
+
+
+class ChainLink:
+    def __init__(self, link_type=LinkType.attack):
+        self.steps = {}
+        self.link_type = link_type
 
     def is_empty(self):
         return True if len(self.play) == 0 else False
 
-    def set_play(self, index, play, pitch=[]):
-        self.play[index] = play
-        self.pitch[index] = pitch
+    def set_play(self, index, card, pitch=[]):
+        self.steps[index] = ChainLinkStep(index, card, pitch)
+
+    def get_play_cards(self):
+        cards = []
+        for k, v in self.steps.items():
+            cards.append(v.play)
+        return cards
+
+    def get_pitch_cards(self):
+        cards = []
+        for k, v in self.steps.items():
+            for c in v.pitch:
+                cards.append(c.pitch)
+        return cards
 
 
 class CombatChain:
@@ -118,7 +136,10 @@ class CombatChain:
         return [c for c in self.hand if c.pitch > 0]
 
     def get_next_link(self):
-        return self.chain[self.iterator]
+        if self.is_empty() == False:
+            return self.chain[self.iterator]
+        else:
+            return None
 
     def get_pitch_for_card(self, card, pitch_totals):
         return determine_pitch_combination(card.cost, pitch_totals)
@@ -137,8 +158,8 @@ class CombatChain:
     def calc_damage_output(self, chain):
         return sum(
             [
-                sum([c.physical for c in link_dict["chain_link"].play.values()])
-                + sum([c.arcane for c in link_dict["chain_link"].play.values()])
+                sum([c.physical for c in link_dict["chain_link"].get_play_cards()])
+                + sum([c.arcane for c in link_dict["chain_link"].get_play_cards()])
                 for link_dict in chain
             ]
         )
@@ -150,13 +171,14 @@ class CombatChain:
         for key, link in self.chain.items():
             print()
             print(key)
-            print("play")
-            for k, p in link.play.items():
-                print(p.name)
-            print("pitch")
-            for k, p in link.pitch.items():
-                for pi in p:
-                    print(pi.name)
+
+            for k, p in link.steps.items():
+                print("play")
+
+                print(p.play.name)
+                print("pitch")
+                for pj in p.pitch:
+                    print(pj.name)
 
             print("current_iterator")
             print(self.iterator)
@@ -310,9 +332,11 @@ class CombatChain:
     ):
         link_cards_still_available = False
 
-        if set(link_dict["chain_link"].play).issubset(
+        if set(link_dict["chain_link"].get_play_cards()).issubset(
             virtual_playable_cards_pool
-        ) and set(link_dict["chain_link"].pitch).issubset(virtual_pitchable_cards_pool):
+        ) and set(link_dict["chain_link"].get_pitch_cards()).issubset(
+            virtual_pitchable_cards_pool
+        ):
             link_cards_still_available = True
 
         return link_cards_still_available
@@ -345,12 +369,12 @@ class CombatChain:
             virtual_playable_cards_pool = [
                 c
                 for c in virtual_playable_cards_pool
-                if c not in pcl_dict["chain_link"].play
+                if c not in pcl_dict["chain_link"].get_play_cards()
             ]
             virtual_pitchable_cards_pool = [
                 c
                 for c in virtual_pitchable_cards_pool
-                if c not in pcl_dict["chain_link"].pitch
+                if c not in pcl_dict["chain_link"].get_pitch_cards()
             ]
 
             for pcl_2_dict in possible_chain_links:
@@ -367,12 +391,12 @@ class CombatChain:
                         virtual_playable_cards_pool = [
                             c
                             for c in virtual_playable_cards_pool
-                            if c not in pcl_2_dict["chain_link"].play
+                            if c not in pcl_2_dict["chain_link"].get_play_cards()
                         ]
                         virtual_pitchable_cards_pool = [
                             c
                             for c in virtual_pitchable_cards_pool
-                            if c not in pcl_2_dict["chain_link"].pitch
+                            if c not in pcl_2_dict["chain_link"].get_pitch_cards
                         ]
 
             calculated_chains.append(virtual_chain)

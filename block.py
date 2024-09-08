@@ -131,19 +131,24 @@ class Block:
             self.physical_block_cards.append(c)
 
     def get_cards_not_intended_to_be_used_in_combat_chain(self):
-        unused_cards = [
-            c
-            for c in self.defensive_cards
-            if (
-                c not in [cp.play for cp in self.enemy.combat_chain.chain.values()]
-                and c not in [cp.pitch for cp in self.enemy.combat_chain.chain.values()]
-            )
-        ]
+        unused_cards = []
+        if self.enemy.combat_chain.get_next_link() is not None:
+            unused_cards = [
+                c
+                for c in self.defensive_cards
+                if (
+                    c
+                    not in (
+                        self.enemy.combat_chain.get_next_link().get_play_cards()
+                        + self.enemy.combat_chain.get_next_link().get_pitch_cards()
+                    )
+                )
+            ]
 
-        # put defensive reactions in front
-        unused_cards = sorted(
-            unused_cards, key=lambda x: x.card_type.value, reverse=True
-        )
+            # put defensive reactions in front
+            unused_cards = sorted(
+                unused_cards, key=lambda x: x.card_type.value, reverse=True
+            )
         return unused_cards
 
     # def defend_arcane_with_equipment(self, player_attack):
