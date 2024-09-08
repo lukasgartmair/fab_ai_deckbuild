@@ -16,28 +16,53 @@ from playstyle import CardType
 from arsenal import Arsenal
 
 
-class LinkType(Enum):
-    attack = 0
-    attack_reaction = 1
+class StepType(Enum):
+    attack = 1
+    attack_reaction = 2
 
 
 attack_action_succession = [[1], [0, 1], [0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 0, 1]]
 weapon_succession = [[4], [0, 4], [0, 0, 4], [0, 0, 0, 4], [0, 0, 0, 0, 4]]
 
+b_temp = []
+b_temp_2 = []
+for i in range(4):
+    if i > 0:
+        for a in attack_action_succession:
+            b = a + [2] * i
+            b_temp.append(b)
+
+        for a in weapon_succession:
+            b = a + [2] * i
+            b_temp_2.append(b)
+
+attack_action_succession += b_temp
+weapon_succession += b_temp_2
+
 valid_card_type_successions = attack_action_succession + weapon_succession
+
+print(valid_card_type_successions)
 
 
 class ChainLinkStep:
-    def __init__(self, index, play=None, pitch=[]):
+    def __init__(self, index, play=None, pitch=[], step_type=StepType.attack):
         self.index = index
         self.play = play
         self.pitch = pitch
+        self.step_type = step_type
+        if self.play.card_type in [CardType.attack_reaction]:
+            self.step_type = StepType.attack_reaction
+        self.done = False
+
+    def mark_done(self):
+        self.done = True
 
 
 class ChainLink:
-    def __init__(self, link_type=LinkType.attack):
+    def __init__(
+        self,
+    ):
         self.steps = {}
-        self.link_type = link_type
 
     def is_empty(self):
         return True if len(self.play) == 0 else False
@@ -57,6 +82,22 @@ class ChainLink:
             for c in v.pitch:
                 cards.append(c.pitch)
         return cards
+
+    def has_attack_reactions_left(self):
+        step_types = [s.step_type for s in self.steps.values()]
+        step_types_reaction = [
+            True if s == StepType.attack_reaction else False for s in step_types
+        ]
+        if any(step_types_reaction):
+            return True
+        else:
+            return False
+
+    def end_reached(self):
+        if all([s.done for s in self.steps.values()]):
+            return True
+        else:
+            return False
 
 
 class CombatChain:
@@ -128,7 +169,12 @@ class CombatChain:
         return [
             c
             for c in self.hand + self.arsenal.get_arsenal() + self.weapons
-            if c.card_type in [CardType.attack_action, CardType.non_attack_action]
+            if c.card_type
+            in [
+                CardType.attack_action,
+                CardType.non_attack_action,
+                CardType.attack_reaction,
+            ]
             and c not in self.turn_bans
         ]
 

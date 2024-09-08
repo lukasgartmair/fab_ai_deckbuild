@@ -157,7 +157,7 @@ class GameEngine:
 
             case current_state if current_state == self.enemy.stance_state_machine.attack_reaction:
                 if self.enemy.check_if_further_attack_reaction_possible() == True:
-                    self.enemy.perform_attack()
+                    self.enemy.perform_attack_reaction()
                 else:
                     self.enemy.sound.play_not_possible()
 

@@ -22,7 +22,7 @@ from ability import Ability
 from life_counter import LifeCounter
 import pygame
 from sound import Sound
-from combat_chain import CombatChain
+from combat_chain import CombatChain, StepType
 from lore import lore_dict
 from modifiers import Modifiers
 import image
@@ -134,6 +134,8 @@ class Enemy:
     def switch_to_offense(self):
         self.played_cards = []
         self.pitched_cards = []
+
+        self.combat_chain.update_combat_chain()
 
     def start_move(self):
         self.combat_chain.update_combat_chain()
@@ -255,7 +257,8 @@ class Enemy:
     def pitch_card(self, c):
         self.pitched_cards.append(c)
         self.resource_manager.pitch_floating_resources(c.pitch)
-        self.hand.remove(c)
+        if c in self.hand:
+            self.hand.remove(c)
 
     def print_cards(self):
         print("HAND")
@@ -310,10 +313,23 @@ class Enemy:
     def perform_attack_reaction(self):
         print("attack reaction")
 
-    def base_attack(self):
-        chain_link = self.combat_chain.get_next_link()
+    def base_attack(self, chain_link, reaction=False):
+        steps = []
+        if chain_link:
+            if reaction == False:
+                steps = [
+                    s
+                    for s in chain_link.steps.values()
+                    if s.step_type == StepType.attack
+                ]
+            elif reaction == True:
+                steps = [
+                    s
+                    for s in chain_link.steps.values()
+                    if s.step_type == StepType.attack_reaction
+                ]
 
-        for k, c in chain_link.steps.items():
+        for c in steps:
             self.played_cards.append(c.play)
             self.resource_manager.use_floating_resources(c.play.cost)
             self.action_point_manager.handle_keywords(c.play)
@@ -328,15 +344,31 @@ class Enemy:
             self.print_cards()
             self.remove_played_cards()
 
+            c.mark_done()
+
+            if (
+                chain_link.has_attack_reactions_left() == True
+                or chain_link.end_reached() == True
+            ):
+                self.combat_chain.increase_iterator()
+
         return c
 
     def class_specific_helper_1(self, card):
         pass
 
     def perform_attack(self):
+        chain_link = self.combat_chain.get_next_link()
+
         if self.check_if_further_attack_possible() == True:
-            c = self.base_attack()
+            c = self.base_attack(chain_link)
             # TODO find a cleaner implementation for this in te action point manager
             self.class_specific_helper_1(c)
 
-            self.combat_chain.increase_iterator()
+    def perform_attack_reaction(self):
+        chain_link = self.combat_chain.get_next_link()
+
+        if self.check_if_further_attack_reaction_possible() == True:
+            c = self.base_attack(chain_link, reaction=True)
+            # TODO find a cleaner implementation for this in te action point manager
+            self.class_specific_helper_1(c)
