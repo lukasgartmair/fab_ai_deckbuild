@@ -19,6 +19,10 @@ def n_chance(p=0.85):
         return False
 
 
+def have_common_items(a, b):
+    return not set(a).isdisjoint(b)
+
+
 def get_permutations(array):
     permutations = []
     array_copy = array.copy()

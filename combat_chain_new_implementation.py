@@ -7,9 +7,10 @@ Created on Fri Sep  6 17:07:15 2024
 """
 
 from enum import Enum
-from utils import get_permutations
+from utils import get_permutations, have_common_items
 from action_point_manager import ActionPointManager
 from pitch import determine_pitch_combination
+import random
 
 
 class LinkType(Enum):
@@ -68,9 +69,7 @@ class CombatChain:
             pitch_totals[pi] = sum([c.pitch for c in pi])
         return pitch_totals
 
-    def calc_if_chain_link_is_viable(
-        self, combination, playable_cards_pool, pitchable_cards_pool
-    ):
+    def calc_chain_link(self, combination, playable_cards_pool, pitchable_cards_pool):
         is_viable = False
 
         virtual_action_point_manager = ActionPointManager()
@@ -127,3 +126,25 @@ class CombatChain:
                 is_viable = False
 
         return is_viable, virtual_chain_link, playable_cards_pool, pitchable_cards_pool
+
+    def calc_chain_links(self, playable_cards_pool, pitchable_cards_pool):
+        # valid_combinations = self.apply_succesion_restrictions(self.hand + self.arsenal.get_arsenal() + self.weapons)
+        valid_combinations = self.apply_succesion_restrictions(playable_cards_pool)
+        possible_chain_links = {}
+        print(len(valid_combinations))
+        if len(valid_combinations) > 0:
+            rnd_subset = random.choices(valid_combinations, k=5)
+            print(len(rnd_subset))
+            for i, vc in enumerate(rnd_subset):
+                (
+                    is_viable,
+                    chain_link,
+                    playable_cards_pool,
+                    pitchable_cards_pool,
+                ) = self.calc_chain_link(vc, playable_cards_pool, pitchable_cards_pool)
+
+                possible_chain_links[i] = {}
+                possible_chain_links[i]["is_viable"] = is_viable
+                possible_chain_links[i]["chain_link"] = chain_link
+                possible_chain_links[i]["playable_cards_pool"] = playable_cards_pool
+                possible_chain_links[i]["pitchable_cards_pool"] = pitchable_cards_pool

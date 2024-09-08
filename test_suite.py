@@ -70,12 +70,12 @@ class TestMethods(unittest.TestCase):
                 chain_link,
                 playable_cards_pool,
                 pitchable_cards_pool,
-            ) = test_combat_chain.calc_if_chain_link_is_viable(c, test_hand, test_hand)
+            ) = test_combat_chain.calc_chain_link(c, test_hand, test_hand)
             viables.append(is_viable)
 
         self.assertTrue(len(viables) == 0)
 
-        test_hand = Deck(deck_size=64).cards
+        test_hand = Deck(deck_size=4).cards
         for t in test_hand:
             t.card_type = CardType.attack_action
 
@@ -87,7 +87,7 @@ class TestMethods(unittest.TestCase):
                 chain_link,
                 playable_cards_pool,
                 pitchable_cards_pool,
-            ) = test_combat_chain.calc_if_chain_link_is_viable(c, test_hand, test_hand)
+            ) = test_combat_chain.calc_chain_link(c, test_hand, test_hand)
             possible_chain_links[i] = {}
             possible_chain_links[i]["is_viable"] = is_viable
             possible_chain_links[i]["playable_cards_pool"] = playable_cards_pool
@@ -106,6 +106,17 @@ class TestMethods(unittest.TestCase):
             for card in p.play:
                 self.assertTrue(card not in p["playable_cards_pool"])
                 self.assertTrue(card not in p["pitchable_cards_pool"])
+
+    def test_combat_chain_new_2(self):
+        test_hand = Deck(deck_size=10).cards
+        for t in test_hand:
+            t.card_type = CardType.attack_action
+
+        test_combat_chain = CombatChain()
+
+        valid_combinations = test_combat_chain.apply_succesion_restrictions(test_hand)
+
+        test_combat_chain.calc_chain_links(test_hand, test_hand)
 
     # def test_combat_chain(self):
     #     n_hand = 4
