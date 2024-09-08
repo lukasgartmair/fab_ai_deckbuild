@@ -138,7 +138,8 @@ class Enemy:
         self.combat_chain.update_combat_chain()
 
     def start_move(self):
-        self.combat_chain.update_combat_chain()
+        # self.combat_chain.update_combat_chain()
+        pass
 
     def finish_move(self):
         pass
@@ -187,7 +188,7 @@ class Enemy:
         if (
             self.combat_chain.is_empty()
             or self.combat_chain.end_reached()
-            or self.action_point_manager.has_action_points_left() == False
+            or self.combat_chain.get_next_link().go_to_reaction_step() == True
         ):
             # print("NO attack possible")
             return False
@@ -196,12 +197,12 @@ class Enemy:
             # print("attack possible")
             return True
 
-    def check_if_further_defensive_reaction_possible(self):
-        if any(
-            [True for c in self.hand if c.card_type == CardType.defensive_reaction]
-            + [self.arsenal.is_defensive_reaction()]
-        ):
-            return True
+    def check_if_further_attack_reaction_planned(self):
+        link = self.combat_chain.get_next_link()
+        if link is not None:
+            return True if link.has_attack_reactions_left() == True else False
+        else:
+            return False
 
     def check_if_further_defense_possible(self):
         if (
@@ -307,12 +308,6 @@ class Enemy:
         self.life_counter.calculate_life(player_attack, self.block)
         self.block.reset()
 
-    def perform_defensive_reaction(self):
-        print("defensive_reaction")
-
-    def perform_attack_reaction(self):
-        print("attack reaction")
-
     def base_attack(self, chain_link, reaction=False):
         steps = []
         if chain_link:
@@ -330,6 +325,7 @@ class Enemy:
                 ]
 
         for c in steps:
+            c = chain_link.get_next_step()
             self.played_cards.append(c.play)
             self.resource_manager.use_floating_resources(c.play.cost)
             self.action_point_manager.handle_keywords(c.play)
@@ -346,13 +342,10 @@ class Enemy:
 
             c.mark_done()
 
-            if (
-                chain_link.has_attack_reactions_left() == True
-                or chain_link.end_reached() == True
-            ):
+            if chain_link.end_reached() == True:
                 self.combat_chain.increase_iterator()
-
-        return c
+            # TODO find a cleaner implementation for this in te action point manager
+            self.class_specific_helper_1(c)
 
     def class_specific_helper_1(self, card):
         pass
@@ -369,6 +362,4 @@ class Enemy:
         chain_link = self.combat_chain.get_next_link()
 
         if self.check_if_further_attack_reaction_possible() == True:
-            c = self.base_attack(chain_link, reaction=True)
-            # TODO find a cleaner implementation for this in te action point manager
-            self.class_specific_helper_1(c)
+            self.base_attack(chain_link, reaction=True)

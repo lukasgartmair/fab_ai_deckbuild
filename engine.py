@@ -143,7 +143,7 @@ class GameEngine:
                 self.finish_move(player_attack)
             case current_state if current_state == self.enemy.stance_state_machine.defensive_reaction:
                 if self.enemy.check_if_further_defensive_reaction_possible() == False:
-                    self.enemy.perform_defensive_reaction(player_attack)
+                    pass
                 else:
                     self.enemy.sound.play_not_possible()
 
@@ -156,7 +156,7 @@ class GameEngine:
                     self.enemy.sound.play_not_possible()
 
             case current_state if current_state == self.enemy.stance_state_machine.attack_reaction:
-                if self.enemy.check_if_further_attack_reaction_possible() == True:
+                if self.enemy.check_if_further_attack_reaction_planned() == True:
                     self.enemy.perform_attack_reaction()
                 else:
                     self.enemy.sound.play_not_possible()

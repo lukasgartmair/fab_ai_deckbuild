@@ -12,7 +12,7 @@ from action_point_manager import ActionPointManager
 from pitch import determine_pitch_combination
 import random
 import numpy as np
-from playstyle import CardType
+from playstyle import CardType, Keyword
 from arsenal import Arsenal
 
 
@@ -21,8 +21,11 @@ class StepType(Enum):
     attack_reaction = 2
 
 
-attack_action_succession = [[1], [0, 1], [0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 0, 1]]
-weapon_succession = [[4], [0, 4], [0, 0, 4], [0, 0, 0, 4], [0, 0, 0, 0, 4]]
+# attack_action_succession = [[1], [0, 1], [0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 0, 1]]
+# weapon_succession = [[4], [0, 4], [0, 0, 4], [0, 0, 0, 4], [0, 0, 0, 0, 4]]
+
+attack_action_succession = [[1]]
+weapon_succession = [[4]]
 
 b_temp = []
 b_temp_2 = []
@@ -63,6 +66,30 @@ class ChainLink:
         self,
     ):
         self.steps = {}
+        self.index = 0
+
+    def print_link(self):
+        print("CHAIN LINK")
+        print()
+        for k, v in self.steps:
+            print(v.step_type.name)
+            print()
+
+        print()
+
+    def increase_index(self):
+        self.index += 1
+
+    def get_current_step(self):
+        return self.steps[self.index]
+
+    def get_next_step(self):
+        if self.index == 0:
+            return self.steps[self.index]
+        else:
+            if len(self.steps) <= self.index + 1:
+                self.increase_index()
+                return self.steps[self.index]
 
     def is_empty(self):
         return True if len(self.play) == 0 else False
@@ -93,6 +120,16 @@ class ChainLink:
         else:
             return False
 
+    def go_to_reaction_step(self):
+        attacks_done = [
+            True if (s.step_type == StepType.attack and s.done == True) else False
+            for s in self.steps.values()
+        ]
+        if all(attacks_done):
+            return True
+        else:
+            return False
+
     def end_reached(self):
         if all([s.done for s in self.steps.values()]):
             return True
@@ -114,6 +151,8 @@ class CombatChain:
         self.iterator = 0
 
         self.turn_bans = []
+
+        self.n_rnd_subsets = 200
 
     def get_length(self):
         return len(self.chain)
@@ -182,8 +221,12 @@ class CombatChain:
         return [c for c in self.hand if c.pitch > 0]
 
     def get_next_link(self):
-        if self.is_empty() == False:
-            return self.chain[self.iterator]
+        if self.iterator_in_chain():
+            if self.iterator == 0:
+                return self.chain[self.iterator]
+            else:
+                self.iterator.increase_iterator()
+                return self.chain[self.iterator]
         else:
             return None
 
@@ -247,51 +290,94 @@ class CombatChain:
         print()
 
         virtual_chain_link = ChainLink()
-
         index = 0
         for current_card in combination:
             cards_to_pitch = []
             if current_card in playable_cards_pool:
-                if current_card.cost > 0:
-                    cards_to_pitch = self.get_cards_to_pitch(
-                        current_card,
-                        [p for p in pitchable_cards_pool if p != current_card],
-                    )
-                    if len(cards_to_pitch) == 0:
-                        break
-                    else:
-                        virtual_chain_link.set_play(index, current_card, cards_to_pitch)
-                        pitchable_cards_pool = [
-                            c
-                            for c in pitchable_cards_pool
-                            if (
-                                c not in cards_to_pitch
-                                and c != current_card
-                                and c.pitch > 0
+                if current_card.card_type == CardType.attack_reaction:
+                    if current_card.cost > 0:
+                        cards_to_pitch = self.get_cards_to_pitch(
+                            current_card,
+                            [p for p in pitchable_cards_pool if p != current_card],
+                        )
+                        if len(cards_to_pitch) == 0:
+                            break
+                        else:
+                            virtual_chain_link.set_play(
+                                index, current_card, cards_to_pitch
                             )
-                        ]
+                            pitchable_cards_pool = [
+                                c
+                                for c in pitchable_cards_pool
+                                if (
+                                    c not in cards_to_pitch
+                                    and c != current_card
+                                    and c.pitch > 0
+                                )
+                            ]
+                            is_viable = True
+
+                    else:
+                        virtual_chain_link.set_play(index, current_card)
                         is_viable = True
+                        # if current_card.card_type in [CardType.non_attack_action, CardType.attack_action]:
                         virtual_action_point_manager.use_action_points()
-                else:
-                    virtual_chain_link.set_play(index, current_card)
-                    is_viable = True
-                    virtual_action_point_manager.use_action_points()
 
-                virtual_action_point_manager.handle_keywords(current_card)
+                    # if current_card.card_type in [CardType.non_attack_action, CardType.attack_action]:
+                    virtual_action_point_manager.handle_keywords(current_card)
 
-                playable_cards_pool = [
-                    c
-                    for c in playable_cards_pool
-                    if (c != current_card and c not in cards_to_pitch)
-                ]
+                    playable_cards_pool = [
+                        c
+                        for c in playable_cards_pool
+                        if (c != current_card and c not in cards_to_pitch)
+                    ]
 
-                index += 1
+                    index += 1
 
-                if virtual_action_point_manager.has_action_points_left() == False:
-                    break
+                elif current_card.card_type in [
+                    CardType.attack_reaction,
+                    CardType.attack_action,
+                ]:
+                    if virtual_action_point_manager.has_action_points_left() == True:
+                        if current_card.cost > 0:
+                            cards_to_pitch = self.get_cards_to_pitch(
+                                current_card,
+                                [p for p in pitchable_cards_pool if p != current_card],
+                            )
+                            if len(cards_to_pitch) == 0:
+                                break
+                            else:
+                                virtual_chain_link.set_play(
+                                    index, current_card, cards_to_pitch
+                                )
+                                pitchable_cards_pool = [
+                                    c
+                                    for c in pitchable_cards_pool
+                                    if (
+                                        c not in cards_to_pitch
+                                        and c != current_card
+                                        and c.pitch > 0
+                                    )
+                                ]
+                                is_viable = True
+                                virtual_action_point_manager.use_action_points()
+                        else:
+                            virtual_chain_link.set_play(index, current_card)
+                            is_viable = True
+                            virtual_action_point_manager.use_action_points()
 
-            else:
-                is_viable = False
+                        virtual_action_point_manager.handle_keywords(current_card)
+
+                        playable_cards_pool = [
+                            c
+                            for c in playable_cards_pool
+                            if (c != current_card and c not in cards_to_pitch)
+                        ]
+
+                        index += 1
+
+                    else:
+                        break
 
         has_action_point_left = virtual_action_point_manager.has_action_points_left()
 
@@ -308,11 +394,11 @@ class CombatChain:
     ):
         possible_chain_links = {}
         print("before")
-        n_rnd_subsets = 5
+
         print(len(valid_combinations))
         if len(valid_combinations) > 0:
             rnd_subset = random.choices(
-                valid_combinations, k=(min(len(valid_combinations), n_rnd_subsets))
+                valid_combinations, k=(min(len(valid_combinations), self.n_rnd_subsets))
             )
             print("after")
             print(len(rnd_subset))
@@ -402,6 +488,7 @@ class CombatChain:
         calculated_chains = []
 
         for pcl_dict in possible_chain_links:
+            # TODO is this here okay?
             pcl_dict = pcl_dict[0]
 
             print(pcl_dict)
