@@ -13,7 +13,7 @@ class ActionPointManager:
     def __init__(self, action_points=1):
         self.action_points = 1
 
-    def reset_action_points(self):
+    def reset(self):
         self.action_points = 1
 
     def obtain_action_points(self, amount=1):
@@ -46,7 +46,7 @@ class ActionPointManager:
         else:
             return False
 
-    def handle_keywords(self, card, combat_chain=None):
+    def handle_keywords(self, card):
         self.handle_go_again(card)
         self.handle_boost(card)
 

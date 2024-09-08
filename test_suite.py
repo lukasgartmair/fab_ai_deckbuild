@@ -56,6 +56,11 @@ class TestMethods(unittest.TestCase):
         print(valid_combinations)
         self.assertTrue(len(valid_combinations) == 6)
 
+        test_combat_chain = CombatChain()
+
+        for c in valid_combinations:
+            test_combat_chain.calc_if_chain_link_is_viable(c, test_hand, test_hand)
+
         # test_hand[-2].card_type = CardType.attack_reaction
 
         # valid_combinations = test_combat_chain.apply_succesion_restrictions(test_hand)

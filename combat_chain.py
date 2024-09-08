@@ -211,7 +211,7 @@ class CombatChain:
         ]
 
     def get_valid_combinations(self, playable_cards):
-        combinations = get_combinations(playable_cards)
+        combinations = get_permutations(playable_cards)
 
         # print("HERE")
         # print(len((combinations)))
@@ -272,7 +272,7 @@ class CombatChain:
 
         pitchable_cards = self.get_pitchable_cards(card)
 
-        possible_pitch_combinations = get_combinations(pitchable_cards)
+        possible_pitch_combinations = get_permutations(pitchable_cards)
 
         pitch_totals = self.calc_pitch_totals(possible_pitch_combinations)
 
