@@ -21,8 +21,8 @@ class LinkType(Enum):
     attack_reaction = 1
 
 
-attack_action_succession = [[1], [2, 1], [2, 2, 1], [2, 2, 2, 1]]
-weapon_succession = [[4], [2, 4], [2, 2, 4], [2, 2, 2, 4]]
+attack_action_succession = [[1], [0, 1], [0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 0, 1]]
+weapon_succession = [[4], [0, 4], [0, 0, 4], [0, 0, 0, 4], [0, 0, 0, 0, 4]]
 
 valid_card_type_successions = attack_action_succession + weapon_succession
 
