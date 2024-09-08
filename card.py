@@ -17,6 +17,7 @@ from settings import CARD_RESOLUTION, card_width, card_height, card_scale
 from playstyle import CardType, CardColor
 from colors import color_palette
 from sound import Sound
+from image import img_to_surfarray
 
 id_iter = itertools.count()
 
@@ -40,13 +41,6 @@ def generate_rnd_image(size):
     img = get_random_image(img_size)
     img = 125 * img / img.max()
     return img
-
-
-def img_to_surfarray(img):
-    return pygame.transform.scale(
-        pygame.surfarray.make_surface(img),
-        (int(card_width), int(card_height)),
-    )
 
 
 # card_colors = {"red": (255, 0, 0), "yellow": (255, 255, 0), "blue": (0, 0, 255)}

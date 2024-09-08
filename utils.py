@@ -7,9 +7,13 @@ Created on Mon Aug  5 20:17:47 2024
 """
 
 import numpy as np
-import pygame
 from colors import color_palette
 import itertools
+from numpy import prod
+
+
+def factorial(n):
+    return prod(range(1, n + 1))
 
 
 def n_chance(p=0.85):
@@ -23,15 +27,21 @@ def have_common_items(a, b):
     return not set(a).isdisjoint(b)
 
 
-def get_permutations(array):
+def get_permutations(array, max_length=None):
+    if max_length is None:
+        max_length = len(array) + 1
     permutations = []
     array_copy = array.copy()
     if len(array_copy) > 0:
-        for i in range(len(array) + 1):
+        for i in range(max_length):
             combos = itertools.permutations(array_copy, r=i)
             for c in combos:
                 permutations.append(c)
     return permutations[1:]
+
+
+def map_permutations_to_original(array, permutations):
+    return [[array[pi] for pi in p] for p in permutations]
 
 
 def shift_list(a):

@@ -21,6 +21,7 @@ from card import (
 )
 from utils import n_chance
 from multiprocessing import Pool, cpu_count
+from image import img_to_surfarray
 
 
 def calc_card_images(deck_size):
@@ -32,7 +33,9 @@ def calc_card_images(deck_size):
 
 def calc_card_images_pool(deck_size, card_resolution):
     if card_resolution == 0:
-        return [np.zeros(shape=(card_resolution, card_resolution))] * deck_size
+        return [
+            img_to_surfarray(np.zeros(shape=(card_resolution, card_resolution)))
+        ] * deck_size
     else:
         results = []
         n_pools = cpu_count()

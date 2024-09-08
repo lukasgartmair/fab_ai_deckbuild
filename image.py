@@ -28,3 +28,10 @@ def load_image(path):
         image = pygame.image.load(canonicalized_path)
         image_library[path] = image
     return image
+
+
+def img_to_surfarray(img):
+    return pygame.transform.scale(
+        pygame.surfarray.make_surface(img),
+        (int(card_width), int(card_height)),
+    )

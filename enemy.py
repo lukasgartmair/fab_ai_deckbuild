@@ -83,7 +83,6 @@ class Enemy:
 
         self.combat_chain = CombatChain(
             self.hand,
-            action_point_manager=self.action_point_manager,
             arsenal=self.arsenal,
             weapons=self.weapons,
         )
@@ -183,7 +182,7 @@ class Enemy:
             return True
 
     def check_if_further_attack_possible(self):
-        # self.combat_chain.print_combat_chain()
+        self.combat_chain.print_combat_chain()
         if (
             self.combat_chain.is_empty()
             or self.combat_chain.end_reached()
@@ -337,7 +336,6 @@ class Enemy:
     def perform_attack(self):
         if self.check_if_further_attack_possible() == True:
             c = self.base_attack()
-
             # TODO find a cleaner implementation for this in te action point manager
             self.class_specific_helper_1(c)
 
