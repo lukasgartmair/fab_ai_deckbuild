@@ -35,7 +35,7 @@ class StanceStateMachine(StateMachine):
         self.sound = Sound()
 
         if self.stance == Stance.defend:
-            self.defsense.initial = True
+            self.defense.initial = True
             self.attack.initial = False
 
         super(StanceStateMachine, self).__init__()
