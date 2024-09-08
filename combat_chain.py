@@ -312,9 +312,7 @@ class CombatChain:
                     is_viable = True
                     self.action_point_manager.use_action_points()
 
-                self.action_point_manager.handle_keywords(
-                    self.current_card, combat_chain=self
-                )
+                self.action_point_manager.handle_keywords(self.current_card)
 
                 self.remove_current_card_from_lists()
 

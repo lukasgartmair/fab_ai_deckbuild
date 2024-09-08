@@ -126,4 +126,4 @@ class CombatChain:
             else:
                 is_viable = False
 
-        return is_viable, virtual_chain_link
+        return is_viable, virtual_chain_link, playable_cards_pool, pitchable_cards_pool

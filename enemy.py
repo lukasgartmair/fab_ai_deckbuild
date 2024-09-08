@@ -118,7 +118,7 @@ class Enemy:
     def reset_play(self):
         self.combat_chain.turn_reset()
         self.resource_manager.reset()
-        self.action_point_manager.reset_action_points()
+        self.action_point_manager.reset()
 
     def fill_arsenal(self):
         if len(self.hand) > 0:

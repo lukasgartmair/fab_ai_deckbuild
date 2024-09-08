@@ -23,127 +23,26 @@ from utils import n_chance
 from multiprocessing import Pool, cpu_count
 
 
-def calc_physical_distribution(playstyle_obj, n=DECK_SIZE):
-    s = np.random.normal(
-        playstyle_obj.physical_parameters["mu"],
-        playstyle_obj.physical_parameters["sigma"],
-        n,
-    )
-    s = [np.round(si).astype(int) if si > 0 else 0 for si in s]
-    s = [si if si >= MAX_PHYSICAL_ATTACK else si for si in s]
-
-    plot = False
-    if plot:
-        plt.hist(s, alpha=0.5, label=str(playstyle_obj))
-        plt.legend()
-        plt.xlabel("physical")
-        plt.ylabel("#cards")
-
-    return s
-
-
-def calc_keyword_distribution(playstyle_obj, n=DECK_SIZE):
-    # print(type(playstyle_obj).__name__)
-    # print(playstyle_obj.keywords)
-    # print(playstyle_obj.keyword_ratios.values())
-
-    sampled_keywords = random.choices(
-        playstyle_obj.keywords, weights=playstyle_obj.keyword_ratios.values(), k=n
-    )
-    return sampled_keywords
-
-
-def calc_secondary_keyword_distribution(playstyle_obj, n=DECK_SIZE):
-    # print(type(playstyle_obj).__name__)
-    # print(playstyle_obj.keywords)
-    # print(playstyle_obj.keyword_ratios.values())
-
-    sampled_keywords = random.choices(
-        playstyle_obj.secondary_keywords,
-        weights=playstyle_obj.secondary_keyword_ratios.values(),
-        k=n,
-    )
-    return sampled_keywords
-
-
-def calc_card_type_distribution(playstyle_obj, n=DECK_SIZE):
-    sampled_card_types = random.choices(
-        [
-            c
-            for c in CardType
-            if c
-            in [
-                CardType.attack_action,
-                CardType.non_attack_action,
-                CardType.attack_reaction,
-                CardType.defensive_reaction,
-            ]
-        ],
-        weights=playstyle_obj.card_type_ratios.values(),
-        k=n,
-    )
-    return sampled_card_types
-
-
-def calc_arcane_distribution(playstyle_obj):
-    s = np.random.normal(
-        playstyle_obj.arcane_parameters["mu"],
-        playstyle_obj.arcane_parameters["sigma"],
-        int(playstyle_obj.arcane_ratio * DECK_SIZE),
-    )
-    s = [np.round(si).astype(int) if si > 0 else 0 for si in s]
-
-    plot = False
-    if plot:
-        plt.hist(s, alpha=0.5, label=str(playstyle_obj))
-        plt.legend()
-        plt.xlabel("arcane")
-        plt.ylabel("#cards")
-
-    return s
-
-
-def calc_card_color_distribution(playstyle_obj, n=DECK_SIZE):
-    sampled_card_colors = random.choices(
-        list(CardColor), weights=playstyle_obj.pitch_ratios.values(), k=n
-    )
-    return sampled_card_colors
-
-
-def calc_card_class_distribution(playstyle_obj, n=DECK_SIZE):
-    sampled_card_classes = random.choices(
-        playstyle_obj.card_classes,
-        weights=playstyle_obj.card_class_ratios.values(),
-        k=n,
-    )
-    return sampled_card_classes
-
-
-def calc_card_images(n=DECK_SIZE):
+def calc_card_images(deck_size):
     results = []
-    for i in range(n):
+    for i in range(deck_size):
         results.append(generate_rnd_image(size=CARD_RESOLUTION))
     return results
 
 
-# def calc_card_images_pool(n=DECK_SIZE):
-#     card_images = calc_card_images()
-#     return [img_to_surfarray(r) for r in card_images]
-
-
-def calc_card_images_pool(n=DECK_SIZE):
+def calc_card_images_pool(deck_size):
     results = []
     n_pools = cpu_count()
     with Pool(n_pools) as p:
         results = p.map(
-            calc_card_images, [np.ceil(DECK_SIZE / n_pools).astype(int)] * n_pools
+            calc_card_images, [np.ceil(deck_size / n_pools).astype(int)] * n_pools
         )
 
     r2 = []
     for r in results:
         for ri in r:
             r2.append(img_to_surfarray(ri))
-    return r2[:DECK_SIZE]
+    return r2[:deck_size]
 
 
 class Deck:
@@ -154,7 +53,7 @@ class Deck:
         deck_size=DECK_SIZE,
         card_resolution=5,
     ):
-        self.n_cards = deck_size
+        self.deck_size = deck_size
         self.cards = []
         self.stats = {}
 
@@ -166,8 +65,6 @@ class Deck:
         self.calc_stats()
 
         self.print_stats()
-
-        calc_card_images()
 
     def is_empty(self):
         return True if self.get_length() == 0 else False
@@ -198,26 +95,117 @@ class Deck:
     def get_length(self):
         return len(self.cards)
 
+    def calc_physical_distribution(self):
+        s = np.random.normal(
+            self.playstyle.physical_parameters["mu"],
+            self.playstyle.physical_parameters["sigma"],
+            self.deck_size,
+        )
+        s = [np.round(si).astype(int) if si > 0 else 0 for si in s]
+        s = [si if si >= MAX_PHYSICAL_ATTACK else si for si in s]
+
+        plot = False
+        if plot:
+            plt.hist(s, alpha=0.5, label=str(self.playstyle))
+            plt.legend()
+            plt.xlabel("physical")
+            plt.ylabel("#cards")
+
+        return s
+
+    def calc_keyword_distribution(self):
+        # print(type(self.playstyle).__name__)
+        # print(self.playstyle.keywords)
+        # print(self.playstyle.keyword_ratios.values())
+
+        sampled_keywords = random.choices(
+            self.playstyle.keywords,
+            weights=self.playstyle.keyword_ratios.values(),
+            k=self.deck_size,
+        )
+        return sampled_keywords
+
+    def calc_secondary_keyword_distribution(self):
+        # print(type(self.playstyle).__name__)
+        # print(self.playstyle.keywords)
+        # print(self.playstyle.keyword_ratios.values())
+
+        sampled_keywords = random.choices(
+            self.playstyle.secondary_keywords,
+            weights=self.playstyle.secondary_keyword_ratios.values(),
+            k=self.deck_size,
+        )
+        return sampled_keywords
+
+    def calc_card_type_distribution(self):
+        sampled_card_types = random.choices(
+            [
+                c
+                for c in CardType
+                if c
+                in [
+                    CardType.attack_action,
+                    CardType.non_attack_action,
+                    CardType.attack_reaction,
+                    CardType.defensive_reaction,
+                ]
+            ],
+            weights=self.playstyle.card_type_ratios.values(),
+            k=self.deck_size,
+        )
+        return sampled_card_types
+
+    def calc_arcane_distribution(self):
+        s = np.random.normal(
+            self.playstyle.arcane_parameters["mu"],
+            self.playstyle.arcane_parameters["sigma"],
+            int(self.playstyle.arcane_ratio * self.deck_size),
+        )
+        s = [np.round(si).astype(int) if si > 0 else 0 for si in s]
+
+        plot = False
+        if plot:
+            plt.hist(s, alpha=0.5, label=str(self.playstyle))
+            plt.legend()
+            plt.xlabel("arcane")
+            plt.ylabel("#cards")
+
+        return s
+
+    def calc_card_color_distribution(self):
+        sampled_card_colors = random.choices(
+            list(CardColor),
+            weights=self.playstyle.pitch_ratios.values(),
+            k=self.deck_size,
+        )
+        return sampled_card_colors
+
+    def calc_card_class_distribution(self):
+        sampled_card_classes = random.choices(
+            self.playstyle.card_classes,
+            weights=self.playstyle.card_class_ratios.values(),
+            k=self.deck_size,
+        )
+        return sampled_card_classes
+
     def build_deck(self):
-        physical_distribution = calc_physical_distribution(self.playstyle)
+        physical_distribution = self.calc_physical_distribution()
         physical_distribution = [1 if x == 0 else x for x in physical_distribution]
 
         if self.playstyle.arcane_ratio > 0:
-            arcane_distribution = calc_arcane_distribution(self.playstyle)
+            arcane_distribution = self.calc_arcane_distribution()
             arcane_distribution = [1 if x == 0 else x for x in arcane_distribution]
 
-        keyword_distribution = calc_keyword_distribution(self.playstyle)
-        secondary_keyword_distribution = calc_secondary_keyword_distribution(
-            self.playstyle
-        )
-        card_type_distribution = calc_card_type_distribution(self.playstyle)
-        card_color_distribution = calc_card_color_distribution(self.playstyle)
-        card_class_distribution = calc_card_class_distribution(self.playstyle)
+        keyword_distribution = self.calc_keyword_distribution()
+        secondary_keyword_distribution = self.calc_secondary_keyword_distribution()
+        card_type_distribution = self.calc_card_type_distribution()
+        card_color_distribution = self.calc_card_color_distribution()
+        card_class_distribution = self.calc_card_class_distribution()
 
-        card_images = calc_card_images_pool()
+        card_images = calc_card_images_pool(self.deck_size)
 
         self.cards = [
-            Card(card_resolution=self.card_resolution) for n in range(self.n_cards)
+            Card(card_resolution=self.card_resolution) for n in range(self.deck_size)
         ]
 
         for c in self.cards:
@@ -248,6 +236,7 @@ class Deck:
 
             card.keywords.sort(key=lambda x: x.value, reverse=False)
 
+            print(len(card_class_distribution))
             card.card_class = card_class_distribution[indices[i]]
             card.image = card_images[indices[i]]
 

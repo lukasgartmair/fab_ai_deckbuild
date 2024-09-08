@@ -56,23 +56,56 @@ class TestMethods(unittest.TestCase):
         self.assertTrue(len(valid_combinations) == 6)
 
         test_combat_chain = CombatChain()
-        # test_hand = Deck(deck_size=n_hand).cards
-        # for t in test_hand:
-        #     t.card_type = CardType.attack_action
 
+        test_hand = Deck(deck_size=n_hand).cards
+        for t in test_hand:
+            t.card_type = CardType.attack_reaction
+
+        valid_combinations = test_combat_chain.apply_succesion_restrictions(test_hand)
+
+        viables = []
         for c in valid_combinations:
-            is_viable, chain_link = test_combat_chain.calc_if_chain_link_is_viable(
-                c, test_hand, test_hand
-            )
+            (
+                is_viable,
+                chain_link,
+                playable_cards_pool,
+                pitchable_cards_pool,
+            ) = test_combat_chain.calc_if_chain_link_is_viable(c, test_hand, test_hand)
+            viables.append(is_viable)
+
+        self.assertTrue(len(viables) == 0)
+
+        test_hand = Deck(deck_size=64).cards
+        for t in test_hand:
+            t.card_type = CardType.attack_action
+
+        viables = []
+        possible_chain_links = {}
+        for i, c in enumerate(valid_combinations):
+            (
+                is_viable,
+                chain_link,
+                playable_cards_pool,
+                pitchable_cards_pool,
+            ) = test_combat_chain.calc_if_chain_link_is_viable(c, test_hand, test_hand)
+            possible_chain_links[i] = {}
+            possible_chain_links[i]["is_viable"] = is_viable
+            possible_chain_links[i]["playable_cards_pool"] = playable_cards_pool
+            possible_chain_links[i]["pitchable_cards_pool"] = pitchable_cards_pool
             print("result")
             print(is_viable)
             print(chain_link.play)
             print()
-        # test_hand[-2].card_type = CardType.attack_reaction
 
-        # valid_combinations = test_combat_chain.apply_succesion_restrictions(test_hand)
+        self.assertTrue(
+            len([v["is_viable"] for k, v in possible_chain_links.items()])
+            == len(valid_combinations)
+        )
 
-        # self.assertTrue(len(valid_combinations) == 3)
+        for p in possible_chain_links:
+            for card in p.play:
+                self.assertTrue(card not in p["playable_cards_pool"])
+                self.assertTrue(card not in p["pitchable_cards_pool"])
 
     # def test_combat_chain(self):
     #     n_hand = 4
