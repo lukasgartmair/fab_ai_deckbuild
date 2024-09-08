@@ -131,9 +131,13 @@ class CombatChain:
         # valid_combinations = self.apply_succesion_restrictions(self.hand + self.arsenal.get_arsenal() + self.weapons)
         valid_combinations = self.apply_succesion_restrictions(playable_cards_pool)
         possible_chain_links = {}
+        print("before")
         print(len(valid_combinations))
         if len(valid_combinations) > 0:
-            rnd_subset = random.choices(valid_combinations, k=5)
+            rnd_subset = random.choices(
+                valid_combinations, k=(min(len(valid_combinations), 3))
+            )
+            print("after")
             print(len(rnd_subset))
             for i, vc in enumerate(rnd_subset):
                 (

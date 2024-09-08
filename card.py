@@ -67,7 +67,7 @@ defensive_values = {
 
 
 class Card:
-    def __init__(self, card_resolution=5):
+    def __init__(self, card_resolution=0):
         self.card_id = next(id_iter)
         self.name = generate_rnd_name()
         self.card_type = None

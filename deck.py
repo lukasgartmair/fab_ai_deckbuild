@@ -30,19 +30,22 @@ def calc_card_images(deck_size):
     return results
 
 
-def calc_card_images_pool(deck_size):
-    results = []
-    n_pools = cpu_count()
-    with Pool(n_pools) as p:
-        results = p.map(
-            calc_card_images, [np.ceil(deck_size / n_pools).astype(int)] * n_pools
-        )
+def calc_card_images_pool(deck_size, card_resolution):
+    if card_resolution == 0:
+        return [np.zeros(shape=(card_resolution, card_resolution))] * deck_size
+    else:
+        results = []
+        n_pools = cpu_count()
+        with Pool(n_pools) as p:
+            results = p.map(
+                calc_card_images, [np.ceil(deck_size / n_pools).astype(int)] * n_pools
+            )
 
-    r2 = []
-    for r in results:
-        for ri in r:
-            r2.append(img_to_surfarray(ri))
-    return r2[:deck_size]
+        r2 = []
+        for r in results:
+            for ri in r:
+                r2.append(img_to_surfarray(ri))
+        return r2[:deck_size]
 
 
 class Deck:
@@ -51,7 +54,7 @@ class Deck:
         player_class=PlayerClass.generic,
         playstyle=Playstyle(),
         deck_size=DECK_SIZE,
-        card_resolution=5,
+        card_resolution=0,
     ):
         self.deck_size = deck_size
         self.cards = []
@@ -202,7 +205,9 @@ class Deck:
         card_color_distribution = self.calc_card_color_distribution()
         card_class_distribution = self.calc_card_class_distribution()
 
-        card_images = calc_card_images_pool(self.deck_size)
+        print("card_resolution")
+        print(self.card_resolution)
+        card_images = calc_card_images_pool(self.deck_size, self.card_resolution)
 
         self.cards = [
             Card(card_resolution=self.card_resolution) for n in range(self.deck_size)
