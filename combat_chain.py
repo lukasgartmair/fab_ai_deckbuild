@@ -230,6 +230,10 @@ class CombatChain:
         else:
             return None
 
+    def get_current_link(self):
+        if self.iterator_in_chain():
+            return self.chain[self.iterator]
+
     def get_pitch_for_card(self, card, pitch_totals):
         return determine_pitch_combination(card.cost, pitch_totals)
 

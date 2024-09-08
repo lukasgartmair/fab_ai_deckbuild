@@ -24,11 +24,29 @@ class StanceStateMachine(StateMachine):
     defensive_reaction = State("defensive_reaction")
 
     switch_from_defensive_reaction_to_attack = defensive_reaction.to(attack)
-    switch_from_attack_to_attack_reaction = attack.to(attack_reaction)
-    switch_from_attack_reaction_to_attack_reaction = attack_reaction.to(attack)
+    switch_from_attack_to_attack_reaction = attack.to(
+        attack_reaction, cond="further_attack_reaction_planned"
+    )
+    switch_from_attack_reaction_to_attack = attack_reaction.to(
+        attack, cond="further_attack_planned"
+    )
 
     switch_from_attack_reaction_to_defense = attack_reaction.to(defense)
     switch_from_defense_to_defensive_reaction = defense.to(defensive_reaction)
+    switch_from_defensive_reaction_to_defense = defensive_reaction.to(defense)
+
+    cycle = (
+        switch_from_attack_to_attack_reaction
+        | (
+            switch_from_attack_reaction_to_attack
+            | switch_from_attack_reaction_to_defense
+        )
+        | switch_from_defense_to_defensive_reaction
+        | (
+            switch_from_defensive_reaction_to_defense
+            | switch_from_defensive_reaction_to_attack
+        )
+    )
 
     def __init__(self):
         self.stance = Stance.attack

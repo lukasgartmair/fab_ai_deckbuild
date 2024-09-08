@@ -87,7 +87,12 @@ class GameEngine:
 
         match self.enemy.stance_state_machine.current_state:
             case self.enemy.stance_state_machine.current_state if self.enemy.stance_state_machine.current_state == self.enemy.stance_state_machine.defense:
+                self.stance_state_machine.switch_from_defense_to_defensive_reaction()
+
                 self.finish_turn()
+
+            case self.enemy.stance_state_machine.current_state if self.enemy.stance_state_machine.current_state == self.enemy.stance_state_machine.defensive_reaction:
+                pass
 
             case self.enemy.stance_state_machine.current_state if self.enemy.stance_state_machine.current_state == self.enemy.stance_state_machine.attack:
                 self.enemy.switch_to_offense()

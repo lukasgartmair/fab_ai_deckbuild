@@ -335,7 +335,8 @@ class Enemy:
             for p in c.pitch:
                 self.pitch_card(p)
 
-            self.action_point_manager.use_action_points()
+            if reaction == False:
+                self.action_point_manager.use_action_points()
 
             self.print_cards()
             self.remove_played_cards()
@@ -350,16 +351,24 @@ class Enemy:
     def class_specific_helper_1(self, card):
         pass
 
-    def perform_attack(self):
-        chain_link = self.combat_chain.get_next_link()
+    def get_chain_link(self):
+        chain_link = self.combat_chain.get_current_link()
+        if chain_link is not None:
+            if chain_link.end_reached() == True:
+                chain_link = self.combat_chain.get_next_link()
+        return chain_link
 
-        if self.check_if_further_attack_possible() == True:
-            c = self.base_attack(chain_link)
-            # TODO find a cleaner implementation for this in te action point manager
-            self.class_specific_helper_1(c)
+    def perform_attack(self):
+        chain_link = self.get_chain_link()
+        if chain_link is not None:
+            if chain_link.end_reached() == True:
+                chain_link = self.combat_chain.get_next_link()
+
+            if self.check_if_further_attack_possible() == True:
+                self.base_attack(chain_link, reaction=False)
 
     def perform_attack_reaction(self):
-        chain_link = self.combat_chain.get_next_link()
-
-        if self.check_if_further_attack_reaction_possible() == True:
-            self.base_attack(chain_link, reaction=True)
+        chain_link = self.get_chain_link()
+        if chain_link is not None:
+            if self.check_if_further_attack_reaction_possible() == True:
+                self.base_attack(chain_link, reaction=True)
