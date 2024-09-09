@@ -146,7 +146,9 @@ class ChainLink:
 
     def has_attacks_left(self):
         step_types = [s.step_type for s in self.steps.values()]
-        step_types_attack = [True if s == StepType else False for s in step_types]
+        step_types_attack = [
+            True if s == StepType.attack else False for s in step_types
+        ]
         print("XXXXXXXXXXXXXXX")
         print()
         if any(step_types_attack):
@@ -186,7 +188,7 @@ class CombatChain:
 
         self.turn_bans = []
 
-        self.n_rnd_subsets = 200
+        self.n_rnd_subsets = 400
 
         self.update_combat_chain()
 
@@ -367,7 +369,9 @@ class CombatChain:
                             [p for p in pitchable_cards_pool if p != current_card],
                         )
                         if len(cards_to_pitch) == 0:
+                            is_viable = False
                             virtual_chain_link = None
+                            break
                         else:
                             virtual_chain_link.set_play(
                                 index, current_card, cards_to_pitch
@@ -411,7 +415,9 @@ class CombatChain:
                                 [p for p in pitchable_cards_pool if p != current_card],
                             )
                             if len(cards_to_pitch) == 0:
+                                is_viable = False
                                 virtual_chain_link = None
+                                break
                             else:
                                 virtual_chain_link.set_play(
                                     index, current_card, cards_to_pitch

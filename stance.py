@@ -26,7 +26,7 @@ class StanceStateMachine(StateMachine):
     switch_from_defensive_reaction_to_attack = defensive_reaction.to(attack)
     switch_from_attack_to_attack_reaction = attack.to(
         attack_reaction, unless="has_attacks_left_in_current_link"
-    )
+    ) | attack.to(attack)
 
     switch_from_attack_reaction_to_attack = attack_reaction.to(
         attack, cond="further_chain_links_to_play"

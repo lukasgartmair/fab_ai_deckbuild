@@ -342,8 +342,8 @@ class Enemy:
 
     def resolve_block(self):
         print()
-        print("RESOLVING BLOCK")
-        print(self.block.player_attack.physical)
+        # print("RESOLVING BLOCK")
+        # print(self.block.player_attack.physical)
         print()
         if self.block.player_attack is not None:
             self.life_counter.calculate_life(self.block)
