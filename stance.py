@@ -66,6 +66,7 @@ class StanceStateMachine(StateMachine):
 
     def on_enter_attack(self):
         self.stance = Stance.attack
+        self.enemy.switch_to_offense()
         self.sound.play_change_stance_to_attack()
 
     def on_exit_attack_reaction(self):
@@ -80,7 +81,7 @@ class StanceStateMachine(StateMachine):
 
     def on_exit_defensive_reaction(self):
         self.stance = Stance.attack
-        self.enemy.switch_to_offense()
+        self.enemy.finish_defensive_reaction()
 
     def chain_end_reached(self):
         return True if self.enemy.combat_chain.end_reached() == True else False

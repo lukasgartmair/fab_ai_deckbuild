@@ -48,7 +48,6 @@ class Enemy:
         #     self.stance = Stance.defend
         # else:
         #     self.stance = Stance.attack
-        self.stance_state_machine = StanceStateMachine(self)
 
         self.intellect = 4
         self.talent = random.choice(list(Talent))
@@ -104,6 +103,8 @@ class Enemy:
         self.survival_mode = False
         self.check_if_in_survival_mode()
 
+        self.stance_state_machine = StanceStateMachine(self)
+
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
             self.survival_mode = True
@@ -140,21 +141,22 @@ class Enemy:
 
         self.combat_chain.update_combat_chain()
 
-    def start_move(self):
-        if self.stance_state_machine.current_state == self.stance_state_machine.defense:
-            self.block.clear_physical_block_cards()
-            if self.block.player_attack is not None:
-                self.block.player_attack.reset()
+    def handle_equipment_counters(self):
+        for card in [c for c in self.played_cards if c.card_type == CardType.equipment]:
+            card.finish_defensive_move()
+            if card.destroyed == True:
+                self.graveyard.append(card)
 
-            for card in [
-                c for c in self.played_cards if c.card_type == CardType.equipment
-            ]:
-                card.finish_defensive_move()
-                if card.destroyed == True:
-                    self.graveyard.append(card)
+    def finish_defensive_reaction(self):
+        self.handle_equipment_counters()
+        if self.block.player_attack is not None:
+            self.block.player_attack.reset()
+
+    def start_move(self):
+        pass
 
     def finish_move(self):
-        pass
+        self.block.clear_physical_block_cards()
 
     def start_turn(self):
         print("started turn")

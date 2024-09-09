@@ -51,6 +51,8 @@ class EquipmentPiece(Card):
 
     def remove_defense(self, amount=1):
         self.defense -= amount
+        if self.defense < 0:
+            self.defense = 0
 
     def destroy(self):
         self.destroyed = True
