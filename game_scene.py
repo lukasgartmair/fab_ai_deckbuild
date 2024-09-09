@@ -109,8 +109,6 @@ class GameScene(SceneBase):
                         for check_box in self.renderer.check_boxes:
                             check_box.reset()
 
-                        self.engine.player_attack.reset()
-
                         self.engine.enemy.modifiers.reset()
 
                         self.render()
