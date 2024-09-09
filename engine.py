@@ -18,9 +18,7 @@ from playstyle import PlayerClass
 from mechanologist import Mechanologist
 from guardian import Guardian
 from ranger import Ranger
-from stance import StanceStateMachine
 import pygame
-import copy
 
 
 class WinCondition(Enum):
@@ -133,7 +131,7 @@ class GameEngine:
             return True
 
     def play(self, player_attack=None):
-        pygame.time.wait(100)
+        pygame.time.wait(50)
 
         if self.level_manager.move_index == 1:
             self.enemy.start_turn()

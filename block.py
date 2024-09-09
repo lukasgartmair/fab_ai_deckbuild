@@ -257,9 +257,9 @@ class Block:
 
                         self.arcane_procedure(card, self.player_attack, pitch_value)
 
-                    elif len(self.defensive_hand) > 0:
+                    elif len(self.enemy.hand) > 0:
                         sorted_hand = sorted(
-                            self.defensive_hand, key=lambda x: x.pitch, reverse=False
+                            self.enemy.hand, key=lambda x: x.pitch, reverse=False
                         )
 
                         card = sorted_hand[0]
@@ -282,9 +282,9 @@ class Block:
                         card = unused_cards[0]
                         pitch_value = card.pitch
 
-                    elif len(self.defensive_hand) > 0:
+                    elif len(self.enemy.hand) > 0:
                         sorted_hand = sorted(
-                            self.defensive_hand, key=lambda x: x.pitch, reverse=True
+                            self.enemy.hand, key=lambda x: x.pitch, reverse=True
                         )
 
                         card = sorted_hand[0]

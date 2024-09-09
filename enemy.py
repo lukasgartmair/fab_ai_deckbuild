@@ -309,12 +309,14 @@ class Enemy:
         # TODO arcane or physical first?
         if n_chance(p=0.5):
             if player_attack.arcane is not None:
+                print("blocking arcane")
                 self.block.defend_arcane()
             self.block.defend_physical()
         else:
             self.block.defend_physical()
             if player_attack.arcane is not None:
                 self.sound.play_flip_card()
+                print("blocking arcane")
                 self.block.defend_arcane()
 
         for bc in self.block.physical_block_cards:
