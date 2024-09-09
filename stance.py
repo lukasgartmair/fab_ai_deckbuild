@@ -26,28 +26,35 @@ class StanceStateMachine(StateMachine):
     switch_from_defensive_reaction_to_attack = defensive_reaction.to(attack)
     switch_from_attack_to_attack_reaction = attack.to(attack_reaction)
 
-    switch_from_attack_reaction_to_attack = attack_reaction.to(attack)
+    switch_from_attack_reaction_to_attack = attack_reaction.to(
+        attack, cond="further_chain_links_to_play"
+    )
 
-    switch_from_attack_reaction_to_defense = attack_reaction.to(defense)
+    switch_from_attack_reaction_to_defense = attack_reaction.to(
+        defense, unless="further_chain_links_to_play"
+    )
     switch_from_defense_to_defensive_reaction = defense.to(defensive_reaction)
     switch_from_defensive_reaction_to_defense = defensive_reaction.to(defense)
 
     cycle = (
         switch_from_attack_to_attack_reaction
-        | switch_from_attack_reaction_to_attack  # (
-        #
-        #     | switch_from_attack_reaction_to_defense
-        # )
-        # | switch_from_defense_to_defensive_reaction
+        | (
+            switch_from_attack_reaction_to_defense
+            | switch_from_attack_reaction_to_attack
+        )
+        | switch_from_defense_to_defensive_reaction
+        | switch_from_defensive_reaction_to_attack
+        # TODO defensive reaction
         # | (
         #     switch_from_defensive_reaction_to_defense
-        #     | switch_from_defensive_reaction_to_attack
+        #     | switch_from_defensive_reaction_to_attack(cond="player_combat_chain_end_reached")
         # )
     )
 
-    def __init__(self):
+    def __init__(self, enemy):
         self.stance = Stance.attack
         self.sound = Sound()
+        self.enemy = enemy
 
         if self.stance == Stance.defend:
             self.defense.initial = True
@@ -67,6 +74,18 @@ class StanceStateMachine(StateMachine):
 
     def on_exit_defensive_reaction(self):
         self.stance = Stance.attack
+        self.enemy.switch_to_offense()
+
+    def chain_end_reached(self):
+        return True if self.enemy.combat_chain.end_reached() == True else False
+
+    def further_chain_links_to_play(self):
+        return (
+            True if self.enemy.combat_chain.has_unplayed_links_left() == True else False
+        )
+
+    def further_attack_reaction(self):
+        return True if self.enemy.further_attack_reaction_planned() == True else False
 
     def change_stance(self):
         self.send("cycle")

@@ -48,7 +48,7 @@ class Enemy:
         #     self.stance = Stance.defend
         # else:
         #     self.stance = Stance.attack
-        self.stance_state_machine = StanceStateMachine()
+        self.stance_state_machine = StanceStateMachine(self)
 
         self.intellect = 4
         self.talent = random.choice(list(Talent))
@@ -216,6 +216,13 @@ class Enemy:
             else:
                 return True
 
+    def check_if_further_defensive_reaction_possible(self):
+        if any(
+            [True for c in self.hand if c.card_type == CardType.defensive_reaction]
+            + [self.arsenal.is_defensive_reaction()]
+        ):
+            return True
+
     def draw(self):
         print("enemy is drawing")
         if self.deck.get_length() > 0:
@@ -308,10 +315,13 @@ class Enemy:
         self.block.reset()
 
     def base_attack(self, chain_link, reaction=False):
-        next_step_type = chain_link.get_step_type_of_next_step()
+        virtual_next_step_type = chain_link.get_virtual_next_step()
 
-        if next_step_type is not None:
-            if reaction == False and next_step_type == StepType.attack_reaction:
+        if virtual_next_step_type is not None:
+            if (
+                reaction == False
+                and virtual_next_step_type.step_type == StepType.attack_reaction
+            ):
                 self.sound.play_not_possible()
                 return
 

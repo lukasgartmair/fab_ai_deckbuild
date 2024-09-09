@@ -21,11 +21,11 @@ class StepType(Enum):
     attack_reaction = 2
 
 
-# attack_action_succession = [[1], [0, 1], [0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 0, 1]]
-# weapon_succession = [[4], [0, 4], [0, 0, 4], [0, 0, 0, 4], [0, 0, 0, 0, 4]]
+attack_action_succession = [[1], [0, 1], [0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 0, 1]]
+weapon_succession = [[4], [0, 4], [0, 0, 4], [0, 0, 0, 4], [0, 0, 0, 0, 4]]
 
-attack_action_succession = [[1]]
-weapon_succession = [[4]]
+# attack_action_succession = [[1]]
+# weapon_succession = [[4]]
 
 b_temp = []
 b_temp_2 = []
@@ -89,16 +89,16 @@ class ChainLink:
         else:
             return None
 
-    def get_step_type_of_next_step(self):
-        if self.index_in_steps(index=self.index + 1):
-            return self.steps[self.index + 1].step_type
-        else:
-            return None
-
     def get_next_step(self):
         if self.index_in_steps(index=self.index + 1):
             self.increase_index()
             return self.steps[self.index]
+        else:
+            return None
+
+    def get_virtual_next_step(self):
+        if self.index_in_steps(index=self.index + 1):
+            return self.steps[self.index + 1]
         else:
             return None
 
@@ -222,6 +222,19 @@ class CombatChain:
         self.move_reset()
         self.turn_bans = []
 
+    def has_unplayed_links_left(self):
+        # TODO verify
+        if self.iterator == -1 and self.get_length() > 0:
+            return True
+        elif (
+            self.get_length() > 0
+            and self.iterator >= 0
+            and self.iterator < self.get_length() - 1
+        ):
+            return True
+        else:
+            return False
+
     def move_reset(self):
         self.clear_chain()
         self.iterator = -1
@@ -256,6 +269,12 @@ class CombatChain:
         if self.iterator_in_chain(iterator=self.iterator + 1):
             self.increase_iterator()
             return self.chain[self.iterator]
+        else:
+            return None
+
+    def get_virtual_next_link(self):
+        if self.iterator_in_chain(iterator=self.iterator + 1):
+            return self.chain[self.iterator + 1]
         else:
             return None
 

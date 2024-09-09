@@ -132,15 +132,15 @@ class Block:
 
     def get_cards_not_intended_to_be_used_in_combat_chain(self):
         unused_cards = []
-        if self.enemy.combat_chain.get_next_link() is not None:
+        if self.enemy.combat_chain.get_virtual_next_link() is not None:
             unused_cards = [
                 c
                 for c in self.defensive_cards
                 if (
                     c
                     not in (
-                        self.enemy.combat_chain.get_next_link().get_play_cards()
-                        + self.enemy.combat_chain.get_next_link().get_pitch_cards()
+                        self.enemy.combat_chain.get_virtual_next_link().get_play_cards()
+                        + self.enemy.combat_chain.get_virtual_next_link().get_pitch_cards()
                     )
                 )
             ]

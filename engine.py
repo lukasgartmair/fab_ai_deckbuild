@@ -88,8 +88,6 @@ class GameEngine:
         state = self.enemy.stance_state_machine.current_state
         match state:
             case state if state == self.enemy.stance_state_machine.defense:
-                self.stance_state_machine.switch_from_defense_to_defensive_reaction()
-
                 self.finish_turn()
 
             case state if state == self.enemy.stance_state_machine.defensive_reaction:
@@ -99,9 +97,9 @@ class GameEngine:
                 print("switched to offense")
                 self.enemy.switch_to_offense()
 
-                # TODO only for test TODO
-                self.enemy.draw()
-                self.enemy.action_point_manager.reset()
+                # # TODO only for test TODO
+                # self.enemy.draw()
+                # self.enemy.action_point_manager.reset()
 
             case _:
                 pass
@@ -153,8 +151,8 @@ class GameEngine:
                 self.enemy.defend(player_attack)
                 self.finish_move(player_attack)
             case current_state if current_state == self.enemy.stance_state_machine.defensive_reaction:
-                if self.enemy.check_if_further_defensive_reaction_possible() == False:
-                    pass
+                if self.enemy.check_if_further_defensive_reaction_possible() == True:
+                    self.enemy.perform_defensive_reaction()
                 else:
                     self.enemy.sound.play_not_possible()
 
