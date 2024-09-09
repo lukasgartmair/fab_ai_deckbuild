@@ -71,6 +71,10 @@ class StanceStateMachine(StateMachine):
 
     def on_enter_defense(self):
         self.stance = Stance.defend
+        self.enemy.start_move()
+
+    def on_enter_defensive_reaction(self):
+        self.enemy.start_move()
 
     def on_exit_defensive_reaction(self):
         self.stance = Stance.attack

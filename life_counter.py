@@ -22,14 +22,14 @@ class LifeCounter:
     def increase_life(self, amount=1):
         self.life += amount
 
-    def calculate_life(self, player_attack, enemy_block):
+    def calculate_life(self, enemy_block):
         # print("Block balance:")
 
         block_total = enemy_block.calc_total_block()
         # print(block_total)
 
         attack_total = add_two_with_possible_none_type(
-            player_attack.physical, player_attack.arcane
+            enemy_block.player_attack.physical, enemy_block.player_attack.arcane
         )
 
         result = attack_total - block_total

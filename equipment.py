@@ -62,7 +62,7 @@ class EquipmentPiece(Card):
     def set_defending(self):
         self.is_defending = True
 
-    def finish_defensive_turn(self):
+    def finish_defensive_move(self):
         if EquipmentKeyword.blade_break in self.keywords:
             self.destroy()
         elif EquipmentKeyword.battleworn in self.keywords:

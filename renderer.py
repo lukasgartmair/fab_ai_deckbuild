@@ -469,8 +469,8 @@ class Renderer:
 
             if eq not in self.engine.enemy.played_cards:
                 self.render_card(eq, playmat_position_obj.x, playmat_position_obj.y)
-            else:
-                self.render_playmat_card_spot(playmat_position_obj)
+
+            self.render_playmat_card_spot(playmat_position_obj)
 
     def render_boost_counter(self):
         # print(self.engine.enemy.boost_counter)

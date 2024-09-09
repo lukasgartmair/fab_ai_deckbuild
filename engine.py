@@ -76,6 +76,7 @@ class GameEngine:
                 self.enemy = Enemy(self.player_class)
 
     def finish_move(self, player_attack):
+        self.enemy.finish_move()
         self.analyzer.write_move_data(player_attack)
         self.level_manager.advandce_move()
 
@@ -142,11 +143,18 @@ class GameEngine:
         current_state = self.enemy.stance_state_machine.current_state
         match current_state:
             case current_state if current_state == self.enemy.stance_state_machine.defense:
+                print()
+                print("DEFENSE STATE")
+                print()
                 if self.enemy.check_if_further_defense_possible() == False:
                     self.enemy.sound.play_not_possible()
                 self.enemy.defend(player_attack)
                 self.finish_move(player_attack)
+
             case current_state if current_state == self.enemy.stance_state_machine.defensive_reaction:
+                print()
+                print("DEFENSIVE REACTION STATE")
+                print()
                 if self.enemy.check_if_further_defensive_reaction_possible() == True:
                     self.enemy.perform_defensive_reaction()
                 else:
@@ -155,12 +163,18 @@ class GameEngine:
                 self.finish_move(player_attack)
 
             case current_state if current_state == self.enemy.stance_state_machine.attack:
+                print()
+                print("ATTACK STATE")
+                print()
                 if self.enemy.check_if_further_attack_possible() == True:
                     self.enemy.perform_attack(reaction=False)
                 else:
                     self.enemy.sound.play_not_possible()
 
             case current_state if current_state == self.enemy.stance_state_machine.attack_reaction:
+                print()
+                print("ATTACKREACTION STATE")
+                print()
                 if (
                     self.enemy.check_if_further_attack_reaction_planned(
                         self.enemy.combat_chain.get_current_link()

@@ -135,14 +135,23 @@ class Enemy:
         self.played_cards = []
         self.pitched_cards = []
 
+        self.resolve_block()
+        self.block.turn_reset()
+
         self.combat_chain.update_combat_chain()
 
     def start_move(self):
-        # self.combat_chain.update_combat_chain()
-        pass
+        for card in [c for c in self.played_cards if c.card_type == CardType.equipment]:
+            card.finish_defensive_move()
+            if card.destroyed == True:
+                self.graveyard.append(card)
 
     def finish_move(self):
-        pass
+        if self.stance_state_machine.current_state == self.stance_state_machine.defense:
+            self.block.clear_physical_block_cards()
+            self.block.player_attack.reset()
+
+            print(self.block.player_attack)
 
     def start_turn(self):
         print("started turn")
@@ -154,11 +163,6 @@ class Enemy:
         for card in self.played_cards:
             if card.card_type not in [CardType.weapon, CardType.equipment]:
                 self.graveyard.append(card)
-
-            elif card.card_type == CardType.equipment:
-                card.finish_defensive_turn()
-                if card.destroyed == True:
-                    self.graveyard.append(card)
 
         for pc in self.pitched_cards:
             self.deck.put_to_bottom(pc)
@@ -205,16 +209,14 @@ class Enemy:
 
     def check_if_further_defense_possible(self):
         if (
-            len(self.hand) == 0
+            len([c for c in self.hand if c.card_type != CardType.defensive_reaction])
+            == 0
             and len(self.equipment_suite.get_possible_blocking_pieces_in_play()) == 0
         ):
-            if self.arsenal.is_empty():
-                return False
-            elif self.arsenal.is_empty() == False:
-                if self.arsenal[0].card_type != CardType.defensive_reaction:
-                    return True
-            else:
-                return True
+            print("no further defense possible")
+            return False
+        else:
+            return True
 
     def check_if_further_defensive_reaction_possible(self):
         if any(
@@ -285,16 +287,20 @@ class Enemy:
                 self.banished_zone["intimidated_cards"].append(random_banished_card)
                 self.hand.remove(random_banished_card)
 
+        self.block.player_attack = player_attack
+
+        print(self.block.player_attack)
+
         # TODO arcane or physical first?
         if n_chance(p=0.5):
             if player_attack.arcane is not None:
-                self.block.defend_arcane(player_attack)
-            self.block.defend_physical(player_attack)
+                self.block.defend_arcane()
+            self.block.defend_physical()
         else:
-            self.block.defend_physical(player_attack)
+            self.block.defend_physical()
             if player_attack.arcane is not None:
                 self.sound.play_flip_card()
-                self.block.defend_arcane(player_attack)
+                self.block.defend_arcane()
 
         for bc in self.block.physical_block_cards:
             # print(bc)
@@ -310,32 +316,25 @@ class Enemy:
 
         if len(self.block.physical_block_cards) > 0:
             self.sound.play_block()
+        else:
+            self.sound.play_not_possible()
 
-    def perform_defensive_reaction(self, player_attack):
-        rnd_defensive_reaction = random.choice(
-            [
-                c
-                for c in self.hand + self.arsenal.get_arsenal()
-                if c.card_type == CardType.defensive_reaction
-            ]
-        )
+    def perform_defensive_reaction(self):
+        defensive_reaction = self.block.get_defensive_reaction()
 
-        self.block.physical_block_cards.append(rnd_defensive_reaction)
-        self.played_cards.append(rnd_defensive_reaction)
+        self.played_cards.append(defensive_reaction)
 
-        if rnd_defensive_reaction in self.hand:
-            self.hand.remove(rnd_defensive_reaction)
+        if defensive_reaction in self.hand:
+            self.hand.remove(defensive_reaction)
 
-        if rnd_defensive_reaction in self.arsenal.arsenal:
-            self.arsenal.remove_card(rnd_defensive_reaction)
+        if defensive_reaction in self.arsenal.arsenal:
+            self.arsenal.remove_card(defensive_reaction)
 
         if len(self.block.physical_block_cards) > 0:
             self.sound.play_block()
 
-        self.resolve_block(player_attack)
-
-    def resolve_block(self, player_attack):
-        self.life_counter.calculate_life(player_attack, self.block)
+    def resolve_block(self):
+        self.life_counter.calculate_life(self.block)
         self.block.reset()
 
     def base_attack(self, chain_link, reaction=False):
