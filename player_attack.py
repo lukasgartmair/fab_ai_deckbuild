@@ -19,11 +19,17 @@ class PlayerAttack:
     def set_values(self, inp_box=None, physical=None, arcane=None):
         if inp_box is not None:
             if inp_box.box_type == "physical":
-                self.physical = inp_box.send_input()
+                if self.physical is not None:
+                    self.physical = self.physical + inp_box.send_input()
+                else:
+                    self.physical = inp_box.send_input()
                 # print("self.physical")
                 # print(self.physical)
             elif inp_box.box_type == "arcane":
-                self.arcane = inp_box.send_input()
+                if self.arcane is not None:
+                    self.arcane = self.arcane + inp_box.send_input()
+                else:
+                    self.arcane = inp_box.send_input()
                 # print("self.arcane")
                 # print(self.arcane)
 

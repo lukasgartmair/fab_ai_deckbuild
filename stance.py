@@ -27,7 +27,7 @@ class StanceStateMachine(StateMachine):
     switch_from_defensive_reaction_to_attack = defensive_reaction.to(attack)
     switch_from_attack_to_attack_reaction = attack.to(
         attack_reaction,
-        cond=["chain_link_attack_step_finished", "combat_chain_not_emtpy"],
+        cond=["chain_link_attack_step_finished"],
     )
 
     switch_from_attack_reaction_to_attack = attack_reaction.to(
@@ -100,6 +100,8 @@ class StanceStateMachine(StateMachine):
         return False if self.enemy.combat_chain.is_empty() == True else True
 
     def chain_link_attack_step_finished(self):
+        if self.enemy.combat_chain.is_empty() == True:
+            return True
         current_link = self.enemy.combat_chain.get_current_link()
 
         if current_link is None:

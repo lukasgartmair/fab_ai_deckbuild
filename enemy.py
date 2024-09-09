@@ -172,9 +172,6 @@ class Enemy:
     def finish_move(self):
         self.block.clear_physical_block_cards()
 
-        print("PLAYER ATTACJK OHYSICAL ENEmy finish move")
-        print(self.block.player_attack.physical)
-
     def start_turn(self):
         print("started turn")
         self.combat_chain.update_combat_chain()

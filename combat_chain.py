@@ -451,15 +451,10 @@ class CombatChain:
         self, valid_combinations, playable_cards_pool, pitchable_cards_pool
     ):
         possible_chain_links = {}
-        print("before")
-
-        print(len(valid_combinations))
         if len(valid_combinations) > 0:
             rnd_subset = random.choices(
                 valid_combinations, k=(min(len(valid_combinations), self.n_rnd_subsets))
             )
-            print("after")
-            print(len(rnd_subset))
             for i, vc in enumerate(rnd_subset):
                 (
                     is_viable,
@@ -614,9 +609,6 @@ class CombatChain:
 
         # print("here")
         # print(len(calculated_chains))
-        for c in calculated_chains:
-            if len(c) > 0:
-                print(len(c))
         if len(calculated_chains) > 0:
             # print([c.calc_damage_output() for c in calculated_chains])
 
