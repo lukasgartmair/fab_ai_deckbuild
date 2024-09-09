@@ -28,95 +28,101 @@ class TestMethods(unittest.TestCase):
     def setUp(self):
         pass
 
-    # def test_combat_chain_new(self):
-    #     test_chain_link = ChainLink()
-    #     self.assertTrue(test_chain_link.is_empty() == True)
+    def test_combat_chain_new(self):
+        test_chain_link = ChainLink()
+        self.assertTrue(test_chain_link.is_empty() == True)
 
-    #     n_hand = 4
-    #     test_hand = Deck(deck_size=n_hand).cards
-    #     for t in test_hand:
-    #         t.card_type = CardType.attack_action
+        n_hand = 4
+        test_hand = Deck(deck_size=n_hand).cards
+        for t in test_hand:
+            t.card_type = CardType.attack_action
 
-    #     combinations = get_permutations(test_hand)
-    #     print(len(combinations))
-    #     self.assertTrue(len(combinations) == 64)
+        combinations = get_permutations(test_hand)
+        print(len(combinations))
+        self.assertTrue(len(combinations) == 64)
 
-    #     test_combat_chain = CombatChain(test_hand)
+        test_combat_chain = CombatChain(test_hand)
 
-    #     valid_combinations = test_combat_chain.apply_card_type_succesion_restrictions(test_hand)
+        valid_combinations = test_combat_chain.apply_card_type_succesion_restrictions(
+            test_hand
+        )
 
-    #     print(len(valid_combinations))
+        print(len(valid_combinations))
 
-    #     self.assertTrue(len(valid_combinations) == 4)
+        self.assertTrue(len(valid_combinations) == 4)
 
-    #     test_hand[-1].card_type = CardType.attack_reaction
+        test_hand[-1].card_type = CardType.attack_reaction
 
-    #     valid_combinations = test_combat_chain.apply_card_type_succesion_restrictions(test_hand)
-    #     self.assertTrue(len(valid_combinations) == 6)
+        valid_combinations = test_combat_chain.apply_card_type_succesion_restrictions(
+            test_hand
+        )
+        self.assertTrue(len(valid_combinations) == 6)
 
-    #     test_combat_chain = CombatChain(test_hand)
+        test_combat_chain = CombatChain(test_hand)
 
-    #     test_hand = Deck(deck_size=n_hand).cards
-    #     for t in test_hand:
-    #         t.card_type = CardType.attack_reaction
+        test_hand = Deck(deck_size=n_hand).cards
+        for t in test_hand:
+            t.card_type = CardType.attack_reaction
 
-    #     valid_combinations = test_combat_chain.apply_card_type_succesion_restrictions(test_hand)
+        valid_combinations = test_combat_chain.apply_card_type_succesion_restrictions(
+            test_hand
+        )
 
-    #     viables = []
-    #     for c in valid_combinations:
-    #         (
-    #             is_viable,
-    #             chain_link,
-    #             playable_cards_pool,
-    #             pitchable_cards_pool,
-    #         ) = test_combat_chain.calc_chain_link(c, test_hand, test_hand)
-    #         viables.append(is_viable)
+        viables = []
+        for c in valid_combinations:
+            (
+                is_viable,
+                chain_link,
+                playable_cards_pool,
+                pitchable_cards_pool,
+            ) = test_combat_chain.calc_chain_link(c, test_hand, test_hand)
+            viables.append(is_viable)
 
-    #     self.assertTrue(len(viables) == 0)
+        self.assertTrue(len(viables) == 0)
 
-    #     test_hand = Deck(deck_size=4).cards
-    #     for t in test_hand:
-    #         t.card_type = CardType.attack_action
+        test_hand = Deck(deck_size=4).cards
+        for t in test_hand:
+            t.card_type = CardType.attack_action
 
-    #     viables = []
-    #     possible_chain_links = {}
-    #     for i, c in enumerate(valid_combinations):
-    #         (
-    #             is_viable,
-    #             chain_link,
-    #             playable_cards_pool,
-    #             pitchable_cards_pool,
-    #         ) = test_combat_chain.calc_chain_link(c, test_hand, test_hand)
-    #         possible_chain_links[i] = {}
-    #         possible_chain_links[i]["is_viable"] = is_viable
-    #         possible_chain_links[i]["playable_cards_pool"] = playable_cards_pool
-    #         possible_chain_links[i]["pitchable_cards_pool"] = pitchable_cards_pool
-    #         print("result")
-    #         print(is_viable)
-    #         print(chain_link.play)
-    #         print()
+        viables = []
+        possible_chain_links = {}
+        for i, c in enumerate(valid_combinations):
+            (
+                is_viable,
+                chain_link,
+                playable_cards_pool,
+                pitchable_cards_pool,
+            ) = test_combat_chain.calc_chain_link(c, test_hand, test_hand)
+            possible_chain_links[i] = {}
+            possible_chain_links[i]["is_viable"] = is_viable
+            possible_chain_links[i]["playable_cards_pool"] = playable_cards_pool
+            possible_chain_links[i]["pitchable_cards_pool"] = pitchable_cards_pool
+            print("result")
+            print(is_viable)
+            print(chain_link.play)
+            print()
 
-    #     self.assertTrue(
-    #         len([v["is_viable"] for k, v in possible_chain_links.items()])
-    #         == len(valid_combinations)
-    #     )
+        self.assertTrue(
+            len([v["is_viable"] for k, v in possible_chain_links.items()])
+            == len(valid_combinations)
+        )
 
-    #     for p in possible_chain_links:
-    #         for card in p.play:
-    #             self.assertTrue(card not in p["playable_cards_pool"])
-    #             self.assertTrue(card not in p["pitchable_cards_pool"])
+        for p in possible_chain_links:
+            for card in p.play:
+                self.assertTrue(card not in p["playable_cards_pool"])
+                self.assertTrue(card not in p["pitchable_cards_pool"])
 
-    # def test_combat_chain_new_2(self):
-    #     test_hand = Deck(deck_size=4).cards
-    #     for t in test_hand:
-    #         t.card_type = CardType.attack_action
+    def test_combat_chain_new_2(self):
+        test_hand = Deck(deck_size=4).cards
+        for t in test_hand:
+            t.card_type = CardType.attack_action
 
-    #     test_hand[-1].card_type = CardType.attack_reaction
-    #     test_hand[-2].card_type = CardType.attack_reaction
+        test_hand[-1].card_type = CardType.attack_reaction
+        test_hand[-2].card_type = CardType.attack_reaction
 
-    #     test_combat_chain = CombatChain(test_hand)
+        test_combat_chain = CombatChain(test_hand)
 
-    #     test_combat_chain.update_combat_chain()
+        test_combat_chain.update_combat_chain()
 
     def test_chain_link(self):
         test_hand = Deck(deck_size=5).cards

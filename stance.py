@@ -10,6 +10,7 @@ from statemachine import StateMachine
 from statemachine.states import State
 from enum import Enum
 from sound import Sound
+import traceback
 
 
 class Stance(Enum):
@@ -25,8 +26,8 @@ class StanceStateMachine(StateMachine):
 
     switch_from_defensive_reaction_to_attack = defensive_reaction.to(attack)
     switch_from_attack_to_attack_reaction = attack.to(
-        attack_reaction, unless="has_attacks_left_in_current_link"
-    ) | attack.to(attack)
+        attack_reaction, cond="chain_link_attack_step_finished"
+    )
 
     switch_from_attack_reaction_to_attack = attack_reaction.to(
         attack, cond="further_chain_links_to_play"
@@ -66,7 +67,6 @@ class StanceStateMachine(StateMachine):
 
     def on_enter_attack(self):
         self.stance = Stance.attack
-        self.enemy.switch_to_offense()
         self.sound.play_change_stance_to_attack()
 
     def on_exit_attack_reaction(self):
@@ -81,7 +81,7 @@ class StanceStateMachine(StateMachine):
 
     def on_exit_defensive_reaction(self):
         self.stance = Stance.attack
-        self.enemy.finish_defensive_reaction()
+        self.enemy.exit_defensive_reaction()
 
     def chain_end_reached(self):
         return True if self.enemy.combat_chain.end_reached() == True else False
@@ -94,16 +94,22 @@ class StanceStateMachine(StateMachine):
     def further_attack_reaction(self):
         return True if self.enemy.further_attack_reaction_planned() == True else False
 
-    def has_attacks_left_in_current_link(self):
+    def chain_link_attack_step_finished(self):
         current_link = self.enemy.combat_chain.get_current_link()
 
         if current_link is None:
             current_link = self.enemy.combat_chain.get_next_link()
 
         if current_link is not None:
-            return True if current_link.has_attacks_left() == True else False
+            return True if current_link.attack_step_finished() == True else False
         else:
             return False
 
     def change_stance(self):
+        # try:
+        #     self.send("cycle")
+        # except:
+        #     tb = traceback.format_exc()
+        #     print(tb)
+
         self.send("cycle")

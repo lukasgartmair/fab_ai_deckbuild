@@ -144,7 +144,7 @@ class ChainLink:
         else:
             return False
 
-    def has_attacks_left(self):
+    def attack_step_finished(self):
         step_types = [s.step_type for s in self.steps.values()]
         step_types_attack = [
             True if s == StepType.attack else False for s in step_types
@@ -352,10 +352,10 @@ class CombatChain:
 
         virtual_action_point_manager = ActionPointManager()
 
-        print("here")
-        print([c.card_type.value for c in combination])
-        print([c.card_type.value for c in combination] in valid_card_type_successions)
-        print()
+        # print("here")
+        # print([c.card_type.value for c in combination])
+        # print([c.card_type.value for c in combination] in valid_card_type_successions)
+        # print()
 
         virtual_chain_link = ChainLink()
         index = 0
@@ -385,16 +385,17 @@ class CombatChain:
                                     and c.pitch > 0
                                 )
                             ]
+
                             is_viable = True
 
                     else:
                         virtual_chain_link.set_play(index, current_card)
+                        playable_cards_pool = [
+                            c
+                            for c in playable_cards_pool
+                            if (c != current_card and c not in cards_to_pitch)
+                        ]
                         is_viable = True
-                        # if current_card.card_type in [CardType.non_attack_action, CardType.attack_action]:
-                        virtual_action_point_manager.use_action_points()
-
-                    # if current_card.card_type in [CardType.non_attack_action, CardType.attack_action]:
-                    virtual_action_point_manager.handle_keywords(current_card)
 
                     playable_cards_pool = [
                         c
@@ -405,7 +406,7 @@ class CombatChain:
                     index += 1
 
                 elif current_card.card_type in [
-                    CardType.attack_reaction,
+                    CardType.non_attack_action,
                     CardType.attack_action,
                 ]:
                     if virtual_action_point_manager.has_action_points_left() == True:
@@ -607,22 +608,14 @@ class CombatChain:
         return calculated_chains
 
     def reassure_calculated_chains(self, calculated_chains):
-        print()
-        print("reassure_calculated_chains")
-        print()
         validated_chains = calculated_chains.copy()
-        print(calculated_chains)
         for cc in calculated_chains:
             for link in cc:
-                print(link)
                 link_values = [
-                    c.play.card_type for c in link["chain_link"].steps.values()
+                    c.play.card_type.value for c in link["chain_link"].steps.values()
                 ]
-
                 if link_values not in valid_card_type_successions:
                     validated_chains.remove(cc)
-
-        print(validated_chains)
         return validated_chains
 
     def update_combat_chain(self):
@@ -632,7 +625,7 @@ class CombatChain:
             self.get_playable_cards(), self.get_pitchable_cards()
         )
 
-        # calculated_chains = self.reassure_calculated_chains(calculated_chains)
+        calculated_chains = self.reassure_calculated_chains(calculated_chains)
 
         # print("here")
         # print(len(calculated_chains))

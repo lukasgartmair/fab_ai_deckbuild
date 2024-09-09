@@ -114,6 +114,10 @@ class Enemy:
 
     def initialize_play(self):
         self.draw()
+
+        if self.stance_state_machine.current_state == StanceStateMachine.attack:
+            self.initial_switch_to_offense()
+
         self.reset_play()
 
     def reset_play(self):
@@ -133,7 +137,7 @@ class Enemy:
         self.check_if_in_survival_mode()
         self.draw()
 
-    def switch_to_offense(self):
+    def initial_switch_to_offense(self):
         self.played_cards = []
         self.pitched_cards = []
 
@@ -147,12 +151,15 @@ class Enemy:
             if card.destroyed == True:
                 self.graveyard.append(card)
 
-    def finish_defensive_reaction(self):
+    def exit_defensive_reaction(self):
         self.resolve_block()
 
         self.handle_equipment_counters()
         if self.block.player_attack is not None:
             self.block.player_attack.reset()
+
+        print("switched to offense")
+        self.initial_switch_to_offense()
 
     def start_move(self):
         pass

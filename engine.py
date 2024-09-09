@@ -95,8 +95,7 @@ class GameEngine:
                 pass
 
             case state if state == self.enemy.stance_state_machine.attack:
-                print("switched to offense")
-                self.enemy.switch_to_offense()
+                pass
 
             case _:
                 pass

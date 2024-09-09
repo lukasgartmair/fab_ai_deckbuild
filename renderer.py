@@ -472,15 +472,6 @@ class Renderer:
                 or (eq in self.engine.enemy.played_cards)
                 or (eq in self.engine.enemy.graveyard)
             ):
-                print("here")
-                print(
-                    eq
-                    in [
-                        self.engine.enemy.block.physical_block_cards
-                        + self.engine.enemy.played_cards
-                        + self.engine.enemy.graveyard
-                    ]
-                )
                 self.render_playmat_card_spot(playmat_position_obj)
             else:
                 self.render_card(eq, playmat_position_obj.x, playmat_position_obj.y)

@@ -82,8 +82,8 @@ class GlobalAnalyzer:
                 # print(v_level)
 
                 self.game_stats[k_level]["n_turns"] = len(v_level.items())
-                print("here")
-                print(self.game_stats[k_level]["n_turns"])
+                # print("here")
+                # print(self.game_stats[k_level]["n_turns"])
 
                 for k_turn, v_turn in v_level.items():
                     # pprint.pprint(k_turn)
