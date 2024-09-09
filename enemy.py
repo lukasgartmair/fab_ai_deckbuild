@@ -197,8 +197,7 @@ class Enemy:
             # print("attack possible")
             return True
 
-    def check_if_further_attack_reaction_planned(self):
-        link = self.combat_chain.get_next_link()
+    def check_if_further_attack_reaction_planned(self, link):
         if link is not None:
             return True if link.has_attack_reactions_left() == True else False
         else:
@@ -309,50 +308,46 @@ class Enemy:
         self.block.reset()
 
     def base_attack(self, chain_link, reaction=False):
-        steps = []
-        if chain_link:
+        next_step_type = chain_link.get_step_type_of_next_step()
+
+        if next_step_type is not None:
+            if reaction == False and next_step_type == StepType.attack_reaction:
+                print("hererererere")
+                return
+
+            c = chain_link.get_next_step()
+            print("step index")
+            print(c.index)
+
+            print()
+            print("STEP INDEX")
+            print(c.index)
+            print()
+            self.played_cards.append(c.play)
+            self.resource_manager.use_floating_resources(c.play.cost)
+
             if reaction == False:
-                steps = [
-                    s
-                    for s in chain_link.steps.values()
-                    if s.step_type == StepType.attack
-                ]
-            elif reaction == True:
-                steps = [
-                    s
-                    for s in chain_link.steps.values()
-                    if s.step_type == StepType.attack_reaction
-                ]
+                self.action_point_manager.handle_keywords(c.play)
 
-        c = chain_link.get_next_step()
+            self.sound.play_attack(c.play)
 
-        print()
-        print("STEP INDEX")
-        print(c.index)
-        print()
-        self.played_cards.append(c.play)
-        self.resource_manager.use_floating_resources(c.play.cost)
-        self.action_point_manager.handle_keywords(c.play)
+            for p in c.pitch:
+                self.pitch_card(p)
 
-        self.sound.play_attack(c.play)
+            if reaction == False:
+                self.action_point_manager.use_action_points()
 
-        for p in c.pitch:
-            self.pitch_card(p)
+            self.print_cards()
+            self.remove_played_cards()
 
-        if reaction == False:
-            self.action_point_manager.use_action_points()
+            c.mark_done()
 
-        self.print_cards()
-        self.remove_played_cards()
+            chain_link.check_if_end_reached()
+            if chain_link.end_reached == True:
+                self.combat_chain.increase_iterator()
 
-        c.mark_done()
-
-        chain_link.check_if_end_reached()
-        if chain_link.end_reached == True:
-            self.combat_chain.increase_iterator()
-
-        # TODO find a cleaner implementation for this in te action point manager
-        self.class_specific_helper_1(c)
+            # TODO find a cleaner implementation for this in te action point manager
+            self.class_specific_helper_1(c)
 
     def class_specific_helper_1(self, card):
         pass
@@ -367,14 +362,10 @@ class Enemy:
 
     def perform_attack(self, reaction=False):
         chain_link = self.get_chain_link()
-        if chain_link is not None:
-            chain_link.check_if_end_reached()
-            if chain_link.end_reached == True:
-                chain_link = self.combat_chain.get_next_link()
 
-            if reaction == False:
-                if self.check_if_further_attack_possible() == True:
-                    self.base_attack(chain_link, reaction=False)
-            else:
-                if self.check_if_further_attack_reaction_planned() == True:
-                    self.base_attack(chain_link, reaction=True)
+        if reaction == False:
+            if self.check_if_further_attack_possible() == True:
+                self.base_attack(chain_link, reaction=False)
+        else:
+            if self.check_if_further_attack_reaction_planned(chain_link) == True:
+                self.base_attack(chain_link, reaction=True)

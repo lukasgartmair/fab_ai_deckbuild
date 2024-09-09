@@ -101,6 +101,7 @@ class GameEngine:
 
                 # TODO only for test TODO
                 self.enemy.draw()
+                self.enemy.action_point_manager.reset()
 
             case _:
                 pass
@@ -161,13 +162,18 @@ class GameEngine:
 
             case current_state if current_state == self.enemy.stance_state_machine.attack:
                 if self.enemy.check_if_further_attack_possible() == True:
-                    self.enemy.perform_attack()
+                    self.enemy.perform_attack(reaction=False)
                 else:
                     self.enemy.sound.play_not_possible()
 
             case current_state if current_state == self.enemy.stance_state_machine.attack_reaction:
-                if self.enemy.check_if_further_attack_reaction_planned() == True:
-                    self.enemy.perform_attack()
+                if (
+                    self.enemy.check_if_further_attack_reaction_planned(
+                        self.enemy.combat_chain.get_current_link()
+                    )
+                    == True
+                ):
+                    self.enemy.perform_attack(reaction=True)
                 else:
                     self.enemy.sound.play_not_possible()
 

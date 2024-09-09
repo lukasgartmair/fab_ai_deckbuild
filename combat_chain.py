@@ -89,6 +89,12 @@ class ChainLink:
         else:
             return None
 
+    def get_step_type_of_next_step(self):
+        if self.index_in_steps(index=self.index + 1):
+            return self.steps[self.index + 1].step_type
+        else:
+            return None
+
     def get_next_step(self):
         if self.index_in_steps(index=self.index + 1):
             self.increase_index()
@@ -285,6 +291,8 @@ class CombatChain:
             print(key)
 
             for k, p in link.steps.items():
+                print("STEP")
+                print(p.step_type)
                 print("play")
 
                 print(p.play.name)
