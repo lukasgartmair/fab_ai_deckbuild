@@ -188,7 +188,7 @@ class NinjaBasic(Playstyle):
             "non_attack_action": 0,
             "attack_action": 33,
             "attack_reaction": 33,
-            "defensive_reaction": 0,
+            "defensive_reaction": 50,
         }
 
         self.keywords = [Keyword.go_again, Keyword.combo]

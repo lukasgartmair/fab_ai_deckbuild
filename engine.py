@@ -97,10 +97,6 @@ class GameEngine:
                 print("switched to offense")
                 self.enemy.switch_to_offense()
 
-                # # TODO only for test TODO
-                # self.enemy.draw()
-                # self.enemy.action_point_manager.reset()
-
             case _:
                 pass
 

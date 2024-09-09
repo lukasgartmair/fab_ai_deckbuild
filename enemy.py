@@ -311,6 +311,30 @@ class Enemy:
         if len(self.block.physical_block_cards) > 0:
             self.sound.play_block()
 
+    def perform_defensive_reaction(self, player_attack):
+        rnd_defensive_reaction = random.choice(
+            [
+                c
+                for c in self.hand + self.arsenal.get_arsenal()
+                if c.card_type == CardType.defensive_reaction
+            ]
+        )
+
+        self.block.physical_block_cards.append(rnd_defensive_reaction)
+        self.played_cards.append(rnd_defensive_reaction)
+
+        if rnd_defensive_reaction in self.hand:
+            self.hand.remove(rnd_defensive_reaction)
+
+        if rnd_defensive_reaction in self.arsenal.arsenal:
+            self.arsenal.remove_card(rnd_defensive_reaction)
+
+        if len(self.block.physical_block_cards) > 0:
+            self.sound.play_block()
+
+        self.resolve_block(player_attack)
+
+    def resolve_block(self, player_attack):
         self.life_counter.calculate_life(player_attack, self.block)
         self.block.reset()
 
