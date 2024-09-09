@@ -293,7 +293,7 @@ class Enemy:
             print(c.name)
 
     def defend(self, player_attack):
-        self.combat_chain.update_combat_chain()
+        # self.combat_chain.update_combat_chain()
         if len(self.hand) > 0:
             if self.modifiers.modifier_dict["intimidate"] == True:
                 random_banished_card = random.choice(self.hand)
@@ -339,16 +339,20 @@ class Enemy:
     def perform_defensive_reaction(self):
         defensive_reaction = self.block.get_defensive_reaction()
 
-        self.played_cards.append(defensive_reaction)
+        if defensive_reaction is not None:
+            self.played_cards.append(defensive_reaction)
 
-        if defensive_reaction in self.hand:
-            self.hand.remove(defensive_reaction)
+            if defensive_reaction in self.hand:
+                self.hand.remove(defensive_reaction)
 
-        if defensive_reaction in self.arsenal.arsenal:
-            self.arsenal.remove_card(defensive_reaction)
+            if defensive_reaction in self.arsenal.arsenal:
+                self.arsenal.remove_card(defensive_reaction)
 
-        if len(self.block.physical_block_cards) > 0:
-            self.sound.play_block()
+            if len(self.block.physical_block_cards) > 0:
+                self.sound.play_block()
+
+        else:
+            self.sound.play_not_possible()
 
     def resolve_block(self):
         if self.block.player_attack is not None:

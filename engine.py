@@ -7,7 +7,7 @@ Created on Mon Nov 13 10:19:33 2023
 """
 
 from enum import Enum
-from enemy import Enemy, Stance
+from enemy import Enemy
 from statemachine import StateMachine
 from statemachine.states import State
 from level_manager import LevelManager
@@ -95,7 +95,7 @@ class GameEngine:
                 pass
 
             case state if state == self.enemy.stance_state_machine.attack:
-                pass
+                self.enemy.start_turn()
 
             case _:
                 pass
@@ -132,9 +132,6 @@ class GameEngine:
 
     def play(self, player_attack=None):
         pygame.time.wait(50)
-
-        if self.level_manager.move_index == 1:
-            self.enemy.start_turn()
 
         self.enemy.start_move()
 

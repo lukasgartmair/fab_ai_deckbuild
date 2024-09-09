@@ -37,6 +37,11 @@ class Block:
 
         self.player_attack = None
 
+    def update_defensive_hand(self):
+        self.defensive_hand = [
+            c for c in self.enemy.hand if c.card_type != CardType.defensive_reaction
+        ]
+
     def calc_total_block(self):
         # print("total_arcane_block")
         # print(self.arcane_block)
@@ -75,6 +80,7 @@ class Block:
         self.turn_bans = []
 
     def defend_physical(self):
+        self.update_defensive_hand()
         if self.enemy.modifiers.modifier_dict["dominate"] == True:
             self.defensive_cards = self.defensive_hand.copy()[:1]
         else:
@@ -128,15 +134,13 @@ class Block:
                             self.block_with_equipment_very_basic()
                         else:
                             print("here3")
-                            self.more_elaborate_block_with_unused_cards(
-                                self.player_attack
-                            )
+                            self.more_elaborate_block_with_unused_cards()
                     case _:
                         print("here4")
-                        self.more_elaborate_block_with_unused_cards(self.player_attack)
+                        self.more_elaborate_block_with_unused_cards()
 
             elif self.enemy.survival_mode == True:
-                self.block_all_physical_damage(self.player_attack)
+                self.block_all_physical_damage()
 
             self.calc_total_physical_block()
 
@@ -215,15 +219,19 @@ class Block:
     #     pass
 
     def get_defensive_reaction(self):
-        rnd_defensive_reaction = random.choice(
-            [
-                c
-                for c in self.enemy.hand + self.enemy.arsenal.get_arsenal()
-                if c.card_type == CardType.defensive_reaction
-            ]
-        )
+        rnd_defensive_reaction = None
+        if self.player_attack is not None:
+            if self.player_attack.physical is not None:
+                if self.player_attack.physical > 0:
+                    rnd_defensive_reaction = random.choice(
+                        [
+                            c
+                            for c in self.enemy.hand + self.enemy.arsenal.get_arsenal()
+                            if c.card_type == CardType.defensive_reaction
+                        ]
+                    )
 
-        self.physical_block_cards.append(rnd_defensive_reaction)
+                    self.physical_block_cards.append(rnd_defensive_reaction)
 
         return rnd_defensive_reaction
 
