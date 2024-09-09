@@ -51,7 +51,8 @@ class Enemy:
 
         self.intellect = 4
         self.talent = random.choice(list(Talent))
-        self.starting_life = random.randint(20, 41)
+        # self.starting_life = random.randint(20, 41)
+        self.starting_life = 20
         self.hand = []
         self.pile = Pile()
         self.play_key = pygame.K_SPACE
@@ -136,7 +137,6 @@ class Enemy:
         self.played_cards = []
         self.pitched_cards = []
 
-        self.resolve_block()
         self.block.turn_reset()
 
         self.combat_chain.update_combat_chain()
@@ -148,6 +148,8 @@ class Enemy:
                 self.graveyard.append(card)
 
     def finish_defensive_reaction(self):
+        self.resolve_block()
+
         self.handle_equipment_counters()
         if self.block.player_attack is not None:
             self.block.player_attack.reset()
@@ -339,6 +341,10 @@ class Enemy:
             self.sound.play_block()
 
     def resolve_block(self):
+        print()
+        print("RESOLVING BLOCK")
+        print(self.block.player_attack.physical)
+        print()
         if self.block.player_attack is not None:
             self.life_counter.calculate_life(self.block)
             self.block.reset()

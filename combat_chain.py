@@ -367,7 +367,7 @@ class CombatChain:
                             [p for p in pitchable_cards_pool if p != current_card],
                         )
                         if len(cards_to_pitch) == 0:
-                            break
+                            virtual_chain_link = None
                         else:
                             virtual_chain_link.set_play(
                                 index, current_card, cards_to_pitch
@@ -411,7 +411,7 @@ class CombatChain:
                                 [p for p in pitchable_cards_pool if p != current_card],
                             )
                             if len(cards_to_pitch) == 0:
-                                break
+                                virtual_chain_link = None
                             else:
                                 virtual_chain_link.set_play(
                                     index, current_card, cards_to_pitch
@@ -557,8 +557,6 @@ class CombatChain:
             # TODO is this here okay?
             pcl_dict = pcl_dict[0]
 
-            print(pcl_dict)
-
             virtual_playable_cards_pool = playable_cards_pool.copy()
             virtual_pitchable_cards_pool = pitchable_cards_pool.copy()
 
@@ -602,12 +600,33 @@ class CombatChain:
 
         return calculated_chains
 
+    def reassure_calculated_chains(self, calculated_chains):
+        print()
+        print("reassure_calculated_chains")
+        print()
+        validated_chains = calculated_chains.copy()
+        print(calculated_chains)
+        for cc in calculated_chains:
+            for link in cc:
+                print(link)
+                link_values = [
+                    c.play.card_type for c in link["chain_link"].steps.values()
+                ]
+
+                if link_values not in valid_card_type_successions:
+                    validated_chains.remove(cc)
+
+        print(validated_chains)
+        return validated_chains
+
     def update_combat_chain(self):
         self.move_reset()
 
         calculated_chains = self.calc_combat_chains(
             self.get_playable_cards(), self.get_pitchable_cards()
         )
+
+        # calculated_chains = self.reassure_calculated_chains(calculated_chains)
 
         # print("here")
         # print(len(calculated_chains))
