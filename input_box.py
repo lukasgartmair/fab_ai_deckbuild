@@ -41,7 +41,7 @@ class InputBox:
             return int(text_temp)
 
     def has_text(self):
-        return self.text != ""
+        return True if self.text != "" else False
 
     def reset(self):
         self.color = pygame.Color(color_palette.color4)

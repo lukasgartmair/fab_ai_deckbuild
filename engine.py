@@ -79,13 +79,13 @@ class GameEngine:
 
     def finish_move(self, player_attack):
         self.enemy.finish_move()
-        self.analyzer.write_move_data(copy.copy(player_attack))
+        # self.analyzer.write_move_data(copy.copy(player_attack))
         self.level_manager.advandce_move()
 
     def trigger_stance_switch(self):
         self.enemy.stance_state_machine.change_stance()
 
-        print("CURRENT STRATE")
+        print("CURRENT STATE")
         print(self.enemy.stance_state_machine.current_state)
 
         state = self.enemy.stance_state_machine.current_state
@@ -103,7 +103,6 @@ class GameEngine:
                 pass
 
     def finish_turn(self):
-        self.enemy.finish_turn()
         self.level_manager.advandce_turn()
 
     def advance_level(self):

@@ -85,7 +85,7 @@ class GameScene(SceneBase):
 
                             for inp_box in self.renderer.input_boxes:
                                 inp_box.reset()
-                                self.engine.player_attack.reset()
+
                             for check_box in self.renderer.check_boxes:
                                 check_box.reset()
 
@@ -105,7 +105,6 @@ class GameScene(SceneBase):
 
                         for inp_box in self.renderer.input_boxes:
                             inp_box.reset()
-                            self.engine.player_attack.reset()
 
                         for check_box in self.renderer.check_boxes:
                             check_box.reset()

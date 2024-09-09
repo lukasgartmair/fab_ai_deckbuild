@@ -503,20 +503,24 @@ class Renderer:
         text = ""
         if self.engine.enemy.block.player_attack is not None:
             if self.engine.enemy.block.player_attack.physical is not None:
-                text = "Physical: " + self.engine.enemy.block.player_attack.physical
+                text = "Physical: " + str(
+                    self.engine.enemy.block.player_attack.physical
+                )
                 self.render_text(
                     text,
                     grid.left_point(0),
                     grid.top_point(0),
                     color=color_palette.white,
+                    font=font_card_title,
                 )
             if self.engine.enemy.block.player_attack.arcane is not None:
-                text = "Arcane: " + self.engine.enemy.block.player_attack.arcane
+                text = "Arcane: " + str(self.engine.enemy.block.player_attack.arcane)
                 self.render_text(
                     text,
                     grid.left_point(0),
                     grid.top_point(1),
                     color=color_palette.white,
+                    font=font_card_title,
                 )
 
     def render_action_points(self):
