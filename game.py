@@ -11,6 +11,9 @@ import pygame
 from renderer import Renderer
 from engine import GameEngine
 from settings import FPS
+import pygamepopup
+
+pygame.init()
 
 
 class Game:

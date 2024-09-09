@@ -20,7 +20,8 @@ import PygameUtils as pu
 from playmat import Playmat
 from equipment import EquipmentType
 import image
-from stance import StanceStateMachine, Stance
+from stance import StanceStateMachine
+from pop_up_box import PopUpWindow
 
 from settings import (
     playmat_grid as grid,
@@ -71,6 +72,8 @@ class Renderer:
             + self.playmat.get_vertical_spacing() * 1.5,
             box_type="arcane",
         )
+
+        self.pop_up_window = PopUpWindow(self.window)
 
         self.input_boxes = [
             self.input_box_physical,
@@ -824,6 +827,9 @@ class Renderer:
             grid.top_point(1),
             color=color_palette.color3,
         )
+
+    def render_pop_up_window(self):
+        self.pop_up_window.display()
 
     def update_display(self):
         pygame.display.flip()
