@@ -456,7 +456,7 @@ class Renderer:
 
     def render_equipment(self):
         playmat_position_obj = None
-        for i, eq in enumerate(self.engine.enemy.equipment_suite.get_pieces_in_play()):
+        for i, eq in enumerate(self.engine.enemy.equipment_suite.get_all_pieces()):
             match eq.equipment_type:
                 case eq.equipment_type if eq.equipment_type == EquipmentType.head:
                     playmat_position_obj = self.playmat.positions.head
@@ -467,10 +467,23 @@ class Renderer:
                 case eq.equipment_type if eq.equipment_type == EquipmentType.legs:
                     playmat_position_obj = self.playmat.positions.legs
 
-            if eq not in self.engine.enemy.played_cards:
+            if (
+                eq in (self.engine.enemy.block.physical_block_cards)
+                or (eq in self.engine.enemy.played_cards)
+                or (eq in self.engine.enemy.graveyard)
+            ):
+                print("here")
+                print(
+                    eq
+                    in [
+                        self.engine.enemy.block.physical_block_cards
+                        + self.engine.enemy.played_cards
+                        + self.engine.enemy.graveyard
+                    ]
+                )
+                self.render_playmat_card_spot(playmat_position_obj)
+            else:
                 self.render_card(eq, playmat_position_obj.x, playmat_position_obj.y)
-
-            self.render_playmat_card_spot(playmat_position_obj)
 
     def render_boost_counter(self):
         # print(self.engine.enemy.boost_counter)
@@ -483,6 +496,36 @@ class Renderer:
                     str(self.engine.enemy.boost.counter) + " boost counter",
                     grid.left_point(11),
                     grid.top_point(13),
+                )
+
+    def render_log(self):
+        pygame.draw.rect(
+            self.window,
+            color_palette.black,
+            pygame.Rect(
+                grid.left_point(0),
+                grid.top_point(0),
+                card_height,
+                card_width,
+            ),
+        )
+        text = ""
+        if self.engine.enemy.block.player_attack is not None:
+            if self.engine.enemy.block.player_attack.physical is not None:
+                text = "Physical: " + self.engine.enemy.block.player_attack.physical
+                self.render_text(
+                    text,
+                    grid.left_point(0),
+                    grid.top_point(0),
+                    color=color_palette.white,
+                )
+            if self.engine.enemy.block.player_attack.arcane is not None:
+                text = "Arcane: " + self.engine.enemy.block.player_attack.arcane
+                self.render_text(
+                    text,
+                    grid.left_point(0),
+                    grid.top_point(1),
+                    color=color_palette.white,
                 )
 
     def render_action_points(self):
@@ -748,7 +791,7 @@ class Renderer:
         ).upper()
         self.render_text(
             text,
-            grid.left_point(1),
+            grid.left_point(4),
             grid.top_point(0),
             font=font,
             color=color,

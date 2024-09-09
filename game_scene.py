@@ -182,6 +182,8 @@ class GameScene(SceneBase):
 
             self.render_inputs()
 
+            self.renderer.render_log()
+
             # MECHANOLOGIST STUFF
 
             if self.engine.enemy.player_class == PlayerClass.mechanologist:

@@ -141,17 +141,20 @@ class Enemy:
         self.combat_chain.update_combat_chain()
 
     def start_move(self):
-        for card in [c for c in self.played_cards if c.card_type == CardType.equipment]:
-            card.finish_defensive_move()
-            if card.destroyed == True:
-                self.graveyard.append(card)
-
-    def finish_move(self):
         if self.stance_state_machine.current_state == self.stance_state_machine.defense:
             self.block.clear_physical_block_cards()
-            self.block.player_attack.reset()
+            if self.block.player_attack is not None:
+                self.block.player_attack.reset()
 
-            print(self.block.player_attack)
+            for card in [
+                c for c in self.played_cards if c.card_type == CardType.equipment
+            ]:
+                card.finish_defensive_move()
+                if card.destroyed == True:
+                    self.graveyard.append(card)
+
+    def finish_move(self):
+        pass
 
     def start_turn(self):
         print("started turn")
