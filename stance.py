@@ -24,7 +24,9 @@ class StanceStateMachine(StateMachine):
     defensive_reaction = State("defensive_reaction")
 
     switch_from_defensive_reaction_to_attack = defensive_reaction.to(attack)
-    switch_from_attack_to_attack_reaction = attack.to(attack_reaction)
+    switch_from_attack_to_attack_reaction = attack.to(
+        attack_reaction, unless="has_attacks_left_in_current_link"
+    )
 
     switch_from_attack_reaction_to_attack = attack_reaction.to(
         attack, cond="further_chain_links_to_play"
@@ -90,6 +92,17 @@ class StanceStateMachine(StateMachine):
 
     def further_attack_reaction(self):
         return True if self.enemy.further_attack_reaction_planned() == True else False
+
+    def has_attacks_left_in_current_link(self):
+        current_link = self.enemy.combat_chain.get_current_link()
+
+        if current_link is None:
+            current_link = self.enemy.combat_chain.get_next_link()
+
+        if current_link is not None:
+            return True if current_link.has_attacks_left() == True else False
+        else:
+            return False
 
     def change_stance(self):
         self.send("cycle")

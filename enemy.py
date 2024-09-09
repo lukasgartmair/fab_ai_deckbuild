@@ -334,8 +334,9 @@ class Enemy:
             self.sound.play_block()
 
     def resolve_block(self):
-        self.life_counter.calculate_life(self.block)
-        self.block.reset()
+        if self.block.player_attack is not None:
+            self.life_counter.calculate_life(self.block)
+            self.block.reset()
 
     def base_attack(self, chain_link, reaction=False):
         virtual_next_step_type = chain_link.get_virtual_next_step()
@@ -345,6 +346,9 @@ class Enemy:
                 reaction == False
                 and virtual_next_step_type.step_type == StepType.attack_reaction
             ):
+                self.sound.play_not_possible()
+                return
+            if reaction == True and virtual_next_step_type.step_type == StepType.attack:
                 self.sound.play_not_possible()
                 return
 
