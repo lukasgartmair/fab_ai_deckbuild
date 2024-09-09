@@ -10,7 +10,6 @@ import pygame
 
 from card import card_colors
 from check_box import CheckBox
-from enemy import Stance
 from input_box import InputBox
 from playstyle import Keyword, CardType
 from colors import color_palette
@@ -21,7 +20,7 @@ import PygameUtils as pu
 from playmat import Playmat
 from equipment import EquipmentType
 import image
-from stance import StanceStateMachine
+from stance import StanceStateMachine, Stance
 
 from settings import (
     playmat_grid as grid,
