@@ -106,10 +106,10 @@ class StanceStateMachine(StateMachine):
             return False
 
     def change_stance(self):
-        # try:
-        #     self.send("cycle")
-        # except:
-        #     tb = traceback.format_exc()
-        #     print(tb)
+        try:
+            self.send("cycle")
+        except:
+            tb = traceback.format_exc()
+            print(tb)
 
-        self.send("cycle")
+        # self.send("cycle")

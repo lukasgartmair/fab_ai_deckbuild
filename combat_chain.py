@@ -362,50 +362,8 @@ class CombatChain:
         for current_card in combination:
             cards_to_pitch = []
             if current_card in playable_cards_pool:
-                if current_card.card_type == CardType.attack_reaction:
-                    if current_card.cost > 0:
-                        cards_to_pitch = self.get_cards_to_pitch(
-                            current_card,
-                            [p for p in pitchable_cards_pool if p != current_card],
-                        )
-                        if len(cards_to_pitch) == 0:
-                            is_viable = False
-                            virtual_chain_link = None
-                            break
-                        else:
-                            virtual_chain_link.set_play(
-                                index, current_card, cards_to_pitch
-                            )
-                            pitchable_cards_pool = [
-                                c
-                                for c in pitchable_cards_pool
-                                if (
-                                    c not in cards_to_pitch
-                                    and c != current_card
-                                    and c.pitch > 0
-                                )
-                            ]
-
-                            is_viable = True
-
-                    else:
-                        virtual_chain_link.set_play(index, current_card)
-                        playable_cards_pool = [
-                            c
-                            for c in playable_cards_pool
-                            if (c != current_card and c not in cards_to_pitch)
-                        ]
-                        is_viable = True
-
-                    playable_cards_pool = [
-                        c
-                        for c in playable_cards_pool
-                        if (c != current_card and c not in cards_to_pitch)
-                    ]
-
-                    index += 1
-
-                elif current_card.card_type in [
+                # ATTACK
+                if current_card.card_type in [
                     CardType.non_attack_action,
                     CardType.attack_action,
                 ]:
@@ -423,34 +381,61 @@ class CombatChain:
                                 virtual_chain_link.set_play(
                                     index, current_card, cards_to_pitch
                                 )
-                                pitchable_cards_pool = [
-                                    c
-                                    for c in pitchable_cards_pool
-                                    if (
-                                        c not in cards_to_pitch
-                                        and c != current_card
-                                        and c.pitch > 0
-                                    )
-                                ]
+                                playable_cards_pool.remove(current_card)
+                                for p in cards_to_pitch:
+                                    pitchable_cards_pool.remove(p)
+                                    if p in playable_cards_pool:
+                                        playable_cards_pool.remove(p)
+
                                 is_viable = True
                                 virtual_action_point_manager.use_action_points()
                         else:
                             virtual_chain_link.set_play(index, current_card)
+                            playable_cards_pool.remove(current_card)
+                            if current_card in pitchable_cards_pool:
+                                pitchable_cards_pool.remove(current_card)
                             is_viable = True
                             virtual_action_point_manager.use_action_points()
 
                         virtual_action_point_manager.handle_keywords(current_card)
 
-                        playable_cards_pool = [
-                            c
-                            for c in playable_cards_pool
-                            if (c != current_card and c not in cards_to_pitch)
-                        ]
-
                         index += 1
 
                     else:
                         break
+
+                # ATTACK REACTION
+                elif current_card.card_type == CardType.attack_reaction:
+                    if current_card.cost > 0:
+                        cards_to_pitch = self.get_cards_to_pitch(
+                            current_card,
+                            [p for p in pitchable_cards_pool if p != current_card],
+                        )
+                        if len(cards_to_pitch) == 0:
+                            is_viable = False
+                            virtual_chain_link = None
+                            break
+                        else:
+                            virtual_chain_link.set_play(
+                                index, current_card, cards_to_pitch
+                            )
+                            playable_cards_pool.remove(current_card)
+                            for p in cards_to_pitch:
+                                pitchable_cards_pool.remove(p)
+                                if p in playable_cards_pool:
+                                    playable_cards_pool.remove(p)
+
+                            is_viable = True
+
+                    else:
+                        virtual_chain_link.set_play(index, current_card)
+                        playable_cards_pool.remove(current_card)
+                        if current_card in pitchable_cards_pool:
+                            pitchable_cards_pool.remove(current_card)
+
+                        is_viable = True
+
+                    index += 1
 
         has_action_point_left = virtual_action_point_manager.has_action_points_left()
 

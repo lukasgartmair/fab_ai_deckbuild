@@ -280,8 +280,7 @@ class Enemy:
     def pitch_card(self, c):
         self.pitched_cards.append(c)
         self.resource_manager.pitch_floating_resources(c.pitch)
-        if c in self.hand:
-            self.hand.remove(c)
+        self.hand.remove(c)
 
     def print_cards(self):
         print("HAND")
