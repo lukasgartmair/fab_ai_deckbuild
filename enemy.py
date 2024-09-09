@@ -312,17 +312,11 @@ class Enemy:
 
         if next_step_type is not None:
             if reaction == False and next_step_type == StepType.attack_reaction:
-                print("hererererere")
+                self.sound.play_not_possible()
                 return
 
             c = chain_link.get_next_step()
-            print("step index")
-            print(c.index)
 
-            print()
-            print("STEP INDEX")
-            print(c.index)
-            print()
             self.played_cards.append(c.play)
             self.resource_manager.use_floating_resources(c.play.cost)
 
