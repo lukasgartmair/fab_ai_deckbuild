@@ -84,7 +84,7 @@ class ChainLink:
     def get_current_step(self):
         if self.index == -1 and self.get_length() > 0:
             return self.chain[0]
-        if self.index_in_steps():
+        elif self.index_in_steps() == True:
             return self.steps[self.index]
         else:
             return None
@@ -247,7 +247,7 @@ class CombatChain:
     def get_current_link(self):
         if self.iterator == -1 and self.get_length() > 0:
             return self.chain[0]
-        if self.iterator_in_chain(self.iterator):
+        elif self.iterator_in_chain(self.iterator):
             return self.chain[self.iterator]
         else:
             return None

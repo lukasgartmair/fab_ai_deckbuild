@@ -611,17 +611,12 @@ class Renderer:
         color = color_palette.white
         if card.card_type in [
             CardType.attack_action,
-            CardType.attack_reaction,
             CardType.weapon,
         ]:
             text = str(card.physical)
             color = color = color_palette.white
 
-        # TODO hack for now dont render the plus if last link
         elif card.card_type in [CardType.non_attack_action, CardType.attack_reaction]:
-            # if self.engine.enemy.combat_chain.is_last_link(card):
-            #     text = str(card.physical)
-            # else:
             text = "+" + str(card.physical)
 
         self.render_text(text, card.x, card.y + card_height, color=color)
