@@ -6,7 +6,6 @@ Created on Tue Jul 16 12:00:56 2024
 @author: lukasgartmair
 """
 
-from enum import Enum
 import itertools
 import pygame
 import numpy as np

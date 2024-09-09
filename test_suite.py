@@ -11,7 +11,6 @@ import unittest
 from engine import GameEngine, GameStateMachine
 import numpy as np
 from enemy import Stance, Enemy
-import random
 from modifiers import Modifiers
 from deck import Deck
 from card import Card

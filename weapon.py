@@ -8,7 +8,6 @@ Created on Sun Aug  4 13:59:06 2024
 
 from enum import Enum
 import numpy as np
-import random
 import pygame
 from playstyle import PlayerClass, CardType
 from wonderwords import RandomWord

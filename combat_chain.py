@@ -12,7 +12,7 @@ from action_point_manager import ActionPointManager
 from pitch import determine_pitch_combination
 import random
 import numpy as np
-from playstyle import CardType, Keyword
+from playstyle import CardType
 from arsenal import Arsenal
 
 
@@ -23,9 +23,6 @@ class StepType(Enum):
 
 attack_action_succession = [[1], [0, 1], [0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 0, 1]]
 weapon_succession = [[4], [0, 4], [0, 0, 4], [0, 0, 0, 4], [0, 0, 0, 0, 4]]
-
-# attack_action_succession = [[1]]
-# weapon_succession = [[4]]
 
 b_temp = []
 b_temp_2 = []

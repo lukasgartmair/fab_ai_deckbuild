@@ -6,18 +6,15 @@ Created on Mon Jul 15 13:55:49 2024
 @author: lukasgartmair
 """
 
-import numpy as np
-import itertools
 from deck import Deck
 from pile import Pile
-from enum import Enum
-from playstyle import Keyword, PlayerClass, Talent, CardType, get_playstyle
+from playstyle import PlayerClass, Talent, CardType, get_playstyle
 from equipment import EquipmentSuite
 from weapon import initialize_weapons
 import random
 from fantasynames.fantasy_identity import FantasyIdentity
 from block import Block
-from utils import n_chance, shift_list
+from utils import n_chance
 from ability import Ability
 from life_counter import LifeCounter
 import pygame
@@ -29,7 +26,7 @@ import image
 from action_point_manager import ActionPointManager
 from resource_manager import ResourceManager
 from arsenal import Arsenal
-from stance import StanceStateMachine, Stance
+from stance import StanceStateMachine
 
 
 class Enemy:
