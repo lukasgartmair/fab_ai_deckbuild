@@ -20,6 +20,7 @@ from guardian import Guardian
 from ranger import Ranger
 from stance import StanceStateMachine
 import pygame
+import copy
 
 
 class WinCondition(Enum):
@@ -78,7 +79,7 @@ class GameEngine:
 
     def finish_move(self, player_attack):
         self.enemy.finish_move()
-        self.analyzer.write_move_data(player_attack)
+        self.analyzer.write_move_data(copy.copy(player_attack))
         self.level_manager.advandce_move()
 
     def trigger_stance_switch(self):

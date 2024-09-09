@@ -143,7 +143,12 @@ class Enemy:
 
         self.block.turn_reset()
 
-        self.combat_chain.update_combat_chain()
+        combat_chain_emtpy = True
+        for i in range(25):
+            self.combat_chain.update_combat_chain()
+            combat_chain_emtpy = self.combat_chain.is_empty()
+            if combat_chain_emtpy == True:
+                break
 
     def handle_equipment_counters(self):
         for card in [c for c in self.played_cards if c.card_type == CardType.equipment]:
@@ -166,6 +171,9 @@ class Enemy:
 
     def finish_move(self):
         self.block.clear_physical_block_cards()
+
+        print("PLAYER ATTACJK OHYSICAL ENEmy finish move")
+        print(self.block.player_attack.physical)
 
     def start_turn(self):
         print("started turn")
@@ -191,7 +199,6 @@ class Enemy:
 
         self.block.reset()
 
-        print("DEFENSE RECOGNIZED")
         self.switch_to_defense()
 
     def check_if_further_attack_reaction_possible(self):
@@ -302,8 +309,6 @@ class Enemy:
 
         self.block.player_attack = player_attack
 
-        print(self.block.player_attack)
-
         # TODO arcane or physical first?
         if n_chance(p=0.5):
             if player_attack.arcane is not None:
@@ -332,6 +337,9 @@ class Enemy:
         else:
             self.sound.play_not_possible()
 
+        print("PLAYER ATTACJK OHYSICAL ENEMY END")
+        print(self.block.player_attack.physical)
+
     def perform_defensive_reaction(self):
         defensive_reaction = self.block.get_defensive_reaction()
 
@@ -348,8 +356,8 @@ class Enemy:
 
     def resolve_block(self):
         print()
-        # print("RESOLVING BLOCK")
-        # print(self.block.player_attack.physical)
+        print("RESOLVING BLOCK")
+        print(self.block.player_attack.physical)
         print()
         if self.block.player_attack is not None:
             self.life_counter.calculate_life(self.block)

@@ -64,6 +64,11 @@ class GameScene(SceneBase):
 
                 if event.key == pygame.K_SPACE:
                     self.render()
+                    print()
+                    print("PLAYER ATTACK")
+                    print(self.engine.player_attack)
+                    print(self.engine.player_attack.physical)
+                    print()
                     if (
                         self.engine.state_machine.current_state
                         == self.engine.state_machine.playing

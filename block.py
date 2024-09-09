@@ -82,6 +82,9 @@ class Block:
 
         np.random.shuffle(self.defensive_cards)
 
+        print("PLAYER ATTACJK OHYSICAL BLOCK")
+        print(self.player_attack.physical)
+
         if self.player_attack.physical is not None:
             if self.enemy.survival_mode == False:
                 match self.player_attack.physical:
@@ -159,7 +162,6 @@ class Block:
             c.set_defending()
             self.physical_block_cards.append(c)
 
-            print("HERERERE")
             for p in self.enemy.played_cards:
                 print(p.name)
 
