@@ -66,7 +66,8 @@ class ChainLink:
         self,
     ):
         self.steps = {}
-        self.index = 0
+        self.index = -1
+        self.end_reached = False
 
     def print_link(self):
         print("CHAIN LINK")
@@ -81,18 +82,33 @@ class ChainLink:
         self.index += 1
 
     def get_current_step(self):
-        return self.steps[self.index]
-
-    def get_next_step(self):
-        if self.index == 0:
+        if self.index == -1 and self.get_length() > 0:
+            return self.chain[0]
+        if self.index_in_steps():
             return self.steps[self.index]
         else:
-            if len(self.steps) <= self.index + 1:
-                self.increase_index()
-                return self.steps[self.index]
+            return None
+
+    def get_next_step(self):
+        if self.index_in_steps(index=self.index + 1):
+            self.increase_index()
+            return self.steps[self.index]
+        else:
+            return None
+
+    def get_length(self):
+        return len(self.steps)
+
+    def index_in_steps(self, index):
+        if index is None:
+            index = self.index
+        if index in self.steps or index == -1:
+            return True
+        else:
+            return False
 
     def is_empty(self):
-        return True if len(self.play) == 0 else False
+        return True if len(self.steps) == 0 else False
 
     def set_play(self, index, card, pitch=[]):
         self.steps[index] = ChainLinkStep(index, card, pitch)
@@ -130,11 +146,9 @@ class ChainLink:
         else:
             return False
 
-    def end_reached(self):
+    def check_if_end_reached(self):
         if all([s.done for s in self.steps.values()]):
-            return True
-        else:
-            return False
+            self.end_reached = True
 
 
 class CombatChain:
@@ -154,6 +168,8 @@ class CombatChain:
 
         self.n_rnd_subsets = 200
 
+        self.update_combat_chain()
+
     def get_length(self):
         return len(self.chain)
 
@@ -164,13 +180,15 @@ class CombatChain:
             return False
 
     def end_reached(self):
-        if self.iterator_in_chain():
+        if self.iterator_in_chain(self.iterator):
             return False
         else:
             return True
 
-    def iterator_in_chain(self):
-        if self.iterator in self.chain:
+    def iterator_in_chain(self, iterator):
+        if iterator is None:
+            iterator = self.iterator
+        if iterator in self.chain or iterator == -1:
             return True
         else:
             return False
@@ -200,7 +218,7 @@ class CombatChain:
 
     def move_reset(self):
         self.clear_chain()
-        self.iterator = 0
+        self.iterator = -1
         self.playable_cards = []
         self.pitch_bans = []
 
@@ -220,19 +238,20 @@ class CombatChain:
     def get_pitchable_cards(self):
         return [c for c in self.hand if c.pitch > 0]
 
-    def get_next_link(self):
-        if self.iterator_in_chain():
-            if self.iterator == 0:
-                return self.chain[self.iterator]
-            else:
-                self.iterator.increase_iterator()
-                return self.chain[self.iterator]
+    def get_current_link(self):
+        if self.iterator == -1 and self.get_length() > 0:
+            return self.chain[0]
+        if self.iterator_in_chain(self.iterator):
+            return self.chain[self.iterator]
         else:
             return None
 
-    def get_current_link(self):
-        if self.iterator_in_chain():
+    def get_next_link(self):
+        if self.iterator_in_chain(iterator=self.iterator + 1):
+            self.increase_iterator()
             return self.chain[self.iterator]
+        else:
+            return None
 
     def get_pitch_for_card(self, card, pitch_totals):
         return determine_pitch_combination(card.cost, pitch_totals)

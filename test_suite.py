@@ -41,7 +41,7 @@ class TestMethods(unittest.TestCase):
     #     print(len(combinations))
     #     self.assertTrue(len(combinations) == 64)
 
-    #     test_combat_chain = CombatChain()
+    #     test_combat_chain = CombatChain(test_hand)
 
     #     valid_combinations = test_combat_chain.apply_card_type_succesion_restrictions(test_hand)
 
@@ -54,7 +54,7 @@ class TestMethods(unittest.TestCase):
     #     valid_combinations = test_combat_chain.apply_card_type_succesion_restrictions(test_hand)
     #     self.assertTrue(len(valid_combinations) == 6)
 
-    #     test_combat_chain = CombatChain()
+    #     test_combat_chain = CombatChain(test_hand)
 
     #     test_hand = Deck(deck_size=n_hand).cards
     #     for t in test_hand:
@@ -106,44 +106,77 @@ class TestMethods(unittest.TestCase):
     #             self.assertTrue(card not in p["playable_cards_pool"])
     #             self.assertTrue(card not in p["pitchable_cards_pool"])
 
-    def test_combat_chain_new_2(self):
-        test_hand = Deck(deck_size=4).cards
+    # def test_combat_chain_new_2(self):
+    #     test_hand = Deck(deck_size=4).cards
+    #     for t in test_hand:
+    #         t.card_type = CardType.attack_action
+
+    #     test_hand[-1].card_type = CardType.attack_reaction
+    #     test_hand[-2].card_type = CardType.attack_reaction
+
+    #     test_combat_chain = CombatChain(test_hand)
+
+    #     test_combat_chain.update_combat_chain()
+
+    def test_chain_link(self):
+        test_hand = Deck(deck_size=5).cards
         for t in test_hand:
             t.card_type = CardType.attack_action
 
-        test_hand[-1].card_type = CardType.attack_reaction
-        test_hand[-2].card_type = CardType.attack_reaction
-
         test_combat_chain = CombatChain(test_hand)
 
-        test_combat_chain.update_combat_chain()
+        print("length combat chain")
+        print(test_combat_chain.get_length())
 
-    def test_is_interrupted(self):
-        test_hand = Deck(deck_size=10).cards
-        test_combat_chain = CombatChain(test_hand)
-        test_action_point_array = [0, 0, 0]
-        is_interrupted = test_combat_chain.succession_is_interrupted(
-            test_action_point_array
-        )
-        self.assertTrue(is_interrupted == True)
+        test_chain_link = test_combat_chain.get_current_link()
 
-        test_action_point_array = [1, 0, 1, 0]
-        is_interrupted = test_combat_chain.succession_is_interrupted(
-            test_action_point_array
-        )
-        self.assertTrue(is_interrupted == True)
+        test_combat_chain.add_link(1, test_chain_link)
 
-        test_action_point_array = [1, 1, 0]
-        is_interrupted = test_combat_chain.succession_is_interrupted(
-            test_action_point_array
-        )
-        self.assertTrue(is_interrupted == False)
+        self.assertTrue(test_chain_link.index == -1)
+        self.assertTrue(test_combat_chain.iterator == -1)
 
-        test_action_point_array = [1, 1, 1, 0, 1]
-        is_interrupted = test_combat_chain.succession_is_interrupted(
-            test_action_point_array
-        )
-        self.assertTrue(is_interrupted == True)
+        test_chain_link = test_combat_chain.get_next_link()
+
+        self.assertTrue(test_chain_link.index == -1)
+        self.assertTrue(test_combat_chain.iterator == 0)
+
+        test_chain_link = test_combat_chain.get_next_link()
+
+        self.assertTrue(test_chain_link.index == -1)
+        self.assertTrue(test_combat_chain.iterator == 1)
+
+        test_chain_link = test_combat_chain.get_next_link()
+        print(test_chain_link)
+
+        self.assertTrue(test_chain_link == None)
+        self.assertTrue(test_combat_chain.iterator == 1)
+
+    # def test_is_interrupted(self):
+    #     test_hand = Deck(deck_size=10).cards
+    #     test_combat_chain = CombatChain(test_hand)
+    #     test_action_point_array = [0, 0, 0]
+    #     is_interrupted = test_combat_chain.succession_is_interrupted(
+    #         test_action_point_array
+    #     )
+    #     self.assertTrue(is_interrupted == True)
+
+    #     test_action_point_array = [1, 0, 1, 0]
+    #     is_interrupted = test_combat_chain.succession_is_interrupted(
+    #         test_action_point_array
+    #     )
+    #     self.assertTrue(is_interrupted == True)
+
+    #     test_action_point_array = [1, 1, 0]
+    #     is_interrupted = test_combat_chain.succession_is_interrupted(
+    #         test_action_point_array
+    #     )
+    #     self.assertTrue(is_interrupted == False)
+
+    #     test_action_point_array = [1, 1, 1, 0, 1]
+    #     is_interrupted = test_combat_chain.succession_is_interrupted(
+    #         test_action_point_array
+    #     )
+    #     self.assertTrue(is_interrupted == True)
 
     # def test_combat_chain(self):
     #     n_hand = 4

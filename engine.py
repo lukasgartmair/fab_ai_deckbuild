@@ -85,17 +85,22 @@ class GameEngine:
         print("CURRENT STRATE")
         print(self.enemy.stance_state_machine.current_state)
 
-        match self.enemy.stance_state_machine.current_state:
-            case self.enemy.stance_state_machine.current_state if self.enemy.stance_state_machine.current_state == self.enemy.stance_state_machine.defense:
+        state = self.enemy.stance_state_machine.current_state
+        match state:
+            case state if state == self.enemy.stance_state_machine.defense:
                 self.stance_state_machine.switch_from_defense_to_defensive_reaction()
 
                 self.finish_turn()
 
-            case self.enemy.stance_state_machine.current_state if self.enemy.stance_state_machine.current_state == self.enemy.stance_state_machine.defensive_reaction:
+            case state if state == self.enemy.stance_state_machine.defensive_reaction:
                 pass
 
-            case self.enemy.stance_state_machine.current_state if self.enemy.stance_state_machine.current_state == self.enemy.stance_state_machine.attack:
+            case state if state == self.enemy.stance_state_machine.attack:
+                print("switched to offense")
                 self.enemy.switch_to_offense()
+
+                # TODO only for test TODO
+                self.enemy.draw()
 
             case _:
                 pass
@@ -162,7 +167,7 @@ class GameEngine:
 
             case current_state if current_state == self.enemy.stance_state_machine.attack_reaction:
                 if self.enemy.check_if_further_attack_reaction_planned() == True:
-                    self.enemy.perform_attack_reaction()
+                    self.enemy.perform_attack()
                 else:
                     self.enemy.sound.play_not_possible()
 

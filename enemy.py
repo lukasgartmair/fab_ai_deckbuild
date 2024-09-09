@@ -188,9 +188,9 @@ class Enemy:
         if (
             self.combat_chain.is_empty()
             or self.combat_chain.end_reached()
-            or self.combat_chain.get_next_link().go_to_reaction_step() == True
+            or self.combat_chain.get_current_link().go_to_reaction_step() == True
         ):
-            # print("NO attack possible")
+            print("NO attack possible")
             return False
 
         else:
@@ -324,29 +324,35 @@ class Enemy:
                     if s.step_type == StepType.attack_reaction
                 ]
 
-        for c in steps:
-            c = chain_link.get_next_step()
-            self.played_cards.append(c.play)
-            self.resource_manager.use_floating_resources(c.play.cost)
-            self.action_point_manager.handle_keywords(c.play)
+        c = chain_link.get_next_step()
 
-            self.sound.play_attack(c.play)
+        print()
+        print("STEP INDEX")
+        print(c.index)
+        print()
+        self.played_cards.append(c.play)
+        self.resource_manager.use_floating_resources(c.play.cost)
+        self.action_point_manager.handle_keywords(c.play)
 
-            for p in c.pitch:
-                self.pitch_card(p)
+        self.sound.play_attack(c.play)
 
-            if reaction == False:
-                self.action_point_manager.use_action_points()
+        for p in c.pitch:
+            self.pitch_card(p)
 
-            self.print_cards()
-            self.remove_played_cards()
+        if reaction == False:
+            self.action_point_manager.use_action_points()
 
-            c.mark_done()
+        self.print_cards()
+        self.remove_played_cards()
 
-            if chain_link.end_reached() == True:
-                self.combat_chain.increase_iterator()
-            # TODO find a cleaner implementation for this in te action point manager
-            self.class_specific_helper_1(c)
+        c.mark_done()
+
+        chain_link.check_if_end_reached()
+        if chain_link.end_reached == True:
+            self.combat_chain.increase_iterator()
+
+        # TODO find a cleaner implementation for this in te action point manager
+        self.class_specific_helper_1(c)
 
     def class_specific_helper_1(self, card):
         pass
@@ -354,21 +360,21 @@ class Enemy:
     def get_chain_link(self):
         chain_link = self.combat_chain.get_current_link()
         if chain_link is not None:
-            if chain_link.end_reached() == True:
+            chain_link.check_if_end_reached()
+            if chain_link.end_reached == True:
                 chain_link = self.combat_chain.get_next_link()
         return chain_link
 
-    def perform_attack(self):
+    def perform_attack(self, reaction=False):
         chain_link = self.get_chain_link()
         if chain_link is not None:
-            if chain_link.end_reached() == True:
+            chain_link.check_if_end_reached()
+            if chain_link.end_reached == True:
                 chain_link = self.combat_chain.get_next_link()
 
-            if self.check_if_further_attack_possible() == True:
-                self.base_attack(chain_link, reaction=False)
-
-    def perform_attack_reaction(self):
-        chain_link = self.get_chain_link()
-        if chain_link is not None:
-            if self.check_if_further_attack_reaction_possible() == True:
-                self.base_attack(chain_link, reaction=True)
+            if reaction == False:
+                if self.check_if_further_attack_possible() == True:
+                    self.base_attack(chain_link, reaction=False)
+            else:
+                if self.check_if_further_attack_reaction_planned() == True:
+                    self.base_attack(chain_link, reaction=True)
