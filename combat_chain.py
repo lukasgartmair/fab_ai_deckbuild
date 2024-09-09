@@ -43,6 +43,7 @@ attack_action_succession += b_temp
 weapon_succession += b_temp_2
 
 valid_card_type_successions = attack_action_succession + weapon_succession
+random.shuffle(valid_card_type_successions)
 
 print(valid_card_type_successions)
 
@@ -266,6 +267,7 @@ class CombatChain:
                 CardType.attack_action,
                 CardType.non_attack_action,
                 CardType.attack_reaction,
+                CardType.weapon,
             ]
             and c not in self.turn_bans
         ]
@@ -366,6 +368,7 @@ class CombatChain:
                 if current_card.card_type in [
                     CardType.non_attack_action,
                     CardType.attack_action,
+                    CardType.weapon,
                 ]:
                     if virtual_action_point_manager.has_action_points_left() == True:
                         if current_card.cost > 0:

@@ -108,6 +108,9 @@ class Weapon(Card):
             case power if 7 <= power:
                 self.cost = 4
 
+        # TODO for test
+        self.cost = 0
+
         self.color = CardColor.red
         self.card_type = CardType.weapon
 
