@@ -24,7 +24,9 @@ class StanceStateMachine(StateMachine):
     defense = State("defense")
     defensive_reaction = State("defensive_reaction")
 
-    switch_from_defensive_reaction_to_attack = defensive_reaction.to(attack)
+    switch_from_defensive_reaction_to_attack = defensive_reaction.to(
+        attack, unless="continue_combat_chain"
+    )
     switch_from_attack_to_attack_reaction = attack.to(
         attack_reaction,
         cond=["chain_link_attack_step_finished"],
@@ -47,12 +49,10 @@ class StanceStateMachine(StateMachine):
             | switch_from_attack_reaction_to_attack
         )
         | switch_from_defense_to_defensive_reaction
-        | switch_from_defensive_reaction_to_attack
-        # TODO defensive reaction
-        # | (
-        #     switch_from_defensive_reaction_to_defense
-        #     | switch_from_defensive_reaction_to_attack(cond="player_combat_chain_end_reached")
-        # )
+        | (
+            switch_from_defensive_reaction_to_defense
+            | switch_from_defensive_reaction_to_attack
+        )
     )
 
     def __init__(self, enemy):
@@ -111,6 +111,9 @@ class StanceStateMachine(StateMachine):
             return True if current_link.attack_step_finished() == True else False
         else:
             return False
+
+    def continue_combat_chain(self, continue_combat_chain_var):
+        return continue_combat_chain_var
 
     def change_stance(self):
         try:

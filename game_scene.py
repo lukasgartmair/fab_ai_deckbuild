@@ -13,9 +13,12 @@ from playstyle import PlayerClass
 from game import Game
 from sound import Sound
 from stance import StanceStateMachine
+from pop_up_window import COMBAT_CHAIN_MENU
 
 
 class GameScene(SceneBase):
+    waiting_for_user_input = False
+
     def __init__(self, *kargs):
         super().__init__(*kargs)
         # print("Game Scene")
@@ -99,7 +102,19 @@ class GameScene(SceneBase):
                         self.engine.state_machine.current_state
                         == self.engine.state_machine.playing
                     ):
+                        print("HERE  xhhxhx")
+                        if (
+                            self.engine.enemy.stance_state_machine.current_state
+                            == StanceStateMachine.defensive_reaction
+                        ):
+                            self.waiting_for_user_input = True
+
                         self.engine.trigger_stance_switch()
+
+                        # if self.renderer.pop_up_window.continue_combat_chain == False:
+                        #     self.engine.trigger_stance_switch()
+                        # else:
+                        #     break
 
                         for inp_box in self.renderer.input_boxes:
                             inp_box.reset()
@@ -184,7 +199,8 @@ class GameScene(SceneBase):
 
             self.renderer.render_log()
 
-            self.renderer.render_pop_up_window()
+            if self.waiting_for_user_input == True:
+                self.renderer.render_pop_up_window()
 
             # MECHANOLOGIST STUFF
 

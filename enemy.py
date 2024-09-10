@@ -112,10 +112,10 @@ class Enemy:
     def initialize_play(self):
         self.draw()
 
+        self.reset_play()
+
         if self.stance_state_machine.current_state == StanceStateMachine.attack:
             self.initial_switch_to_offense()
-
-        self.reset_play()
 
     def reset_play(self):
         self.combat_chain.turn_reset()
@@ -140,11 +140,9 @@ class Enemy:
 
         self.block.turn_reset()
 
-        combat_chain_emtpy = True
         for i in range(25):
             self.combat_chain.update_combat_chain()
-            combat_chain_emtpy = self.combat_chain.is_empty()
-            if combat_chain_emtpy == True:
+            if self.combat_chain.is_empty() == False:
                 break
 
     def handle_equipment_counters(self):
