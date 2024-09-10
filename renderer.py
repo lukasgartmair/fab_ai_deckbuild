@@ -503,10 +503,10 @@ class Renderer:
             ),
         )
         text = ""
-        if self.engine.enemy.block.player_attack is not None:
-            if self.engine.enemy.block.player_attack.physical is not None:
+        if self.engine.player_attack is not None:
+            if self.engine.player_attack.physical is not None:
                 text = "Physical: " + str(
-                    self.engine.enemy.block.player_attack.physical
+                    self.engine.player_attack.physical.get_latest_step_value()
                 )
                 self.render_text(
                     text,
@@ -515,8 +515,10 @@ class Renderer:
                     color=color_palette.white,
                     font=font_card_title,
                 )
-            if self.engine.enemy.block.player_attack.arcane is not None:
-                text = "Arcane: " + str(self.engine.enemy.block.player_attack.arcane)
+            if self.engine.player_attack.arcane is not None:
+                text = "Arcane: " + str(
+                    self.engine.player_attack.arcane.get_latest_step_value()
+                )
                 self.render_text(
                     text,
                     grid.left_point(0),

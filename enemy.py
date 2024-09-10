@@ -299,20 +299,20 @@ class Enemy:
                 self.banished_zone["intimidated_cards"].append(random_banished_card)
                 self.hand.remove(random_banished_card)
 
-        self.block.player_attack = player_attack
-
         # TODO arcane or physical first?
-        if n_chance(p=0.5):
-            if player_attack.arcane is not None:
-                print("blocking arcane")
-                self.block.defend_arcane()
-            self.block.defend_physical()
-        else:
-            self.block.defend_physical()
-            if player_attack.arcane is not None:
-                self.sound.play_flip_card()
-                print("blocking arcane")
-                self.block.defend_arcane()
+
+        physical_damage = player_attack.physical.get_latest_step_value()
+        arcane_damage = player_attack.arcane.get_latest_step_value()
+
+        if player_attack.arcane.has_to_be_defended():
+            print("blocking arcane")
+            self.block.defend_arcane(arcane_damage)
+            self.sound.play_flip_card()
+
+        if player_attack.physical.has_to_be_defended():
+            player_attack.physical.blocked_with[
+                player_attack.physical.index
+            ] = self.block.defend_physical(physical_damage)
 
         for bc in self.block.physical_block_cards:
             # print(bc)
@@ -331,11 +331,8 @@ class Enemy:
         else:
             self.sound.play_not_possible()
 
-        print("PLAYER ATTACJK OHYSICAL ENEMY END")
-        print(self.block.player_attack.physical)
-
-    def perform_defensive_reaction(self):
-        defensive_reaction = self.block.get_defensive_reaction()
+    def perform_defensive_reaction(self, physical_damage):
+        defensive_reaction = self.block.get_defensive_reaction(physical_damage)
 
         if defensive_reaction is not None:
             self.played_cards.append(defensive_reaction)

@@ -22,19 +22,28 @@ class LifeCounter:
     def increase_life(self, amount=1):
         self.life += amount
 
-    def calculate_life(self, enemy_block):
-        # print("Block balance:")
-
-        block_total = enemy_block.calc_total_block()
-        # print(block_total)
-
-        attack_total = add_two_with_possible_none_type(
-            enemy_block.player_attack.physical, enemy_block.player_attack.arcane
-        )
-
-        result = attack_total - block_total
-        if result > 0:
-            self.decrease_life(amount=result)
+    def calculate_life(self, player_attack):
+        for k, v in self.player_attack.physical.damage_steps.items():
+            result = v - self.player_attack.physical.blocked_with[k]
+            if result > 0:
+                self.life -= result
 
         if self.life <= 0:
             self.life = 0
+
+    # def calculate_life(self, enemy_block):
+    #     # print("Block balance:")
+
+    #     block_total = enemy_block.calc_total_block()
+    #     # print(block_total)
+
+    #     attack_total = add_two_with_possible_none_type(
+    #         enemy_block.player_attack.physical, enemy_block.player_attack.arcane
+    #     )
+
+    #     result = attack_total - block_total
+    #     if result > 0:
+    #         self.decrease_life(amount=result)
+
+    #     if self.life <= 0:
+    #         self.life = 0

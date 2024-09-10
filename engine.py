@@ -153,7 +153,9 @@ class GameEngine:
                 print("DEFENSIVE REACTION STATE")
                 print()
                 if self.enemy.check_if_further_defensive_reaction_possible() == True:
-                    self.enemy.perform_defensive_reaction()
+                    self.enemy.perform_defensive_reaction(
+                        self.player_attack.physical.get_latest_step_value()
+                    )
                 else:
                     self.enemy.sound.play_not_possible()
 

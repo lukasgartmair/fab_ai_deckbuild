@@ -114,7 +114,7 @@ class ChainLink:
             return False
 
     def is_empty(self):
-        return True if len(self.steps) == 0 else False
+        return True if self.get_length() == 0 else False
 
     def set_play(self, index, card, pitch=[]):
         self.steps[index] = ChainLinkStep(index, card, pitch)
@@ -194,10 +194,7 @@ class CombatChain:
         return len(self.chain)
 
     def is_empty(self):
-        if self.get_length() == 0:
-            return True
-        else:
-            return False
+        return True if self.get_length() == 0 else False
 
     def end_reached(self):
         if self.iterator_in_chain(self.iterator):

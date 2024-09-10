@@ -6,8 +6,6 @@ Created on Mon Sep  2 18:04:48 2024
 @author: lukasgartmair
 """
 
-from playstyle import Keyword
-
 
 class ResourceManager:
     def __init__(self):

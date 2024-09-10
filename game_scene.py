@@ -68,7 +68,7 @@ class GameScene(SceneBase):
                     print()
                     print("PLAYER ATTACK")
                     print(self.engine.player_attack)
-                    print(self.engine.player_attack.physical)
+                    print(self.engine.player_attack.physical.get_latest_step_value())
                     print()
                     if (
                         self.engine.state_machine.current_state
@@ -81,6 +81,7 @@ class GameScene(SceneBase):
                             for inp_box in self.renderer.input_boxes:
                                 if inp_box.has_text():
                                     self.engine.player_attack.set_values(inp_box)
+                                    print("SETTING VALUES")
 
                             self.engine.play(self.engine.player_attack)
 
@@ -113,7 +114,10 @@ class GameScene(SceneBase):
                             else:
                                 if self.renderer.pop_up_window.menu.is_enabled():
                                     print("HELLOO")
-                                    self.renderer.pop_up_window.check_selection()
+                                    self.renderer.pop_up_window.update_selection()
+                                    print(
+                                        self.engine.enemy.stance_state_machine.continue_combat_chain
+                                    )
                                     self.engine.enemy.stance_state_machine.continue_combat_chain = (
                                         self.renderer.pop_up_window.continue_combat_chain
                                     )

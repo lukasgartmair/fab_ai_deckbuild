@@ -35,8 +35,6 @@ class Block:
 
         self.turn_bans = []
 
-        self.player_attack = None
-
     def update_defensive_hand(self):
         self.defensive_hand = [
             c for c in self.enemy.hand if c.card_type != CardType.defensive_reaction
@@ -79,7 +77,7 @@ class Block:
 
         self.turn_bans = []
 
-    def defend_physical(self):
+    def defend_physical(self, physical_damage):
         self.update_defensive_hand()
         if self.enemy.modifiers.modifier_dict["dominate"] == True:
             self.defensive_cards = self.defensive_hand.copy()[:1]
@@ -89,32 +87,30 @@ class Block:
         np.random.shuffle(self.defensive_cards)
 
         print("PLAYER ATTACJK OHYSICAL BLOCK")
-        print(self.player_attack.physical)
+        print(physical_damage)
 
-        if self.player_attack.physical is not None:
+        if physical_damage is not None:
             if self.enemy.survival_mode == False:
-                match self.player_attack.physical:
-                    case self.player_attack.physical if self.player_attack.physical in [
+                match physical_damage:
+                    case physical_damage if physical_damage in [
                         1,
                         2,
                     ]:
                         print("here eq")
                         if (
-                            self.player_attack.physical == 2
+                            physical_damage == 2
                             and len(
                                 self.enemy.equipment_suite.get_possible_blocking_pieces_in_play()
                             )
                             == 0
                         ):
                             print("here eq 1")
-                            self.more_elaborate_block_with_unused_cards(
-                                self.player_attack
-                            )
+                            self.more_elaborate_block_with_unused_cards(physical_damage)
                         else:
                             print("here eq 2")
                             self.block_with_equipment_very_basic()
 
-                    case self.player_attack.physical if self.player_attack.physical > 2:
+                    case physical_damage if physical_damage > 2:
                         if (
                             len(self.defensive_hand) == 0
                             and self.enemy.arsenal.is_empty()
@@ -134,15 +130,15 @@ class Block:
                             self.block_with_equipment_very_basic()
                         else:
                             print("here3")
-                            self.more_elaborate_block_with_unused_cards()
+                            self.more_elaborate_block_with_unused_cards(physical_damage)
                     case _:
                         print("here4")
-                        self.more_elaborate_block_with_unused_cards()
+                        self.more_elaborate_block_with_unused_cards(physical_damage)
 
             elif self.enemy.survival_mode == True:
                 self.block_all_physical_damage()
 
-            self.calc_total_physical_block()
+            return self.calc_total_physical_block()
 
     def placeholder_block(self):
         if len(self.defensive_cards) > 0:
@@ -201,14 +197,14 @@ class Block:
     #         if ep.arcane_barrier > 0
     #     ]
 
-    #     match self.player_attack.arcane:
-    #         case self.player_attack.arcane if self.player_attack.arcane == 1:
+    #     match arcane_damage:
+    #         case arcane_damage if arcane_damage == 1:
     #             matching_barriers = [a for a in available_arcane_barriers if a.arcane_barrier == 1]
     #             if len(matching_barriers) > 0:
     #                 self.arcane_block_cards.append()
 
     #     diffs = [
-    #         abs(self.player_attack.arcane - ab.arcane_barrier) for ab in available_arcane_barriers
+    #         abs(arcane_damage - ab.arcane_barrier) for ab in available_arcane_barriers
     #     ]
 
     #     min_index = diffs.index(min(diffs))
@@ -218,43 +214,44 @@ class Block:
     #     # TODO
     #     pass
 
-    def get_defensive_reaction(self):
+    def get_defensive_reaction(self, physical_damage):
         rnd_defensive_reaction = None
-        if self.player_attack is not None:
-            if self.player_attack.physical is not None:
-                if self.player_attack.physical > 0:
-                    rnd_defensive_reaction = random.choice(
-                        [
-                            c
-                            for c in self.enemy.hand + self.enemy.arsenal.get_arsenal()
-                            if c.card_type == CardType.defensive_reaction
-                        ]
-                    )
+        if physical_damage > 0:
+            rnd_defensive_reaction = random.choice(
+                [
+                    c
+                    for c in self.enemy.hand + self.enemy.arsenal.get_arsenal()
+                    if c.card_type == CardType.defensive_reaction
+                ]
+            )
 
-                    self.physical_block_cards.append(rnd_defensive_reaction)
+            self.physical_block_cards.append(rnd_defensive_reaction)
 
         return rnd_defensive_reaction
 
-    def arcane_procedure(self, card, pitch_value):
+    def arcane_procedure(
+        self,
+        card,
+        arcane_damage,
+        pitch_value,
+    ):
         self.enemy.pitch_card(card)
-        self.enemy.resource_manager.use_floating_resources(self.player_attack.arcane)
+        self.enemy.resource_manager.use_floating_resources(arcane_damage)
         self.increase_arcane_block_balance(amount=pitch_value)
 
-    def defend_arcane(self):
+    def defend_arcane(self, arcane_damage):
         print("DEFENDING ARCANE")
 
         unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
         # print(self.enemy.combat_chain)
         # print(unused_cards)
 
-        match self.player_attack.arcane:
-            case self.player_attack.arcane if self.player_attack.arcane == 1 or 2:
+        match arcane_damage:
+            case arcane_damage if arcane_damage == 1 or 2:
                 print("defending one arcane attack")
                 if self.enemy.resource_manager.floating_resources > 0:
-                    self.enemy.resource_manager.use_floating_resources(
-                        self.player_attack.arcane
-                    )
-                    self.increase_arcane_block_balance(amount=self.player_attack.arcane)
+                    self.enemy.resource_manager.use_floating_resources(arcane_damage)
+                    self.increase_arcane_block_balance(amount=arcane_damage)
                 else:
                     if len(unused_cards) > 0:
                         unused_cards = sorted(
@@ -263,7 +260,7 @@ class Block:
                         card = unused_cards[0]
                         pitch_value = card.pitch
 
-                        self.arcane_procedure(card, self.player_attack, pitch_value)
+                        self.arcane_procedure(card, arcane_damage, pitch_value)
 
                     elif len(self.enemy.hand) > 0:
                         sorted_hand = sorted(
@@ -273,15 +270,13 @@ class Block:
                         card = sorted_hand[0]
                         pitch_value = card.pitch
 
-                        self.arcane_procedure(card, self.player_attack, pitch_value)
+                        self.arcane_procedure(card, arcane_damage, pitch_value)
 
-            case self.player_attack.arcane if self.player_attack.arcane == 3 or 4:
+            case arcane_damage if arcane_damage == 3 or 4:
                 print("defending one arcane attack")
                 if self.enemy.resource_manager.floating_resources > 0:
-                    self.enemy.resource_manager.use_floating_resources(
-                        self.player_attack.arcane
-                    )
-                    self.increase_arcane_block_balance(amount=self.player_attack.arcane)
+                    self.enemy.resource_manager.use_floating_resources(arcane_damage)
+                    self.increase_arcane_block_balance(amount=arcane_damage)
                 else:
                     if len(unused_cards) > 0:
                         unused_cards = sorted(
@@ -299,9 +294,7 @@ class Block:
                         pitch_value = card.pitch
 
                     self.enemy.pitch_card(card)
-                    self.enemy.resource_manager.use_floating_resources(
-                        self.player_attack.arcane
-                    )
+                    self.enemy.resource_manager.use_floating_resources(arcane_damage)
                     self.increase_arcane_block_balance(amount=pitch_value)
 
     def get_combinations(self, array, r=0):
@@ -312,15 +305,13 @@ class Block:
         combinations = [d[0] for d in combinations]
         return combinations
 
-    def determine_physical_defense_combination(self, combinations):
+    def determine_physical_defense_combination(self, combinations, physical_damage):
         # number_of_cards_used = self.enemy.intellect
         best_defense = []
         block_precision = 100
         for v in combinations:
             # number_of_cards_used_temp = len(v)
-            block_precision_temp = (
-                sum([d.defense for d in v]) - self.player_attack.physical
-            )
+            block_precision_temp = sum([d.defense for d in v]) - physical_damage
 
             # if number_of_cards_used_temp <= number_of_cards_used and
             if abs(block_precision_temp) < block_precision:
@@ -329,21 +320,21 @@ class Block:
                 best_defense = v
         return best_defense
 
-    def block_all_physical_damage(self):
-        if self.player_attack.physical is not None:
+    def block_all_physical_damage(self, physical_damage):
+        if physical_damage is not None:
             combinations = self.get_combinations(self.defensive_hand)
             self.physical_block_cards = self.determine_physical_defense_combination(
-                self.player_attack, combinations
+                physical_damage, combinations
             )
 
-    def more_elaborate_block_with_unused_cards(self):
-        if self.player_attack.physical is not None:
+    def more_elaborate_block_with_unused_cards(self, physical_damage):
+        if physical_damage is not None:
             unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
-            match self.player_attack.physical:
-                case self.player_attack.physical if 0 <= self.player_attack.physical < self.base_value:
+            match physical_damage:
+                case physical_damage if 0 <= physical_damage < self.base_value:
                     print("attack not blocked at all")
                     self.physical_block_cards = []
-                case self.player_attack.physical if self.base_value <= self.player_attack.physical < self.base_value + 3:
+                case physical_damage if self.base_value <= physical_damage < self.base_value + 3:
                     print(
                         "attack blocked with {} cards".format(
                             len(self.defensive_cards[:1])
@@ -354,7 +345,7 @@ class Block:
                         self.physical_block_cards = unused_cards[:1]
                     else:
                         self.physical_block_cards = self.defensive_cards[:1]
-                case self.player_attack.physical if self.base_value + 3 <= self.player_attack.physical < self.base_value + 7:
+                case physical_damage if self.base_value + 3 <= physical_damage < self.base_value + 7:
                     print(
                         "attack blocked with {} cards".format(
                             len(self.defensive_cards[:2])
@@ -371,7 +362,7 @@ class Block:
                         self.physical_block_cards = unused_cards
                     else:
                         self.physical_block_cards = self.defensive_cards[:2]
-                case self.player_attack.physical if self.base_value + 7 <= self.player_attack.physical < self.base_value + 11:
+                case physical_damage if self.base_value + 7 <= physical_damage < self.base_value + 11:
                     print(
                         "attack blocked with {} cards".format(
                             len(self.defensive_cards[:3])
@@ -397,7 +388,7 @@ class Block:
                     else:
                         self.physical_block_cards = self.defensive_cards[:3]
 
-                case self.player_attack.physical if self.base_value + 11 <= self.player_attack.physical:
+                case physical_damage if self.base_value + 11 <= physical_damage:
                     print(
                         "attack blocked with {} cards".format(len(self.defensive_cards))
                     )
