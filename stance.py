@@ -59,6 +59,7 @@ class StanceStateMachine(StateMachine):
         self.stance = Stance.attack
         self.sound = Sound()
         self.enemy = enemy
+        self.continue_combat_chain = None
 
         if self.stance == Stance.defend:
             self.defense.initial = True
@@ -112,8 +113,8 @@ class StanceStateMachine(StateMachine):
         else:
             return False
 
-    def continue_combat_chain(self, continue_combat_chain_var):
-        return continue_combat_chain_var
+    def continue_combat_chain(self):
+        return self.continue_combat_chain
 
     def change_stance(self):
         try:

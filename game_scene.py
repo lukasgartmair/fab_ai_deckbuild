@@ -107,7 +107,17 @@ class GameScene(SceneBase):
                             self.engine.enemy.stance_state_machine.current_state
                             == StanceStateMachine.defensive_reaction
                         ):
-                            self.waiting_for_user_input = True
+                            if self.waiting_for_user_input == False:
+                                self.waiting_for_user_input = True
+                                break
+                            else:
+                                if self.renderer.pop_up_window.menu.is_enabled():
+                                    print("HELLOO")
+                                    self.renderer.pop_up_window.check_selection()
+                                    self.engine.enemy.stance_state_machine.continue_combat_chain = (
+                                        self.renderer.pop_up_window.continue_combat_chain
+                                    )
+                                    self.waiting_for_user_input = False
 
                         self.engine.trigger_stance_switch()
 
