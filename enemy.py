@@ -306,9 +306,9 @@ class Enemy:
             self.sound.play_flip_card()
 
         if player_attack.physical.has_to_be_defended():
-            player_attack.physical.blocked_with[
-                player_attack.physical.index - 1
-            ] = self.block.defend_physical(physical_damage)
+            player_attack.physical.set_block(
+                self.block.defend_physical(physical_damage)
+            )
 
         for bc in self.block.physical_block_cards:
             # print(bc)

@@ -52,8 +52,9 @@ class Block:
 
     def calc_total_physical_block(self):
         # print("total_physical_block")
-        # print(sum([p.defense for p in self.physical_block_cards]))
-        return sum([p.defense for p in self.physical_block_cards])
+        # print(sum([p.defense for p in self.physical_block_cards]))+
+        sum_block = sum([p.defense for p in self.physical_block_cards])
+        return sum_block if sum_block > 0 else None
 
     def increase_physical_block_balance(self, amount=1):
         self.physical_block += amount
@@ -138,7 +139,7 @@ class Block:
             elif self.enemy.survival_mode == True:
                 self.block_all_physical_damage(physical_damage)
 
-            return self.calc_total_physical_block()
+        return self.calc_total_physical_block()
 
     def placeholder_block(self):
         if len(self.defensive_cards) > 0:

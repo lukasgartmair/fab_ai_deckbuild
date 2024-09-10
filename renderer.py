@@ -503,29 +503,54 @@ class Renderer:
             ),
         )
         text = ""
-        if self.engine.player_attack is not None:
-            if self.engine.player_attack.physical is not None:
-                text = "Physical: " + str(
-                    self.engine.player_attack.physical.get_latest_step_value()
-                )
-                self.render_text(
-                    text,
-                    grid.left_point(0),
-                    grid.top_point(0),
-                    color=color_palette.white,
-                    font=font_card_title,
-                )
-            if self.engine.player_attack.arcane is not None:
-                text = "Arcane: " + str(
-                    self.engine.player_attack.arcane.get_latest_step_value()
-                )
-                self.render_text(
-                    text,
-                    grid.left_point(0),
-                    grid.top_point(1),
-                    color=color_palette.white,
-                    font=font_card_title,
-                )
+
+        text = "Physical: " + str(
+            self.engine.player_attack.physical.get_latest_step_value()
+        )
+        self.render_text(
+            text,
+            grid.left_point(0),
+            grid.top_point(0),
+            color=color_palette.white,
+            font=font_card_title,
+        )
+        blocked_with = None
+        if self.engine.player_attack.physical.index > 0:
+            blocked_with = self.engine.player_attack.physical.blocked_with[
+                self.engine.player_attack.physical.index - 1
+            ]
+        text = "Blocked with: " + str(blocked_with)
+        self.render_text(
+            text,
+            grid.left_point(0),
+            grid.top_point(0.5),
+            color=color_palette.white,
+            font=font_card_title,
+        )
+
+        text = "Arcane: " + str(
+            self.engine.player_attack.arcane.get_latest_step_value()
+        )
+        self.render_text(
+            text,
+            grid.left_point(0),
+            grid.top_point(1),
+            color=color_palette.white,
+            font=font_card_title,
+        )
+        blocked_with = None
+        if self.engine.player_attack.arcane.index > 0:
+            blocked_with = self.engine.player_attack.arcane.blocked_with[
+                self.engine.player_attack.arcane.index
+            ]
+        text = "Blocked with: " + str(blocked_with)
+        self.render_text(
+            text,
+            grid.left_point(0),
+            grid.top_point(1.5),
+            color=color_palette.white,
+            font=font_card_title,
+        )
 
     def render_action_points(self):
         if self.engine.enemy.action_point_manager.has_action_points_left():

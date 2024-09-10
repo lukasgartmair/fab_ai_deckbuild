@@ -20,7 +20,6 @@ class Damage:
         self.blocked_with = {}
         self.damage_type = damage_type
         self.index = -1
-        self.init_next_step()
 
     def increase_index(self):
         self.index += 1
@@ -32,7 +31,7 @@ class Damage:
 
     def set_step(self, value):
         if self.index not in self.damage_steps:
-            self.init_step()
+            self.init_next_step()
         self.damage_steps[self.index] = value
         print("setting step")
         print(self.damage_steps[self.index])
@@ -42,14 +41,14 @@ class Damage:
         self.blocked_with[self.index] = value
 
     def get_latest_step_value(self):
-        max_key = 0
-        if self.is_empty() == False:
-            max_key = max(self.damage_steps.keys()) - 1
-            if max_key < 0:
-                max_key = 0
-            return self.damage_steps[max_key]
-        else:
-            return None
+        if self.index > 0:
+            return self.damage_steps[self.index - 1]
+        elif self.index == 0:
+            return self.damage_steps[self.index]
+
+    def get_latest_virtual_step_value(self):
+        if self.index >= 0:
+            return self.damage_steps[self.index]
 
     def is_empty(self):
         return True if self.get_length() == 0 else False
@@ -58,7 +57,15 @@ class Damage:
         return len(self.damage_steps)
 
     def has_to_be_defended(self):
-        return True if self.get_latest_step_value() is not None else False
+        if self.index == -1:
+            return False
+        elif (
+            self.get_latest_step_value() is not None
+            and self.get_latest_virtual_step_value() is None
+        ):
+            return True
+        else:
+            return False
 
 
 class PlayerAttack:
