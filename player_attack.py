@@ -18,6 +18,8 @@ class Damage:
     def __init__(self, damage_type=DamageType.physical):
         self.damage_steps = {}
         self.blocked_with = {}
+        self.damage_played_out = {}
+        self.block_played_out = {}
         self.damage_type = damage_type
         self.index = -1
 
@@ -28,17 +30,21 @@ class Damage:
         self.increase_index()
         self.damage_steps[self.index] = None
         self.blocked_with[self.index] = None
+        self.damage_played_out[self.index - 1] = False
+        self.block_played_out[self.index - 1] = False
 
     def set_step(self, value):
         if self.index not in self.damage_steps:
             self.init_next_step()
         self.damage_steps[self.index] = value
+        self.damage_played_out[self.index] = True
         print("setting step")
         print(self.damage_steps[self.index])
         self.init_next_step()
 
     def set_block(self, value):
-        self.blocked_with[self.index] = value
+        self.blocked_with[self.index - 1] = value
+        self.block_played_out[self.index - 1] = True
 
     def get_latest_step_value(self):
         if self.index > 0:
@@ -57,15 +63,7 @@ class Damage:
         return len(self.damage_steps)
 
     def has_to_be_defended(self):
-        if self.index == -1:
-            return False
-        elif (
-            self.get_latest_step_value() is not None
-            and self.get_latest_virtual_step_value() is None
-        ):
-            return True
-        else:
-            return False
+        return True if self.block_played_out[self.index - 1] == False else False
 
 
 class PlayerAttack:
