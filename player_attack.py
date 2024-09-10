@@ -20,6 +20,7 @@ class Damage:
         self.blocked_with = {}
         self.damage_type = damage_type
         self.index = -1
+        self.init_next_step()
 
     def increase_index(self):
         self.index += 1
@@ -30,10 +31,12 @@ class Damage:
         self.blocked_with[self.index] = None
 
     def set_step(self, value):
-        self.init_next_step()
+        if self.index not in self.damage_steps:
+            self.init_step()
         self.damage_steps[self.index] = value
         print("setting step")
         print(self.damage_steps[self.index])
+        self.init_next_step()
 
     def set_block(self, value):
         self.blocked_with[self.index] = value
@@ -41,7 +44,9 @@ class Damage:
     def get_latest_step_value(self):
         max_key = 0
         if self.is_empty() == False:
-            max_key = max(self.damage_steps.keys())
+            max_key = max(self.damage_steps.keys()) - 1
+            if max_key < 0:
+                max_key = 0
             return self.damage_steps[max_key]
         else:
             return None

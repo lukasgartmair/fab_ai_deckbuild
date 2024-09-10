@@ -136,7 +136,7 @@ class Block:
                         self.more_elaborate_block_with_unused_cards(physical_damage)
 
             elif self.enemy.survival_mode == True:
-                self.block_all_physical_damage()
+                self.block_all_physical_damage(physical_damage)
 
             return self.calc_total_physical_block()
 

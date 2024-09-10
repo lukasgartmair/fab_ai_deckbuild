@@ -75,6 +75,12 @@ class GameEngine:
             case _:
                 self.enemy = Enemy(self.player_class)
 
+    def resolve_block(self):
+        if self.player_attack is not None:
+            self.enemy.life_counter.calculate_life(self.player_attack)
+            self.enemy.block.reset()
+            self.player_attack.reset()
+
     def finish_move(self, player_attack):
         self.enemy.finish_move()
         # self.analyzer.write_move_data(copy.copy(player_attack))
@@ -95,6 +101,8 @@ class GameEngine:
                 pass
 
             case state if state == self.enemy.stance_state_machine.attack:
+                self.resolve_block()
+
                 self.enemy.start_turn()
 
             case _:

@@ -23,10 +23,11 @@ class LifeCounter:
         self.life += amount
 
     def calculate_life(self, player_attack):
-        for k, v in self.player_attack.physical.damage_steps.items():
-            result = v - self.player_attack.physical.blocked_with[k]
-            if result > 0:
-                self.life -= result
+        if player_attack.physical.is_empty() == False:
+            for k, v in player_attack.physical.damage_steps.items():
+                result = v - player_attack.physical.blocked_with[k]
+                if result > 0:
+                    self.life -= result
 
         if self.life <= 0:
             self.life = 0

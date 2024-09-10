@@ -152,11 +152,7 @@ class Enemy:
                 self.graveyard.append(card)
 
     def exit_defensive_reaction(self):
-        self.resolve_block()
-
         self.handle_equipment_counters()
-        if self.block.player_attack is not None:
-            self.block.player_attack.reset()
 
         print("switched to offense")
         self.initial_switch_to_offense()
@@ -311,7 +307,7 @@ class Enemy:
 
         if player_attack.physical.has_to_be_defended():
             player_attack.physical.blocked_with[
-                player_attack.physical.index
+                player_attack.physical.index - 1
             ] = self.block.defend_physical(physical_damage)
 
         for bc in self.block.physical_block_cards:
@@ -348,11 +344,6 @@ class Enemy:
 
         else:
             self.sound.play_not_possible()
-
-    def resolve_block(self):
-        if self.block.player_attack is not None:
-            self.life_counter.calculate_life(self.block)
-            self.block.reset()
 
     def base_attack(self, chain_link, reaction=False):
         virtual_next_step_type = chain_link.get_virtual_next_step()

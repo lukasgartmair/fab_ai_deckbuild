@@ -81,7 +81,6 @@ class GameScene(SceneBase):
                             for inp_box in self.renderer.input_boxes:
                                 if inp_box.has_text():
                                     self.engine.player_attack.set_values(inp_box)
-                                    print("SETTING VALUES")
 
                             self.engine.play(self.engine.player_attack)
 
@@ -103,25 +102,25 @@ class GameScene(SceneBase):
                         self.engine.state_machine.current_state
                         == self.engine.state_machine.playing
                     ):
-                        print("HERE  xhhxhx")
-                        if (
-                            self.engine.enemy.stance_state_machine.current_state
-                            == StanceStateMachine.defensive_reaction
-                        ):
-                            if self.waiting_for_user_input == False:
-                                self.waiting_for_user_input = True
-                                break
-                            else:
-                                if self.renderer.pop_up_window.menu.is_enabled():
-                                    print("HELLOO")
-                                    self.renderer.pop_up_window.update_selection()
-                                    print(
-                                        self.engine.enemy.stance_state_machine.continue_combat_chain
-                                    )
-                                    self.engine.enemy.stance_state_machine.continue_combat_chain = (
-                                        self.renderer.pop_up_window.continue_combat_chain
-                                    )
-                                    self.waiting_for_user_input = False
+                        # print("HERE  xhhxhx")
+                        # if (
+                        #     self.engine.enemy.stance_state_machine.current_state
+                        #     == StanceStateMachine.defensive_reaction
+                        # ):
+                        #     if self.waiting_for_user_input == False:
+                        #         self.waiting_for_user_input = True
+                        #         break
+                        #     else:
+                        #         if self.renderer.pop_up_window.menu.is_enabled():
+                        #             print("HELLOO")
+                        #             self.renderer.pop_up_window.update_selection()
+                        #             print(
+                        #                 self.engine.enemy.stance_state_machine.continue_combat_chain
+                        #             )
+                        #             self.engine.enemy.stance_state_machine.continue_combat_chain = (
+                        #                 self.renderer.pop_up_window.continue_combat_chain
+                        #             )
+                        #             self.waiting_for_user_input = False
 
                         self.engine.trigger_stance_switch()
 
