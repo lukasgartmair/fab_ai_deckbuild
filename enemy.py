@@ -302,12 +302,13 @@ class Enemy:
 
         if player_attack.arcane.has_to_be_defended():
             print("blocking arcane")
-            self.block.defend_arcane(arcane_damage)
+            # self.block.defend_arcane(arcane_damage)
+            arcane_block_cards = self.block.defend_arcane_with_equipment(arcane_damage)
+            player_attack.physical.set_block(arcane_block_cards)
             self.sound.play_flip_card()
 
         print("has_to_be_defended")
         if player_attack.physical.has_to_be_defended():
-            print("yes")
             physical_blocking_cards = self.block.defend_physical(physical_damage)
             player_attack.physical.set_block(physical_blocking_cards)
 

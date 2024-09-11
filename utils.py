@@ -40,6 +40,19 @@ def get_permutations(array, max_length=None):
     return permutations[1:]
 
 
+def get_combinations(array, max_length=None):
+    if max_length is None:
+        max_length = len(array) + 1
+    combinations = []
+    array_copy = array.copy()
+    if len(array_copy) > 0:
+        for i in range(max_length):
+            combos = itertools.combinations(array_copy, r=i)
+            for c in combos:
+                combinations.append(c)
+    return combinations[1:]
+
+
 def map_permutations_to_original(array, permutations):
     return [[array[pi] for pi in p] for p in permutations]
 

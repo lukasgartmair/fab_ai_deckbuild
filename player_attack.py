@@ -34,12 +34,12 @@ class Damage:
         self.block_played_out[self.index] = False
 
     def set_step(self, value):
-        if value is not None:
-            self.init_next_step()
-            self.damage_steps[self.index] = value
-            self.damage_played_out[self.index] = True
-            print("setting step")
-            print(self.damage_steps[self.index])
+
+        self.init_next_step()
+        self.damage_steps[self.index] = value
+        self.damage_played_out[self.index] = True
+        print("setting step")
+        print(self.damage_steps[self.index])
 
     def set_block(self, blocking_cards):
         if self.blocked_with[self.index] is None:
@@ -61,9 +61,10 @@ class Damage:
     def get_latest_block_value(self):
         print(self.get_length())
         if self.get_length() > 0:
-            sum_block = sum([p.defense for p in self.blocked_with[self.index]])
-            print(sum_block)
-            return sum_block if sum_block > 0 else None
+            if self.blocked_with[self.index] is not None:
+                sum_block = sum([p.defense for p in self.blocked_with[self.index]])
+                print(sum_block)
+                return sum_block if sum_block > 0 else None
         else:
             return None
 

@@ -196,37 +196,47 @@ class Block:
             )
         return unused_cards
 
-    # def defend_arcane_with_equipment(self, self.player_attack):
-    #     print("DEFENDING ARCANE")
-
-    #     unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
-
-    #     available_arcane_barriers = [
-    #         ep
-    #         for ep in self.enemy.equipment_suite.get_pieces_in_play()
-    #         if ep.arcane_barrier > 0
-    #     ]
-
-    #     match arcane_damage:
-    #         case arcane_damage if arcane_damage == 1:
-    #             matching_barriers = [a for a in available_arcane_barriers if a.arcane_barrier == 1]
-    #             if len(matching_barriers) > 0:
-    #                 self.arcane_block_cards.append()
-
-    #     diffs = [
-    #         abs(arcane_damage - ab.arcane_barrier) for ab in available_arcane_barriers
-    #     ]
-
-    #     min_index = diffs.index(min(diffs))
-
-    #     self.arcane_block_cards
-
-    #     # TODO
-    #     pass
-
     def set_defensive_reaction(self, defensive_reaction):
 
         self.physical_block_cards.append(defensive_reaction)
+
+    def defend_arcane_with_equipment(self, arcane_damage):
+
+        print("BLOCKING ARCANE WITH EQ")
+        available_arcane_barriers = (
+            self.enemy.equipment_suite.get_all_arcane_barriers_in_play()
+        )
+
+        print(len(available_arcane_barriers))
+
+        if len(available_arcane_barriers) > 0:
+            diffs = [
+                arcane_damage - ep.arcane_barrier for ep in available_arcane_barriers
+            ]
+            print(diffs)
+            diff_indices = np.argsort(diffs)
+            print(diff_indices)
+
+            total_pitch_available = sum([c.pitch for c in self.enemy.hand])
+            print(total_pitch_available)
+
+            for index in diff_indices:
+                if diffs[index] >= 0:
+                    equpiment_piece = available_arcane_barriers[index]
+                    if equpiment_piece.arcane_barrier <= total_pitch_available:
+                        print("yes")
+                        cards_to_pitch = self.enemy.combat_chain.get_cards_to_pitch(
+                            equpiment_piece, self.enemy.hand
+                        )
+                        print(cards_to_pitch)
+
+                        if len(cards_to_pitch) > 0:
+                            for c in cards_to_pitch:
+                                self.arcane_procedure(c, arcane_damage, c.pitch)
+                                self.arcane_block_cards.append(c)
+                                break
+
+        return self.arcane_block_cards
 
     def arcane_procedure(
         self,
@@ -243,7 +253,7 @@ class Block:
 
         unused_cards = self.get_cards_not_intended_to_be_used_in_combat_chain()
         # print(self.enemy.combat_chain)
-        # print(unused_cards)
+        # print(unused_cards
 
         match arcane_damage:
             case arcane_damage if arcane_damage == 1 or 2:
@@ -257,9 +267,8 @@ class Block:
                             unused_cards, key=lambda x: x.pitch, reverse=False
                         )
                         card = unused_cards[0]
-                        pitch_value = card.pitch
 
-                        self.arcane_procedure(card, arcane_damage, pitch_value)
+                        self.arcane_procedure(card, arcane_damage, card.pitch)
 
                     elif len(self.enemy.hand) > 0:
                         sorted_hand = sorted(
@@ -267,9 +276,8 @@ class Block:
                         )
 
                         card = sorted_hand[0]
-                        pitch_value = card.pitch
 
-                        self.arcane_procedure(card, arcane_damage, pitch_value)
+                        self.arcane_procedure(card, arcane_damage, card.pitch)
 
             case arcane_damage if arcane_damage == 3 or 4:
                 print("defending one arcane attack")

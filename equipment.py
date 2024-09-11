@@ -13,7 +13,8 @@ import random
 from settings import CARD_RESOLUTION
 from wonderwords import RandomSentence
 
-arcane_barriers = [0] * 3 + [1] * 2 + [2]
+# arcane_barriers = [0] * 3 + [1] * 2 + [2]
+arcane_barriers = [1] * 2 + [2]
 
 s = RandomSentence()
 
@@ -81,6 +82,9 @@ class EquipmentSuite:
         self.arms = EquipmentPiece(EquipmentType.arms)
         self.legs = EquipmentPiece(EquipmentType.legs)
 
+    def get_current_length(self):
+        return len([ep for ep in self.get_all_pieces() if ep.destroyed == False])
+
     def get_all_pieces(self):
         return [self.head, self.chest, self.arms, self.legs]
 
@@ -93,3 +97,16 @@ class EquipmentSuite:
             for ep in self.get_all_pieces()
             if ep.destroyed == False and ep.is_defending == False and ep.defense > 0
         ]
+
+    def get_all_arcane_barriers_in_play(self):
+        available_arcane_barriers = [
+            ep
+            for ep in self.get_all_pieces()
+            # TODO can I use the arcane barrier of an equipment used in the current combat chain?
+            if ep.destroyed == False
+            and ep.is_defending == False
+            and ep.arcane_barrier > 0
+        ]
+        return sorted(
+            available_arcane_barriers, key=lambda x: x.arcane_barrier, reverse=False
+        )

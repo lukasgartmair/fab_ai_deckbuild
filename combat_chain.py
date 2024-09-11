@@ -7,7 +7,7 @@ Created on Fri Sep  6 17:07:15 2024
 """
 
 from enum import Enum
-from utils import get_permutations, map_permutations_to_original
+from utils import get_permutations, map_permutations_to_original, get_combinations
 from action_point_manager import ActionPointManager
 from pitch import determine_pitch_combination
 import random
@@ -292,17 +292,20 @@ class CombatChain:
         else:
             return None
 
-    def get_pitch_for_card(self, card, pitch_totals):
-        return determine_pitch_combination(card.cost, pitch_totals)
+    def get_pitch_for_card(self, cost, pitch_totals):
+        return determine_pitch_combination(cost, pitch_totals)
 
-    def get_cards_to_pitch(self, card, pitchable_cards):
+    def get_cards_to_pitch(self, card, pitchable_cards, arcane_defense=False):
         cards_to_pitch = []
 
-        possible_pitch_combinations = get_permutations(pitchable_cards)
+        possible_pitch_combinations = get_combinations(pitchable_cards)
 
         pitch_totals = self.calc_pitch_totals(possible_pitch_combinations)
 
-        cards_to_pitch = self.get_pitch_for_card(card, pitch_totals)
+        if arcane_defense == True:
+            cards_to_pitch = self.get_pitch_for_card(card.arcane_barrier, pitch_totals)
+        else:
+            cards_to_pitch = self.get_pitch_for_card(card.cost, pitch_totals)
 
         return cards_to_pitch
 
