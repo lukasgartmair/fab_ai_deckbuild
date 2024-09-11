@@ -18,6 +18,8 @@ class ResourceManager:
         self.floating_resources += amount
 
     def use_floating_resources(self, amount):
-        self.floating_resources -= amount
-        if self.floating_resources < 0:
-            self.floating_resources = 0
+        print((self.floating_resources - amount))
+        if (self.floating_resources - amount) < 0:
+            raise Exception("Not enough resources")
+        else:
+            self.floating_resources -= amount

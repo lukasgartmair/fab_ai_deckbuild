@@ -6,6 +6,7 @@ Created on Fri Aug  9 20:48:29 2024
 @author: lukasgartmair
 """
 from block import calc_total_physical_block
+from utils import subtract_two_with_possible_none_type
 
 
 class LifeCounter:
@@ -25,8 +26,8 @@ class LifeCounter:
     def calculate_life(self, player_attack):
         if player_attack.physical.is_empty() == False:
             for k, v in player_attack.physical.damage_steps.items():
-                result = v - calc_total_physical_block(
-                    player_attack.physical.blocked_with[k]
+                result = subtract_two_with_possible_none_type(
+                    v, calc_total_physical_block(player_attack.physical.blocked_with[k])
                 )
                 if result > 0:
                     self.life -= result

@@ -54,6 +54,10 @@ def add_two_with_possible_none_type(a, b):
     return (a or 0) + (b or 0)
 
 
+def subtract_two_with_possible_none_type(a, b):
+    return (a or 0) - (b or 0)
+
+
 def blit_text(surface, text, pos, font, color=color_palette.color5):
     words = [
         word.split(" ") for word in text.splitlines()

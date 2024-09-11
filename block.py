@@ -224,18 +224,9 @@ class Block:
     #     # TODO
     #     pass
 
-    def get_defensive_reaction(self):
-        rnd_defensive_reaction = None
-        rnd_defensive_reaction = random.choice(
-            [
-                c
-                for c in self.enemy.hand + self.enemy.arsenal.get_arsenal()
-                if c.card_type == CardType.defensive_reaction
-            ]
-        )
-        self.physical_block_cards.append(rnd_defensive_reaction)
+    def set_defensive_reaction(self, defensive_reaction):
 
-        return rnd_defensive_reaction
+        self.physical_block_cards.append(defensive_reaction)
 
     def arcane_procedure(
         self,
@@ -310,6 +301,7 @@ class Block:
         if len(array) > 0:
             for i in range(1, len(array) + 1):
                 combinations.append([c for c in itertools.combinations(array, i)])
+        print(combinations)
         combinations = [d[0] for d in combinations]
         return combinations
 

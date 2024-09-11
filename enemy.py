@@ -98,7 +98,7 @@ class Enemy:
             self.lore = ""
         self.lore = self.lore.replace("{}", self.name)
 
-        self.survival_mode = False
+        self.survival_mode = True
         self.check_if_in_survival_mode()
 
         self.stance_state_machine = StanceStateMachine(self)
@@ -331,25 +331,59 @@ class Enemy:
     def perform_defensive_reaction(self, player_attack):
 
         if player_attack.physical.still_has_to_be_defended_with_reaction() == True:
+            defensive_reaction = None
+            affordable = False
+            max_def_react_cost = 3
+            defensive_reactions = [
+                c
+                for c in self.hand + self.arsenal.get_arsenal()
+                if (
+                    c.card_type == CardType.defensive_reaction
+                    and c.cost <= max_def_react_cost
+                )
+            ]
 
-            defensive_reaction = self.block.get_defensive_reaction()
+            if len(defensive_reactions) > 0:
 
-            if defensive_reaction is not None:
-                self.played_cards.append(defensive_reaction)
-                player_attack.physical.set_block([defensive_reaction])
+                defensive_reaction = random.choice(defensive_reactions)
 
-                if defensive_reaction in self.hand:
-                    self.hand.remove(defensive_reaction)
+                if defensive_reaction.cost > 0:
+                    cards_to_pitch = self.combat_chain.get_cards_to_pitch(
+                        defensive_reaction,
+                        [c for c in self.hand if c != defensive_reaction],
+                    )
 
-                if defensive_reaction in self.arsenal.arsenal:
-                    self.arsenal.remove_card(defensive_reaction)
+                    if len(cards_to_pitch) > 0:
+                        affordable = True
 
-                if len(self.block.physical_block_cards) > 0:
-                    self.sound.play_block()
+                        for c in cards_to_pitch:
+                            self.pitch_card(c)
 
-                else:
-                    self.sound.play_not_possible()
+                        self.resource_manager.use_floating_resources(
+                            defensive_reaction.cost
+                        )
 
+                    else:
+                        affordable = False
+                        self.sound.play_not_possible()
+
+                elif defensive_reaction.cost == 0:
+                    affordable = True
+
+                if affordable == True:
+                    self.played_cards.append(defensive_reaction)
+                    player_attack.physical.set_block([defensive_reaction])
+
+                    if defensive_reaction in self.hand:
+                        self.hand.remove(defensive_reaction)
+
+                    if defensive_reaction in self.arsenal.arsenal:
+                        self.arsenal.remove_card(defensive_reaction)
+
+                    self.block.set_defensive_reaction(defensive_reaction)
+
+            else:
+                self.sound.play_not_possible()
         else:
             self.sound.play_not_possible()
 
@@ -370,17 +404,20 @@ class Enemy:
             c = chain_link.get_next_step()
 
             self.played_cards.append(c.play)
+
+            for p in c.pitch:
+                self.pitch_card(p)
+
             self.resource_manager.use_floating_resources(c.play.cost)
 
+            # TODO
             if reaction == False:
                 self.action_point_manager.handle_keywords(c.play)
 
             self.sound.play_attack(c.play)
 
-            for p in c.pitch:
-                self.pitch_card(p)
-
             if reaction == False:
+
                 self.action_point_manager.use_action_points()
 
             self.print_cards()
