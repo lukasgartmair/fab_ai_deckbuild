@@ -7,6 +7,7 @@ Created on Mon Aug  5 20:19:28 2024
 """
 
 from enum import Enum
+import block
 
 
 class DamageType(Enum):
@@ -30,31 +31,47 @@ class Damage:
         self.increase_index()
         self.damage_steps[self.index] = None
         self.blocked_with[self.index] = None
-        self.damage_played_out[self.index - 1] = False
-        self.block_played_out[self.index - 1] = False
+        self.block_played_out[self.index] = False
 
     def set_step(self, value):
-        if self.index not in self.damage_steps:
+        if value is not None:
             self.init_next_step()
-        self.damage_steps[self.index] = value
-        self.damage_played_out[self.index] = True
-        print("setting step")
-        print(self.damage_steps[self.index])
-        self.init_next_step()
+            self.damage_steps[self.index] = value
+            self.damage_played_out[self.index] = True
+            print("setting step")
+            print(self.damage_steps[self.index])
 
-    def set_block(self, value):
-        self.blocked_with[self.index - 1] = value
-        self.block_played_out[self.index - 1] = True
+    def set_block(self, blocking_cards):
+        if self.blocked_with[self.index] is None:
+            self.blocked_with[self.index] = []
+        self.blocked_with[self.index] += blocking_cards
+        self.block_played_out[self.index] = True
 
     def get_latest_step_value(self):
-        if self.index > 0:
-            return self.damage_steps[self.index - 1]
-        elif self.index == 0:
+        if self.get_length() > 0:
             return self.damage_steps[self.index]
+        else:
+            return None
 
-    def get_latest_virtual_step_value(self):
-        if self.index >= 0:
-            return self.damage_steps[self.index]
+    def get_latest_block_cards(self):
+        print(self.get_length())
+        if self.get_length() > 0:
+            return self.blocked_with[self.index]
+
+    def get_latest_block_value(self):
+        print(self.get_length())
+        if self.get_length() > 0:
+            sum_block = sum([p.defense for p in self.blocked_with[self.index]])
+            print(sum_block)
+            return sum_block if sum_block > 0 else None
+        else:
+            return None
+
+    def get_latest_step_blocked(self):
+        if self.get_length() > 0:
+            return self.block_played_out[self.index]
+        else:
+            return None
 
     def is_empty(self):
         return True if self.get_length() == 0 else False
@@ -63,7 +80,18 @@ class Damage:
         return len(self.damage_steps)
 
     def has_to_be_defended(self):
-        return True if self.block_played_out[self.index - 1] == False else False
+        if self.get_length() == 0:
+            return None
+        else:
+            return True if self.block_played_out[self.index] == False else False
+
+    def still_has_to_be_defended_with_reaction(self):
+        if self.get_length() == 0:
+            return None
+        else:
+            return block.check_defensive_reaction_trigger(
+                self.get_latest_step_value(), self.get_latest_block_cards()
+            )
 
 
 class PlayerAttack:

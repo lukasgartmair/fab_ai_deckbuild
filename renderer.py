@@ -515,10 +515,9 @@ class Renderer:
             font=font_card_title,
         )
         blocked_with = None
-        if self.engine.player_attack.physical.index > 0:
-            blocked_with = self.engine.player_attack.physical.blocked_with[
-                self.engine.player_attack.physical.index - 1
-            ]
+        if self.engine.player_attack.physical.is_empty() == False:
+            blocked_with = self.engine.player_attack.physical.get_latest_block_value()
+
         text = "Blocked with: " + str(blocked_with)
         self.render_text(
             text,
@@ -539,10 +538,9 @@ class Renderer:
             font=font_card_title,
         )
         blocked_with = None
-        if self.engine.player_attack.arcane.index > 0:
-            blocked_with = self.engine.player_attack.arcane.blocked_with[
-                self.engine.player_attack.arcane.index
-            ]
+        if self.engine.player_attack.arcane.is_empty() == False:
+            blocked_with = self.engine.player_attack.arcane.get_latest_block_value()
+
         text = "Blocked with: " + str(blocked_with)
         self.render_text(
             text,

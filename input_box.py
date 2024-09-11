@@ -39,6 +39,10 @@ class InputBox:
         self.color = self.color_inactive
         if text_temp.isnumeric():
             return int(text_temp)
+        elif self.text == "":
+            return None
+        else:
+            return None
 
     def has_text(self):
         return True if self.text != "" else False

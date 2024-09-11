@@ -12,6 +12,21 @@ from card import CardType
 import itertools
 import random
 
+DEFENSIVE_REACTION_THRESHOLD = 3
+
+
+def calc_total_physical_block(physical_block_cards):
+    sum_block = sum([p.defense for p in physical_block_cards])
+    return sum_block if sum_block > 0 else None
+
+
+def check_defensive_reaction_trigger(damage_step_value, already_blocked_with_cards):
+
+    damage_left = damage_step_value - calc_total_physical_block(
+        already_blocked_with_cards
+    )
+    return True if damage_left >= DEFENSIVE_REACTION_THRESHOLD else False
+
 
 class Block:
     def __init__(self, enemy):
@@ -49,12 +64,6 @@ class Block:
 
     def clear_physical_block_cards(self):
         self.physical_block_cards = []
-
-    def calc_total_physical_block(self):
-        # print("total_physical_block")
-        # print(sum([p.defense for p in self.physical_block_cards]))+
-        sum_block = sum([p.defense for p in self.physical_block_cards])
-        return sum_block if sum_block > 0 else None
 
     def increase_physical_block_balance(self, amount=1):
         self.physical_block += amount
@@ -139,7 +148,7 @@ class Block:
             elif self.enemy.survival_mode == True:
                 self.block_all_physical_damage(physical_damage)
 
-        return self.calc_total_physical_block()
+        return self.physical_block_cards
 
     def placeholder_block(self):
         if len(self.defensive_cards) > 0:
@@ -215,18 +224,16 @@ class Block:
     #     # TODO
     #     pass
 
-    def get_defensive_reaction(self, physical_damage):
+    def get_defensive_reaction(self):
         rnd_defensive_reaction = None
-        if physical_damage > 0:
-            rnd_defensive_reaction = random.choice(
-                [
-                    c
-                    for c in self.enemy.hand + self.enemy.arsenal.get_arsenal()
-                    if c.card_type == CardType.defensive_reaction
-                ]
-            )
-
-            self.physical_block_cards.append(rnd_defensive_reaction)
+        rnd_defensive_reaction = random.choice(
+            [
+                c
+                for c in self.enemy.hand + self.enemy.arsenal.get_arsenal()
+                if c.card_type == CardType.defensive_reaction
+            ]
+        )
+        self.physical_block_cards.append(rnd_defensive_reaction)
 
         return rnd_defensive_reaction
 
@@ -335,7 +342,9 @@ class Block:
                 case physical_damage if 0 <= physical_damage < self.base_value:
                     print("attack not blocked at all")
                     self.physical_block_cards = []
-                case physical_damage if self.base_value <= physical_damage < self.base_value + 3:
+                case (
+                    physical_damage
+                ) if self.base_value <= physical_damage < self.base_value + 3:
                     print(
                         "attack blocked with {} cards".format(
                             len(self.defensive_cards[:1])
@@ -346,7 +355,9 @@ class Block:
                         self.physical_block_cards = unused_cards[:1]
                     else:
                         self.physical_block_cards = self.defensive_cards[:1]
-                case physical_damage if self.base_value + 3 <= physical_damage < self.base_value + 7:
+                case (
+                    physical_damage
+                ) if self.base_value + 3 <= physical_damage < self.base_value + 7:
                     print(
                         "attack blocked with {} cards".format(
                             len(self.defensive_cards[:2])
@@ -363,7 +374,9 @@ class Block:
                         self.physical_block_cards = unused_cards
                     else:
                         self.physical_block_cards = self.defensive_cards[:2]
-                case physical_damage if self.base_value + 7 <= physical_damage < self.base_value + 11:
+                case (
+                    physical_damage
+                ) if self.base_value + 7 <= physical_damage < self.base_value + 11:
                     print(
                         "attack blocked with {} cards".format(
                             len(self.defensive_cards[:3])

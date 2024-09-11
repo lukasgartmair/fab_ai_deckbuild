@@ -26,6 +26,7 @@ class GameScene(SceneBase):
         self.pygamegame_sound = Sound()
 
     def process_input(self, events):
+
         for event in events:
             if event.type == pygame.QUIT:
                 Game.quit_everything(self)
@@ -210,15 +211,15 @@ class GameScene(SceneBase):
 
             self.render_inputs()
 
-            self.renderer.render_log()
-
-            if self.waiting_for_user_input == True:
-                self.renderer.render_pop_up_window()
-
             # MECHANOLOGIST STUFF
 
             if self.engine.enemy.player_class == PlayerClass.mechanologist:
                 self.renderer.render_boost_counter()
                 self.renderer.render_boost()
+
+            self.renderer.render_log()
+
+            if self.waiting_for_user_input == True:
+                self.renderer.render_pop_up_window()
 
             pygame.display.flip()

@@ -305,10 +305,11 @@ class Enemy:
             self.block.defend_arcane(arcane_damage)
             self.sound.play_flip_card()
 
+        print("has_to_be_defended")
         if player_attack.physical.has_to_be_defended():
-            player_attack.physical.set_block(
-                self.block.defend_physical(physical_damage)
-            )
+            print("yes")
+            physical_blocking_cards = self.block.defend_physical(physical_damage)
+            player_attack.physical.set_block(physical_blocking_cards)
 
         for bc in self.block.physical_block_cards:
             # print(bc)
@@ -327,20 +328,28 @@ class Enemy:
         else:
             self.sound.play_not_possible()
 
-    def perform_defensive_reaction(self, physical_damage):
-        defensive_reaction = self.block.get_defensive_reaction(physical_damage)
+    def perform_defensive_reaction(self, player_attack):
 
-        if defensive_reaction is not None:
-            self.played_cards.append(defensive_reaction)
+        if player_attack.physical.still_has_to_be_defended_with_reaction() == True:
 
-            if defensive_reaction in self.hand:
-                self.hand.remove(defensive_reaction)
+            defensive_reaction = self.block.get_defensive_reaction(
+                player_attack.physical.get_latest_step_value()
+            )
 
-            if defensive_reaction in self.arsenal.arsenal:
-                self.arsenal.remove_card(defensive_reaction)
+            if defensive_reaction is not None:
+                self.played_cards.append(defensive_reaction)
 
-            if len(self.block.physical_block_cards) > 0:
-                self.sound.play_block()
+                if defensive_reaction in self.hand:
+                    self.hand.remove(defensive_reaction)
+
+                if defensive_reaction in self.arsenal.arsenal:
+                    self.arsenal.remove_card(defensive_reaction)
+
+                if len(self.block.physical_block_cards) > 0:
+                    self.sound.play_block()
+
+                else:
+                    self.sound.play_not_possible()
 
         else:
             self.sound.play_not_possible()

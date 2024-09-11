@@ -147,7 +147,9 @@ class GameEngine:
 
         current_state = self.enemy.stance_state_machine.current_state
         match current_state:
-            case current_state if current_state == self.enemy.stance_state_machine.defense:
+            case (
+                current_state
+            ) if current_state == self.enemy.stance_state_machine.defense:
                 print()
                 print("DEFENSE STATE")
                 print()
@@ -156,20 +158,22 @@ class GameEngine:
                 self.enemy.defend(player_attack)
                 self.finish_move(player_attack)
 
-            case current_state if current_state == self.enemy.stance_state_machine.defensive_reaction:
+            case (
+                current_state
+            ) if current_state == self.enemy.stance_state_machine.defensive_reaction:
                 print()
                 print("DEFENSIVE REACTION STATE")
                 print()
                 if self.enemy.check_if_further_defensive_reaction_possible() == True:
-                    self.enemy.perform_defensive_reaction(
-                        self.player_attack.physical.get_latest_step_value()
-                    )
+                    self.enemy.perform_defensive_reaction(self.player_attack)
                 else:
                     self.enemy.sound.play_not_possible()
 
                 self.finish_move(player_attack)
 
-            case current_state if current_state == self.enemy.stance_state_machine.attack:
+            case (
+                current_state
+            ) if current_state == self.enemy.stance_state_machine.attack:
                 print()
                 print("ATTACK STATE")
                 print()
@@ -178,7 +182,9 @@ class GameEngine:
                 else:
                     self.enemy.sound.play_not_possible()
 
-            case current_state if current_state == self.enemy.stance_state_machine.attack_reaction:
+            case (
+                current_state
+            ) if current_state == self.enemy.stance_state_machine.attack_reaction:
                 print()
                 print("ATTACKREACTION STATE")
                 print()

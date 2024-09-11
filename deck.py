@@ -244,7 +244,6 @@ class Deck:
 
             card.keywords.sort(key=lambda x: x.value, reverse=False)
 
-            print(len(card_class_distribution))
             card.card_class = card_class_distribution[indices[i]]
             card.image = card_images[indices[i]]
 
