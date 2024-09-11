@@ -188,6 +188,7 @@ class GameEngine:
                 print()
                 print("ATTACKREACTION STATE")
                 print()
+
                 if (
                     self.enemy.check_if_further_attack_reaction_planned(
                         self.enemy.combat_chain.get_current_link()
@@ -196,6 +197,7 @@ class GameEngine:
                 ):
                     self.enemy.perform_attack(reaction=True)
                 else:
+                    print("ATTACK REACTION NOT POSSIBLE")
                     self.enemy.sound.play_not_possible()
 
         self.level_manager.move_index += 1

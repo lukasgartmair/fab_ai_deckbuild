@@ -133,7 +133,7 @@ class ChainLink:
         return cards
 
     def has_attack_reactions_left(self):
-        step_types = [s.step_type for s in self.steps.values()]
+        step_types = [s.step_type for s in self.steps.values() if s.index > self.index]
         step_types_reaction = [
             True if s == StepType.attack_reaction else False for s in step_types
         ]
