@@ -332,12 +332,11 @@ class Enemy:
 
         if player_attack.physical.still_has_to_be_defended_with_reaction() == True:
 
-            defensive_reaction = self.block.get_defensive_reaction(
-                player_attack.physical.get_latest_step_value()
-            )
+            defensive_reaction = self.block.get_defensive_reaction()
 
             if defensive_reaction is not None:
                 self.played_cards.append(defensive_reaction)
+                player_attack.physical.set_block([defensive_reaction])
 
                 if defensive_reaction in self.hand:
                     self.hand.remove(defensive_reaction)

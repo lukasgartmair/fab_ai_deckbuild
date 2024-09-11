@@ -217,7 +217,12 @@ class GameScene(SceneBase):
                 self.renderer.render_boost_counter()
                 self.renderer.render_boost()
 
-            self.renderer.render_log()
+            if self.engine.enemy.stance_state_machine.current_state in [
+                StanceStateMachine.defense,
+                StanceStateMachine.defensive_reaction,
+            ]:
+
+                self.renderer.render_log()
 
             if self.waiting_for_user_input == True:
                 self.renderer.render_pop_up_window()
