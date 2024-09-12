@@ -238,7 +238,7 @@ class Block:
 
         arcane_block_threshold = 0
         match arcane_damage:
-            case arcane_damage if arcane_damage == 1 or 2:
+            case arcane_damage if arcane_damage in [1 or 2]:
                 arcane_block_threshold = 1
             case arcane_damage if arcane_damage > 2:
                 arcane_block_threshold = 2
