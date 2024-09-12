@@ -86,8 +86,9 @@ class GameEngine:
         # self.analyzer.write_move_data(copy.copy(player_attack))
         self.level_manager.advandce_move()
 
-    def trigger_stance_switch(self):
-        self.enemy.stance_state_machine.change_stance()
+    def trigger_stance_switch(self, automatic=True):
+        if automatic == True:
+            self.enemy.stance_state_machine.change_stance()
 
         print("CURRENT STATE")
         print(self.enemy.stance_state_machine.current_state)
@@ -139,7 +140,7 @@ class GameEngine:
             return True
 
     def play(self, player_attack=None):
-        pygame.time.wait(50)
+        pygame.time.wait(100)
 
         self.enemy.start_move()
 

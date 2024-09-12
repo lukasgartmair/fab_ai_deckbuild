@@ -33,14 +33,15 @@ def calc_total_arcane_block(arcane_block_cards):
 
 def check_defensive_reaction_trigger(damage_step_value, already_blocked_with_cards):
 
-    if damage_step_value is not None:
+    # if damage_step_value is not None:
 
-        damage_left = damage_step_value - calc_total_physical_block(
-            already_blocked_with_cards
-        )
-        return True if damage_left >= DEFENSIVE_REACTION_THRESHOLD else False
-    else:
-        return False
+    #     damage_left = damage_step_value - calc_total_physical_block(
+    #         already_blocked_with_cards
+    #     )
+    #     return True if damage_left >= DEFENSIVE_REACTION_THRESHOLD else False
+    # else:
+    #     return False
+    return True
 
 
 class Block:

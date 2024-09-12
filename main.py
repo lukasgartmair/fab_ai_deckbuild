@@ -9,6 +9,7 @@ Created on Mon Nov 13 10:29:21 2023
 from game import Game
 import numpy as np
 import random
+
 import logging
 from settings import RND_SEED
 

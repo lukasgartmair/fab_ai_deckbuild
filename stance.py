@@ -27,6 +27,7 @@ class StanceStateMachine(StateMachine):
     # switch_from_defensive_reaction_to_attack = defensive_reaction.to(
     #     attack, unless="continue_combat_chain"
     # )
+    # switch_from_defensive_reaction_to_attack = defensive_reaction.to(attack,unless="continue_combat_chain")
     switch_from_defensive_reaction_to_attack = defensive_reaction.to(attack)
     switch_from_attack_to_attack_reaction = attack.to(
         attack_reaction,
@@ -41,6 +42,8 @@ class StanceStateMachine(StateMachine):
         defense, unless="further_chain_links_to_play"
     )
     switch_from_defense_to_defensive_reaction = defense.to(defensive_reaction)
+
+    # switch_from_defensive_reaction_to_defense = defensive_reaction.to(defense,cond="continue_combat_chain")
     switch_from_defensive_reaction_to_defense = defensive_reaction.to(defense)
 
     cycle = (
@@ -69,6 +72,7 @@ class StanceStateMachine(StateMachine):
         super(StanceStateMachine, self).__init__()
 
     def on_enter_attack(self):
+        self.continue_combat_chain = None
         self.stance = Stance.attack
         self.sound.play_change_stance_to_attack()
 
@@ -115,7 +119,9 @@ class StanceStateMachine(StateMachine):
             return False
 
     def continue_combat_chain(self):
-        return self.continue_combat_chain
+        print("CONTINUE COMBAT CHAIN")
+        print(self.continue_combat_chain)
+        return True if self.continue_combat_chain == True else False
 
     def change_stance(self):
         try:

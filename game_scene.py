@@ -13,7 +13,6 @@ from playstyle import PlayerClass
 from game import Game
 from sound import Sound
 from stance import StanceStateMachine
-from pop_up_window import COMBAT_CHAIN_MENU
 
 
 class GameScene(SceneBase):
@@ -92,9 +91,17 @@ class GameScene(SceneBase):
                                         inp_box, all_attacks=True
                                     )
 
-                            for inp_box in self.renderer.input_boxes:
-                                if inp_box.has_text():
-                                    self.engine.player_attack.set_values(inp_box)
+                            elif any(
+                                [
+                                    True
+                                    for inp_box in self.renderer.input_boxes
+                                    if inp_box.has_text()
+                                ]
+                            ):
+
+                                for inp_box in self.renderer.input_boxes:
+                                    if inp_box.has_text():
+                                        self.engine.player_attack.set_values(inp_box)
 
                             self.engine.play(self.engine.player_attack)
 
@@ -111,37 +118,49 @@ class GameScene(SceneBase):
 
                         self.render()
 
+                if (
+                    self.engine.state_machine.current_state
+                    == self.engine.state_machine.playing
+                ):
+                    if (
+                        self.engine.enemy.stance_state_machine.current_state
+                        == StanceStateMachine.defensive_reaction
+                    ):
+                        self.switch_pop_up_window(event)
+
                 if event.key == pygame.K_RETURN:
                     if (
                         self.engine.state_machine.current_state
                         == self.engine.state_machine.playing
                     ):
-                        # print("HERE  xhhxhx")
-                        # if (
-                        #     self.engine.enemy.stance_state_machine.current_state
-                        #     == StanceStateMachine.defensive_reaction
-                        # ):
-                        #     if self.waiting_for_user_input == False:
-                        #         self.waiting_for_user_input = True
-                        #         break
-                        #     else:
-                        #         if self.renderer.pop_up_window.menu.is_enabled():
-                        #             print("HELLOO")
-                        #             self.renderer.pop_up_window.update_selection()
-                        #             print(
-                        #                 self.engine.enemy.stance_state_machine.continue_combat_chain
-                        #             )
-                        #             self.engine.enemy.stance_state_machine.continue_combat_chain = (
-                        #                 self.renderer.pop_up_window.continue_combat_chain
-                        #             )
-                        #             self.waiting_for_user_input = False
+                        print("HERE  xhhxhx")
+                        if (
+                            self.engine.enemy.stance_state_machine.current_state
+                            == StanceStateMachine.defensive_reaction
+                        ):
+                            if self.waiting_for_user_input == False:
+                                self.waiting_for_user_input = True
+                                self.renderer.render_pop_up_window()
+                                break
+                            else:
+                                # TODO why dont unless and cond for the state machine not work properly here
+                                if self.renderer.pop_up_window.menu.is_enabled():
+                                    print("HERERE ENABLED")
+                                    print(
+                                        self.renderer.pop_up_window.continue_combat_chain()
+                                    )
+                                    if (
+                                        self.renderer.pop_up_window.continue_combat_chain()
+                                        == True
+                                    ):
+                                        self.engine.enemy.stance_state_machine.switch_from_defensive_reaction_to_defense()
+                                    else:
+                                        self.engine.enemy.stance_state_machine.switch_from_defensive_reaction_to_attack()
+                                    self.engine.trigger_stance_switch(automatic=False)
 
-                        self.engine.trigger_stance_switch()
-
-                        # if self.renderer.pop_up_window.continue_combat_chain == False:
-                        #     self.engine.trigger_stance_switch()
-                        # else:
-                        #     break
+                                    self.waiting_for_user_input = False
+                        else:
+                            self.engine.trigger_stance_switch()
 
                         for inp_box in self.renderer.input_boxes:
                             inp_box.reset()
@@ -158,6 +177,21 @@ class GameScene(SceneBase):
                                 scene_manager.get_end_scene(self.engine, self.renderer)
                             )
                             self.is_active = False
+
+    def switch_pop_up_window(self, event):
+        if self.waiting_for_user_input == True:
+            if (
+                event.key == pygame.K_DOWN
+                and self.renderer.pop_up_window.finish_is_selected() == True
+            ):
+                self.renderer.pop_up_window.select_continue()
+                self.renderer.render_pop_up_window()
+            if (
+                event.key == pygame.K_UP
+                and self.renderer.pop_up_window.continue_is_selected() == True
+            ):
+                self.renderer.pop_up_window.select_finish()
+                self.renderer.render_pop_up_window()
 
     def update(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:
@@ -238,6 +272,7 @@ class GameScene(SceneBase):
                 self.renderer.render_log()
 
             if self.waiting_for_user_input == True:
+                print("RENDERING POP UP")
                 self.renderer.render_pop_up_window()
 
             pygame.display.flip()
