@@ -22,7 +22,6 @@ from equipment import EquipmentType
 import image
 from stance import StanceStateMachine
 from pop_up_window import PopUpWindow
-
 from settings import (
     playmat_grid as grid,
     bounds,

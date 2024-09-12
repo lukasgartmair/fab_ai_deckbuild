@@ -57,6 +57,10 @@ def map_permutations_to_original(array, permutations):
     return [[array[pi] for pi in p] for p in permutations]
 
 
+def map_combinations_to_original(array, combinations):
+    return [[array[pi] for pi in p] for p in combinations]
+
+
 def shift_list(a):
     x = a.pop()
     a.insert(0, x)

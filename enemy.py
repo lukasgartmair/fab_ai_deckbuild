@@ -103,6 +103,8 @@ class Enemy:
 
         self.stance_state_machine = StanceStateMachine(self)
 
+        self.virtually_played_cards = []
+
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
             self.survival_mode = True
@@ -303,8 +305,12 @@ class Enemy:
         if player_attack.arcane.has_to_be_defended():
             print("blocking arcane")
             # self.block.defend_arcane(arcane_damage)
-            arcane_block_cards = self.block.defend_arcane_with_equipment(arcane_damage)
-            player_attack.physical.set_block(arcane_block_cards)
+            arcane_block_cards, arcane_pitch = self.block.defend_arcane_with_equipment(
+                arcane_damage
+            )
+            player_attack.arcane.set_block(
+                arcane_block_cards, arcane_pitch=arcane_pitch
+            )
             self.sound.play_flip_card()
 
         print("has_to_be_defended")
@@ -408,6 +414,11 @@ class Enemy:
 
             for p in c.pitch:
                 self.pitch_card(p)
+
+            print("NOT ENOUGH RESOURCES")
+
+            print(self.resource_manager.floating_resources)
+            print(c.play.cost)
 
             self.resource_manager.use_floating_resources(c.play.cost)
 
