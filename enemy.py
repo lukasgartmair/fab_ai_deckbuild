@@ -76,6 +76,8 @@ class Enemy:
         self.pitched_cards = []
         self.played_cards = []
 
+        self.virtually_played_cards = []
+
         self.action_point_manager = ActionPointManager()
 
         self.combat_chain = CombatChain(
@@ -102,8 +104,6 @@ class Enemy:
         self.check_if_in_survival_mode()
 
         self.stance_state_machine = StanceStateMachine(self)
-
-        self.virtually_played_cards = []
 
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
@@ -138,6 +138,9 @@ class Enemy:
 
     def initial_switch_to_offense(self):
         self.played_cards = []
+
+        self.virtually_played_cards = []
+
         self.pitched_cards = []
 
         self.block.turn_reset()
@@ -180,6 +183,9 @@ class Enemy:
             self.deck.put_to_bottom(pc)
 
         self.played_cards = []
+
+        self.virtually_played_cards = []
+
         self.pitched_cards = []
 
         if "intimidated_cards" in self.banished_zone:
@@ -289,7 +295,6 @@ class Enemy:
             print(c.name)
 
     def defend(self, player_attack):
-        # self.combat_chain.update_combat_chain()
         if len(self.hand) > 0:
             if self.modifiers.modifier_dict["intimidate"] == True:
                 random_banished_card = random.choice(self.hand)
@@ -302,9 +307,11 @@ class Enemy:
         physical_damage = player_attack.physical.get_latest_step_value()
         arcane_damage = player_attack.arcane.get_latest_step_value()
 
+        if player_attack.physical.has_to_be_defended():
+            physical_blocking_cards = self.block.defend_physical(physical_damage)
+            player_attack.physical.set_block(physical_blocking_cards)
+
         if player_attack.arcane.has_to_be_defended():
-            print("blocking arcane")
-            # self.block.defend_arcane(arcane_damage)
             arcane_block_cards, arcane_pitch = self.block.defend_arcane_with_equipment(
                 arcane_damage
             )
@@ -312,11 +319,6 @@ class Enemy:
                 arcane_block_cards, arcane_pitch=arcane_pitch
             )
             self.sound.play_flip_card()
-
-        print("has_to_be_defended")
-        if player_attack.physical.has_to_be_defended():
-            physical_blocking_cards = self.block.defend_physical(physical_damage)
-            player_attack.physical.set_block(physical_blocking_cards)
 
         for bc in self.block.physical_block_cards:
             # print(bc)

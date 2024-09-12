@@ -6,22 +6,28 @@ Created on Sun Sep  1 13:56:46 2024
 @author: lukasgartmair
 """
 
+# TODO find sweetspot values here
+# the current ones are working basically but not well
 
 VALUE_MAX_PLACEHOLDER = 100
 a = 0.75
 b = 0.25
+c = 0.5
+d = 0.5
 
 
 def pitch_formula_offense(diff_to_cost, number_of_cards_used):
     print(diff_to_cost)
     print(number_of_cards_used)
-    return (diff_to_cost * a + number_of_cards_used * b) + 1 / number_of_cards_used * a
+    return (
+        abs(diff_to_cost) * a + number_of_cards_used * b
+    ) + 1 / number_of_cards_used * a
 
 
 def pitch_formula_arcane_defense(diff_to_cost, number_of_cards_used):
     print(diff_to_cost)
     print(number_of_cards_used)
-    return (diff_to_cost * a + number_of_cards_used * b) + 1 / number_of_cards_used * a
+    return abs(diff_to_cost) * c + number_of_cards_used * d
 
 
 def determine_offensive_pitch_combination(cost_to_pay, pitch_combinations):
@@ -37,17 +43,13 @@ def determine_offensive_pitch_combination(cost_to_pay, pitch_combinations):
         print(k)
         print(v)
         diff_to_cost_temp = cost_to_pay - v
+        underpitch = True if diff_to_cost_temp > 0 else False
         print(diff_to_cost_temp)
 
-        if (diff_to_cost_temp >= 0) == True:
-
-            print("here")
-            print(diff_to_cost_temp <= 0)
-            print(pitch_formula_offense(diff_to_cost_temp, number_of_cards_used))
+        if underpitch == False:
             pitch_value_calculated_temp = pitch_formula_offense(
                 diff_to_cost_temp, number_of_cards_used
             )
-            print(pitch_value_calculated_temp)
 
             if pitch_value_calculated_temp <= pitch_value_calculated:
                 diff_to_cost = diff_to_cost_temp
@@ -67,7 +69,8 @@ def determine_arcane_defense_pitch_combination(cost_to_pay, pitch_combinations):
     for k, v in pitch_combinations.items():
         number_of_cards_used_temp = len(k)
         diff_to_cost_temp = cost_to_pay - v
-        if (abs(diff_to_cost_temp) <= 1) == True:
+        underpitch = True if diff_to_cost_temp > 0 else False
+        if underpitch == False:
 
             pitch_value_calculated_temp = pitch_formula_arcane_defense(
                 diff_to_cost_temp, number_of_cards_used

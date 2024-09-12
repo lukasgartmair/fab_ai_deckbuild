@@ -5,7 +5,7 @@ Created on Fri Aug  9 20:48:29 2024
 
 @author: lukasgartmair
 """
-from block import calc_total_physical_block
+from block import calc_total_physical_block, calc_total_arcane_block
 from utils import subtract_two_with_possible_none_type
 
 
@@ -28,6 +28,14 @@ class LifeCounter:
             for k, v in player_attack.physical.damage_steps.items():
                 result = subtract_two_with_possible_none_type(
                     v, calc_total_physical_block(player_attack.physical.blocked_with[k])
+                )
+                if result > 0:
+                    self.life -= result
+
+        if player_attack.arcane.is_empty() == False:
+            for k, v in player_attack.arcane.damage_steps.items():
+                result = subtract_two_with_possible_none_type(
+                    v, calc_total_arcane_block(player_attack.arcane.blocked_with[k])
                 )
                 if result > 0:
                     self.life -= result

@@ -79,6 +79,19 @@ class GameScene(SceneBase):
                             StanceStateMachine.defensive_reaction,
                             StanceStateMachine.defense,
                         ]:
+
+                            if all(
+                                [
+                                    True
+                                    for inp_box in self.renderer.input_boxes
+                                    if inp_box.has_text()
+                                ]
+                            ):
+                                for inp_box in self.renderer.input_boxes:
+                                    self.engine.player_attack.set_values(
+                                        inp_box, all_attacks=True
+                                    )
+
                             for inp_box in self.renderer.input_boxes:
                                 if inp_box.has_text():
                                     self.engine.player_attack.set_values(inp_box)

@@ -241,7 +241,10 @@ class Renderer:
             self.render_playmat_card_spot(self.playmat.positions.weapon_1)
 
         for i, w in enumerate(self.engine.enemy.weapons):
-            if w not in self.engine.enemy.played_cards:
+            if w not in (
+                self.engine.enemy.played_cards,
+                self.engine.enemy.virtually_played_cards,
+            ):
                 if w.weapon_id == 0:
                     self.render_card(
                         w,
@@ -421,8 +424,17 @@ class Renderer:
             width=2,
         )
 
-        if len(self.engine.enemy.played_cards) > 0:
-            for i, card in enumerate(self.engine.enemy.played_cards):
+        if (
+            len(
+                self.engine.enemy.played_cards
+                + self.engine.enemy.virtually_played_cards
+            )
+            > 0
+        ):
+            for i, card in enumerate(
+                self.engine.enemy.played_cards
+                + self.engine.enemy.virtually_played_cards
+            ):
                 self.render_card(
                     card,
                     playmat_position_obj.x
@@ -471,6 +483,7 @@ class Renderer:
             if (
                 eq in (self.engine.enemy.block.physical_block_cards)
                 or (eq in self.engine.enemy.played_cards)
+                or (eq in self.engine.enemy.virtually_played_cards)
                 or (eq in self.engine.enemy.graveyard)
             ):
                 self.render_playmat_card_spot(playmat_position_obj)
