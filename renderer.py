@@ -20,7 +20,7 @@ from playmat import Playmat
 from equipment import EquipmentType
 import image
 from stance import StanceStateMachine
-from widgets import ContinueCombatChainWindow, ModifiersWindow
+from widgets import ContinueCombatChainWindow, ModifiersWindow, PlayerAttackWindow
 from settings import (
     playmat_grid as grid,
     bounds,
@@ -79,6 +79,15 @@ class Renderer:
             position=(
                 self.playmat.positions.check_boxes.x,
                 self.playmat.positions.check_boxes.y,
+                False,
+            ),
+        )
+
+        self.player_attack_window = PlayerAttackWindow(
+            screen=self.window,
+            position=(
+                self.playmat.positions.inputs.x,
+                self.playmat.positions.inputs.y,
                 False,
             ),
         )

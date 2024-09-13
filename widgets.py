@@ -61,8 +61,43 @@ class ModifiersWindow(BaseMenu):
 
         return menu
 
-    def return_self(self):
-        return self
+    def switch(self, widget):
+        if widget.get_value() == 0:
+            widget.set_value(1)
+        elif widget.get_value() == 1:
+            widget.set_value(0)
+
+    def display(self) -> None:
+        self.menu.enable()
+        self.menu.draw(self.screen)
+
+
+class PlayerAttackWindow(BaseMenu):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.menu = self.create_menu()
+
+    def create_menu(self):
+        menu = pygame_menu.Menu(
+            "Player Attack Input", 350, 200, position=self.position, theme=theme
+        )
+
+        menu.add.text_input(
+            "Physical damage: ",
+            textinput_id="physical_input",
+            default="",
+            font="z003",
+            maxchar=2,
+        )
+        menu.add.text_input(
+            "Arcane damage: ",
+            textinput_id="damage_input",
+            default="",
+            font="z003",
+            maxchar=2,
+        )
+
+        return menu
 
     def switch(self, widget):
         if widget.get_value() == 0:
@@ -83,7 +118,7 @@ class ContinueCombatChainWindow(BaseMenu):
 
     def create_menu(self):
         menu = pygame_menu.Menu(
-            "Deciscion time", 400, 300, position=self.position, theme=theme
+            "Decision time", 400, 300, position=self.position, theme=theme
         )
         menu.add.button(
             "Finish Your Attack", self.dummy, button_id="finish_combat_chain_button"

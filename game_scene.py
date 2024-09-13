@@ -103,9 +103,6 @@ class GameScene(SceneBase):
                             for inp_box in self.renderer.input_boxes:
                                 inp_box.reset()
 
-                            for check_box in self.renderer.check_boxes:
-                                check_box.reset()
-
                             self.engine.enemy.modifiers.reset()
 
                         else:
@@ -236,6 +233,8 @@ class GameScene(SceneBase):
         ]:
 
             self.renderer.render_modifiers_window()
+
+            self.renderer.player_attack_window.display()
 
             for inp_box in self.renderer.input_boxes:
                 inp_box.render()
