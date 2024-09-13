@@ -148,11 +148,10 @@ class ChainLink:
             return False
 
     def attack_step_continues(self):
-        current_step = self.get_current_step()
-        if current_step is not None:
-            if current_step == StepType.attack and current_step.end_reached == False:
+        step_types = [s.step_type for s in self.steps.values() if s.index > self.index]
+        if len(step_types) > 0:
+            if any([True if s == StepType.attack else False for s in step_types]):
                 return True
-
         return False
 
     def go_to_reaction_step(self):
