@@ -117,7 +117,7 @@ class Playmat:
         )
 
         self.positions.check_boxes = Position(
-            "Check Boxes", grid.left_point(11), grid.top_point(grid_height_playmat - 3)
+            "Check Boxes", grid.left_point(11), grid.top_point(grid_height_playmat - 5)
         )
 
         self.positions.enemy_message = Position(

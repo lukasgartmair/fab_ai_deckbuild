@@ -31,25 +31,6 @@ class GameScene(SceneBase):
 
         for event in events:
 
-            if event.type == pygame.MOUSEBUTTONUP:
-                # if self.renderer.modifiers_window.menu.collide(event):
-                menu_widgets = self.renderer.modifiers_window.menu.get_widgets()
-                mouseover_widget = (
-                    self.renderer.modifiers_window.menu.get_mouseover_widget()
-                )
-                print(mouseover_widget)
-                print(menu_widgets)
-                for w in menu_widgets:
-                    print(event.pos)
-                    print(w.get_rect().x)
-                    print(w.get_rect().y)
-                    print(normalize_position(event.pos))
-                    print(w.get_rect().collidepoint(normalize_position(event.pos)))
-                    if (
-                        w.get_rect().collidepoint(normalize_position(event.pos))
-                    ) == True:
-                        w.switch()
-
             if event.type == pygame.QUIT:
                 Game.quit_everything(self)
 
@@ -67,17 +48,7 @@ class GameScene(SceneBase):
                 self.render()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-
-                for check_box in self.renderer.check_boxes:
-                    if check_box.cb.isOver(pygame.mouse.get_pos()):
-                        check_box.check_activation()
-                        self.render()
-
-            for check_box in self.renderer.check_boxes:
-                if check_box.cb.isChecked() == True:
-                    self.engine.enemy.modifiers.modifier_dict[check_box.name] = True
-                else:
-                    self.engine.enemy.modifiers.modifier_dict[check_box.name] = False
+                self.handle_modifiers(event)
 
             if event.type == pygame.KEYDOWN:
                 self.render_inputs()
@@ -192,8 +163,7 @@ class GameScene(SceneBase):
                         for inp_box in self.renderer.input_boxes:
                             inp_box.reset()
 
-                        for check_box in self.renderer.check_boxes:
-                            check_box.reset()
+                        self.renderer.modifiers_window.reset()
 
                         self.engine.enemy.modifiers.reset()
 
@@ -222,6 +192,27 @@ class GameScene(SceneBase):
                 self.renderer.continue_combat_chain_window.select_finish()
                 self.renderer.render_continue_combat_chain_window()
 
+    def handle_modifiers(self, event):
+        print(event.pos)
+        menu_widgets = self.renderer.modifiers_window.menu.get_widgets()
+        for w in menu_widgets:
+            print(event.pos)
+            print(w.get_rect(to_absolute_position=True).x)
+            print(w.get_rect(to_absolute_position=True).y)
+            print(w.get_rect(to_real_position=True).collidepoint(event.pos))
+            abs_rect = self.renderer.modifiers_window.get_absolute_rect(w)
+            if (abs_rect.collidepoint(event.pos)) == True:
+                self.renderer.modifiers_window.switch(w)
+
+                if w.get_value() == 1:
+                    self.engine.enemy.modifiers.modifier_dict[w.get_title().lower()] = (
+                        True
+                    )
+                elif w.get_value() == 0:
+                    self.engine.enemy.modifiers.modifier_dict[w.get_title().lower()] = (
+                        False
+                    )
+
     def update(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:
             self.engine.check_win_condition()
@@ -248,9 +239,6 @@ class GameScene(SceneBase):
 
             for inp_box in self.renderer.input_boxes:
                 inp_box.render()
-
-            for check_box in self.renderer.check_boxes:
-                check_box.cb.draw(self.renderer.window)
 
     def render(self):
         if self.is_active:

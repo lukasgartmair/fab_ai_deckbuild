@@ -9,7 +9,6 @@ Created on Mon Jul 29 19:03:39 2024
 import pygame
 
 from card import card_colors
-from check_box import CheckBox
 from input_box import InputBox
 from playstyle import Keyword, CardType
 from colors import color_palette
@@ -80,7 +79,7 @@ class Renderer:
             position=(
                 self.playmat.positions.check_boxes.x,
                 self.playmat.positions.check_boxes.y,
-                True,
+                False,
             ),
         )
 
@@ -97,21 +96,6 @@ class Renderer:
             self.card_back,
             (int(card_width), int(card_height)),
         )
-
-        self.check_box_dominate = CheckBox(
-            "dominate",
-            x=self.playmat.positions.check_boxes.x,
-            y=self.playmat.positions.check_boxes.y,
-        )
-
-        self.check_box_intimidate = CheckBox(
-            "intimidate",
-            x=self.playmat.positions.check_boxes.x,
-            y=self.playmat.positions.check_boxes.y
-            + self.playmat.get_vertical_spacing() * 1.5,
-        )
-
-        self.check_boxes = [self.check_box_dominate, self.check_box_intimidate]
 
         self.button_up = pu.button(
             pygame.Color(color_palette.color2),

@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Sep  4 15:03:42 2024
+
+@author: lukasgartmair
+"""
+import sys
+from widgets import ModifiersWindow
+import pygame_menu
+import traceback
+import pygame
+
+
+def quit_everything(active_scene=None):
+    pygame.display.quit()
+    pygame.quit()
+
+    sys.exit()
+
+
+width = 500
+height = 500
+
+import pygame
+
+
+theme = pygame_menu.themes.THEME_DARK
+
+
+class ModifiersWindow:
+    def __init__(self, screen=None, position=None):
+        self.screen = screen
+        self.position = position
+        if self.position is None:
+            self.position = (40, 40, False)
+
+        self.menu = self.create_menu()
+
+    def dummy(self):
+        pass
+
+    def create_menu(self):
+        menu = pygame_menu.Menu(
+            "Modifiers", 350, 300, position=self.position, theme=theme
+        )
+        menu.add.toggle_switch(
+            "Dominate",
+            button_id="toggleswitch_dominate",
+            # single_click=True,
+            font="z003",
+            onchange=self.switch,
+        )
+        menu.add.toggle_switch(
+            "Intimidate",
+            button_id="toggleswitch_dominate",
+            single_click=True,
+            font="z003",
+            onchange=self.switch,
+        )
+
+        return menu
+
+    def switch(self, widget):
+        if widget.get_value() == 0:
+            widget.set_value(1)
+        elif widget.get_value() == 1:
+            widget.set_value(0)
+
+    def display(self) -> None:
+        self.menu.draw(self.screen)
+
+    def get_absolute_rect(self, widget):
+        # TODO find the originally impelmented version of this
+        rect_temp = widget.get_rect()
+        rect_temp.x += self.position[0]
+        rect_temp.y += self.position[1]
+        return rect_temp
+
+
+def main_local():
+
+    tb = None
+
+    try:
+        pygame.init()
+        screen = pygame.display.set_mode([width, height])
+        running = True
+
+        test_window = ModifiersWindow(screen=screen)
+
+        while running == True:
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    print(event.pos)
+                    menu_widgets = test_window.menu.get_widgets()
+                    mouseover_widget = test_window.menu.get_mouseover_widget()
+                    print(mouseover_widget)
+                    print(menu_widgets)
+
+                    for w in menu_widgets:
+                        print(event.pos)
+                        print(w.get_rect(to_absolute_position=True).x)
+                        print(w.get_rect(to_absolute_position=True).y)
+                        print(w.get_rect(to_real_position=True).collidepoint(event.pos))
+                        abs_rect = test_window.get_absolute_rect(w)
+                        if (abs_rect.collidepoint(event.pos)) == True:
+                            test_window.switch(w)
+
+                if event.type == pygame.QUIT:
+
+                    running = False
+                    quit_everything()
+
+            test_window.display()
+
+            pygame.display.flip()
+
+    except:
+        tb = traceback.format_exc()
+        print(tb)
+        quit_everything()
+
+
+if __name__ == "__main__":
+    main_local()
