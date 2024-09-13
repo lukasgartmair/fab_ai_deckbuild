@@ -29,7 +29,7 @@ class StanceStateMachine(StateMachine):
     defensive_reaction = State("defensive_reaction")
 
     switch_from_defensive_reaction_to_attack = defensive_reaction.to(
-        attack, unless="defensive_reaction_left"
+        attack, unless=["player_combat_chain_continues", "defensive_reaction_left"]
     )
 
     switch_from_attack_to_attack_reaction = attack.to(
@@ -50,7 +50,7 @@ class StanceStateMachine(StateMachine):
     switch_from_defense_to_defensive_reaction = defense.to(defensive_reaction)
 
     switch_from_defensive_reaction_to_defense = defensive_reaction.to(
-        defense, cond="enemy_combat_chain_continues"
+        defense, cond="player_combat_chain_continues"
     )
 
     stay_in_defensive_reaction = defensive_reaction.to.itself(internal=True)
@@ -104,5 +104,5 @@ class StanceStateMachine(StateMachine):
 if __name__ == "__main__":
 
     sm = StanceStateMachine()
-    for i in range(20):
+    for i in range(100):
         sm.change_stance()

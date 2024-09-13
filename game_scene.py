@@ -153,10 +153,10 @@ class GameScene(SceneBase):
                                         self.renderer.pop_up_window.continue_combat_chain()
                                         == True
                                     ):
-                                        self.engine.enemy.stance_state_machine.switch_from_defensive_reaction_to_defense()
-                                    else:
-                                        self.engine.enemy.stance_state_machine.switch_from_defensive_reaction_to_attack()
-                                    self.engine.trigger_stance_switch(automatic=False)
+                                        self.engine.enemy.stance_state_machine.continue_combat_chain = (
+                                            True
+                                        )
+                                    self.engine.trigger_stance_switch()
 
                                     self.waiting_for_user_input = False
                         else:
