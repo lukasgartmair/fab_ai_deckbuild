@@ -42,11 +42,16 @@ class GameScene(SceneBase):
                 if self.renderer.button_down.isOver(pygame.mouse.get_pos()):
                     self.engine.enemy.life_counter.decrease_life()
 
-                # mouse_over_widget = self.renderer.modifiers_window.menu.get_mouseover_widget()
-                # print("mouse_over_widget")
-                # print(mouse_over_widget)
-                # if mouse_over_widget is not None:
-                #     pass
+                if self.renderer.modifiers_window.menu.collide(event):
+                    self.renderer.modifiers_window.menu.enable()
+                    mouse_over_widget = (
+                        self.renderer.modifiers_window.menu.get_mouseover_widget()
+                    )
+                    print("mouse_over_widget")
+                    print(mouse_over_widget)
+                    widgets = self.renderer.modifiers_window.menu.get_widgets()
+                    for w in widgets:
+                        w.mouseover(event)
 
                 self.render()
 
