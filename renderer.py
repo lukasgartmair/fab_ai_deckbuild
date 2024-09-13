@@ -21,7 +21,7 @@ from playmat import Playmat
 from equipment import EquipmentType
 import image
 from stance import StanceStateMachine
-from pop_up_window import PopUpWindow
+from widgets import ContinueCombatChainWindow
 from settings import (
     playmat_grid as grid,
     bounds,
@@ -72,7 +72,7 @@ class Renderer:
             box_type="arcane",
         )
 
-        self.pop_up_window = PopUpWindow(self.window)
+        self.continue_combat_chain_window = ContinueCombatChainWindow(self.window)
 
         self.input_boxes = [
             self.input_box_physical,
@@ -865,8 +865,8 @@ class Renderer:
             color=color_palette.color3,
         )
 
-    def render_pop_up_window(self):
-        self.pop_up_window.display()
+    def render_continue_combat_chain_window(self):
+        self.continue_combat_chain_window.display()
 
     def update_display(self):
         pygame.display.flip()

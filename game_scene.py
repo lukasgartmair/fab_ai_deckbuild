@@ -126,7 +126,7 @@ class GameScene(SceneBase):
                         self.engine.enemy.stance_state_machine.current_state
                         == StanceStateMachine.defensive_reaction
                     ):
-                        self.switch_pop_up_window(event)
+                        self.switch_continue_combat_chain_window(event)
 
                 if event.key == pygame.K_RETURN:
                     if (
@@ -140,17 +140,19 @@ class GameScene(SceneBase):
                         ):
                             if self.waiting_for_user_input == False:
                                 self.waiting_for_user_input = True
-                                self.renderer.render_pop_up_window()
+                                self.renderer.render_continue_combat_chain_window()
                                 break
                             else:
                                 # TODO why dont unless and cond for the state machine not work properly here
-                                if self.renderer.pop_up_window.menu.is_enabled():
+                                if (
+                                    self.renderer.continue_combat_chain_window.menu.is_enabled()
+                                ):
                                     print("HERERE ENABLED")
                                     print(
-                                        self.renderer.pop_up_window.continue_combat_chain()
+                                        self.renderer.continue_combat_chain_window.continue_combat_chain()
                                     )
                                     if (
-                                        self.renderer.pop_up_window.continue_combat_chain()
+                                        self.renderer.continue_combat_chain_window.continue_combat_chain()
                                         == True
                                     ):
                                         self.engine.enemy.stance_state_machine.continue_combat_chain = (
@@ -159,6 +161,7 @@ class GameScene(SceneBase):
                                     self.engine.trigger_stance_switch()
 
                                     self.waiting_for_user_input = False
+                                    self.renderer.continue_combat_chain_window.select_finish()
                         else:
                             self.engine.trigger_stance_switch()
 
@@ -178,20 +181,22 @@ class GameScene(SceneBase):
                             )
                             self.is_active = False
 
-    def switch_pop_up_window(self, event):
+    def switch_continue_combat_chain_window(self, event):
         if self.waiting_for_user_input == True:
             if (
                 event.key == pygame.K_DOWN
-                and self.renderer.pop_up_window.finish_is_selected() == True
+                and self.renderer.continue_combat_chain_window.finish_is_selected()
+                == True
             ):
-                self.renderer.pop_up_window.select_continue()
-                self.renderer.render_pop_up_window()
+                self.renderer.continue_combat_chain_window.select_continue()
+                self.renderer.render_continue_combat_chain_window()
             if (
                 event.key == pygame.K_UP
-                and self.renderer.pop_up_window.continue_is_selected() == True
+                and self.renderer.continue_combat_chain_window.continue_is_selected()
+                == True
             ):
-                self.renderer.pop_up_window.select_finish()
-                self.renderer.render_pop_up_window()
+                self.renderer.continue_combat_chain_window.select_finish()
+                self.renderer.render_continue_combat_chain_window()
 
     def update(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:
