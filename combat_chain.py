@@ -147,18 +147,14 @@ class ChainLink:
         else:
             return False
 
-    def attack_step_finished(self):
+    def attack_step_continues(self):
         step_types = [s.step_type for s in self.steps.values()]
         step_types_attack = [
             True if s == StepType.attack else False for s in step_types
         ]
-        print("XXXXXXXXXXXXXXX")
-        print()
         if any(step_types_attack):
-            print("has attacks left")
             return True
         else:
-            print("has no attacks left")
             return False
 
     def go_to_reaction_step(self):

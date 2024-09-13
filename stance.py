@@ -108,15 +108,11 @@ class StanceStateMachine(StateMachine):
     def attacks_left(self):
         if self.enemy.combat_chain.is_empty() == True:
             return False
+
         current_link = self.enemy.combat_chain.get_current_link()
 
-        if current_link is None:
-            current_link = self.enemy.combat_chain.get_next_link()
-
         if current_link is not None:
-            return False if current_link.attack_step_finished() == True else True
-        else:
-            return False
+            return True if current_link.attack_step_continues() == True else False
 
     def attack_reactions_left(self):
         return True if self.enemy.further_attack_reaction_planned() == True else False
