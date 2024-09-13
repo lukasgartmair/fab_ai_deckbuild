@@ -13,6 +13,7 @@ from playstyle import PlayerClass
 from game import Game
 from sound import Sound
 from stance import StanceStateMachine
+from utils import normalize_position
 
 
 class GameScene(SceneBase):
@@ -26,8 +27,29 @@ class GameScene(SceneBase):
 
     def process_input(self, events):
 
-        pygame.time.wait(100)
+        # pygame.time.wait(100)
+
         for event in events:
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                # if self.renderer.modifiers_window.menu.collide(event):
+                menu_widgets = self.renderer.modifiers_window.menu.get_widgets()
+                mouseover_widget = (
+                    self.renderer.modifiers_window.menu.get_mouseover_widget()
+                )
+                print(mouseover_widget)
+                print(menu_widgets)
+                for w in menu_widgets:
+                    print(event.pos)
+                    print(w.get_rect().x)
+                    print(w.get_rect().y)
+                    print(normalize_position(event.pos))
+                    print(w.get_rect().collidepoint(normalize_position(event.pos)))
+                    if (
+                        w.get_rect().collidepoint(normalize_position(event.pos))
+                    ) == True:
+                        w.switch()
+
             if event.type == pygame.QUIT:
                 Game.quit_everything(self)
 
@@ -42,20 +64,10 @@ class GameScene(SceneBase):
                 if self.renderer.button_down.isOver(pygame.mouse.get_pos()):
                     self.engine.enemy.life_counter.decrease_life()
 
-                if self.renderer.modifiers_window.menu.collide(event):
-                    self.renderer.modifiers_window.menu.enable()
-                    mouse_over_widget = (
-                        self.renderer.modifiers_window.menu.get_mouseover_widget()
-                    )
-                    print("mouse_over_widget")
-                    print(mouse_over_widget)
-                    widgets = self.renderer.modifiers_window.menu.get_widgets()
-                    for w in widgets:
-                        w.mouseover(event)
-
                 self.render()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
+
                 for check_box in self.renderer.check_boxes:
                     if check_box.cb.isOver(pygame.mouse.get_pos()):
                         check_box.check_activation()

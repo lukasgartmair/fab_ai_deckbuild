@@ -73,7 +73,7 @@ class Renderer:
         )
 
         self.continue_combat_chain_window = ContinueCombatChainWindow(
-            screen=self.window, position=None
+            screen=self.window
         )
         self.modifiers_window = ModifiersWindow(
             screen=self.window,

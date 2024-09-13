@@ -10,10 +10,15 @@ import numpy as np
 from colors import color_palette
 import itertools
 from numpy import prod
+from settings import height, width
 
 
 def factorial(n):
     return prod(range(1, n + 1))
+
+
+def normalize_position(position):
+    return (position[0] / width * 100, position[1] / height * 100)
 
 
 def n_chance(p=0.85):
