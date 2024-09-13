@@ -1,0 +1,18 @@
+digraph list {
+label=StanceStateMachine;
+fontname=Arial;
+fontsize=10pt;
+rankdir=LR;
+i [shape=circle, style=filled, fontsize=1pt, fixedsize=true, width=0.2, height=0.2, fillcolor=black];
+i -> attack [label="", color=blue, fontname=Arial, fontsize=9pt];
+attack [label="attack\ncycle stay_in_attack / ", shape=rectangle, style="rounded, filled", fontname=Arial, fontsize=10pt, peripheries=1, penwidth=2, fillcolor=turquoise];
+attack -> attack_reaction [label="cycle switch_from_attack_to_attack_reaction", color=blue, fontname=Arial, fontsize=9pt];
+attack_reaction [label="attack_reaction\ncycle stay_in_attack_reaction / ", shape=rectangle, style="rounded, filled", fontname=Arial, fontsize=10pt, peripheries=1, fillcolor=white];
+attack_reaction -> attack [label="cycle switch_from_attack_reaction_to_attack", color=blue, fontname=Arial, fontsize=9pt];
+attack_reaction -> defense [label="cycle switch_from_attack_reaction_to_defense", color=blue, fontname=Arial, fontsize=9pt];
+defense [label=defense, shape=rectangle, style="rounded, filled", fontname=Arial, fontsize=10pt, peripheries=1, fillcolor=white];
+defense -> defensive_reaction [label="cycle switch_from_defense_to_defensive_reaction", color=blue, fontname=Arial, fontsize=9pt];
+defensive_reaction [label="defensive_reaction\ncycle stay_in_defensive_reaction / ", shape=rectangle, style="rounded, filled", fontname=Arial, fontsize=10pt, peripheries=1, fillcolor=white];
+defensive_reaction -> attack [label="cycle switch_from_defensive_reaction_to_attack", color=blue, fontname=Arial, fontsize=9pt];
+defensive_reaction -> defense [label="cycle switch_from_defensive_reaction_to_defense", color=blue, fontname=Arial, fontsize=9pt];
+}
