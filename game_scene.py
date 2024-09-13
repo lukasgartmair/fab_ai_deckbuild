@@ -18,14 +18,15 @@ from stance import StanceStateMachine
 class GameScene(SceneBase):
     waiting_for_user_input = False
 
-    def __init__(self, *kargs):
-        super().__init__(*kargs)
+    def __init__(self, *args):
+        super().__init__(*args)
         # print("Game Scene")
 
         self.pygamegame_sound = Sound()
 
     def process_input(self, events):
 
+        pygame.time.wait(100)
         for event in events:
             if event.type == pygame.QUIT:
                 Game.quit_everything(self)
@@ -38,8 +39,14 @@ class GameScene(SceneBase):
             if event.type == pygame.MOUSEBUTTONUP:
                 if self.renderer.button_up.isOver(pygame.mouse.get_pos()):
                     self.engine.enemy.life_counter.increase_life()
-                elif self.renderer.button_down.isOver(pygame.mouse.get_pos()):
+                if self.renderer.button_down.isOver(pygame.mouse.get_pos()):
                     self.engine.enemy.life_counter.decrease_life()
+
+                # mouse_over_widget = self.renderer.modifiers_window.menu.get_mouseover_widget()
+                # print("mouse_over_widget")
+                # print(mouse_over_widget)
+                # if mouse_over_widget is not None:
+                #     pass
 
                 self.render()
 
@@ -219,6 +226,9 @@ class GameScene(SceneBase):
             StanceStateMachine.defensive_reaction,
             StanceStateMachine.defense,
         ]:
+
+            self.renderer.render_modifiers_window()
+
             for inp_box in self.renderer.input_boxes:
                 inp_box.render()
 

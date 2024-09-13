@@ -140,7 +140,6 @@ class GameEngine:
             return True
 
     def play(self, player_attack=None):
-        pygame.time.wait(100)
 
         self.enemy.start_move()
 

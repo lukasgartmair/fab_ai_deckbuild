@@ -11,13 +11,13 @@ from game_scene import GameScene
 from end_scene import EndScene
 
 
-def get_title_scene(*kargs):
-    return TitleScene(*kargs)
+def get_title_scene(*args):
+    return TitleScene(*args)
 
 
-def get_game_scene(*kargs):
-    return GameScene(*kargs)
+def get_game_scene(*args):
+    return GameScene(*args)
 
 
-def get_end_scene(*kargs):
-    return EndScene(*kargs)
+def get_end_scene(*args):
+    return EndScene(*args)

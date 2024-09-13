@@ -21,7 +21,7 @@ from playmat import Playmat
 from equipment import EquipmentType
 import image
 from stance import StanceStateMachine
-from widgets import ContinueCombatChainWindow
+from widgets import ContinueCombatChainWindow, ModifiersWindow
 from settings import (
     playmat_grid as grid,
     bounds,
@@ -72,7 +72,17 @@ class Renderer:
             box_type="arcane",
         )
 
-        self.continue_combat_chain_window = ContinueCombatChainWindow(self.window)
+        self.continue_combat_chain_window = ContinueCombatChainWindow(
+            screen=self.window, position=None
+        )
+        self.modifiers_window = ModifiersWindow(
+            screen=self.window,
+            position=(
+                self.playmat.positions.check_boxes.x,
+                self.playmat.positions.check_boxes.y,
+                True,
+            ),
+        )
 
         self.input_boxes = [
             self.input_box_physical,
@@ -867,6 +877,9 @@ class Renderer:
 
     def render_continue_combat_chain_window(self):
         self.continue_combat_chain_window.display()
+
+    def render_modifiers_window(self):
+        self.modifiers_window.display()
 
     def update_display(self):
         pygame.display.flip()
