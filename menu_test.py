@@ -59,6 +59,14 @@ class ModifiersWindow:
             onchange=self.switch,
         )
 
+        menu.add.text_input(
+            "Last name: ",
+            default="",
+            textinput_id="text",
+            maxchar=3,
+            input_underline="_",
+        )
+
         return menu
 
     def switch(self, widget):
@@ -76,6 +84,28 @@ class ModifiersWindow:
         rect_temp.x += self.position[0]
         rect_temp.y += self.position[1]
         return rect_temp
+
+    def custom_update(self, widget, event):
+        if event.type == pygame.KEYDOWN:
+
+            if event.key == pygame.K_BACKSPACE:
+                widget.set_value(widget.get_value()[:-1])
+            else:
+                if event.key in [
+                    pygame.K_0,
+                    pygame.K_1,
+                    pygame.K_2,
+                    pygame.K_3,
+                    pygame.K_4,
+                    pygame.K_5,
+                    pygame.K_6,
+                    pygame.K_7,
+                    pygame.K_8,
+                    pygame.K_9,
+                ]:
+                    widget.set_value(widget.get_value() + event.unicode)
+                    if len(widget.get_value()) > 2:
+                        widget.set_value(widget.get_value()[:2])
 
 
 def main_local():
@@ -108,6 +138,11 @@ def main_local():
                         abs_rect = test_window.get_absolute_rect(w)
                         if (abs_rect.collidepoint(event.pos)) == True:
                             test_window.switch(w)
+
+                if event.type == pygame.KEYDOWN:
+
+                    w = test_window.menu.get_widget("text")
+                    test_window.custom_update(w, event)
 
                 if event.type == pygame.QUIT:
 

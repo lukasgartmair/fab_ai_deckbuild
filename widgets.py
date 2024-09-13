@@ -34,7 +34,7 @@ class BaseMenu:
 
     def reset(self):
         for w in self.menu.get_widgets():
-            w.reset_value()
+            pass
 
 
 class ModifiersWindow(BaseMenu):
@@ -71,6 +71,10 @@ class ModifiersWindow(BaseMenu):
         self.menu.enable()
         self.menu.draw(self.screen)
 
+    def reset(self):
+        for w in self.menu.get_widgets():
+            w.reset_value()
+
 
 class PlayerAttackWindow(BaseMenu):
     def __init__(self, **kwargs):
@@ -79,31 +83,62 @@ class PlayerAttackWindow(BaseMenu):
 
     def create_menu(self):
         menu = pygame_menu.Menu(
-            "Player Attack Input", 350, 200, position=self.position, theme=theme
+            "Player Attack", 350, 200, position=self.position, theme=theme
         )
 
         menu.add.text_input(
-            "Physical damage: ",
+            "Physical: ",
             textinput_id="physical_input",
             default="",
             font="z003",
             maxchar=2,
+            input_underline="_",
         )
         menu.add.text_input(
-            "Arcane damage: ",
-            textinput_id="damage_input",
+            "Arcane: ",
+            textinput_id="arcane_input",
             default="",
             font="z003",
             maxchar=2,
+            input_underline="_",
         )
 
         return menu
 
-    def switch(self, widget):
-        if widget.get_value() == 0:
-            widget.set_value(1)
-        elif widget.get_value() == 1:
-            widget.set_value(0)
+    def has_text(self, widget):
+        return True if len(widget.get_value()) > 0 else False
+
+    def custom_update(self, widget, event):
+        has_changed = False
+        if widget.is_selected() == True:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    widget.set_value(widget.get_value()[:-1])
+                    has_changed = True
+                else:
+                    if event.key in [
+                        pygame.K_0,
+                        pygame.K_1,
+                        pygame.K_2,
+                        pygame.K_3,
+                        pygame.K_4,
+                        pygame.K_5,
+                        pygame.K_6,
+                        pygame.K_7,
+                        pygame.K_8,
+                        pygame.K_9,
+                    ]:
+                        if len(widget.get_value()) > 2:
+                            widget.set_value(widget.get_value()[:2])
+                        else:
+                            widget.set_value(widget.get_value() + event.unicode)
+                            has_changed = True
+        return has_changed
+
+    def reset(self):
+        for w in self.menu.get_widgets():
+            w.clear()
+            w.set_value("")
 
     def display(self) -> None:
         self.menu.enable()

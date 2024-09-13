@@ -18,14 +18,10 @@ class PlayerAttack:
         self.physical = Damage(damage_type=DamageType.physical)
         self.arcane = Damage(damage_type=DamageType.arcane)
 
-    def set_values(self, inp_box=None, all_attacks=False):
-        if inp_box is not None:
-            if inp_box.box_type == "physical":
-                self.physical.set_step(inp_box.send_input())
-                if all_attacks == False:
-                    self.arcane.set_step(None)
+    def set_value_physical(self, value=None):
+        if value is not None:
+            self.physical.set_step(int(value))
 
-            elif inp_box.box_type == "arcane":
-                self.arcane.set_step(inp_box.send_input())
-                if all_attacks == False:
-                    self.physical.set_step(None)
+    def set_value_arcane(self, value=None):
+        if value is not None:
+            self.arcane.set_step(int(value))

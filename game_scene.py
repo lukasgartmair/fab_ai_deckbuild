@@ -34,11 +34,6 @@ class GameScene(SceneBase):
             if event.type == pygame.QUIT:
                 Game.quit_everything(self)
 
-            for inp_box in self.renderer.input_boxes:
-                inp_box.check_activation(event)
-                if inp_box.active == True:
-                    self.render_inputs()
-
             if event.type == pygame.MOUSEBUTTONUP:
                 if self.renderer.button_up.isOver(pygame.mouse.get_pos()):
                     self.engine.enemy.life_counter.increase_life()
@@ -49,14 +44,12 @@ class GameScene(SceneBase):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.handle_modifiers(event)
+                self.handle_player_attack_input(event)
 
             if event.type == pygame.KEYDOWN:
                 self.render_inputs()
 
-                for inp_box in self.renderer.input_boxes:
-                    inp_box.update(event=event)
-                    if event.key == pygame.K_BACKSPACE:
-                        self.render()
+                self.update_player_attack_input(event)
 
                 if event.key == pygame.K_SPACE:
                     self.render()
@@ -74,39 +67,17 @@ class GameScene(SceneBase):
                             StanceStateMachine.defense,
                         ]:
 
-                            if all(
-                                [
-                                    True
-                                    for inp_box in self.renderer.input_boxes
-                                    if inp_box.has_text()
-                                ]
-                            ):
-                                for inp_box in self.renderer.input_boxes:
-                                    self.engine.player_attack.set_values(
-                                        inp_box, all_attacks=True
-                                    )
-
-                            elif any(
-                                [
-                                    True
-                                    for inp_box in self.renderer.input_boxes
-                                    if inp_box.has_text()
-                                ]
-                            ):
-
-                                for inp_box in self.renderer.input_boxes:
-                                    if inp_box.has_text():
-                                        self.engine.player_attack.set_values(inp_box)
+                            self.set_player_attack_input()
 
                             self.engine.play(self.engine.player_attack)
 
-                            for inp_box in self.renderer.input_boxes:
-                                inp_box.reset()
-
+                            self.renderer.player_attack_window.reset()
                             self.engine.enemy.modifiers.reset()
 
                         else:
                             self.engine.play()
+                            self.renderer.player_attack_window.reset()
+                            self.renderer.player_attack_window.display()
 
                         self.render()
 
@@ -157,9 +128,6 @@ class GameScene(SceneBase):
                         else:
                             self.engine.trigger_stance_switch()
 
-                        for inp_box in self.renderer.input_boxes:
-                            inp_box.reset()
-
                         self.renderer.modifiers_window.reset()
 
                         self.engine.enemy.modifiers.reset()
@@ -190,13 +158,8 @@ class GameScene(SceneBase):
                 self.renderer.render_continue_combat_chain_window()
 
     def handle_modifiers(self, event):
-        print(event.pos)
         menu_widgets = self.renderer.modifiers_window.menu.get_widgets()
         for w in menu_widgets:
-            print(event.pos)
-            print(w.get_rect(to_absolute_position=True).x)
-            print(w.get_rect(to_absolute_position=True).y)
-            print(w.get_rect(to_real_position=True).collidepoint(event.pos))
             abs_rect = self.renderer.modifiers_window.get_absolute_rect(w)
             if (abs_rect.collidepoint(event.pos)) == True:
                 self.renderer.modifiers_window.switch(w)
@@ -209,6 +172,35 @@ class GameScene(SceneBase):
                     self.engine.enemy.modifiers.modifier_dict[w.get_title().lower()] = (
                         False
                     )
+
+    def handle_player_attack_input(self, event):
+        menu_widgets = self.renderer.player_attack_window.menu.get_widgets()
+        for w in menu_widgets:
+            abs_rect = self.renderer.player_attack_window.get_absolute_rect(w)
+            if (abs_rect.collidepoint(event.pos)) == True:
+                w.select(update_menu=True)
+
+    def update_player_attack_input(self, event):
+
+        w = self.renderer.player_attack_window.menu.get_widget("physical_input")
+        has_changed = self.renderer.player_attack_window.custom_update(w, event)
+
+        w2 = self.renderer.player_attack_window.menu.get_widget("arcane_input")
+        has_changed2 = self.renderer.player_attack_window.custom_update(w2, event)
+
+        if any([has_changed, has_changed2]):
+            self.renderer.player_attack_window.display()
+
+    def set_player_attack_input(self):
+        w_physical = self.renderer.player_attack_window.menu.get_widget(
+            "physical_input"
+        )
+        if self.renderer.player_attack_window.has_text(w_physical) == True:
+            self.engine.player_attack.set_value_physical(w_physical.get_value())
+
+        w_arcane = self.renderer.player_attack_window.menu.get_widget("arcane_input")
+        if self.renderer.player_attack_window.has_text(w_arcane) == True:
+            self.engine.player_attack.set_value_arcane(w_arcane.get_value())
 
     def update(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:
@@ -235,9 +227,6 @@ class GameScene(SceneBase):
             self.renderer.render_modifiers_window()
 
             self.renderer.player_attack_window.display()
-
-            for inp_box in self.renderer.input_boxes:
-                inp_box.render()
 
     def render(self):
         if self.is_active:

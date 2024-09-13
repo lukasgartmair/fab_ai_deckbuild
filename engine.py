@@ -96,12 +96,13 @@ class GameEngine:
         state = self.enemy.stance_state_machine.current_state
         match state:
             case state if state == self.enemy.stance_state_machine.defense:
-                self.finish_turn()
+                pass
 
             case state if state == self.enemy.stance_state_machine.defensive_reaction:
                 pass
 
             case state if state == self.enemy.stance_state_machine.attack:
+
                 self.resolve_block()
 
                 self.enemy.start_turn()

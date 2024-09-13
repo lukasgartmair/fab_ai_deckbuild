@@ -137,6 +137,9 @@ class Enemy:
         self.draw()
 
     def initial_switch_to_offense(self):
+
+        self.finish_turn()
+
         self.played_cards = []
 
         self.virtually_played_cards = []
@@ -158,6 +161,8 @@ class Enemy:
 
     def exit_defensive_reaction(self):
         self.handle_equipment_counters()
+
+        # TODO change this in order not to redraw when the player combat chain continues
 
         print("switched to offense")
         self.initial_switch_to_offense()

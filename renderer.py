@@ -92,11 +92,6 @@ class Renderer:
             ),
         )
 
-        self.input_boxes = [
-            self.input_box_physical,
-            self.input_box_arcane,
-        ]
-
         self.background = None
         self.load_background()
 
