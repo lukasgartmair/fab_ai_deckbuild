@@ -31,6 +31,7 @@ class StanceStateMachine(StateMachine):
     switch_from_attack_to_attack_reaction = attack.to(
         attack_reaction, unless="attacks_left"
     )
+
     stay_in_attack = attack.to.itself(internal=True)
 
     switch_from_attack_reaction_to_attack = attack_reaction.to(
@@ -83,10 +84,10 @@ class StanceStateMachine(StateMachine):
 
     def on_exit_attack_reaction(self):
         self.stance = Stance.defend
-        self.enemy.finish_turn()
 
     def on_enter_defense(self):
         self.continue_combat_chain = False
+        self.enemy.finish_turn()
         self.stance = Stance.defend
         self.enemy.start_move()
 

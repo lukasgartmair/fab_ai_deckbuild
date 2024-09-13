@@ -88,8 +88,8 @@ class ChainLink:
         if self.index == -1 and self.is_empty() == True:
             return None
         elif self.index == -1 and self.get_length() > 0:
-            return self.chain[0]
-        elif self.index_in_steps() == True:
+            return self.steps[0]
+        elif self.index_in_steps(self.index) == True:
             return self.steps[self.index]
         else:
             return None
@@ -148,14 +148,12 @@ class ChainLink:
             return False
 
     def attack_step_continues(self):
-        step_types = [s.step_type for s in self.steps.values()]
-        step_types_attack = [
-            True if s == StepType.attack else False for s in step_types
-        ]
-        if any(step_types_attack):
-            return True
-        else:
-            return False
+        current_step = self.get_current_step()
+        if current_step is not None:
+            if current_step == StepType.attack and current_step.end_reached == False:
+                return True
+
+        return False
 
     def go_to_reaction_step(self):
         attacks_done = [
