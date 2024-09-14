@@ -23,48 +23,79 @@ chance = 0.5
 
 
 class StanceStateMachine(StateMachine):
-    attack = State("attack", initial=True)
+
+    combat_chain_start_enemy = State("combat_chain_start_enemy")
+    combat_chain_end_enemy = State("combat_chain_end_enemy")
+
+    combat_chain_start_player = State("combat_chain_start_player", initial=True)
+    combat_chain_end_player = State("combat_chain_end_player")
+
+    attack = State("attack")
     attack_reaction = State("attack_reaction")
     defense = State("defense")
     defensive_reaction = State("defensive_reaction")
 
-    switch_from_defensive_reaction_to_attack = defensive_reaction.to(
-        attack, unless=["player_combat_chain_continues", "defensive_reaction_left"]
-    )
+    ### OFFENSE ###
 
-    switch_from_attack_to_attack_reaction = attack.to(
-        attack_reaction, unless="attacks_left"
+    switch_from_combat_chain_start_enemy_to_attack = combat_chain_start_enemy.to(attack)
+
+    stay_in_attack = attack.to.itself(internal=True, cond="attacks_left")
+
+    switch_from_attack_to_attack_reaction = attack.to(attack_reaction)
+
+    stay_in_attack_reaction = attack_reaction.to.itself(
+        internal=True, cond="attack_reaction_left"
     )
-    stay_in_attack = attack.to.itself(internal=True)
 
     switch_from_attack_reaction_to_attack = attack_reaction.to(
         attack, cond="enemy_combat_chain_continues"
     )
 
-    switch_from_attack_reaction_to_defense = attack_reaction.to(
-        defense, unless="enemy_combat_chain_continues"
+    switch_from_attack_reaction_to_combat_chain_end_enemy = attack_reaction.to(
+        combat_chain_end_enemy
     )
 
-    stay_in_attack_reaction = attack_reaction.to.itself(internal=True)
+    switch_from_combat_chain_end_enemy_to_combat_chain_start_player = (
+        combat_chain_end_enemy.to(combat_chain_start_player)
+    )
+
+    ### DEFENSE ###
+
+    switch_from_combat_chain_start_player_to_defense = combat_chain_start_player.to(
+        defense,
+    )
 
     switch_from_defense_to_defensive_reaction = defense.to(defensive_reaction)
+
+    stay_in_defensive_reaction = defensive_reaction.to.itself(
+        internal=True, cond="defensive_reaction_left"
+    )
 
     switch_from_defensive_reaction_to_defense = defensive_reaction.to(
         defense, cond="player_combat_chain_continues"
     )
 
-    stay_in_defensive_reaction = defensive_reaction.to.itself(internal=True)
+    switch_from_defensive_reaction_to_combat_chain_end_player = defensive_reaction.to(
+        combat_chain_end_player
+    )
+
+    switch_from_combat_chain_end_player_to_combat_chain_start_enemy = (
+        combat_chain_end_player.to(combat_chain_start_enemy)
+    )
 
     cycle = (
-        switch_from_attack_to_attack_reaction
+        switch_from_combat_chain_start_enemy_to_attack
+        | switch_from_attack_to_attack_reaction
         | stay_in_attack
-        | switch_from_attack_reaction_to_defense
-        | stay_in_attack_reaction
         | switch_from_attack_reaction_to_attack
+        | switch_from_attack_reaction_to_combat_chain_end_enemy
+        | stay_in_attack_reaction
+        | switch_from_combat_chain_end_enemy_to_combat_chain_start_player
+        | switch_from_combat_chain_start_player_to_defense
         | switch_from_defense_to_defensive_reaction
         | switch_from_defensive_reaction_to_defense
-        | switch_from_defensive_reaction_to_attack
-        | stay_in_defensive_reaction
+        | switch_from_defensive_reaction_to_combat_chain_end_player
+        | switch_from_combat_chain_end_player_to_combat_chain_start_enemy
     )
 
     def __init__(self):
@@ -82,7 +113,7 @@ class StanceStateMachine(StateMachine):
     def attacks_left(self):
         return True if n_chance(chance) else False
 
-    def attack_reactions_left(self):
+    def attack_reaction_left(self):
         return True if n_chance(chance) else False
 
     def player_combat_chain_continues(self):
@@ -90,6 +121,18 @@ class StanceStateMachine(StateMachine):
 
     def enemy_combat_chain_continues(self):
         return True if n_chance(chance) else False
+
+    def any_combat_chain_continues(self):
+        return (
+            True
+            if any(
+                [
+                    self.player_combat_chain_continues(),
+                    self.enemy_combat_chain_continues(),
+                ]
+            )
+            else False
+        )
 
     def change_stance(self):
         # try:

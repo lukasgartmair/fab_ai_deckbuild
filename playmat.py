@@ -121,7 +121,7 @@ class Playmat:
         )
 
         self.positions.enemy_message = Position(
-            "Inputs", grid.left_point(4), grid.top_point(grid_height_playmat - 4)
+            "Enemy Message", grid.left_point(4), grid.top_point(grid_height_playmat - 4)
         )
 
     def get_horizontal_spacing(self):

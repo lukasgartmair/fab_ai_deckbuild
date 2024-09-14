@@ -819,11 +819,10 @@ class Renderer:
             (self.engine.enemy.stance_state_machine.current_state.name).replace(
                 "_", " "
             )
-            + " STEP"
         ).upper()
         self.render_text(
             text,
-            grid.left_point(4),
+            grid.left_point(3),
             grid.top_point(0),
             font=font,
             color=color,

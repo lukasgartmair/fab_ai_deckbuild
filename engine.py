@@ -95,6 +95,26 @@ class GameEngine:
 
         state = self.enemy.stance_state_machine.current_state
         match state:
+            case (
+                state
+            ) if state == self.enemy.stance_state_machine.combat_chain_start_enemy:
+                self.enemy.stance_state_machine.send("cycle")
+            case (
+                state
+            ) if state == self.enemy.stance_state_machine.combat_chain_end_enemy:
+                self.enemy.stance_state_machine.send("cycle")
+                self.enemy.stance_state_machine.send("cycle")
+
+            case (
+                state
+            ) if state == self.enemy.stance_state_machine.combat_chain_start_player:
+                self.enemy.stance_state_machine.send("cycle")
+            case (
+                state
+            ) if state == self.enemy.stance_state_machine.combat_chain_end_player:
+                self.enemy.stance_state_machine.send("cycle")
+                self.enemy.stance_state_machine.send("cycle")
+
             case state if state == self.enemy.stance_state_machine.defense:
                 pass
 
