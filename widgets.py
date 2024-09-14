@@ -48,24 +48,32 @@ class ModifiersWindow(BaseMenu):
         )
         menu.add.toggle_switch(
             "Dominate",
-            button_id="toggleswitch_dominate",
+            toggleswitch_id="toggleswitch_dominate",
             font="z003",
             is_selectable=False,
+            onchange=self.switch,
+            selection_effect=None,
+            kwargs={"toggleswitch_id": "toggleswitch_dominate"},
         )
         menu.add.toggle_switch(
             "Intimidate",
-            button_id="toggleswitch_dominate",
+            toggleswitch_id="toggleswitch_intimidate",
             font="z003",
             is_selectable=False,
+            onchange=self.switch,
+            selection_effect=None,
+            kwargs={"toggleswitch_id": "toggleswitch_intimidate"},
         )
 
         return menu
 
-    def switch(self, widget):
-        if widget.get_value() == 0:
-            widget.set_value(1)
-        elif widget.get_value() == 1:
-            widget.set_value(0)
+    def switch(self, current_value, *args, **kwargs):
+        if current_value == False:
+            w = self.menu.get_widget(kwargs["kwargs"]["toggleswitch_id"])
+            w.set_value(True)
+        elif current_value == True:
+            w = self.menu.get_widget(kwargs["kwargs"]["toggleswitch_id"])
+            w.set_value(False)
 
     def display(self) -> None:
         self.menu.enable()

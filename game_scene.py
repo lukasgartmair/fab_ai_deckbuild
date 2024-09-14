@@ -162,16 +162,11 @@ class GameScene(SceneBase):
         for w in menu_widgets:
             abs_rect = self.renderer.modifiers_window.get_absolute_rect(w)
             if (abs_rect.collidepoint(event.pos)) == True:
-                self.renderer.modifiers_window.switch(w)
+                w.change()
 
-                if w.get_value() == 1:
-                    self.engine.enemy.modifiers.modifier_dict[w.get_title().lower()] = (
-                        True
-                    )
-                elif w.get_value() == 0:
-                    self.engine.enemy.modifiers.modifier_dict[w.get_title().lower()] = (
-                        False
-                    )
+                self.engine.enemy.modifiers.modifier_dict[w.get_title().lower()] = (
+                    w.get_value()
+                )
 
     def handle_player_attack_input(self, event):
         menu_widgets = self.renderer.player_attack_window.menu.get_widgets()

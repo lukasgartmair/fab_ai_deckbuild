@@ -46,17 +46,17 @@ class ModifiersWindow:
         )
         menu.add.toggle_switch(
             "Dominate",
-            button_id="toggleswitch_dominate",
-            # single_click=True,
+            toggleswitch_id="toggleswitch_dominate",
             font="z003",
             onchange=self.switch,
+            kwargs={"toggleswitch_id": "toggleswitch_dominate"},
         )
         menu.add.toggle_switch(
             "Intimidate",
-            button_id="toggleswitch_dominate",
-            single_click=True,
+            toggleswitch_id="toggleswitch_intimidate",
             font="z003",
             onchange=self.switch,
+            kwargs={"toggleswitch_id": "toggleswitch_intimidate"},
         )
 
         menu.add.text_input(
@@ -69,11 +69,13 @@ class ModifiersWindow:
 
         return menu
 
-    def switch(self, widget):
-        if widget.get_value() == 0:
-            widget.set_value(1)
-        elif widget.get_value() == 1:
-            widget.set_value(0)
+    def switch(self, current_value, *args, **kwargs):
+        if current_value == False:
+            w = self.menu.get_widget(kwargs["kwargs"]["toggleswitch_id"])
+            w.set_value(True)
+        elif current_value == True:
+            w = self.menu.get_widget(kwargs["kwargs"]["toggleswitch_id"])
+            w.set_value(False)
 
     def display(self) -> None:
         self.menu.draw(self.screen)
@@ -137,7 +139,8 @@ def main_local():
                         print(w.get_rect(to_real_position=True).collidepoint(event.pos))
                         abs_rect = test_window.get_absolute_rect(w)
                         if (abs_rect.collidepoint(event.pos)) == True:
-                            test_window.switch(w)
+                            w.change()
+                            test_window.display()
 
                 if event.type == pygame.KEYDOWN:
 
