@@ -25,6 +25,8 @@ logger = logging.getLogger("root")
 
 web = False
 
+global window
+
 
 def main_local():
     game = Game()

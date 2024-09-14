@@ -7,14 +7,18 @@ Created on Fri Aug  9 20:48:29 2024
 """
 from block import calc_total_physical_block, calc_total_arcane_block
 from utils import subtract_two_with_possible_none_type
+import animation
 
 
 class LifeCounter:
     def __init__(self, life, sound):
         self.life = life
         self.sound = sound
+        self.current_amount = None
 
     def decrease_life(self, amount=1):
+
+        self.current_amount = amount
         if amount >= 5:
             self.sound.play_pain()
         self.life -= amount

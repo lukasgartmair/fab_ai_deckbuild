@@ -51,7 +51,9 @@ arcane_offset = arcane_offset
 
 class Renderer:
     def __init__(self, engine):
-        self.window = pygame.display.set_mode(bounds)
+        global window
+        window = pygame.display.set_mode(bounds)
+        self.window = window
         self.engine = engine
         self.playmat = Playmat()
 
@@ -103,15 +105,15 @@ class Renderer:
 
         self.button_up = pu.button(
             pygame.Color(color_palette.color2),
-            grid.left_point(13),
-            grid.top_point(hp_height_index),
+            self.playmat.positions.life_counter.x,
+            self.playmat.positions.life_counter.y,
             button_size,
             button_size,
         )
         self.button_down = pu.button(
             pygame.Color(color_palette.color2),
-            grid.left_point(13),
-            grid.top_point(hp_height_index) + button_size + 5,
+            self.playmat.positions.life_counter.x,
+            self.playmat.positions.life_counter.y + button_size + 5,
             button_size,
             button_size,
         )

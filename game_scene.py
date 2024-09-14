@@ -14,15 +14,20 @@ from game import Game
 from sound import Sound
 from stance import StanceStateMachine
 from utils import normalize_position
+import animation
+import base_animation
+import custom_events
 
 
 class GameScene(SceneBase):
     waiting_for_user_input = False
 
+    animation_queue = base_animation.AnimationQueue()
+
     def __init__(self, *args):
         super().__init__(*args)
-        # print("Game Scene")
 
+        custom_events.CUSTOM_EVENT = custom_events.register_custom_event()
         self.pygamegame_sound = Sound()
 
     def process_input(self, events):
@@ -106,7 +111,6 @@ class GameScene(SceneBase):
                                 self.renderer.render_continue_combat_chain_window()
                                 break
                             else:
-                                # TODO why dont unless and cond for the state machine not work properly here
                                 if (
                                     self.renderer.continue_combat_chain_window.menu.is_enabled()
                                 ):
@@ -277,5 +281,9 @@ class GameScene(SceneBase):
             if self.waiting_for_user_input == True:
                 print("RENDERING POP UP")
                 self.renderer.render_pop_up_window()
+
+            self.animation_queue.animate_main_queue()
+
+            self.animation_queue.update_animation_queue()
 
             pygame.display.flip()

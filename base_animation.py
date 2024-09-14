@@ -24,11 +24,14 @@ class AnimationQueueType(Enum):
 
 
 class AnimationQueue:
+
+    global window
+
     def __init__(self):
         self.main_loop_animations = {}
         self.event_queue_animations = {}
 
-    def get_queue(self, animation_queue_type):
+    def get_queue(self, animation_queue_type=AnimationQueueType.MAIN):
         if animation_queue_type == AnimationQueueType.MAIN:
             return self.main_loop_animations
         elif animation_queue_type == AnimationQueueType.EVENT:
@@ -86,15 +89,22 @@ class AnimationQueue:
                     animation_sequence
                 )
 
+    def animate_main_queue(self):
+
+        queue = self.get_queue()
+        for k, v in queue.items():
+            v.animate(v)
+
 
 class BaseAnimation:
+    global window
+
     def __init__(
         self,
-        camera,
         animation_end_mode=AnimationEndMode.DURATION,
         particle_animation=True,
     ):
-        self.camera = camera
+        self.camera = window
         self.animation_object = None
 
         self.created_at = pygame.time.get_ticks()

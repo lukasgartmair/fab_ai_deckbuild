@@ -30,6 +30,12 @@ class Playmat:
 
         self.positions = types.SimpleNamespace()
 
+        self.positions.life_counter = Position(
+            "Life Counter",
+            grid.left_point(13),
+            grid.top_point(0.5),
+        )
+
         self.positions.enemy = Position(
             "Enemy",
             grid.left_point(grid_width_playmat // 2 - 1),
