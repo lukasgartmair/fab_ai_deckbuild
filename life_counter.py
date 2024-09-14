@@ -15,10 +15,9 @@ class LifeCounter:
         self.sound = sound
 
     def decrease_life(self, amount=1):
-        self.life -= amount
-
         if amount >= 5:
             self.sound.play_pain()
+        self.life -= amount
 
     def increase_life(self, amount=1):
         self.life += amount
@@ -30,7 +29,7 @@ class LifeCounter:
                     v, calc_total_physical_block(player_attack.physical.blocked_with[k])
                 )
                 if result > 0:
-                    self.life -= result
+                    self.decrease_life(result)
 
         if player_attack.arcane.is_empty() == False:
             for k, v in player_attack.arcane.damage_steps.items():
@@ -38,7 +37,7 @@ class LifeCounter:
                     v, calc_total_arcane_block(player_attack.arcane.blocked_with[k])
                 )
                 if result > 0:
-                    self.life -= result
+                    self.decrease_life(result)
 
         if self.life <= 0:
             self.life = 0
