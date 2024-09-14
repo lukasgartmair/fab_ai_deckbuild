@@ -20,13 +20,13 @@ class Stance(Enum):
 
 class StanceStateMachine(StateMachine):
 
-    combat_chain_start_enemy = State("combat_chain_start_enemy")
+    combat_chain_start_enemy = State("combat_chain_start_enemy", initial=True)
     combat_chain_end_enemy = State("combat_chain_end_enemy")
 
     combat_chain_start_player = State("combat_chain_start_player")
     combat_chain_end_player = State("combat_chain_end_player")
 
-    attack = State("attack", initial=True)
+    attack = State("attack")
     attack_reaction = State("attack_reaction")
     defense = State("defense")
     defensive_reaction = State("defensive_reaction")
@@ -116,6 +116,10 @@ class StanceStateMachine(StateMachine):
     def on_enter_combat_chain_start_enemy(self):
         self.stance = Stance.attack
 
+    def on_exit_combat_chain_start_enemy(self):
+        self.enemy.initial_switch_to_offense()
+        self.enemy.start_turn()
+
     def on_enter_combat_chain_start_player(self):
         self.enemy.finish_turn()
         self.stance = Stance.defend
@@ -125,7 +129,7 @@ class StanceStateMachine(StateMachine):
         self.enemy.start_move()
 
     def on_exit_defensive_reaction(self):
-        self.enemy.exit_defensive_reaction()
+        self.enemy.handle_equipment_counters()
 
     def after_transition(self, event: str, source: State, target: State, event_data):
         print(

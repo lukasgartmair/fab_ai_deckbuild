@@ -63,6 +63,8 @@ class GameEngine:
 
         self.analyzer = GlobalAnalyzer(self)
 
+        self.trigger_stance_switch()
+
     def apply_player_class(self):
         match self.player_class:
             case self.player_class if self.player_class == PlayerClass.mechanologist:
@@ -76,6 +78,8 @@ class GameEngine:
                 self.enemy = Enemy(self.player_class)
 
     def resolve_block(self):
+        print("resolve block")
+        print(self.player_attack)
         if self.player_attack is not None:
             self.enemy.life_counter.calculate_life(self.player_attack)
             self.enemy.block.reset()
@@ -86,9 +90,8 @@ class GameEngine:
         # self.analyzer.write_move_data(copy.copy(player_attack))
         self.level_manager.advandce_move()
 
-    def trigger_stance_switch(self, automatic=True):
-        if automatic == True:
-            self.enemy.stance_state_machine.change_stance()
+    def trigger_stance_switch(self):
+        self.enemy.stance_state_machine.change_stance()
 
         print("CURRENT STATE")
         print(self.enemy.stance_state_machine.current_state)
@@ -98,34 +101,30 @@ class GameEngine:
             case (
                 state
             ) if state == self.enemy.stance_state_machine.combat_chain_start_enemy:
-                self.enemy.stance_state_machine.send("cycle")
+                self.trigger_stance_switch()
             case (
                 state
             ) if state == self.enemy.stance_state_machine.combat_chain_end_enemy:
-                self.enemy.stance_state_machine.send("cycle")
-                self.enemy.stance_state_machine.send("cycle")
-
+                self.trigger_stance_switch()
             case (
                 state
             ) if state == self.enemy.stance_state_machine.combat_chain_start_player:
-                self.enemy.stance_state_machine.send("cycle")
+                self.trigger_stance_switch()
             case (
                 state
             ) if state == self.enemy.stance_state_machine.combat_chain_end_player:
-                self.enemy.stance_state_machine.send("cycle")
-                self.enemy.stance_state_machine.send("cycle")
+                self.resolve_block()
+                self.trigger_stance_switch()
 
             case state if state == self.enemy.stance_state_machine.defense:
-                pass
+
+                self.resolve_block()
 
             case state if state == self.enemy.stance_state_machine.defensive_reaction:
                 pass
 
             case state if state == self.enemy.stance_state_machine.attack:
-
-                self.resolve_block()
-
-                self.enemy.start_turn()
+                pass
 
             case _:
                 pass

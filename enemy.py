@@ -105,6 +105,8 @@ class Enemy:
 
         self.stance_state_machine = StanceStateMachine(self)
 
+        self.start_turn()
+
     def check_if_in_survival_mode(self):
         if self.life_counter.life <= 5:
             self.survival_mode = True
@@ -115,9 +117,6 @@ class Enemy:
         self.draw()
 
         self.reset_play()
-
-        if self.stance_state_machine.current_state == StanceStateMachine.attack:
-            self.initial_switch_to_offense()
 
     def reset_play(self):
         self.combat_chain.turn_reset()
@@ -158,14 +157,6 @@ class Enemy:
             card.finish_defensive_move()
             if card.destroyed == True:
                 self.graveyard.append(card)
-
-    def exit_defensive_reaction(self):
-        self.handle_equipment_counters()
-
-        # TODO change this in order not to redraw when the player combat chain continues
-
-        print("switched to offense")
-        self.initial_switch_to_offense()
 
     def start_move(self):
         pass
