@@ -22,8 +22,6 @@ import custom_events
 class GameScene(SceneBase):
     waiting_for_user_input = False
 
-    animation_queue = base_animation.AnimationQueue()
-
     def __init__(self, *args):
         super().__init__(*args)
 
@@ -282,8 +280,8 @@ class GameScene(SceneBase):
                 print("RENDERING POP UP")
                 self.renderer.render_pop_up_window()
 
-            self.animation_queue.animate_main_queue()
+            base_animation.animation_queue.animate_main_queue()
 
-            self.animation_queue.update_animation_queue()
+            base_animation.animation_queue.update_animation_queue()
 
             pygame.display.flip()

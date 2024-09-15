@@ -18,7 +18,6 @@ from playstyle import PlayerClass
 from mechanologist import Mechanologist
 from guardian import Guardian
 from ranger import Ranger
-import pygame
 
 
 class WinCondition(Enum):

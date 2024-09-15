@@ -50,10 +50,11 @@ arcane_offset = arcane_offset
 
 
 class Renderer:
+
+    window = pygame.display.set_mode(bounds)
+
     def __init__(self, engine):
-        global window
-        window = pygame.display.set_mode(bounds)
-        self.window = window
+
         self.engine = engine
         self.playmat = Playmat()
 
@@ -797,8 +798,12 @@ class Renderer:
 
     def render_enemy_life_counter(self):
         if self.engine.state_machine.current_state == self.engine.state_machine.playing:
-            self.button_up.draw(self.window)
-            self.button_down.draw(self.window)
+            if self.engine.enemy.stance_state_machine.current_state in [
+                StanceStateMachine.defensive_reaction,
+                StanceStateMachine.defense,
+            ]:
+                self.button_up.draw(self.window)
+                self.button_down.draw(self.window)
 
         self.render_text(
             "HP : " + str(self.engine.enemy.life_counter.life),

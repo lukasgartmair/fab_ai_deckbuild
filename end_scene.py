@@ -38,7 +38,9 @@ class EndScene(SceneBase):
 
                     pygame.display.flip()
                     self.switch_to_scene(
-                        scene_manager.get_title_scene(self.engine, self.renderer)
+                        scene_manager.get_title_scene(
+                            engine=self.engine, renderer=self.renderer
+                        )
                     )
                     self.is_active = False
 

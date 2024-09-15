@@ -23,10 +23,10 @@ def normalize_position(position):
 
 def n_chance(p=0.85):
     if np.random.rand() < p:
-        print("chance True")
+        # print("chance True")
         return True
     else:
-        print("chance False")
+        # print("chance False")
         return False
 
 

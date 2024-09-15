@@ -9,6 +9,7 @@ Created on Sun Jan  7 12:59:36 2024
 import pygame
 import particle
 from enum import Enum
+import renderer
 import animation
 
 
@@ -25,9 +26,8 @@ class AnimationQueueType(Enum):
 
 class AnimationQueue:
 
-    global window
-
-    def __init__(self):
+    def __init__(self, screen):
+        self.screen = screen
         self.main_loop_animations = {}
         self.event_queue_animations = {}
 
@@ -38,6 +38,7 @@ class AnimationQueue:
             return self.event_queue_animations
 
     def update_animation_queue(self):
+        print("updating animation queue")
         self.main_loop_animations = {
             k: v for k, v in self.main_loop_animations.items() if v
         }
@@ -93,7 +94,12 @@ class AnimationQueue:
 
         queue = self.get_queue()
         for k, v in queue.items():
-            v.animate(v)
+            print(v)
+            for vi in v:
+                vi.animate()
+
+
+animation_queue = AnimationQueue(renderer.Renderer.window)
 
 
 class BaseAnimation:
@@ -101,11 +107,12 @@ class BaseAnimation:
 
     def __init__(
         self,
+        animation_object=None,
         animation_end_mode=AnimationEndMode.DURATION,
         particle_animation=True,
     ):
-        self.camera = window
-        self.animation_object = None
+        self.camera = renderer.Renderer.window
+        self.animation_object = animation_object
 
         self.created_at = pygame.time.get_ticks()
 
@@ -161,10 +168,10 @@ class BaseAnimation:
     def initialize_animation_object(self, animation_object):
         self.animation_object = animation_object
 
-    def animate(self, animation_object):
+    def animate(self):
         self.check_if_should_be_still_is_alive()
         if self.is_alive:
-            self.initialize_animation_object(animation_object)
+            self.initialize_animation_object(self.animation_object)
         else:
             self.kill()
 
