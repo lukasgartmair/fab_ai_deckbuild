@@ -19,16 +19,21 @@ class LifeCounter:
 
     def decrease_life(self, amount=1):
 
-        self.current_amount = amount
-
+        self.current_amount = -amount
         base_animation.animation_queue.add_to_animation_loop(
-            self, animation.LifeCounterAnimation(self)
+            animation.LifeCounterAnimation(object_to_be_animated=self)
         )
         if amount >= 5:
             self.sound.play_pain()
         self.life -= amount
 
     def increase_life(self, amount=1):
+
+        self.current_amount = amount
+        base_animation.animation_queue.add_to_animation_loop(
+            animation.LifeCounterAnimation(object_to_be_animated=self)
+        )
+
         self.life += amount
 
     def calculate_life(self, player_attack):

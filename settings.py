@@ -18,7 +18,7 @@ class DisplayMode:
 
 display_mode = DisplayMode.dark
 
-FPS = 20
+FPS = 60
 
 RND_SEED = random.randint(0, 100)
 

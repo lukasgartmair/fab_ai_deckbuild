@@ -7,7 +7,7 @@ Created on Tue Jan  2 10:42:52 2024
 """
 
 import base_animation
-from settings import font_card_title
+from settings import font_header2
 import playmat
 
 playmat_obj = playmat.Playmat()
@@ -16,39 +16,44 @@ playmat_obj = playmat.Playmat()
 class LifeCounterAnimation(base_animation.BaseAnimation):
     def __init__(
         self,
-        animation_object=None,
+        object_to_be_animated=None,
         animation_end_mode=base_animation.AnimationEndMode.DURATION,
-        mode="received",
     ):
         super().__init__()
+        print(self.object_to_be_animated)
+        self.object_to_be_animated = object_to_be_animated
 
         self.offset = 0
-        self.animation_duration = 1500
-        self.velocity = 2
+        self.animation_duration = 2000
+        self.velocity = 3
         self.color = (0, 0, 0)
         self.string = ""
-        self.mode = mode
         self.position = (0, 0)
 
     def animate(self):
         super().animate()
 
-        if self.mode == "received":
+        if self.object_to_be_animated.current_amount > 0:
             self.string = "+ {} HP"
             self.color = (0, 255, 0)
 
-        elif self.mode == "lost":
+            self.position = (
+                playmat_obj.positions.life_counter.x,
+                playmat_obj.positions.life_counter.y,
+            )
+
+        elif self.object_to_be_animated.current_amount < 0:
             self.string = "- {} HP"
             self.color = (255, 0, 0)
 
-        self.position = (
-            playmat_obj.positions.life_counter.x,
-            playmat_obj.positions.life_counter.y,
-        )
+            self.position = (
+                playmat_obj.positions.life_counter.x,
+                playmat_obj.positions.life_counter.y,
+            )
 
-        text = font_card_title.render(
+        text = font_header2.render(
             self.string.format(
-                self.animation_object.current_amount,
+                self.object_to_be_animated.current_amount,
             ),
             True,
             self.color,
@@ -56,4 +61,7 @@ class LifeCounterAnimation(base_animation.BaseAnimation):
         self.screen.blit(
             text, (self.position[0] + self.offset, self.position[1] - self.offset)
         )
-        self.offset += self.velocity
+        if self.object_to_be_animated.current_amount > 0:
+            self.offset += self.velocity
+        elif self.object_to_be_animated.current_amount < 0:
+            self.offset -= self.velocity

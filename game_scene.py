@@ -30,7 +30,7 @@ class GameScene(SceneBase):
 
     def process_input(self, events):
 
-        # pygame.time.wait(100)
+        pygame.time.wait(50)
 
         for event in events:
 
@@ -269,19 +269,6 @@ class GameScene(SceneBase):
                 self.renderer.render_boost_counter()
                 self.renderer.render_boost()
 
-            if self.engine.enemy.stance_state_machine.current_state in [
-                StanceStateMachine.defense,
-                StanceStateMachine.defensive_reaction,
-            ]:
-
-                self.renderer.render_log()
-
-            if self.waiting_for_user_input == True:
-                print("RENDERING POP UP")
-                self.renderer.render_pop_up_window()
-
-            base_animation.animation_queue.animate_main_queue()
-
-            base_animation.animation_queue.update_animation_queue()
+                # self.renderer.render_log()
 
             pygame.display.flip()
